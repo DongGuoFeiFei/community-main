@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.communityserver.mapper.CommentMapper">
+
+    <!-- 查询所有顶级评论（parent_id为null的评论） -->
+    <select id="getCommentsById" resultMap="CommentsMap">
+        SELECT *
+        FROM comments
+        WHERE article_id = #{articleId}
+          AND parent_id IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 递归查询子评论 -->
+    <select id="findCommentsByParentId" resultMap="CommentsMap">
+        SELECT *
+        FROM comments
+        WHERE parent_id = #{parentId}
+        ORDER BY created_at ASC
+    </select>
+
+    <!-- 结果映射 -->
+    <resultMap id="CommentsMap" type="com.example.communityserver.entity.vo.CommentVo">
+        <!--   todo 有没有 <id column="comment_id" property="commentId"/>这一行，会导致查询出来的commentId数据是否为空   -->
+        <result column="comment_id" property="commentId"/>
+        <!-- 递归关联查询子评论 -->
+        <collection property="voList"
+                    column="comment_id"
+                    select="findCommentsByParentId"
+                    javaType="java.util.List"/>
+    </resultMap>
+</mapper>
+

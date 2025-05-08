@@ -1,0 +1,42 @@
+# 服务器路径
+server:
+  port: 8080
+  servlet:
+    context-path: /
+# 配置数据源
+spring:
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  # mysql 配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  # MVC的URL路径匹配策略
+  mvc:
+    path match:
+      matching-strategy: ant-path-matcher
+  # 文件大小限制
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+# mybatis-plus 配置
+mybatis-plus:
+  config-locations: classpath:mapper/*.xml
+  # mybatis-plus 数据库查询日志
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping:
+# 文件路径
+file:
+  upload:
+    path: ./path/to/upload/directory

@@ -1,0 +1,40 @@
+{
+  "name": "community-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:unit": "vitest"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@iconify/vue": "^4.3.0",
+    "@tsparticles/slim": "^3.8.1",
+    "@tsparticles/vue3": "^3.0.1",
+    "axios": "^1.8.4",
+    "dayjs": "^1.11.13",
+    "dompurify": "^3.2.5",
+    "element-plus": "^2.9.8",
+    "github-markdown-css": "^5.8.1",
+    "less": "^4.3.0",
+    "markdown-it": "^14.1.0",
+    "nprogress": "^0.2.0",
+    "pinia": "^3.0.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "qs": "^6.14.0",
+    "vditor": "^3.11.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.0.0",
+    "vite": "^6.2.4",
+    "vite-plugin-vue-devtools": "^7.7.2",
+    "vitest": "^3.1.1"
+  }
+}
