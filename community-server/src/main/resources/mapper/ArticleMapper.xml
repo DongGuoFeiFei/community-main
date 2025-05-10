@@ -29,6 +29,7 @@
         file f on p.file_id = f.file_id
         WHERE
         p.is_del = '1'
+        and p.is_drafts = '0'
         <if test="title != null and title != ''">
             AND p.title LIKE CONCAT('%', #{title}, '%')
         </if>
@@ -49,7 +50,7 @@
                 join
             file f on p.file_id = f.file_id
         WHERE p.is_del = '1'
-
+          and p.is_drafts = '0'
           AND p.article_id = #{id}
 
     </select>

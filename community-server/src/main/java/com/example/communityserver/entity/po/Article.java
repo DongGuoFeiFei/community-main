@@ -50,5 +50,7 @@ public class Article {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String updatedAt;
     @ApiModelProperty(value = "是否删除", example = "false")
-    private String isDel;
+    private Integer isDel;
+    @ApiModelProperty(value = "是否草稿", example = "false")
+    private Integer isDrafts;
 }

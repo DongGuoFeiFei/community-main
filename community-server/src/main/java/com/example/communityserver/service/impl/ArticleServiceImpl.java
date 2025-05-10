@@ -54,6 +54,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setContent(dto.getContent());
         article.setFileId(dto.getFileId());
         article.setTitle(dto.getTitle());
+        article.setIsDrafts(0);
         article.setUserId(SecurityUtils.getLoginUserId());
         return postsMapper.insert(article) > 0;
     }
