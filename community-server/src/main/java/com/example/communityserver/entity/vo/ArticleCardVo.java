@@ -19,23 +19,16 @@ import lombok.Data;
 public class ArticleCardVo {
     @TableId(type = IdType.AUTO)
     private Long articleId;
-
     private String title;
-
     private String nickname;
-
     @ApiModelProperty(value = "帖子正文内容", example = "这是一个帖子内容")
     private String content;
-
     @ApiModelProperty(value = "图片URL（可空，支持多图需另建表）", example = "http://example.com/image.jpg")
     private String imageUrl;
-
     @ApiModelProperty(value = "发布时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
-
     @ApiModelProperty(value = "最后编辑时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String updatedAt;
-
 }

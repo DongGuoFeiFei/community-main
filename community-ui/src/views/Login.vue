@@ -59,7 +59,7 @@ const handleLogin = () => {
       if (res?.token) {
         localStorage.setItem('token', res.token);
         ElMessage.success('登录成功');
-        router.push('/index/card');
+        router.push('/index');
       } else {
         ElMessage.error(res?.msg || '登录失败');
       }

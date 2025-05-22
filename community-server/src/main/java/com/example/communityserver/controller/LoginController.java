@@ -11,8 +11,12 @@ import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.JWTUtil;
 import com.example.communityserver.utils.RedisUtil;
 import com.example.communityserver.utils.Result;
+import com.example.communityserver.utils.SecurityUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
+@Api(tags = "登录等验证")
 @RequestMapping("/auth")
 public class LoginController {
 
@@ -30,12 +35,14 @@ public class LoginController {
 
     @Autowired
     private RedisUtil redisUtil;
+
     @Autowired
     private IFileEntityService fileEntityService;
 
     @Autowired
     private ILoginLogService loginLogService;
 
+    // TODO: 2025/5/21 @PreAuthorize("@vip.myAuthority('superAdmin')")权限划分失败
     @PostMapping("/login")
     private Result login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -48,10 +55,6 @@ public class LoginController {
         LoginResponse loginResponse = new LoginResponse();
         String token = service.login(loginRequest.getUsername(), loginRequest.getPassword());
 
-        // 更新登录的时间。
-        if (token != null || !token.equals("")) {
-
-        }
         // 此时，token还未传入security中
         loginResponse.setToken(token);
         Long userId = JWTUtil.getUserId(loginResponse.getToken());
@@ -72,4 +75,9 @@ public class LoginController {
         return Result.success(200, "登录成功", loginResponse);
     }
 
+    @ApiOperation("获取新的token")
+    @PostMapping("/newToken")
+    public Result newToken() {
+        return Result.success(JWTUtil.createToken(SecurityUtils.getLoginUserId()));
+    }
 }

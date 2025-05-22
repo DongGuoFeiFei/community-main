@@ -8,7 +8,9 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    vueDevTools({
+      launchEditor:'D:\\myapps\\JetBrains\\IntelliJ IDEA 2023.1.3\\bin\\idea64.exe'
+    }),
   ],
   resolve: {
     alias: {

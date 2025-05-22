@@ -42,7 +42,7 @@ public class Article {
     @ApiModelProperty(value = "发布位置（如“北京市海淀区”）", example = "北京市海淀区")
     private String location;
     @ApiModelProperty(value = "是否公开（false为仅好友可见）", example = "true")
-    private boolean isPublic;
+    private Integer isPublic;
     @ApiModelProperty(value = "发布时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;

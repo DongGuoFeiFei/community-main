@@ -5,6 +5,7 @@ import com.example.communityserver.entity.po.FileEntity;
 import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.utils.FileUtils;
+import com.example.communityserver.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class FileEntityServiceImpl extends ServiceImpl<FileEntityMapper, FileEnt
         try {
             // 上传文件
             FileEntity fileEntity = FileUtils.upload(file, uploadPath);
-
+            fileEntity.setUserId(SecurityUtils.getLoginUserId());
             // 保存到数据库
             if (fileMapper.insert(fileEntity) > 0) {
                 return fileEntity;

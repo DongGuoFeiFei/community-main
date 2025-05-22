@@ -55,10 +55,10 @@ import {onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {fetchPosts} from '@/api'
 import MarkdownIt from "markdown-it";
-import {sessionStore} from "@/stores/sessionStores.js";
+import {localStore} from "@/stores/localStores.js";
 
 
-const store = sessionStore()
+const lStore = localStore()
 const md = new MarkdownIt({
   html: true,        // 允许HTML标签
   linkify: true,     // 自动转换URL为链接
@@ -111,7 +111,7 @@ const loadPosts = async () => {
     author: item.author,
     summary: "",
     date: item.date,
-    cover: store.baseURL + item.cover
+    cover: lStore.baseURL + item.cover
   }))
 
   total.value = res.total

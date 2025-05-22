@@ -16,4 +16,5 @@ public class AddArticleDto {
     private String title;
     private Long fileId;
     private String content;
+    private Integer status;
 }

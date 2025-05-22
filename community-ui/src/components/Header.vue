@@ -13,8 +13,9 @@
           active-text-color="#ffd04b"
       >
         <el-menu-item index="card">发现</el-menu-item>
-        <el-menu-item index="editor">编辑</el-menu-item>
         <el-menu-item index="messages">消息</el-menu-item>
+        <el-menu-item index="game">游戏</el-menu-item>
+        <el-menu-item index="anime">动漫</el-menu-item>
         <el-menu-item>
           <el-link href="https://resume.caifurong.top/" target="_blank">简历</el-link>
         </el-menu-item>
@@ -53,7 +54,7 @@ const router = useRouter()
 const activeMenu = ref('home')
 const lStore = localStore()
 const sStore = sessionStore()
-const avatarUrl = ref(sStore.baseURL + lStore.userInfo.avatarUrl)
+const avatarUrl = ref(lStore.baseURL + lStore.userInfo.avatarUrl)
 const handleMenuClick = (index) => {
   activeMenu.value = index
   if (index === 'card') {
@@ -68,7 +69,8 @@ const handleMenuClick = (index) => {
 const handleDropdownClick = (command) => {
   switch (command) {
     case 'user':
-      router.push('/user'); // 跳转到个人中心
+      // todo 目前先跳转导这里，后面更改
+      router.push('/user/profile'); // 跳转到个人中心
       break;
     case 'settings':
       router.push('/settings'); // 跳转到设置

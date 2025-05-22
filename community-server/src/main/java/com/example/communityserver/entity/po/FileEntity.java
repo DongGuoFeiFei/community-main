@@ -29,6 +29,8 @@ public class FileEntity {
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "文件ID", example = "1")
     private Long fileId;
+    @ApiModelProperty(value = "上传文件用户ID", example = "1")
+    private Long userId;
 
     @ApiModelProperty(value = "文件原始名称", example = "example.pdf")
     private String fileOriginalName;

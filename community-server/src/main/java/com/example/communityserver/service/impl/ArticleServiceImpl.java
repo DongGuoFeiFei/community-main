@@ -1,16 +1,24 @@
 package com.example.communityserver.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.dto.AddArticleDto;
 import com.example.communityserver.entity.po.Article;
+import com.example.communityserver.entity.po.ArticleView;
 import com.example.communityserver.entity.vo.ArticleCardVo;
+import com.example.communityserver.entity.vo.ArticleListVo;
+import com.example.communityserver.entity.vo.EditorArticlesVo;
 import com.example.communityserver.mapper.ArticleMapper;
+import com.example.communityserver.mapper.ArticleViewMapper;
 import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +42,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private FileEntityMapper fileEntityMapper;
 
+    @Autowired
+    private ArticleViewMapper articleViewMapper;
+
     @Override
     public List<ArticleCardVo> getPostsCardVoList(String title) {
 
@@ -44,6 +55,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public List<ArticleCardVo> getPostsCardVoById(Long id) {
+        // 添加一条阅读记录
+        Long loginUserId = SecurityUtils.getLoginUserId();
+        // 判断是否已经有了记录，若已有记录则更新阅读时间，若没有记录，则添加一条记录
+        LambdaQueryWrapper<ArticleView> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleView::getArticleId, id)
+                .eq(ArticleView::getUserId, loginUserId);
+        ArticleView articleView = articleViewMapper.selectOne(queryWrapper);
+        if (articleView == null) {
+            // 处理无记录的情况（如初始化浏览记录）
+            articleView = new ArticleView();
+            articleView.setArticleId(id);
+            articleView.setUserId(loginUserId);
+            articleViewMapper.insert(articleView);
+        } else {
+            // 处理已有记录的情况，更新阅读记录
+            articleView.setViewTime(new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()));
+            articleViewMapper.updateById(articleView);
+        }
         return postsMapper.getPostsCardVoById(id);
     }
 
@@ -54,9 +83,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setContent(dto.getContent());
         article.setFileId(dto.getFileId());
         article.setTitle(dto.getTitle());
-        article.setIsDrafts(0);
+        article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
+        System.out.println(article);
         return postsMapper.insert(article) > 0;
+    }
+
+    @Override
+    public List<ArticleListVo> getArticleList(String title, Integer status, String sortField, Boolean isAsc) {
+        return postsMapper.getArticleList(title, status, sortField, isAsc);
+    }
+
+    @Override
+    public boolean delById(Long id) {
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(Article::getIsDel, 0).eq(Article::getArticleId, id);
+        Article article = new Article();
+        return postsMapper.update(null, updateWrapper) > 0;
+    }
+
+    @Override
+    public EditorArticlesVo getEditorArticleDtl(Long id) {
+        Long loginUserId = SecurityUtils.getLoginUserId();
+        return postsMapper.getEditorArticleDtl(id, loginUserId);
+
     }
 
 }

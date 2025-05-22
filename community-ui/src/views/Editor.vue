@@ -5,14 +5,16 @@
     <div class="editor-header">
       <button @click="goBack" class="back-button">← 返回</button>
       <input
-          v-model="articleTitle"
+          v-model="articleData.title"
           type="text"
           placeholder="输入文章标题"
           class="title-input"
       />
       <el-button-group>
-        <el-button type="primary" @click="saveArticle(1)">保存草稿</el-button>
-        <el-button type="success" @click="saveArticle(0)">发布文章</el-button>
+        <el-button-group>
+          <el-button type="primary" @click="saveArticle(1)">{{ isEditMode ? '更新草稿' : '保存草稿' }}</el-button>
+          <el-button type="success" @click="saveArticle(0)">{{ isEditMode ? '更新文章' : '发布文章' }}</el-button>
+        </el-button-group>
       </el-button-group>
     </div>
 
@@ -50,20 +52,45 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import {addArticle, delFileById, uploadFile} from "@/api/index.js";
+import {addArticle, delFileById, getArticleById, uploadFile} from "@/api/index.js";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 import {localStore} from "@/stores/localStores.js";
+import {sessionStore} from "@/stores/sessionStores.js";
 
 const lStore = localStore()
 const baseUrl = lStore.baseURL;
 const router = useRouter();
 const vditorRef = ref(null);
 const fileInput = ref(null);
-const articleTitle = ref("");
 const vditorInstance = ref(null);
+
+const sStore = sessionStore()
+const isEditMode = ref(sStore.isEditMode)
+const editorLoaded = ref(false);
+
+const route = useRoute()
+// 文章数据
+const articleData = reactive({
+  title: "",
+  fileId: null,
+  content: "朋友，你的游戏，由我来分享🎉️！",
+  status: 0 // 0: 发布, 1: 草稿
+});
+// 定义文章编辑文章数据类型
+const editArticle = reactive({
+  id: null, // 文章id
+  title: '',
+  content: '',
+  status: 0, // 0: 发布, 1: 草稿
+  fileId: null,
+  coverUrl: '',
+  createTime: '',
+  updateTime: ''
+})
+// 封面数据
 const coverImageData = reactive({
   fileId: null,
   fileOriginalName: "",
@@ -71,7 +98,7 @@ const coverImageData = reactive({
   storageUrl: null,
   accessUrl: "",
   uploadTime: ""
-})
+});
 
 // 打开文件选择对话框
 const openFileDialog = () => {
@@ -94,29 +121,28 @@ const handleCoverUpload = async (event) => {
     ElMessage.error("图片大小不能超过5MB");
     return;
   }
-  // coverImageData.accessUrl不是""，表示里面有着数据，还有之前的图片在，那么就删除再说
+
+  // 判断是否已经上传文件
   if (coverImageData.accessUrl !== "") {
     const res = await delFileById(coverImageData.fileId)
     coverImageData.accessUrl = "";
   }
 
+  // 开始上传文件
   try {
     const formData = new FormData();
     formData.append("file", file);
 
-    // 将图片上传
     const res = await uploadFile(formData);
-    console.log(res)
-    // 保存返回的封面数据
     Object.assign(coverImageData, res.data)
     coverImageData.accessUrl = baseUrl + res.data.accessUrl;
+    articleData.fileId = res.data.fileId; // 更新文章数据的fileId
 
     ElMessage.success("封面上传成功");
   } catch (error) {
     console.error("封面上传失败:", error);
     ElMessage.error("封面上传失败");
   } finally {
-    // 重置input，允许重复选择同一文件
     event.target.value = "";
   }
 };
@@ -128,51 +154,50 @@ const removeCover = () => {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    // 在数据库中将图片删掉，需要直接能展示出效果
-    const res = delFileById(coverImageData.fileId)
+    delFileById(coverImageData.fileId)
     coverImageData.accessUrl = "";
+    articleData.fileId = null;
     ElMessage.success("封面已移除");
-  })
-      .catch(() => {
-        // 用户取消操作
-      });
+  }).catch(() => {
+  });
 };
 
-// 保存文章（补充封面数据）
+// 保存文章
 const saveArticle = (status) => {
-  if (!articleTitle.value.trim()) {
+  if (!articleData.title.trim()) {
     ElMessage.warning("请输入文章标题")
     return;
   }
 
-  const content = vditorInstance.value.getValue();
-  if (!content.trim()) {
+  articleData.content = vditorInstance.value.getValue();
+  articleData.status = status;
+
+  if (!articleData.content.trim()) {
     ElMessage.warning("文章内容不能为空")
     return;
   }
 
-  const articleData = {
-    title: articleTitle.value,
-    fileId: coverImageData.fileId,
-    content: content,
-    status: status
-  };
-
-  console.log(articleData)
   const loading = ElLoading.service({
     lock: true,
     text: status === 0 ? '正在发布文章...' : '正在保存草稿...',
   });
 
-  const res = addArticle(articleData)
-  console.log(res)
-  if (res) {
-    ElMessage.success(status === 0 ? '文章发布成功' : '草稿保存成功')
-    loading.close();
-    router.back()
+  if (sStore.isEditMode) {
+    // 更新数据
   } else {
-    ElMessage.warning("操作失败，稍后重试。")
-    loading.close();
+    // 新增数据
+    addArticle(articleData)
+        .then(res => {
+          ElMessage.success(status === 0 ? '文章发布成功' : '草稿保存成功')
+          router.back()
+        })
+        .catch(err => {
+          ElMessage.warning("操作失败，稍后重试。")
+        })
+        .finally(() => {
+          sStore.isEditMode = false
+          loading.close();
+        });
   }
 };
 
@@ -184,22 +209,20 @@ const goBack = async () => {
       cancelButtonText: '取消',
       type: 'warning',
     })
-
+    sStore.isEditMode = false
     router.go(-1)
   } catch {
-    // 用户取消操作
     console.log('用户取消了返回操作')
   }
 }
 
+// 加载编辑器
 const loading = ElLoading.service({
   lock: true,
   text: '正在加载编辑器...',
   background: 'rgba(255, 255, 255, 0.8)',
 });
-const editorLoaded = ref(false);
 
-// 生命周期钩子函数
 onMounted(() => {
   vditorInstance.value = new Vditor("vditor", {
     mode: "wysiwyg",
@@ -221,10 +244,10 @@ onMounted(() => {
       headers: {
         'token': localStorage.getItem('token')
       },
+      // todo 研究是什么
       format: (files, responseText) => {
         const res = JSON.parse(responseText);
         if (res.code === 200) {
-
           const imageUrl = baseUrl + res.data.accessUrl;
           return JSON.stringify({
             msg: "上传成功",
@@ -246,11 +269,11 @@ onMounted(() => {
       error: (msg) => {
         alert(`上传失败: ${msg}`);
       },
+      // 文章中的图片上传
       handler: (files) => {
         return new Promise((resolve, reject) => {
           const formData = new FormData();
           formData.append('file', files[0]);
-
           uploadFile(formData)
               .then(res => {
                 const imageUrl = baseUrl + res.data.accessUrl;
@@ -271,12 +294,29 @@ onMounted(() => {
       enable: true,
     },
     after: () => {
-      vditorInstance.value.setValue("朋友，你的游戏，由我来分享🎉️！");
+      if (route.path === '/editor') {
+        isEditMode.value = false
+      }
+      if (route.path === '/editor-edit') {
+        isEditMode.value = true
+      }
+      if (isEditMode.value) {
+        getArticleById(sStore.editorArticleId).then(res => {
+          Object.assign(editArticle, res)
+          const {title, content, fileId, status} = editArticle
+          Object.assign(articleData, {title, content, fileId, status})
+          coverImageData.fileId = editArticle.fileId
+          coverImageData.accessUrl = sStore.baseURL + editArticle.coverUrl
+          vditorInstance.value.setValue(articleData.content);
+        })
+      }
+      vditorInstance.value.setValue(articleData.content);
       editorLoaded.value = true;
       loading.close();
     },
   });
 });
+
 
 </script>
 <style scoped>

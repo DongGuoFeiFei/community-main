@@ -7,6 +7,60 @@ body {
     position: relative;
 }
 
+/* 全局高度设置（确保在App.vue中已设置） */
+html, body, #app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 全局样式或组件样式 */
+#nprogress {
+    pointer-events: none;
+}
+
+#nprogress .bar {
+    background: #409eff; /* 使用Element Plus的主色 */
+    position: fixed;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+}
+
+#nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0px;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 10px #409eff, 0 0 5px #409eff;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* 如果显示spinner */
+#nprogress .spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031;
+    top: 15px;
+    right: 15px;
+}
+
+#nprogress .spinner-icon {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+    border-top-color: #409eff;
+    border-left-color: #409eff;
+    border-radius: 50%;
+    animation: nprogress-spinner 400ms linear infinite;
+}
+
+
 .clouds {
     position: fixed;
     left: -50px;

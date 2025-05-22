@@ -38,6 +38,7 @@ public class FileController {
         FileEntity fileEntity = fileService.uploadFile(file);
         // 将本地地址清空
         fileEntity.setStorageUrl(null);
+        System.out.println(fileEntity);
         return Result.success(fileEntity);
     }
 

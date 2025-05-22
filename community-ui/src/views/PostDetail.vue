@@ -56,8 +56,9 @@ import {ArrowLeft} from '@element-plus/icons-vue'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
-import {sessionStore} from "@/stores/sessionStores.js";
 import CommentSection from "@/components/CommentSection.vue";
+import NProgress from "nprogress";
+import {localStore} from "@/stores/localStores.js";
 
 const md = new MarkdownIt(
     {
@@ -68,8 +69,8 @@ const md = new MarkdownIt(
 
     }
 )
-const store = sessionStore()
 
+const lStore = localStore()
 const SANITIZE_CONFIG = {
   ALLOWED_TAGS: [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -100,6 +101,7 @@ const goBack = () => {
 // 获取帖子详情
 const fetchPostData = async (id) => {
   try {
+    NProgress.start()
     loading.value = true
     error.value = null
     const response = await fetchPostDetail(id)
@@ -109,7 +111,7 @@ const fetchPostData = async (id) => {
     // 处理帖子数据
     post.value = {
       ...postData,
-      imageUrl: store.baseURL + postData.imageUrl,
+      imageUrl: lStore.baseURL + postData.imageUrl,
       content: DOMPurify.sanitize(
           md.render(postData.content || ''),
           SANITIZE_CONFIG
@@ -119,6 +121,7 @@ const fetchPostData = async (id) => {
     error.value = err.message || '获取帖子详情失败'
     console.error('Error fetching post:', err)
   } finally {
+    NProgress.done()
     loading.value = false
   }
 }

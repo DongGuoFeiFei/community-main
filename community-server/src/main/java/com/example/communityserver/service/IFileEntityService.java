@@ -17,6 +17,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IFileEntityService extends IService<FileEntity> {
     FileEntity uploadFile(MultipartFile file);
 
-
     boolean delFileById(Long id);
 }

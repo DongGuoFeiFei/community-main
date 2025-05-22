@@ -55,4 +55,68 @@
 
     </select>
 
+    <select id="getArticleList" resultType="com.example.communityserver.entity.vo.ArticleListVo">
+        SELECT
+        a.article_id AS id,
+        a.title,
+        a.content,
+        IFNULL(f.access_url, '') AS coverUrl,
+        CASE WHEN a.is_drafts = 1 THEN 0 ELSE 1 END AS status,
+        IFNULL((
+        SELECT COUNT(*)
+        FROM article_view av
+        WHERE av.article_id = a.article_id
+        ), 0) AS viewCount,
+        IFNULL((
+        SELECT COUNT(*)
+        FROM likes al
+        WHERE al.article_id = a.article_id
+        ), 0) AS likeCount,
+        IFNULL((
+        SELECT COUNT(*)
+        FROM comments c
+        WHERE c.article_id = a.article_id
+        ), 0) AS commentCount,
+        DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') AS createTime,
+        DATE_FORMAT(a.updated_at, '%Y-%m-%d %H:%i:%s') AS updateTime
+        FROM
+        article a
+        LEFT JOIN file f ON a.file_id = f.file_id
+        WHERE
+        a.is_del = 1
+        <if test="title != null and title != ''">
+            AND a.title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="status != null">
+            AND a.is_drafts = #{status}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sortField != null and sortField != ''">
+                ${sortField} ${isAsc ? 'ASC' : 'DESC'}
+            </when>
+            <otherwise>
+                a.updated_at DESC
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getEditorArticleDtl" resultType="com.example.communityserver.entity.vo.EditorArticlesVo">
+        SELECT
+            a.article_id AS id,
+            a.title,
+            a.content,
+            a.is_drafts AS status,
+            a.file_id,
+            f.access_url AS coverUrl,
+            DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') AS createTime,
+            DATE_FORMAT(a.updated_at, '%Y-%m-%d %H:%i:%s') AS updateTime
+        FROM
+            article a
+                LEFT JOIN
+            file f ON a.file_id = f.file_id
+        WHERE
+            a.article_id = #{id}
+          AND a.user_id = #{loginUserId}
+          AND a.is_del = 1
+    </select>
 </mapper>

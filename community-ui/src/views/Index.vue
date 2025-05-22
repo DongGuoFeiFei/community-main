@@ -76,11 +76,11 @@ onBeforeUnmount(() => {
           <Header/>
         </el-header>
         <el-container>
-          <el-aside width="200px"> </el-aside>
+          <el-aside width="200px"></el-aside>
           <el-main>
             <RouterView/>
           </el-main>
-          <el-aside width="200px"> </el-aside>
+          <el-aside width="200px"></el-aside>
         </el-container>
         <el-footer>
           <Footer/>
@@ -91,15 +91,19 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .main-container {
   position: relative;
   min-height: 100vh;
-}
 
-.common-layout {
-  position: relative;
-  z-index: 2; /* 确保内容在云朵上方 */
+  .common-layout {
+    position: relative;
+    z-index: 2; /* 确保内容在云朵上方 */
+
+    .el-container {
+      height: 100%;
+    }
+  }
 }
 
 .cloud-container {
