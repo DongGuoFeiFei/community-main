@@ -1,3 +1,4 @@
+<!-- /views/Editor.vue -->
 <template>
   <div class="editor-container">
     <!-- 返回按钮和标题 -->
@@ -9,7 +10,10 @@
           placeholder="输入文章标题"
           class="title-input"
       />
-      <button @click="saveArticle" class="save-button">保存文章</button>
+      <el-button-group>
+        <el-button type="primary" @click="saveArticle(1)">保存草稿</el-button>
+        <el-button type="success" @click="saveArticle(0)">发布文章</el-button>
+      </el-button-group>
     </div>
 
     <!-- Vditor 编辑器 -->
@@ -51,11 +55,10 @@ import Vditor from "vditor";
 import "vditor/dist/index.css";
 import {addArticle, delFileById, uploadFile} from "@/api/index.js";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
-import {sessionStore} from "@/stores/sessionStores.js";
+import {localStore} from "@/stores/localStores.js";
 
-
-const userStore = sessionStore()
-const baseUrl = userStore.baseURL;
+const lStore = localStore()
+const baseUrl = lStore.baseURL;
 const router = useRouter();
 const vditorRef = ref(null);
 const fileInput = ref(null);
@@ -91,12 +94,11 @@ const handleCoverUpload = async (event) => {
     ElMessage.error("图片大小不能超过5MB");
     return;
   }
-  // coverImageData.accessUrl不是”“，表示里面有着数据，还有之前的图片在，那么就删除再说
+  // coverImageData.accessUrl不是""，表示里面有着数据，还有之前的图片在，那么就删除再说
   if (coverImageData.accessUrl !== "") {
     const res = await delFileById(coverImageData.fileId)
     coverImageData.accessUrl = "";
   }
-
 
   try {
     const formData = new FormData();
@@ -104,6 +106,7 @@ const handleCoverUpload = async (event) => {
 
     // 将图片上传
     const res = await uploadFile(formData);
+    console.log(res)
     // 保存返回的封面数据
     Object.assign(coverImageData, res.data)
     coverImageData.accessUrl = baseUrl + res.data.accessUrl;
@@ -125,18 +128,18 @@ const removeCover = () => {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-        // 在数据库中将图片删掉，需要直接能展示出效果
-        const res = delFileById(coverImageData.fileId)
-        coverImageData.accessUrl = "";
-        ElMessage.success("封面已移除");
-      })
+    // 在数据库中将图片删掉，需要直接能展示出效果
+    const res = delFileById(coverImageData.fileId)
+    coverImageData.accessUrl = "";
+    ElMessage.success("封面已移除");
+  })
       .catch(() => {
         // 用户取消操作
       });
 };
 
 // 保存文章（补充封面数据）
-const saveArticle = () => {
+const saveArticle = (status) => {
   if (!articleTitle.value.trim()) {
     ElMessage.warning("请输入文章标题")
     return;
@@ -151,15 +154,25 @@ const saveArticle = () => {
   const articleData = {
     title: articleTitle.value,
     fileId: coverImageData.fileId,
-    content: content
+    content: content,
+    status: status
   };
+
+  console.log(articleData)
+  const loading = ElLoading.service({
+    lock: true,
+    text: status === 0 ? '正在发布文章...' : '正在保存草稿...',
+  });
+
   const res = addArticle(articleData)
   console.log(res)
   if (res) {
-    console.log("保存的文章数据:", articleData);
-    ElMessage.success("文章保存成功")
+    ElMessage.success(status === 0 ? '文章发布成功' : '草稿保存成功')
+    loading.close();
+    router.back()
   } else {
-    ElMessage.warning("文章保存失败，稍后重试。")
+    ElMessage.warning("操作失败，稍后重试。")
+    loading.close();
   }
 };
 
@@ -296,33 +309,19 @@ onMounted(() => {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
-.back-button,
-.save-button {
+.back-button {
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s;
-}
-
-.back-button {
   background-color: #f0f0f0;
   color: #333;
 }
 
 .back-button:hover {
   background-color: #e0e0e0;
-}
-
-.save-button {
-  background-color: #1890ff;
-  color: white;
-}
-
-.save-button:hover {
-  background-color: #40a9ff;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
 }
 
 /* 封面区域样式 - 美化版 */
@@ -441,4 +440,3 @@ onMounted(() => {
   }
 }
 </style>
-
