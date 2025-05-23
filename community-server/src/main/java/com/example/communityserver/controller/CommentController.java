@@ -3,6 +3,7 @@ package com.example.communityserver.controller;
 import com.example.communityserver.entity.dto.AddCommentDto;
 import com.example.communityserver.entity.po.Comment;
 import com.example.communityserver.entity.vo.CommentVo;
+import com.example.communityserver.entity.vo.ReplyVo;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.utils.Result;
 import io.swagger.annotations.Api;
@@ -38,8 +39,8 @@ public class CommentController {
 
     @ApiOperation("添加新的评论")
     @PostMapping("/addComment")
-    public Result<Comment> addComment(@RequestBody AddCommentDto addCommentDto) {
-        Comment comment = commentService.addComment(addCommentDto);
-        return comment != null ? Result.success(comment) : Result.error("评论失败，请稍后重试");
+    public Result<ReplyVo> addComment(@RequestBody AddCommentDto addCommentDto) {
+        ReplyVo replyVo = commentService.addComment(addCommentDto);
+        return replyVo != null ? Result.success(replyVo) : Result.error("评论失败，请稍后重试");
     }
 }

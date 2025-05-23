@@ -6,9 +6,8 @@ import com.example.communityserver.entity.po.Article;
 import com.example.communityserver.entity.po.Comment;
 import com.example.communityserver.entity.po.NotificationEntity;
 import com.example.communityserver.entity.vo.CommentVo;
-import com.example.communityserver.mapper.ArticleMapper;
-import com.example.communityserver.mapper.CommentMapper;
-import com.example.communityserver.mapper.NotificationEntityMapper;
+import com.example.communityserver.entity.vo.ReplyVo;
+import com.example.communityserver.mapper.*;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.service.INotificationEntityService;
 import com.example.communityserver.utils.SecurityUtils;
@@ -38,6 +37,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private NotificationEntityMapper notificationEntityMapper;
     @Autowired
     private ArticleMapper articleMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private FileEntityMapper fileEntityMapper;
 
     @Override
     public List<CommentVo> getCommentsById(Integer postId) {
@@ -46,11 +49,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Transactional
     @Override
-    public Comment addComment(AddCommentDto addCommentDto) {
+    public ReplyVo addComment(AddCommentDto addCommentDto) {
         // 添加用户通知消息
         // 获取通知者id
         // 添加用户评论
-
         Long loginUserId = SecurityUtils.getLoginUserId();
 
         // 添加用户评论
@@ -75,6 +77,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         notificationEntity.setSonSourceId(comment.getCommentId());
         notificationEntityMapper.insert(notificationEntity);
-        return comment;
+        ReplyVo replyVo = commentMapper.getReplyById(comment.getCommentId());
+        // 获取父类的昵称
+        return replyVo;
     }
 }

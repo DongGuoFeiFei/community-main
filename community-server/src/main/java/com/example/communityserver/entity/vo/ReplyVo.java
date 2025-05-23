@@ -3,19 +3,17 @@ package com.example.communityserver.entity.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * <p>
  *
  * <p>
  *
  * @author: DongGuo
- * @create: 2025-05-04
+ * @create: 2025-05-24
  **/
 
 @Data
-public class CommentVo {
+public class ReplyVo {
     private Long commentId;
     private Long articleId;
     private Long userId;
@@ -26,5 +24,4 @@ public class CommentVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
     private String repliedNickname;
-    private List<CommentVo> voList;
 }

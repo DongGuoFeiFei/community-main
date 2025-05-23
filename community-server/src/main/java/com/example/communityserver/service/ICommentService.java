@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.dto.AddCommentDto;
 import com.example.communityserver.entity.po.Comment;
 import com.example.communityserver.entity.vo.CommentVo;
+import com.example.communityserver.entity.vo.ReplyVo;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ import java.util.List;
 public interface ICommentService extends IService<Comment> {
     List<CommentVo> getCommentsById(Integer postId);
 
-    Comment addComment(AddCommentDto addCommentDto);
+    ReplyVo addComment(AddCommentDto addCommentDto);
 }
