@@ -26,6 +26,7 @@
               fit="cover"
               class="cover"
           />
+          <div v-else class="no-cover">无封面</div>
           <div class="text-content">
             <h3>{{ post.title }}</h3>
             <p class="summary">{{ truncateSummary(post.summary) }}</p>
@@ -111,7 +112,7 @@ const loadPosts = async () => {
     author: item.author,
     summary: "",
     date: item.date,
-    cover: lStore.baseURL + item.cover
+    cover: item.cover ? lStore.baseURL + item.cover : null
   }))
 
   total.value = res.total
@@ -180,6 +181,19 @@ onMounted(() => {
     object-fit: cover;
   }
 
+  .no-cover {
+    width: 160px;
+    height: 120px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
   .text-content {
     flex: 1;
     display: flex;
@@ -218,5 +232,3 @@ onMounted(() => {
   margin-top: 16px;
 }
 </style>
-
-
