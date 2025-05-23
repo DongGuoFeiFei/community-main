@@ -77,7 +77,7 @@ const menuData = ref([
     }
   },
   {
-    path: '/user/drafts',
+    path: '/user/dustbin',
     meta: {
       title: '垃圾箱',
       icon: 'el-icon-edit-outline'

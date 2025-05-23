@@ -1,11 +1,6 @@
 // api/index.js
 import request from '../utils/request';
 
-/**
- * 用户登录接口
- * @param {Object} data 登录所需的参数
- * @returns {Promise} 登录请求的 Promise
- */
 export const login = (data) => {
     return request.post('/auth/login', data).then(res => {
         if (res.code === 200) {

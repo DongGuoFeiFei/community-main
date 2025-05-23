@@ -58,7 +58,7 @@ const avatarUrl = ref(lStore.baseURL + lStore.userInfo.avatarUrl)
 const handleMenuClick = (index) => {
   activeMenu.value = index
   if (index === 'card') {
-    router.push('/index/card')
+    router.push('/index')
   } else if (index === 'editor') {
     router.push('/editor')
   } else if (index === 'messages') {

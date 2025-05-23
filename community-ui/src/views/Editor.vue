@@ -76,7 +76,7 @@ const route = useRoute()
 const articleData = reactive({
   title: "",
   fileId: null,
-  content: "朋友，你的游戏，由我来分享🎉️！",
+  content: "朋友，有趣的故事，你来分享🎉️！",
   status: 0 // 0: 发布, 1: 草稿
 });
 // 定义文章编辑文章数据类型

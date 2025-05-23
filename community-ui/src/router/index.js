@@ -29,8 +29,8 @@ const router = createRouter({
                     component: () => import("@/views/Card.vue"),
                     meta: {requiresAuth: true}
                 }, {
-                    path: 'index/card/:id',
-                    name: 'postDetail',
+                    path: 'index/article/:id',
+                    name: 'article',
                     component: () => import("@/views/PostDetail.vue"),
                     meta: {requiresAuth: true}
                 },
@@ -64,6 +64,14 @@ const router = createRouter({
                     component: () => import("@/views/user/UserArticles.vue"),
                     mete: {
                         title: '我的文章',
+                        requiresAuth: true
+                    }
+                }, {
+                    path: 'dustbin',
+                    name: 'dustbin',
+                    component: () => import("@/views/user/UserTrash.vue"),
+                    meta: {
+                        title: "我的垃圾箱",
                         requiresAuth: true
                     }
                 }

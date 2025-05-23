@@ -100,7 +100,7 @@ const truncateSummary = (summary) => {
 
 // 跳转到详情
 const goToDetail = (id) => {
-  router.push(`/index/card/${id}`)
+  router.push(`/index/article/${id}`)
 }
 
 // 加载文章
