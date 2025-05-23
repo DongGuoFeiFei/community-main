@@ -4,25 +4,51 @@
 
     <!-- 查询所有顶级评论（parent_id为null的评论） -->
     <select id="getCommentsById" resultMap="CommentsMap">
-        SELECT *
-        FROM comments
-        WHERE article_id = #{articleId}
-          AND parent_id IS NULL
-        ORDER BY created_at DESC
+        SELECT
+            c.comment_id,
+            c.article_id,
+            c.user_id,
+            c.content,
+            c.parent_id,
+            c.created_at,
+            u.nickname,
+            f.access_url
+        FROM comments c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+                 LEFT JOIN file f ON u.file_id = f.file_id
+        WHERE c.article_id = #{articleId}
+          AND c.parent_id IS NULL
+        ORDER BY c.created_at DESC
     </select>
 
     <!-- 递归查询子评论 -->
     <select id="findCommentsByParentId" resultMap="CommentsMap">
-        SELECT *
-        FROM comments
-        WHERE parent_id = #{parentId}
-        ORDER BY created_at ASC
+        SELECT
+            c.comment_id,
+            c.article_id,
+            c.user_id,
+            c.content,
+            c.parent_id,
+            c.created_at,
+            u.nickname,
+            f.access_url
+        FROM comments c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+                 LEFT JOIN file f ON u.file_id = f.file_id
+        WHERE c.parent_id = #{parentId}
+        ORDER BY c.created_at ASC
     </select>
 
     <!-- 结果映射 -->
     <resultMap id="CommentsMap" type="com.example.communityserver.entity.vo.CommentVo">
-        <!--   todo 有没有 <id column="comment_id" property="commentId"/>这一行，会导致查询出来的commentId数据是否为空   -->
-        <result column="comment_id" property="commentId"/>
+        <id column="comment_id" property="commentId"/>
+        <result column="article_id" property="articleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="access_url" property="accessUrl"/>
+        <result column="content" property="content"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="created_at" property="createdAt"/>
         <!-- 递归关联查询子评论 -->
         <collection property="voList"
                     column="comment_id"

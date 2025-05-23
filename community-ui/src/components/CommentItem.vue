@@ -2,7 +2,9 @@
   <div class="comment-item" :class="{ 'has-replies': hasReplies }">
     <div class="comment-main">
       <div class="comment-header">
-        <span class="comment-author">用户 {{ comment.userId }}</span>
+        <!--  todo 添加后台信息，添加用户头像、id，设置评论的折叠度为一，类似于B站的评论区样式   -->
+        <el-avatar :size="32" :src="sStore.baseURL+comment.accessUrl"/>
+        <span class="comment-author">用户 {{ comment.nickname }}</span>
         <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
       </div>
       <div class="comment-content">{{ comment.content }}</div>
@@ -55,6 +57,10 @@
 <script setup>
 import {computed, reactive, ref} from 'vue'
 import {ElMessage} from 'element-plus'
+import {sessionStore} from "@/stores/sessionStores.js";
+
+
+const sStore = sessionStore()
 
 // 组件通信
 const props = defineProps({

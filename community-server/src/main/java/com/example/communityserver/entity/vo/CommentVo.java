@@ -19,8 +19,10 @@ public class CommentVo {
     private Long commentId;
     private Long articleId;
     private Long userId;
-    private String content;
-    private Long parentId;
+    private String nickname; //网名
+    private String accessUrl; //头像
+    private String content; //评论内容
+    private Long parentId; //父ID
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
     private List<CommentVo> voList;

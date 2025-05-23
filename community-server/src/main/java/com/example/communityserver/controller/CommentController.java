@@ -36,6 +36,7 @@ public class CommentController {
         return Result.success(list);
     }
 
+    @ApiOperation("添加新的评论")
     @PostMapping("/addComment")
     public Result<Comment> addComment(@RequestBody AddCommentDto addCommentDto) {
         Comment comment = commentService.addComment(addCommentDto);
