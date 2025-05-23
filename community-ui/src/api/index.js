@@ -176,7 +176,7 @@ export const getArticleById = (id) => {
 export const updateArticle = (id, data) => {
     return request.put(`/posts/updateArticleDtl/${id}`, data).then(res => {
         if (res.code === 200) {
-            return res.data;
+            return res;
         } else {
             throw new Error(res.msg);
         }

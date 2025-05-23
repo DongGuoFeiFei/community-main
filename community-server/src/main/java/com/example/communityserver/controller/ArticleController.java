@@ -3,6 +3,7 @@ package com.example.communityserver.controller;
 import com.example.communityserver.entity.dto.AddArticleDto;
 import com.example.communityserver.entity.dto.GetArticleListDto;
 import com.example.communityserver.entity.dto.SearchParam;
+import com.example.communityserver.entity.po.Article;
 import com.example.communityserver.entity.vo.ArticleCardVo;
 import com.example.communityserver.entity.vo.ArticleListVo;
 import com.example.communityserver.entity.vo.EditorArticlesVo;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -75,11 +77,18 @@ public class ArticleController {
         return postsService.addArticle(dto) ? Result.success("成功") : Result.error("失败");
     }
 
-    //    @ApiOperation("更新文章")
-//    @PutMapping("/updateArticleDtl/{id}")
-//    public Result<EditorArticlesVo> updateArticleDtl(@PathVariable Long id) {
-//
-//    }
+    @ApiOperation("更新文章")
+    @PutMapping("/updateArticleDtl/{id}")
+    public Result updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
+        Article article = new Article();
+        article.setIsDrafts(updateDto.getStatus());
+        article.setArticleId(id);
+        article.setFileId(updateDto.getFileId());
+        article.setContent(updateDto.getContent());
+        article.setTitle(updateDto.getTitle());
+        return postsService.updateById(article) ? Result.success() : Result.error("更新失败，稍后重试");
+    }
+
     @ApiOperation("获取文章列表")
     @GetMapping("/getArticleList")
     public TableDataInfo getArticleList(GetArticleListDto dto) {

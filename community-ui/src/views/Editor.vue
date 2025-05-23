@@ -55,7 +55,7 @@ import {onMounted, reactive, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import {addArticle, delFileById, getArticleById, uploadFile} from "@/api/index.js";
+import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "@/api/index.js";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 import {localStore} from "@/stores/localStores.js";
 import {sessionStore} from "@/stores/sessionStores.js";
@@ -184,6 +184,15 @@ const saveArticle = (status) => {
 
   if (sStore.isEditMode) {
     // 更新数据
+    updateArticle(sStore.editorArticleId, articleData).then(res => {
+      ElMessage.success(status === 0 ? '文章重发布成功' : '草稿修改成功')
+      router.back()
+    }).catch(err => {
+      ElMessage.warning("操作失败，稍后重试。")
+    }).finally(() => {
+      sStore.isEditMode = false
+      loading.close();
+    })
   } else {
     // 新增数据
     addArticle(articleData)

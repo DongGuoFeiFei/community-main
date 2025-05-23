@@ -249,7 +249,7 @@ const goToEditor = () => {
 // 删除文章
 const handleDelete = async (id) => {
   try {
-    await ElMessageBox.confirm('确定要删除这篇文章吗？删除后不可恢复。', '提示', {
+    await ElMessageBox.confirm('确定要删除这篇文章吗？放入垃圾箱最多30天。', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
