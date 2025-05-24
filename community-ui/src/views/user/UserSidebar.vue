@@ -111,13 +111,13 @@ const menuData = ref([
   //     icon: 'el-icon-connection'
   //   }
   // },
-  // {
-  //   path: '/user/messages',
-  //   meta: {
-  //     title: '消息通知',
-  //     icon: 'el-icon-bell'
-  //   }
-  // },
+  {
+    path: '/user/notifications',
+    meta: {
+      title: '消息通知',
+      icon: 'el-icon-bell'
+    }
+  },
   // {
   //   path: '/user/settings',
   //   meta: {

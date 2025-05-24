@@ -41,7 +41,8 @@ const router = createRouter({
             name: 'editor',
             component: () => import("@/views/Editor.vue"),
             meta: {requiresAuth: true}
-        }, {
+        },
+        {
             path: '/editor-edit',
             name: 'editor-edit',
             component: () => import("@/views/Editor.vue"),
@@ -66,7 +67,8 @@ const router = createRouter({
                         title: '我的文章',
                         requiresAuth: true
                     }
-                }, {
+                },
+                {
                     path: 'dustbin',
                     name: 'dustbin',
                     component: () => import("@/views/user/UserTrash.vue"),
@@ -74,6 +76,12 @@ const router = createRouter({
                         title: "我的垃圾箱",
                         requiresAuth: true
                     }
+                },
+                {
+                    path: 'notifications',
+                    name: 'notifications',
+                    component: () => import('@/views/user/UserNotification.vue'),
+                    meta: {requiresAuth: true}
                 }
             ]
         }

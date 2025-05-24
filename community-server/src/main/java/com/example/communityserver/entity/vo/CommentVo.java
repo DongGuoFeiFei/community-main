@@ -25,6 +25,7 @@ public class CommentVo {
     private Long parentId; //父ID
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
+    private Long firstId; // 第一层评论的id
     private String repliedNickname;
     private List<CommentVo> voList;
 }

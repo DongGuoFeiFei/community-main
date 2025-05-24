@@ -9,7 +9,6 @@ import com.example.communityserver.entity.vo.CommentVo;
 import com.example.communityserver.entity.vo.ReplyVo;
 import com.example.communityserver.mapper.*;
 import com.example.communityserver.service.ICommentService;
-import com.example.communityserver.service.INotificationEntityService;
 import com.example.communityserver.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,7 @@ import java.util.List;
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements ICommentService {
     @Autowired
     private CommentMapper commentMapper;
-    @Autowired
-    private INotificationEntityService notificationEntityService;
+
     @Autowired
     private NotificationEntityMapper notificationEntityMapper;
     @Autowired
@@ -62,6 +60,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         comment.setUserId(loginUserId);
         commentMapper.insert(comment);
 
+
         // parentId是否存在（评论or回复）  添加通知
         NotificationEntity notificationEntity = new NotificationEntity();
         if (comment.getParentId() != null) { // 回复
@@ -77,8 +76,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         notificationEntity.setSonSourceId(comment.getCommentId());
         notificationEntityMapper.insert(notificationEntity);
-        ReplyVo replyVo = commentMapper.getReplyById(comment.getCommentId());
-        // 获取父类的昵称
-        return replyVo;
+
+        // 获取返回的数据
+        return commentMapper.getReplyById(comment.getCommentId());
     }
 }

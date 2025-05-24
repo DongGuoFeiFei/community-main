@@ -94,12 +94,13 @@ export const fetchCommentsByPostId = async (postId) => {
     }
 }
 
-export const submitCommentToPost = async (postId, {content, parentId = null}) => {
+export const submitCommentToPost = async (postId, {content, parentId,firstId}) => {
     try {
         const res = await request.post('/comments/addComment', {
             articleId: postId,
             content,
-            parentId
+            parentId,
+            firstId
         })
         if (res.code === 200) {
             return res

@@ -21,6 +21,7 @@ public class ReplyVo {
     private String accessUrl; //头像
     private String content; //评论内容
     private Long parentId; //父ID
+    private Long firstId; // 第一层评论的id
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
     private String repliedNickname;

@@ -1,7 +1,6 @@
 package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.dto.AddCommentDto;
-import com.example.communityserver.entity.po.Comment;
 import com.example.communityserver.entity.vo.CommentVo;
 import com.example.communityserver.entity.vo.ReplyVo;
 import com.example.communityserver.service.ICommentService;
@@ -29,6 +28,14 @@ public class CommentController {
     @Autowired
     private ICommentService commentService;
 
+
+    /*
+     * 两种获取评论区的数据方式
+     * 一、获取评论区多层级树图
+     * 二、获取第一层之后在获取第一层之下所有的评论数据
+     *
+     * todo 后续实现分页效果
+     * */
     @ApiOperation("获取评论")
     @GetMapping("/getCommentsById")
     public Result<List<CommentVo>> getCommentsById(Integer postId) {
