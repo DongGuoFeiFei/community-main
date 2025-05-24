@@ -1,5 +1,6 @@
 package com.example.communityserver.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.po.FileEntity;
 import com.example.communityserver.mapper.FileEntityMapper;
@@ -50,10 +51,12 @@ public class FileEntityServiceImpl extends ServiceImpl<FileEntityMapper, FileEnt
 
     @Override
     public boolean delFileById(Long id) {
-        FileEntity fileEntity = fileMapper.selectById(id);
+        LambdaQueryWrapper<FileEntity> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(FileEntity::getUserId, SecurityUtils.getLoginUserId()).eq(FileEntity::getFileId, id);
+        FileEntity fileEntity = fileMapper.selectOne(queryWrapper);
         // 数据库没有找到文件
         if (fileEntity == null) {
-            return true;
+            return false;
         }
         // 数据库中找到文件，删除文件
         if (FileUtils.delete(fileEntity.getStorageUrl())) {

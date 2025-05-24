@@ -30,10 +30,11 @@ import {login} from '../api';
 import {localStore} from "@/stores/localStores.js";
 
 
+const lStore = localStore()
+
 const router = useRouter();
 const loading = ref(false);
 const formRef = ref(null);
-const store = localStore()
 
 const form = ref({
   username: '',
@@ -51,12 +52,15 @@ const handleLogin = () => {
     loading.value = true;
     try {
       const res = await login(form.value);
-      store.userInfo = {
-        ...res
-      }
-      console.log(res)
-      console.log(store.userInfo)
       if (res?.token) {
+        // 将数据存入lStore.userInfo
+        lStore.userInfo = {
+          ...res
+        }
+        // 将token的相关信息放入lStore.tokenInfo
+        lStore.tokenInfo.token = res.token
+        lStore.tokenInfo.refreshTime = res.userInfo.lastLogin
+        lStore.tokenInfo.expiresIn = res.expiresIn
         localStorage.setItem('token', res.token);
         ElMessage.success('登录成功');
         router.push('/index');

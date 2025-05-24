@@ -62,7 +62,7 @@ public class LoginController {
         LoginUser loginUser = redisUtil.getCacheObject("user:" + userId);
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
-        loginResponse.setExpiresIn(30);
+        loginResponse.setExpiresIn(259200);
 
         loginResponse.setUserInfo(loginUser.getUser());
         FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());

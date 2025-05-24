@@ -11,7 +11,7 @@ public class JWTUtil {
     // id字段
     private static final String ID_FIELD = "userId";
     // token的有效时间数量
-    private static final Integer TIME_OUT_DAY = 72;
+    private static final Integer TIME_OUT_HOUR = 72;
     // token的有效时间单位
     private static final Integer TIME_TYPE = Calendar.HOUR;
 
@@ -24,8 +24,8 @@ public class JWTUtil {
     public static String createToken(Long id) {
         // 获取日历对象实例
         Calendar calendar = Calendar.getInstance();
-        // 在当前日期加上 TIME_OUT_DAY 的时间，用于设置过期时间
-        calendar.add(TIME_TYPE, TIME_OUT_DAY);
+        // 在当前日期加上 TIME_OUT_HOUR 的时间，用于设置过期时间
+        calendar.add(TIME_TYPE, TIME_OUT_HOUR);
         // 创建jwt
         return JWT.create()
                 // 可以在token中设置数据,设置一个userId为用户的id
@@ -70,5 +70,3 @@ public class JWTUtil {
         }
     }
 }
-
-

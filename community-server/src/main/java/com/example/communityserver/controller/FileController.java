@@ -38,14 +38,15 @@ public class FileController {
         FileEntity fileEntity = fileService.uploadFile(file);
         // 将本地地址清空
         fileEntity.setStorageUrl(null);
-        System.out.println(fileEntity);
         return Result.success(fileEntity);
     }
 
-    @ApiOperation("通过文件名删除文件")
-    @DeleteMapping("/delFileById")
-    public Result delFileById(@RequestParam("fileId") Long id) {
-        return fileService.delFileById(id) ? Result.success() : Result.error("删除失败");
+    @ApiOperation("通过文件id删除文件")
+    @PostMapping("/delFileById/{id}")
+    public Result delFileById(@PathVariable Long id) {
+        System.out.println(id);
+        // 判断发起人是否是文件上传者本人
+        // 删除文件
+        return fileService.delFileById(id) ? Result.success() : Result.error("未找到文件,删除失败");
     }
-
 }

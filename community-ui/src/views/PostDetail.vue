@@ -24,6 +24,15 @@
           <div v-html="post.content"></div>
         </div>
       </div>
+      <LikeCollect
+          :item-id="article.id"
+          :initial-like-count="article.likeCount"
+          :initial-collected-count="article.collectCount"
+          :initial-is-liked="article.isLiked"
+          :initial-is-collected="article.isCollected"
+          @like="handleLike"
+          @collect="handleCollect"
+      />
     </el-card>
 
     <!-- 加载状态 -->
@@ -47,7 +56,6 @@
   <CommentSection v-if="post" :postId="post.articleId"/>
 </template>
 
-
 <script setup>
 import {onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
@@ -59,6 +67,7 @@ import DOMPurify from 'dompurify'
 import CommentSection from "@/components/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStore} from "@/stores/localStores.js";
+import LikeCollect from "@/components/LikeCollect.vue";
 
 const md = new MarkdownIt(
     {
@@ -143,14 +152,43 @@ watch(
       }
     }
 )
+
+const article = ref({
+  id: 123,
+  likeCount: 42,
+  collectCount: 15,
+  isLiked: false,
+  isCollected: false
+});
+
+const handleLike = async ({ itemId, action }) => {
+  // 调用API处理点赞/取消点赞
+  try {
+    const response = await axios.post(`/api/like/${itemId}`, { action });
+    return response.data;
+  } catch (error) {
+    throw new Error('操作失败');
+  }
+};
+
+const handleCollect = async ({ itemId, action }) => {
+  // 调用API处理收藏/取消收藏
+  try {
+    const response = await axios.post(`/api/collect/${itemId}`, { action });
+    return response.data;
+  } catch (error) {
+    throw new Error('操作失败');
+  }
+};
+
+
 </script>
 
 <style scoped lang="less">
 
 .post-container {
-  max-width: 900px;
+  max-width: 100%;
   margin: 20px auto;
-  padding: 0 20px;
 }
 
 .back-button {
@@ -179,12 +217,6 @@ watch(
   &:hover {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
-}
-
-.post-container {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 0 20px;
 }
 
 .post-card {

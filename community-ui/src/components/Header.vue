@@ -88,7 +88,6 @@ const handleDropdownClick = (command) => {
 
 <style scoped lang="less">
 .header-wrapper {
-  background-color: #409EFF;
   position: fixed;
   top: 0;
   left: 0;

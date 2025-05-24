@@ -92,10 +92,10 @@ const editArticle = reactive({
 })
 // 封面数据
 const coverImageData = reactive({
-  fileId: null,
+  fileId: '',
   fileOriginalName: "",
   fileAutoName: "",
-  storageUrl: null,
+  storageUrl: '',
   accessUrl: "",
   uploadTime: ""
 });
@@ -123,8 +123,8 @@ const handleCoverUpload = async (event) => {
   }
 
   // 判断是否已经上传文件
-  if (coverImageData.accessUrl !== "") {
-    const res = await delFileById(coverImageData.fileId)
+  if (coverImageData.accessUrl?.trim() !== "" && Number(coverImageData.fileId) !== 1) {
+    await delFileById(coverImageData.fileId)
     coverImageData.accessUrl = "";
   }
 
@@ -154,7 +154,9 @@ const removeCover = () => {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    delFileById(coverImageData.fileId)
+    if (Number(coverImageData.fileId) !== 1) {
+      delFileById(coverImageData.fileId)
+    }
     coverImageData.accessUrl = "";
     articleData.fileId = null;
     ElMessage.success("封面已移除");

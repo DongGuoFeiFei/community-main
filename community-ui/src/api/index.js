@@ -4,7 +4,6 @@ import request from '../utils/request';
 export const login = (data) => {
     return request.post('/auth/login', data).then(res => {
         if (res.code === 200) {
-            localStorage.setItem('token', res.data.token)
             return res.data;
         } else {
             throw new Error(res.msg);
@@ -61,7 +60,8 @@ export const uploadFile = (formData) => {
 };
 
 export const delFileById = (data) => {
-    return request.delete("/files/delFileById", data).then(res => {
+    console.log(data)
+    return request.post(`/files/delFileById/${data}`).then(res => {
         if (res.code === 200) {
             return true;
         } else {
@@ -94,7 +94,7 @@ export const fetchCommentsByPostId = async (postId) => {
     }
 }
 
-export const submitCommentToPost = async (postId, {content, parentId,firstId}) => {
+export const submitCommentToPost = async (postId, {content, parentId, firstId}) => {
     try {
         const res = await request.post('/comments/addComment', {
             articleId: postId,
