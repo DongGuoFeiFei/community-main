@@ -54,12 +54,18 @@
   </div>
 
   <CommentSection v-if="post" :postId="post.articleId"/>
+
+  <CollectDialog
+      v-model:visible="collectDialogVisible"
+      :articleId="post?.articleId"
+      @success="handleCollectSuccess"
+  />
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ElAlert, ElCard, ElIcon} from 'element-plus'
+import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
 import {ArrowLeft} from '@element-plus/icons-vue'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
@@ -68,6 +74,9 @@ import CommentSection from "@/components/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStore} from "@/stores/localStores.js";
 import LikeCollect from "@/components/LikeCollect.vue";
+import {addLike} from "@/api/likeApi.js";
+import {cancelCollect, collectArticle} from "@/api/collectApi.js";
+import CollectDialog from "@/components/CollectDialog.vue";
 
 const md = new MarkdownIt(
     {
@@ -89,11 +98,30 @@ const SANITIZE_CONFIG = {
   ],
   ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel']
 }
+// 点赞组件的相关数据
 const route = useRoute()
 const router = useRouter()
-const post = ref(null)
+const post = ref(null);
 const loading = ref(true)
 const error = ref(null)
+
+const article = computed(() => {
+  if (!post.value) return {
+    id: 0,
+    likeCount: 0,
+    isLiked: 0,
+    collectCount: 0,
+    isCollected: 0
+  };
+
+  return {
+    id: post.value.articleId,
+    likeCount: post.value.likeCount,
+    isLiked: post.value.isLiked,
+    collectCount: post.value.collectCount,
+    isCollected: post.value.isCollected
+  };
+});
 
 // 格式化日期
 const formatDate = (dateString) => {
@@ -116,7 +144,7 @@ const fetchPostData = async (id) => {
     const response = await fetchPostDetail(id)
 
     // 正确获取数据
-    const postData = response.rows?.[0] || response
+    const postData = response.data
     // 处理帖子数据
     post.value = {
       ...postData,
@@ -153,34 +181,45 @@ watch(
     }
 )
 
-const article = ref({
-  id: 123,
-  likeCount: 42,
-  collectCount: 15,
-  isLiked: false,
-  isCollected: false
-});
-
-const handleLike = async ({ itemId, action }) => {
+const handleLike = async (data) => {
   // 调用API处理点赞/取消点赞
-  try {
-    const response = await axios.post(`/api/like/${itemId}`, { action });
-    return response.data;
-  } catch (error) {
-    throw new Error('操作失败');
+  const res = await addLike(data.itemId);
+  if (post.value.isLiked === 0) {
+    post.value.isLiked = 1
+    post.value.likeCount++
+  } else {
+    post.value.isLiked = 0
+    post.value.likeCount--
   }
 };
 
-const handleCollect = async ({ itemId, action }) => {
-  // 调用API处理收藏/取消收藏
-  try {
-    const response = await axios.post(`/api/collect/${itemId}`, { action });
-    return response.data;
-  } catch (error) {
-    throw new Error('操作失败');
-  }
-};
 
+// 添加收藏相关状态
+const collectDialogVisible = ref(false)
+
+const handleCollect = async ({itemId}) => {
+  // 如果已经收藏，则取消收藏
+  if (post.value.isCollected) {
+    try {
+      await cancelCollect(itemId)
+      post.value.isCollected = 0
+      post.value.collectCount -= 1
+      ElMessage.success('已取消收藏')
+    } catch (error) {
+      ElMessage.error('取消收藏失败')
+    }
+  } else {
+    // 显示收藏弹窗
+    collectDialogVisible.value = true
+  }
+}
+
+const handleCollectSuccess = () => {
+  collectArticle()
+  post.value.isCollected = 1
+  post.value.collectCount += 1
+  ElMessage.success('收藏成功')
+}
 
 </script>
 

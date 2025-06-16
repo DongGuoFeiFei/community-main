@@ -31,4 +31,9 @@ public class ArticleDtlVo {
     @ApiModelProperty(value = "最后编辑时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String updatedAt;
+
+    private Integer likeCount;
+    private Integer collectCount;
+    private Integer isLiked;
+    private Integer isCollected;
 }

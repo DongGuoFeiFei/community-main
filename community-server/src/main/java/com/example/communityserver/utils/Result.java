@@ -3,6 +3,7 @@ package com.example.communityserver.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +30,10 @@ public class Result<T> {
     // 通用错误响应
     public static <T> Result<T> error(String message) {
         return new Result<>(500, message, null);
+    }
+
+    public static <T> Result<T> error() {
+        return new Result<>(500, "error", null);
     }
 
     // 自定义错误响应

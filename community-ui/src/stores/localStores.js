@@ -28,21 +28,10 @@ export const localStore = defineStore('localStores', () => {
         expiresIn: ""
     })
     const baseURL = ref('http://127.0.0.1:8080')
-    const token = ref(localStorage.getItem('token') || null)
-
-    function setToken(newToken) {
-        token.value = newToken
-        localStorage.setItem('token', newToken)
-    }
-
-    function clearToken() {
-        token.value = null
-        localStorage.removeItem('token')
-    }
 
     // token是否过期
     const isTokenExpired = computed(() => {
-        if (!token.value) return true // 无token视为过期
+        if (!tokenInfo.value.token) return true // 无token视为过期
 
         const lastLogin = userInfo.value.userInfo.lastLogin
         const expiresIn = Number(userInfo.value.expiresIn) || 259200 // 默认3天(秒)
@@ -57,8 +46,8 @@ export const localStore = defineStore('localStores', () => {
         }
     })
 
-    return {userInfo, token, setToken, clearToken, baseURL, isTokenExpired, tokenInfo}
-}, { // 持久化配置（第三个参数）
+    return {userInfo, baseURL, isTokenExpired, tokenInfo}
+}, {
     persist: {
         key: 'my-localStore',
         storage: localStorage,

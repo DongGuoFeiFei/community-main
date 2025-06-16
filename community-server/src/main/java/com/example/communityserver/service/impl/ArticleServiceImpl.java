@@ -7,11 +7,14 @@ import com.example.communityserver.entity.dto.AddArticleDto;
 import com.example.communityserver.entity.po.Article;
 import com.example.communityserver.entity.po.ArticleView;
 import com.example.communityserver.entity.vo.ArticleCardVo;
+import com.example.communityserver.entity.vo.ArticleDtlVo;
 import com.example.communityserver.entity.vo.ArticleListVo;
 import com.example.communityserver.entity.vo.EditorArticlesVo;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.ArticleViewMapper;
 import com.example.communityserver.mapper.FileEntityMapper;
+import com.example.communityserver.mapper.LikesMapper;
+import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +36,6 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
 
-    private static final String UPLOAD_DIR = "uploads";
-    private static final String IMAGE_DIR = "images";
 
     @Autowired
     private ArticleMapper postsMapper;
@@ -44,6 +45,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private ArticleViewMapper articleViewMapper;
+
+    @Autowired
+    private LikesMapper likesMapper;
 
     @Override
     public List<ArticleCardVo> getPostsCardVoList(String title) {
@@ -85,7 +89,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setTitle(dto.getTitle());
         article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
-        System.out.println(article);
         return postsMapper.insert(article) > 0;
     }
 
@@ -107,6 +110,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Long loginUserId = SecurityUtils.getLoginUserId();
         return postsMapper.getEditorArticleDtl(id, loginUserId);
 
+    }
+
+    @Override
+    public ArticleDtlVo getArticleDtlVo(Long id) {
+        ArticleDtlVo articleDtlVo = new ArticleDtlVo();
+        ArticleDtlVo articleDtlVo1 = postsMapper.getArticleDtlVo(id);
+        ArticleDtlVo articleDtlVo2 = likesMapper.getArticleLike(id, SecurityUtils.getLoginUserId());
+        ArticleMapping.INSTANCE.updateArticle(articleDtlVo1, articleDtlVo);
+        ArticleMapping.INSTANCE.updateArticle(articleDtlVo2, articleDtlVo);
+        return articleDtlVo;
     }
 
 }

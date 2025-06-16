@@ -1,5 +1,7 @@
 // utils/request.js
 import axios from 'axios';
+import {ElMessage} from "element-plus";
+import router from "@/router/index.js";
 
 
 const request = axios.create({
@@ -21,7 +23,37 @@ request.interceptors.request.use(
         }
         return config;
     },
+
     error => {
+        if (!error.response) {
+            // 网络错误（如请求未到达服务器）
+            ElMessage.error('网络异常，请检查网络连接');
+            return Promise.reject(error);
+        }
+
+        const {data} = error.response;
+        switch (data.code) {
+            case 401:
+                // 场景：Token 过期/未登录
+                ElMessage.warning('登录已过期，请重新登录');
+                localStorage.removeItem('token'); // 清除旧 Token
+                router.push('/login'); // 跳转到登录页
+                break;
+            case 403:
+                // 场景：无权限访问
+                ElMessage.error('无权访问此资源');
+                break;
+            case 404:
+                // 场景：接口不存在
+                ElMessage.error('请求的资源不存在');
+                break;
+            case 500:
+                // 场景：服务器内部错误
+                ElMessage.error(`服务器错误: ${data.message || '未知错误'}`);
+                break;
+            default:
+                ElMessage.error(`请求失败: ${status}`);
+        }
         return Promise.reject(error);
     }
 );

@@ -46,7 +46,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = req.getHeader("token");
 
         // 3. 没有token的情况处理
-        // TODO: 2025/4/22 没有token或者token为空，就直接放行，合理吗？游客使用
         if (token == null || token.isEmpty()) {
             filterChain.doFilter(req, resp);
             return;

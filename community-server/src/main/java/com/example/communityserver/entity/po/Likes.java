@@ -29,19 +29,18 @@ public class Likes {
     private Long likeId;
 
     @ApiModelProperty(value = "被点赞的内容ID", example = "123")
-    private Long articleId;
+    private Long targetId;
 
     @ApiModelProperty(value = "点赞用户ID", example = "456")
     private Long userId;
+
+    @ApiModelProperty(value = "用户是否喜欢", example = "0不喜欢，1喜欢")
+    private Integer isLike;
 
     @ApiModelProperty(value = "点赞时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
 
-    @ApiModelProperty(
-            value = "点赞类型",
-            example = "article",
-            allowableValues = "comment,follow,article"
-    )
+    @ApiModelProperty(value = "点赞类型", example = "article", allowableValues = "comment,follow,article")
     private String type;
 }

@@ -16,9 +16,6 @@
         <el-menu-item index="messages">消息</el-menu-item>
         <el-menu-item index="game">游戏</el-menu-item>
         <el-menu-item index="anime">动漫</el-menu-item>
-        <el-menu-item>
-          <el-link href="https://resume.caifurong.top/" target="_blank">简历</el-link>
-        </el-menu-item>
       </el-menu>
 
       <div class="user-section">
@@ -81,7 +78,6 @@ const handleDropdownClick = (command) => {
     default:
       break;
   }
-
 };
 
 </script>

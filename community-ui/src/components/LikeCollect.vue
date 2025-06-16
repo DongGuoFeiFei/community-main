@@ -2,7 +2,7 @@
   <div class="interaction-buttons">
     <!-- 点赞按钮 -->
     <el-button
-        :icon="isLiked ? 'CircleCheckFilled' : 'CircleCheck'"
+        :icon="isLiked===0 ? 'CircleCheckFilled' : 'CircleCheck'"
         :type="isLiked ? 'primary' : ''"
         @click="handleLike"
         :loading="likeLoading"
@@ -12,7 +12,7 @@
 
     <!-- 收藏按钮 -->
     <el-button
-        :icon="isCollected ? 'StarFilled' : 'Star'"
+        :icon="isCollected===0 ? 'StarFilled' : 'Star'"
         :type="isCollected ? 'warning' : ''"
         @click="handleCollect"
         :loading="collectLoading"
@@ -23,14 +23,16 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 import {ElMessage} from 'element-plus';
 import {localStore} from "@/stores/localStores.js";
 
+// 获取父组件数据
 const props = defineProps({
   itemId: {
     type: [Number, String],
-    required: true
+    required: true,
+    default: 0
   },
   initialLikeCount: {
     type: Number,
@@ -41,15 +43,16 @@ const props = defineProps({
     default: 0
   },
   initialIsLiked: {
-    type: Boolean,
-    default: false
+    type: Number,
+    default: 0
   },
   initialIsCollected: {
-    type: Boolean,
-    default: false
+    type: Number,
+    default: 0
   }
 });
 
+// 向父组件传递数据
 const emit = defineEmits(['like', 'collect']);
 
 const lStore = localStore();
@@ -61,9 +64,26 @@ const isLiked = ref(props.initialIsLiked);
 const isCollected = ref(props.initialIsCollected);
 const likeLoading = ref(false);
 const collectLoading = ref(false);
+// 监听 props 变化并更新本地状态
+watch(() => props.initialLikeCount, (newVal) => {
+  likeCount.value = newVal;
+});
+
+watch(() => props.initialCollectedCount, (newVal) => {
+  collectedCount.value = newVal;
+});
+
+watch(() => props.initialIsLiked, (newVal) => {
+  isLiked.value = newVal;
+});
+
+watch(() => props.initialIsCollected, (newVal) => {
+  isCollected.value = newVal;
+});
 
 // 点赞处理
 const handleLike = async () => {
+
   if (lStore.isTokenExpired) {
     ElMessage.warning('请先登录');
     return;
@@ -73,14 +93,11 @@ const handleLike = async () => {
     likeLoading.value = true;
     if (isLiked.value) {
       // 取消点赞
-      await emit('like', {itemId: props.itemId, action: 'unlike'});
-      likeCount.value--;
+      await emit('like', {itemId: props.itemId});
     } else {
       // 点赞
-      await emit('like', {itemId: props.itemId, action: 'like'});
-      likeCount.value++;
+      await emit('like', {itemId: props.itemId});
     }
-    isLiked.value = !isLiked.value;
   } catch (error) {
     ElMessage.error(error.message || '操作失败');
   } finally {
@@ -90,7 +107,7 @@ const handleLike = async () => {
 
 // 收藏处理
 const handleCollect = async () => {
-  if (!isLoggedIn.value) {
+  if (lStore.isTokenExpired) {
     ElMessage.warning('请先登录');
     return;
   }
@@ -100,13 +117,10 @@ const handleCollect = async () => {
     if (isCollected.value) {
       // 取消收藏
       await emit('collect', {itemId: props.itemId, action: 'uncollect'});
-      collectedCount.value--;
     } else {
       // 收藏
       await emit('collect', {itemId: props.itemId, action: 'collect'});
-      collectedCount.value++;
     }
-    isCollected.value = !isCollected.value;
   } catch (error) {
     ElMessage.error(error.message || '操作失败');
   } finally {

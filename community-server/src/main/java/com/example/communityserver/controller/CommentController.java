@@ -34,12 +34,11 @@ public class CommentController {
      * 一、获取评论区多层级树图
      * 二、获取第一层之后在获取第一层之下所有的评论数据
      *
-     * todo 后续实现分页效果、评论删除效果
+     * todo 后续实现分页效果、评论删除效果 按照评论的时间顺序进行排序
      * */
     @ApiOperation("获取评论")
     @GetMapping("/getCommentsById")
     public Result<List<CommentVo>> getCommentsById(Integer postId) {
-        // TODO: 2025/5/4 后续可以添加评论区分页功能
         List<CommentVo> list = commentService.getCommentsById(postId);
         return Result.success(list);
     }

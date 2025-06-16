@@ -151,7 +151,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {ElMessage} from 'element-plus'
 import {sessionStore} from "@/stores/sessionStores.js"
 import {fetchCommentsByPostId, submitCommentToPost} from '@/api/index.js'
@@ -231,7 +231,7 @@ const submitComment = async () => {
     const response = await submitCommentToPost(props.postId, {
       content,
       parentId: null,
-      firstId:null,
+      firstId: null,
     })
 
     comments.value.unshift(response.data)
@@ -258,7 +258,7 @@ const cancelReply = () => {
 }
 
 // 提交回复
-const submitReply = async (parentId,firstId) => {
+const submitReply = async (parentId, firstId) => {
   const content = replyContent.value.trim()
   if (!content) {
     ElMessage.warning('请输入回复内容')
@@ -390,8 +390,9 @@ const findComment = (commentList, commentId) => {
   return null
 }
 
-// 初始化加载
-loadComments()
+onMounted(() => {
+  loadComments();
+})
 </script>
 
 <style scoped>

@@ -70,7 +70,7 @@
         IFNULL((
         SELECT COUNT(*)
         FROM likes al
-        WHERE al.article_id = a.article_id
+        WHERE al.target_id = a.target_id
         ), 0) AS likeCount,
         IFNULL((
         SELECT COUNT(*)
@@ -118,5 +118,22 @@
             a.article_id = #{id}
           AND a.user_id = #{loginUserId}
           AND a.is_del = 1
+    </select>
+    <select id="getArticleDtlVo" resultType="com.example.communityserver.entity.vo.ArticleDtlVo">
+        SELECT p.article_id,
+               p.title,
+               u.nickname,
+               p.content,
+               f.access_url                                   as image_url,
+               DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
+               DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at
+        FROM article p
+                 JOIN
+             user u ON p.user_id = u.user_id
+                 join
+             file f on p.file_id = f.file_id
+        WHERE p.is_del = '1'
+          and p.is_drafts = '0'
+          AND p.article_id = #{id}
     </select>
 </mapper>

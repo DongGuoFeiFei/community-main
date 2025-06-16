@@ -5,6 +5,7 @@ import com.example.communityserver.entity.dto.AddArticleDto;
 import com.example.communityserver.entity.dto.MarkdownDto;
 import com.example.communityserver.entity.po.Article;
 import com.example.communityserver.entity.vo.ArticleCardVo;
+import com.example.communityserver.entity.vo.ArticleDtlVo;
 import com.example.communityserver.entity.vo.ArticleListVo;
 import com.example.communityserver.entity.vo.EditorArticlesVo;
 
@@ -33,4 +34,6 @@ public interface IArticleService extends IService<Article> {
     boolean delById(Long id);
 
     EditorArticlesVo getEditorArticleDtl(Long id);
+
+    ArticleDtlVo getArticleDtlVo(Long id);
 }

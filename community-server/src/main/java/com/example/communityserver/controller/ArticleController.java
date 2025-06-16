@@ -5,6 +5,7 @@ import com.example.communityserver.entity.dto.GetArticleListDto;
 import com.example.communityserver.entity.dto.SearchParam;
 import com.example.communityserver.entity.po.Article;
 import com.example.communityserver.entity.vo.ArticleCardVo;
+import com.example.communityserver.entity.vo.ArticleDtlVo;
 import com.example.communityserver.entity.vo.ArticleListVo;
 import com.example.communityserver.entity.vo.EditorArticlesVo;
 import com.example.communityserver.service.IArticleService;
@@ -52,15 +53,9 @@ public class ArticleController {
 
     @ApiOperation("文章详情(打开一篇文章)")
     @GetMapping("/{id}")
-    public TableDataInfo fetchPostsDetail(@PathVariable Long id) {
-        TableDataInfo tableDataInfo = new TableDataInfo();
-        List<ArticleCardVo> voList = postsService.getPostsCardVoById(id);
-        List<ArticleCardVo> list = postsService.getPostsCardVoById(id);
-        tableDataInfo.setCode(200);
-        tableDataInfo.setTotal(list.size());
-        tableDataInfo.setRows(voList);
-        tableDataInfo.setMsg("成功");
-        return tableDataInfo;
+    public Result fetchPostsDetail(@PathVariable Long id) {
+        ArticleDtlVo articleDtlVo = postsService.getArticleDtlVo(id);
+        return articleDtlVo != null ? Result.success(articleDtlVo) : Result.error();
     }
 
     @ApiOperation("编辑文章（获取要编辑文章的数据）")
@@ -106,7 +101,6 @@ public class ArticleController {
     @ApiOperation("删除文章")
     @DeleteMapping("/del/{id}")
     public Result deleteArticle(@PathVariable Long id) {
-
         return postsService.delById(id) ? Result.success() : Result.error("失败");
     }
 

@@ -4,6 +4,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import Index from '../views/Index.vue'
 import Login from "@/views/Login.vue";
 import NProgress from "@/utils/progress.js";
+import dayjs from 'dayjs'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,18 +22,20 @@ const router = createRouter({
             path: '/',
             name: 'index',
             component: Index,
-            meta: {requiresAuth: true}, // 添加元信息，表示需要认证
+            meta: {
+                requiresAuth: true
+            },
             children: [
                 {
                     path: 'index',
                     name: 'card',
                     component: () => import("@/views/Card.vue"),
-                    meta: {requiresAuth: true}
-                }, {
+
+                },
+                {
                     path: 'index/article/:id',
                     name: 'article',
                     component: () => import("@/views/PostDetail.vue"),
-                    meta: {requiresAuth: true}
                 },
             ]
         },
@@ -57,7 +60,8 @@ const router = createRouter({
                 {
                     path: "profile",
                     name: "profile",
-                    component: () => import("@/views/user/UserProfile.vue")
+                    component: () => import("@/views/user/UserProfile.vue"),
+                    meta: {requiresAuth: true},
                 },
                 {
                     path: "articles",
@@ -65,7 +69,7 @@ const router = createRouter({
                     component: () => import("@/views/user/UserArticles.vue"),
                     mete: {
                         title: '我的文章',
-                        requiresAuth: true
+                        requiresAuth: true,
                     }
                 },
                 {
@@ -74,43 +78,73 @@ const router = createRouter({
                     component: () => import("@/views/user/UserTrash.vue"),
                     meta: {
                         title: "我的垃圾箱",
-                        requiresAuth: true
+                        requiresAuth: true,
                     }
                 },
                 {
                     path: 'notifications',
                     name: 'notifications',
                     component: () => import('@/views/user/UserNotification.vue'),
-                    meta: {requiresAuth: true}
-                }
+                    meta: {
+                        title: '通知',
+                        requiresAuth: true,
+                    }
+                },
             ]
         }
     ],
 })
 
-
 // 路由守卫
 router.beforeEach((to, from, next) => {
     NProgress.start()
+
     // 检查目标路由是否需要认证
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        // 检查本地存储中是否有token
-        const token = localStorage.getItem('token');
-        if (!token) {
-            // 如果没有token，重定向到登录页面
+        // 从 localStorage 获取 token 和用户信息
+        const token = localStorage.getItem('token')
+        const userInfoStr = localStorage.getItem('my-localStore')
+
+        // 解析用户信息
+        let userInfo = null
+        try {
+            userInfo = userInfoStr ? JSON.parse(userInfoStr)?.userInfo : null
+        } catch (e) {
+            console.error('Failed to parse user info:', e)
+        }
+
+        // 检查 token 是否存在且未过期
+        if (!token || isTokenExpired(userInfo)) {
             next({
                 path: '/login',
-                query: {redirect: to.fullPath} // 可选：保存目标路径以便登录后跳转
-            });
+                query: {redirect: to.fullPath} // 保存目标路径以便登录后跳转
+            })
         } else {
-            next();
+            // 有有效 token，继续导航
+            next()
         }
     } else {
         // 不需要认证的路由，直接放行
-        next();
+        next()
     }
-});
+})
 
-router.afterEach(() => NProgress.done());
+// 独立验证 token 是否过期的方法
+function isTokenExpired(userInfo) {
+    if (!userInfo || !userInfo.expiresIn || !userInfo.userInfo?.lastLogin) {
+        return true // 缺少必要信息视为过期
+    }
+
+    try {
+        const expiresIn = Number(userInfo.expiresIn) || 259200 // 默认3天(秒)
+        const expiryTime = dayjs(userInfo.userInfo.lastLogin).add(expiresIn, 'second')
+        return dayjs().isAfter(expiryTime)
+    } catch (e) {
+        console.error('Token expiry check failed:', e)
+        return true // 日期解析失败视为过期
+    }
+}
+
+router.afterEach(() => NProgress.done())
 
 export default router

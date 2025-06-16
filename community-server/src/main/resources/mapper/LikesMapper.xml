@@ -3,4 +3,21 @@
 <mapper namespace="com.example.communityserver.mapper.LikesMapper">
 
 
+    <select id="getArticleLike" resultType="com.example.communityserver.entity.vo.ArticleDtlVo">
+        SELECT (SELECT COUNT(*)
+                FROM likes
+                WHERE target_id = #{articleId}
+                  AND type = 'article'
+                  and is_like = 1)                                                             AS likeCount,
+               (SELECT COUNT(DISTINCT user_id) FROM favorites WHERE article_id = #{articleId}) AS collectCount,
+               IFNULL((SELECT is_like
+                       FROM likes
+                       WHERE target_id = #{articleId}
+                         AND user_id = #{userId}
+                         AND type = 'article'), 0)                                             AS isLiked,
+               (SELECT COUNT(DISTINCT user_id) FROM favorites WHERE article_id = #{articleId} AND user_id = #{userId}) >
+               0                                                                               AS isCollected
+    </select>
+
+
 </mapper>

@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,15 +42,21 @@ public class LoginController {
     private ILoginLogService loginLogService;
 
     // TODO: 2025/5/21 @PreAuthorize("@vip.myAuthority('superAdmin')")权限划分失败
+    // TODO: 2025/6/2 后续需要处理，如果用户没有登录就默认是游客登录
+    /*
+    隐私合规：确保符合GDPR等隐私法规，在隐私政策中说明数据收集方式
+    数据清理：设置合理的过期时间，避免存储过多无用数据
+    用户登录后合并数据：当用户登录时，将匿名期间的浏览记录合并到用户账户
+    防刷机制：后端接口应添加适当的限流措施，防止恶意刷量
+    */
+    /*
+    注册新用户时，同步新建一个文章默认收藏夹
+     */
     @PostMapping("/login")
     private Result login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> requestBody = objectMapper.readValue(
-                request.getInputStream(),
-                Map.class
-        );
+        Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
         LoginRequest loginRequest = new LoginRequest(requestBody.get("username"), requestBody.get("password"));
-        System.out.println(loginRequest);
         LoginResponse loginResponse = new LoginResponse();
         String token = service.login(loginRequest.getUsername(), loginRequest.getPassword());
 
