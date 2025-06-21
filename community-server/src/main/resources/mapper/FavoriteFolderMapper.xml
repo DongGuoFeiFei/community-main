@@ -6,7 +6,7 @@
         SELECT
             folder_id AS id,
             folder_name AS name,
-            (SELECT COUNT(*) FROM favorite_articles WHERE folder_id = ff.folder_id) AS articleCount,
+            (SELECT COUNT(*) FROM user_favorites WHERE folder_id = ff.folder_id) AS articleCount,
             DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS createAt
         FROM
             favorite_folders ff

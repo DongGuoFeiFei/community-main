@@ -8,7 +8,6 @@ import com.example.communityserver.entity.vo.FavArticleVo;
 import com.example.communityserver.entity.vo.FoldersVo;
 import com.example.communityserver.service.IFavoriteArticleService;
 import com.example.communityserver.service.IFavoriteFolderService;
-import com.example.communityserver.service.IFavoriteService;
 import com.example.communityserver.utils.Result;
 import com.example.communityserver.utils.SecurityUtils;
 import io.swagger.annotations.Api;
@@ -31,8 +30,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/favorite")
 public class FavoriteController {
-    @Autowired
-    private IFavoriteService favoriteService;
 
     @Autowired
     private IFavoriteFolderService favoriteFolderService;

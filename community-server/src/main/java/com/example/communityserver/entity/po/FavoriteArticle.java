@@ -1,5 +1,9 @@
 package com.example.communityserver.entity.po;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -13,6 +17,10 @@ import java.util.Date;
  **/
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("user_favorites")
+@ApiModel
 public class FavoriteArticle {
     /**
      * 收藏记录ID
