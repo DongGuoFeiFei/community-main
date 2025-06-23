@@ -12,7 +12,7 @@ import java.util.List;
 @Component("vip")
 public class MyExpressionUtil {
 
-    // TODO: 2025/4/21 权限与角色、用户与角色  也可以设置实体类，进行管理
+    // TODO: 2025/4/21 权限与角色、用户与角色  也可以设置实体类，进行管理   管理员进行权限管理
     public boolean myAuthority(String permission) {
         // 从上下文拿到authentication
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

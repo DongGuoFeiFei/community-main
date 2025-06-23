@@ -13,7 +13,7 @@ import lombok.Data;
  **/
 
 @Data
-public class FoldersVo {
+public class FolderVo {
     private Long id;
     private String name;
     private Long articleCount;

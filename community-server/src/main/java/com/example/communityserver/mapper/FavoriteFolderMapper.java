@@ -2,7 +2,7 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.communityserver.entity.po.FavoriteFolder;
-import com.example.communityserver.entity.vo.FoldersVo;
+import com.example.communityserver.entity.vo.FolderVo;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public interface FavoriteFolderMapper extends BaseMapper<FavoriteFolder> {
-    List<FoldersVo> getFavoriteFolder(Long loginUserId);
+    List<FolderVo> getFavoriteFolder(Long loginUserId);
 
-    FoldersVo addFolder(String name);
+    FolderVo selectFolderVoById(Long folderId);
 }

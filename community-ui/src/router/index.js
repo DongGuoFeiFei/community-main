@@ -5,6 +5,7 @@ import Index from '../views/Index.vue'
 import Login from "@/views/Login.vue";
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
+import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,6 +81,14 @@ const router = createRouter({
                         title: "我的垃圾箱",
                         requiresAuth: true,
                     }
+                },{
+                    path: 'collections',
+                    name: 'collections',
+                    component: () => import("@/views/user/UserCollection.vue"),
+                    meta: {
+                        title: "我的收藏",
+                        requiresAuth: true,
+                    }
                 },
                 {
                     path: 'notifications',
@@ -91,6 +100,20 @@ const router = createRouter({
                     }
                 },
             ]
+        },
+        // {
+        //     path: '/user/:id',
+        //     name: 'UserProfile',
+        //     component: () => import('@/views/NotFound.vue'),
+        //     props: true // 将路由参数作为组件的props传递
+        // },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            component: NotFound,
+            meta: {
+                title: '404 - 页面未找到'
+            }
         }
     ],
 })
@@ -99,6 +122,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     NProgress.start()
 
+    if (to.meta.title) {
+        document.title = to.meta.title;
+    }
     // 检查目标路由是否需要认证
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // 从 localStorage 获取 token 和用户信息

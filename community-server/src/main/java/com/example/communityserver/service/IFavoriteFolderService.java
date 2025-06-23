@@ -1,8 +1,9 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.communityserver.entity.dto.ModifyFolderNameParam;
 import com.example.communityserver.entity.po.FavoriteFolder;
-import com.example.communityserver.entity.vo.FoldersVo;
+import com.example.communityserver.entity.vo.FolderVo;
 
 import java.util.List;
 
@@ -17,7 +18,13 @@ import java.util.List;
 
 
 public interface IFavoriteFolderService extends IService<FavoriteFolder> {
-    List<FoldersVo> getFavoriteFolder();
+    List<FolderVo> getFavoriteFolder();
 
-    FoldersVo addFolder(String name);
+    // 创建
+    FolderVo addFolder(String name);
+
+    // 修改
+    FolderVo modifyFolderName(Long folderId, ModifyFolderNameParam param);
+
+    boolean delFolder(Long folderId);
 }

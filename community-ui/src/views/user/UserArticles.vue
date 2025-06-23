@@ -32,16 +32,6 @@
         <el-option label="草稿" :value="1"/>
       </el-select>
 
-      <!--      <el-select-->
-      <!--          v-model="sortField"-->
-      <!--          placeholder="排序方式"-->
-      <!--          style="width: 150px; margin-left: 10px"-->
-      <!--          @change="fetchArticles"-->
-      <!--      >-->
-      <!--        <el-option label="最新发布" value="createTime"/>-->
-      <!--        <el-option label="最近更新" value="updateTime"/>-->
-      <!--        <el-option label="最多浏览" value="viewCount"/>-->
-      <!--      </el-select>-->
     </div>
 
     <div class="article-list">

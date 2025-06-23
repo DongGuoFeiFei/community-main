@@ -12,6 +12,6 @@ import lombok.Data;
  **/
 
 @Data
-public class AddName {
+public class AddFolderNameParam {
     private String name;
 }

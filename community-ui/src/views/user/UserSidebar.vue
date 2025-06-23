@@ -90,13 +90,13 @@ const menuData = ref([
   //     icon: 'el-icon-chat-dot-round'
   //   }
   // },
-  // {
-  //   path: '/user/collections',
-  //   meta: {
-  //     title: '我的收藏',
-  //     icon: 'el-icon-star-off'
-  //   }
-  // },
+  {
+    path: '/user/collections',
+    meta: {
+      title: '我的收藏',
+      icon: 'el-icon-star-off'
+    }
+  },
   // {
   //   path: '/user/likes',
   //   meta: {
