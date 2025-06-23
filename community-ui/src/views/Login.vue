@@ -16,6 +16,8 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :loading="loading" @click="handleLogin">登录</el-button>
+          <el-button @click="goToRegister">注册</el-button>
+          <el-button link @click="goToForgotPassword">找回密码</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -29,9 +31,7 @@ import {ElMessage} from 'element-plus';
 import {login} from '../api';
 import {localStore} from "@/stores/localStores.js";
 
-
 const lStore = localStore()
-
 const router = useRouter();
 const loading = ref(false);
 const formRef = ref(null);
@@ -75,6 +75,14 @@ const handleLogin = () => {
     }
   });
 };
+
+const goToRegister = () => {
+  router.push('/register');
+};
+
+const goToForgotPassword = () => {
+  router.push('/forgot-password');
+};
 </script>
 
 <style scoped lang="less">
@@ -92,5 +100,16 @@ const handleLogin = () => {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   background-color: #fff;
+}
+
+/* 调整按钮间距 */
+.el-form-item .el-button + .el-button {
+  margin-left: 10px;
+}
+
+/* 找回密码按钮样式调整 */
+.el-button--text {
+  margin-left: 20px;
+  color: var(--el-color-primary);
 }
 </style>

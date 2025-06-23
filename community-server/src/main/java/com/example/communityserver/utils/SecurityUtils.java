@@ -66,7 +66,6 @@ public class SecurityUtils {
         return loginUser != null ? loginUser.getUser().getUserId() : null;
     }
 
-
     /**
      * 获取当前用户详细信息
      *

@@ -24,6 +24,25 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  # 邮箱配置
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: fcwbebe@foxmail.com
+    password: aomovbqbqjxndgdf
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+        transport:
+          protocol: smtp
+        debug: true
 # mybatis-plus 配置
 mybatis-plus:
   config-locations: classpath:mapper/*.xml

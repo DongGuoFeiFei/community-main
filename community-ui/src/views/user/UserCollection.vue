@@ -26,11 +26,13 @@
             </div>
             <div class="folder-actions">
               <el-button
+                  link
                   size="small"
                   @click.stop="showEditFolderDialog(folder)"
                   :icon="Edit"
               />
               <el-button
+                  link
                   size="small"
                   @click.stop="confirmDeleteFolder(folder.id)"
                   :icon="Delete"

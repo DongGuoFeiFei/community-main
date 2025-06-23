@@ -2,10 +2,8 @@
 
 import {createRouter, createWebHistory} from 'vue-router'
 import Index from '../views/Index.vue'
-import Login from "@/views/Login.vue";
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
-import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,9 +13,31 @@ const router = createRouter({
             redirect: '/index',
         },
         {
+            path: '/register',
+            name: 'Register',
+            component: () => import('@/views/Register.vue'),
+            meta: {
+                requiresAuth: false,
+                title: '注册'
+            }
+        },
+        {
             path: '/login',
             name: 'login',
-            component: Login,
+            component: () => import("@/views/Login.vue"),
+            meta: {
+                requiresAuth: false,
+                title: '登录'
+            }
+        },
+        {
+            path: '/forgot-password',
+            name: 'ForgotPassword',
+            component: () => import('@/views/ForgotPassword.vue'),
+            meta: {
+                requiresAuth: false,
+                title: '找回密码'
+            }
         },
         {
             path: '/',
@@ -81,7 +101,7 @@ const router = createRouter({
                         title: "我的垃圾箱",
                         requiresAuth: true,
                     }
-                },{
+                }, {
                     path: 'collections',
                     name: 'collections',
                     component: () => import("@/views/user/UserCollection.vue"),
@@ -101,16 +121,10 @@ const router = createRouter({
                 },
             ]
         },
-        // {
-        //     path: '/user/:id',
-        //     name: 'UserProfile',
-        //     component: () => import('@/views/NotFound.vue'),
-        //     props: true // 将路由参数作为组件的props传递
-        // },
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
-            component: NotFound,
+            component: () => import("@/views/NotFound.vue"),
             meta: {
                 title: '404 - 页面未找到'
             }
@@ -138,7 +152,6 @@ router.beforeEach((to, from, next) => {
         } catch (e) {
             console.error('Failed to parse user info:', e)
         }
-
         // 检查 token 是否存在且未过期
         if (!token || isTokenExpired(userInfo)) {
             next({

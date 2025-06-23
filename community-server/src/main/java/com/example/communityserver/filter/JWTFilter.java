@@ -21,14 +21,16 @@ import java.util.List;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     // 定义白名单路径
     private static final List<String> WHITE_LIST = Arrays.asList(
             "/auth/login",
             "/auth/register",
+            "/auth/send-email",
             "/uploads/**"
     );
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
