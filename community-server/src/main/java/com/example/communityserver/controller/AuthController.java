@@ -22,10 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -137,13 +134,18 @@ public class AuthController {
         if (!emailService.verifyCode(dto.getEmail(), dto.getCode())) {
             return Result.error("验证码错误");
         }
-        // 验证库中邮箱和用户名是否重复 注册
         MessageCodeEnum codeEnum = userService.register(dto);
-        if (codeEnum.getId() == 4) {
-            emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
-            return Result.success();
-        } else {
+        if (codeEnum == MessageCodeEnum.USERNAME_EXIST) {
             return Result.error(codeEnum.getValue());
         }
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
+
+        return Result.success();
+    }
+
+    @GetMapping
+    public Result<Void> test(RegisterDto dto) {
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
+        return null;
     }
 }

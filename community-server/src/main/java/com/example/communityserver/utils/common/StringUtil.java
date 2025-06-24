@@ -181,4 +181,33 @@ public class StringUtil {
         }
         return str.substring(0, maxLength) + "...";
     }
+
+    /**
+     * 比较两个字符串是否相同
+     *
+     * @param str1 第一个字符串
+     * @param str2 第二个字符串
+     * @param ignoreCase 是否忽略大小写
+     * @return 如果相同返回true，否则返回false
+     */
+    public static boolean equals(String str1, String str2, boolean ignoreCase) {
+        if (str1 == null && str2 == null) {
+            return true;
+        }
+        if (str1 == null || str2 == null) {
+            return false;
+        }
+        return ignoreCase ? str1.equalsIgnoreCase(str2) : str1.equals(str2);
+    }
+
+    /**
+     * 比较两个字符串是否相同（区分大小写）
+     *
+     * @param str1 第一个字符串
+     * @param str2 第二个字符串
+     * @return 如果相同返回true，否则返回false
+     */
+    public static boolean equals(String str1, String str2) {
+        return equals(str1, str2, false);
+    }
 }

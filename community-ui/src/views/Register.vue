@@ -142,7 +142,8 @@ const sendVerificationCode = async () => {
 
 // 开始倒计时
 const startCountdown = () => {
-  countdown.value = CODE_EXPIRE_TIME;
+  countdown.value = 30;
+  // countdown.value = CODE_EXPIRE_TIME;
   countdownTimer.value = setInterval(() => {
     countdown.value--;
     if (countdown.value <= 0) {
@@ -162,8 +163,8 @@ const handleRegister = () => {
       const res = await register(registerData);
 
       if (res?.code === 200) {
-        ElMessage.success('注册成功');
         await router.push('/login');
+        ElMessage.success('注册成功');
       } else {
         ElMessage.error(res?.msg || '注册失败');
       }
