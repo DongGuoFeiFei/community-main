@@ -1,13 +1,16 @@
 package com.example.communityserver.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import com.example.communityserver.entity.po.LoginUser;
-import com.example.communityserver.entity.po.User;
+import com.example.communityserver.entity.enums.MessageCodeEnum;
+import com.example.communityserver.entity.model.LoginUser;
+import com.example.communityserver.entity.model.User;
+import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.mapper.UserMapper;
 import com.example.communityserver.service.IUserService;
-import com.example.communityserver.utils.JWTUtil;
-import com.example.communityserver.utils.RedisUtil;
+import com.example.communityserver.utils.redis.RedisUtil;
+import com.example.communityserver.utils.security.JWTUtil;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public String login(String username, String password) {
@@ -39,15 +45,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         redisUtil.setCacheObject("user:" + loginUser.getUser().getUserId(), loginUser);
         return JWTUtil.createToken(loginUser.getUser().getUserId());
     }
-// TODO: 2025/4/21 退出登录接口
 
-//    @Override
-//    public String logout() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-//        Long userid = loginUser.getUser().getId();
-//        redisCache.deleteObject("login:"+userid);
-//        return new ResponseResult(200,"退出成功");
-//    }
+
+    /**
+     * @Description: 返回错误码，不存在，返回null
+     * @Param: [email, username]
+     * @return: com.example.communityserver.entity.enums.MessageCodeEnum
+     * @Author: DongGuo
+     */
+
+    @Override
+    public MessageCodeEnum isExistUser(String email, String username) {
+        // 验证邮箱、用户名、用户名和邮箱
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        User user;
+        queryWrapper.eq(email != null, User::getEmail, email);
+        user = userMapper.selectOne(queryWrapper);
+        if (user != null) {
+            return MessageCodeEnum.EMAIL_EXIST;
+        }
+        queryWrapper.eq(username != null, User::getUsername, username);
+        user = userMapper.selectOne(queryWrapper);
+        if (user != null) {
+            return MessageCodeEnum.USERNAME_EXIST;
+        }
+        return null;
+    }
+
+
+    @Override
+    public MessageCodeEnum register(RegisterDto dto) {
+        MessageCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername());
+        if (codeEnum != null) {
+            return codeEnum;
+        }
+        //注册
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setNickname(dto.getNickname());
+        user.setEmail(dto.getEmail());
+        user.setPassword(SecurityUtils.encryptPassword(dto.getPassword()));
+        int insert = userMapper.insert(user);
+        if (insert > 0) {
+            return MessageCodeEnum.REGISTER_SUCCESS;
+        } else {
+            return MessageCodeEnum.REGISTER_ERROR;
+        }
+    }
+
 
 }

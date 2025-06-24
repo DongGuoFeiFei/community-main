@@ -1,10 +1,10 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.dto.AddCommentDto;
-import com.example.communityserver.entity.po.Comment;
-import com.example.communityserver.entity.vo.CommentVo;
-import com.example.communityserver.entity.vo.ReplyVo;
+import com.example.communityserver.entity.request.AddCommentDto;
+import com.example.communityserver.entity.model.Comment;
+import com.example.communityserver.entity.response.CommentVo;
+import com.example.communityserver.entity.response.ReplyVo;
 
 import java.util.List;
 

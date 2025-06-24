@@ -10,39 +10,6 @@ export const login = (data) => {
         }
     });
 };
-
-// 注册
-export const register = (data) => {
-    return request.post('/auth/register', data).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
-};
-
-// 找回密码
-export const forgotPassword = (data) => {
-    return request.post('/auth/forgot-password', data).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
-};
-
-export const resetPassword = (data) => {
-    return request.post('/auth/reset-password', data).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
-};
-
 export const fetchPosts = (params) => {
     return request.get('/posts', {params}).then(res => {
         if (res.code === 200) {

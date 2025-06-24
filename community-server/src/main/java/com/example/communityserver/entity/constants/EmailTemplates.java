@@ -14,9 +14,11 @@ import java.util.Map;
 
 
 public class EmailTemplates {
-    public static final String E_MAIL_ADDRESS = "fcwbebe@foxmail.com"; // 邮箱地址
-    public static final String LOGIN_URL = "http://localhost:5173/login"; // 邮箱地址
-    public static final String SUPPORT_EMAIL_ADDRESS = "fcwbebe@foxmail.com"; // 邮箱地址
+    public static final String E_MAIL_ADDRESS = "fcwbebe@foxmail.com";
+    public static final String LOGIN_URL = "http://localhost:5173/login";
+    public static final String SUPPORT_EMAIL_ADDRESS = "fcwbebe@foxmail.com";
+    public static final String SUBJECT_WELCOME ="欢迎注册【采芙蓉】";
+    public static final String SUBJECT_VERIFICATION = "【采芙蓉】邮箱验证码";
 
     // 验证码邮件模板
     private static final String VERIFICATION_TEMPLATE =
@@ -36,7 +38,7 @@ public class EmailTemplates {
                     "        <p>尊敬的 <b>${username}</b>：</p>\n" +
                     "        <p>感谢您注册我们的服务！您的验证码为：</p>\n" +
                     "        <p class=\"code\">${code}</p>\n" +
-                    "        <p>验证码将在 <b>10分钟</b> 后失效，请尽快完成验证。</p>\n" +
+                    "        <p>验证码将在 <b>5分钟</b> 后失效，请尽快完成验证。</p>\n" +
                     "        <p>如非本人操作，请忽略此邮件。</p>\n" +
                     "        <hr>\n" +
                     "        <p style=\"color: #888;\">系统自动发送，请勿直接回复</p>\n" +
@@ -79,7 +81,7 @@ public class EmailTemplates {
     /**
      * 渲染验证码邮件
      */
-    public static String renderVerificationEmail(String username, String code) {
+    public static String getRenderVerificationEmail(String username, String code) {
         Map<String, String> variables = new HashMap<>();
         variables.put("username", username);
         variables.put("code", code);
@@ -89,7 +91,7 @@ public class EmailTemplates {
     /**
      * 渲染欢迎邮件
      */
-    public static String renderWelcomeEmail(String username) {
+    public static String getRenderWelcomeEmail(String username) {
         Map<String, String> variables = new HashMap<>();
         variables.put("username", username);
         variables.put("loginUrl", LOGIN_URL);

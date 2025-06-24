@@ -2,10 +2,10 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.po.Likes;
+import com.example.communityserver.entity.model.Likes;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.service.ILikesService;
-import com.example.communityserver.utils.SecurityUtils;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

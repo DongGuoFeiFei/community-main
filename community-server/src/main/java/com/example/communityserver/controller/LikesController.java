@@ -1,8 +1,7 @@
 package com.example.communityserver.controller;
 
-import com.example.communityserver.entity.po.Likes;
 import com.example.communityserver.service.ILikesService;
-import com.example.communityserver.utils.Result;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

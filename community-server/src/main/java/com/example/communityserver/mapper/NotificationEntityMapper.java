@@ -1,7 +1,7 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.po.NotificationEntity;
+import com.example.communityserver.entity.model.NotificationEntity;
 
 /**
  * <p>

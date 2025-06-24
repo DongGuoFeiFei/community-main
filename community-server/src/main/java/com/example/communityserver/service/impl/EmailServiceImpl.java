@@ -2,7 +2,7 @@ package com.example.communityserver.service.impl;
 
 import com.example.communityserver.entity.constants.EmailTemplates;
 import com.example.communityserver.service.IEmailService;
-import com.example.communityserver.utils.VerificationCodeUtils;
+import com.example.communityserver.utils.common.VerificationCodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,34 +32,31 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmailServiceImpl implements IEmailService {
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Value("${spring.mail.username}")
-    private String fromEmail;
-
     // Redis键前缀
     private static final String REDIS_VERIFY_CODE_PREFIX = "verify:email:";
     // 验证码有效期（分钟）
     private static final long VERIFY_CODE_EXPIRE_MINUTES = 5;
     private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
+    @Autowired
+    private JavaMailSender mailSender;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     /**
-     * 发送验证码邮件（自动重试3次，异步执行）
+     * 发送验证码邮件
      */
     @Async
     @Retryable(
-            value = { MailException.class },
+            value = {MailException.class},
             maxAttempts = 3,
             backoff = @Backoff(delay = 2000, multiplier = 2)
     )
     public void sendVerificationCode(String toEmail, String username) {
         try {
             // 1. 生成验证码
-            String code = VerificationCodeUtils.generateCode();
+            String code = VerificationCodeUtils.generateNumericCode();
             log.info("生成验证码: email={}, code={}", toEmail, code);
 
             // 2. 存储到Redis（5分钟过期）
@@ -71,8 +68,8 @@ public class EmailServiceImpl implements IEmailService {
             );
 
             // 3. 发送邮件
-            String content = EmailTemplates.renderVerificationEmail(username, code);
-            sendMimeMessage(toEmail, "【您的网站】邮箱验证码", content);
+            String content = EmailTemplates.getRenderVerificationEmail(username, code);
+            sendMimeMessage(toEmail, EmailTemplates.SUBJECT_VERIFICATION, content);
 
             log.info("验证码邮件发送成功: email={}", toEmail);
         } catch (MessagingException e) {
@@ -85,14 +82,19 @@ public class EmailServiceImpl implements IEmailService {
     }
 
     /**
-     * 发送欢迎邮件（异步执行）
+     * 发送欢迎邮件
      */
     @Async
     @Override
+    @Retryable(
+            value = {MailException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public void sendWelcomeEmail(String toEmail, String username) {
         try {
-            String content = EmailTemplates.renderWelcomeEmail(username);
-            sendMimeMessage(toEmail, "欢迎注册【您的网站】", content);
+            String content = EmailTemplates.getRenderWelcomeEmail(username);
+            sendMimeMessage(toEmail, EmailTemplates.SUBJECT_WELCOME, content);
             log.info("欢迎邮件发送成功: email={}", toEmail);
         } catch (MessagingException e) {
             log.error("欢迎邮件发送失败: email={}, error={}", toEmail, e.getMessage());
@@ -100,7 +102,7 @@ public class EmailServiceImpl implements IEmailService {
     }
 
     /**
-     * 校验验证码
+     * 校验验证码返回的注册验证码是否正确
      */
     public boolean verifyCode(String email, String code) {
         if (!StringUtils.hasText(email) || !StringUtils.hasText(code)) {
@@ -131,7 +133,7 @@ public class EmailServiceImpl implements IEmailService {
         helper.setFrom(fromEmail);
         helper.setTo(toEmail);
         helper.setSubject(subject);
-        helper.setText(content, true); // true表示HTML内容
+        helper.setText(content, true);
 
         mailSender.send(message);
     }

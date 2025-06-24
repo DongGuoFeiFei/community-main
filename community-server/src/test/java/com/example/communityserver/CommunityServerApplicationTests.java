@@ -1,10 +1,10 @@
 package com.example.communityserver;
 
-import com.example.communityserver.entity.po.LoginUser;
+import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.service.IEmailService;
-import com.example.communityserver.utils.JWTUtil;
-import com.example.communityserver.utils.RedisUtil;
+import com.example.communityserver.utils.security.JWTUtil;
+import com.example.communityserver.utils.redis.RedisUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static com.example.communityserver.utils.SecurityUtils.getLoginUser;
+import static com.example.communityserver.utils.security.SecurityUtils.getLoginUser;
 
 @SpringBootTest
 class CommunityServerApplicationTests {
@@ -30,12 +30,8 @@ class CommunityServerApplicationTests {
 
     @Test
     void sendEmail(){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("fcwbebe@foxmail.com"); // 必须和yml中的username一致
-        message.setTo("2422516737@qq.com");
-        message.setSubject("Test");
-        message.setText("Hello from Foxmail!");
-        mailSender.send(message);
+//        emailService.sendVerificationCode("2422516737@qq.com", "2233");
+        emailService.sendWelcomeEmail("2422516737@qq.com", "2233");
     }
 
     @Test

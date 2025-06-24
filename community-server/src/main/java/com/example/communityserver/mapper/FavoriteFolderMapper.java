@@ -1,8 +1,8 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.po.FavoriteFolder;
-import com.example.communityserver.entity.vo.FolderVo;
+import com.example.communityserver.entity.model.FavoriteFolder;
+import com.example.communityserver.entity.response.FolderVo;
 
 import java.util.List;
 

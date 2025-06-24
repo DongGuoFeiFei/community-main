@@ -24,7 +24,7 @@
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
-import {forgotPassword} from '../api'; // 需要在api/index.js中添加此方法
+import {forgotPassword} from '@/api/auth.js'; // 需要在api/index.js中添加此方法
 
 const router = useRouter();
 const loading = ref(false);

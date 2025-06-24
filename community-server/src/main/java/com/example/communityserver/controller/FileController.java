@@ -1,9 +1,9 @@
 package com.example.communityserver.controller;
 
-import com.example.communityserver.entity.po.FileEntity;
+import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.service.IFileEntityService;
-import com.example.communityserver.utils.Result;
-import com.example.communityserver.utils.StringUtil;
+import com.example.communityserver.utils.web.Result;
+import com.example.communityserver.utils.common.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

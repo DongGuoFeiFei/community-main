@@ -2,7 +2,7 @@ package com.example.communityserver.handler;
 
 import com.alibaba.fastjson.JSON;
 
-import com.example.communityserver.utils.Result;
+import com.example.communityserver.utils.web.Result;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

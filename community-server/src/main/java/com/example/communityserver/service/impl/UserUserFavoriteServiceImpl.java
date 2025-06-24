@@ -3,18 +3,18 @@ package com.example.communityserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.dto.AddFavoriteArticle;
-import com.example.communityserver.entity.dto.GetUserFavoListParam;
-import com.example.communityserver.entity.dto.MoveFavoriteDto;
+import com.example.communityserver.entity.request.AddFavoriteArticle;
+import com.example.communityserver.entity.request.GetUserFavoListParam;
+import com.example.communityserver.entity.request.MoveFavoriteDto;
 import com.example.communityserver.entity.enums.FavoriteTypeEnum;
-import com.example.communityserver.entity.po.UserFavorite;
-import com.example.communityserver.entity.vo.FavArticleVo;
-import com.example.communityserver.entity.vo.MoveFavoriteVo;
-import com.example.communityserver.entity.vo.UserFavoListVo;
+import com.example.communityserver.entity.model.UserFavorite;
+import com.example.communityserver.entity.response.FavArticleVo;
+import com.example.communityserver.entity.response.MoveFavoriteVo;
+import com.example.communityserver.entity.response.UserFavoListVo;
 import com.example.communityserver.mapper.UserFavoriteMapper;
 import com.example.communityserver.mapping.FavoriteMapping;
 import com.example.communityserver.service.IUserFavoriteService;
-import com.example.communityserver.utils.SecurityUtils;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,7 +72,7 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             if (delete > 0) {
                 userFavorite.setFavoriteId(null);
                 userFavorite.setFolderId(dto.getFolderId());
-                userFavorite.setType(FavoriteTypeEnum.ARTICLE.getValue());
+                userFavorite.setType(FavoriteTypeEnum.ARTICLE);
                 int insert = userFavoriteMapper.insert(userFavorite);
                 if (insert > 0) {
                     FavoriteMapping.INSTANCE.updateMoveVoFromUserFavorite(userFavorite, vo);

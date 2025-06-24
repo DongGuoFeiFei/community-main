@@ -3,7 +3,7 @@
 <mapper namespace="com.example.communityserver.mapper.LikesMapper">
 
 
-    <select id="getArticleLike" resultType="com.example.communityserver.entity.vo.ArticleDtlVo">
+    <select id="getArticleLike" resultType="com.example.communityserver.entity.response.ArticleDtlVo">
         SELECT (SELECT COUNT(*)
                 FROM likes
                 WHERE target_id = #{articleId}

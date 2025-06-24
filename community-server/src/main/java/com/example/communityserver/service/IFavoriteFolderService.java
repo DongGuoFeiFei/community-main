@@ -1,9 +1,9 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.dto.ModifyFolderNameParam;
-import com.example.communityserver.entity.po.FavoriteFolder;
-import com.example.communityserver.entity.vo.FolderVo;
+import com.example.communityserver.entity.request.ModifyFolderNameParam;
+import com.example.communityserver.entity.model.FavoriteFolder;
+import com.example.communityserver.entity.response.FolderVo;
 
 import java.util.List;
 

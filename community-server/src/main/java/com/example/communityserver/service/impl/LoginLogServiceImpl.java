@@ -1,7 +1,7 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.po.LoginLog;
+import com.example.communityserver.entity.model.LoginLog;
 import com.example.communityserver.mapper.LoginLogMapper;
 import com.example.communityserver.service.ILoginLogService;
 import org.springframework.beans.factory.annotation.Autowired;

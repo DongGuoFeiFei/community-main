@@ -46,7 +46,7 @@
     </select>
 
     <!-- 结果映射 -->
-    <resultMap id="CommentsMap" type="com.example.communityserver.entity.vo.CommentVo">
+    <resultMap id="CommentsMap" type="com.example.communityserver.entity.response.CommentVo">
         <id column="comment_id" property="commentId"/>
         <result column="article_id" property="articleId"/>
         <result column="user_id" property="userId"/>
@@ -63,7 +63,7 @@
                     javaType="java.util.List"/>
     </resultMap>
 
-    <select id="getReplyById" resultType="com.example.communityserver.entity.vo.ReplyVo">
+    <select id="getReplyById" resultType="com.example.communityserver.entity.response.ReplyVo">
         SELECT c.comment_id,
                c.article_id,
                CASE WHEN c.is_del = 1 THEN '0' ELSE c.user_id END                 AS user_id,

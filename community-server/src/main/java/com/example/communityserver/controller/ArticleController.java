@@ -1,16 +1,16 @@
 package com.example.communityserver.controller;
 
-import com.example.communityserver.entity.dto.AddArticleDto;
-import com.example.communityserver.entity.dto.GetArticleListDto;
-import com.example.communityserver.entity.dto.SearchParam;
-import com.example.communityserver.entity.po.Article;
-import com.example.communityserver.entity.vo.ArticleCardVo;
-import com.example.communityserver.entity.vo.ArticleDtlVo;
-import com.example.communityserver.entity.vo.ArticleListVo;
-import com.example.communityserver.entity.vo.EditorArticlesVo;
+import com.example.communityserver.entity.request.AddArticleDto;
+import com.example.communityserver.entity.request.GetArticleListDto;
+import com.example.communityserver.entity.request.SearchParam;
+import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.response.ArticleCardVo;
+import com.example.communityserver.entity.response.ArticleDtlVo;
+import com.example.communityserver.entity.response.ArticleListVo;
+import com.example.communityserver.entity.response.EditorArticlesVo;
 import com.example.communityserver.service.IArticleService;
-import com.example.communityserver.utils.Result;
-import com.example.communityserver.utils.TableDataInfo;
+import com.example.communityserver.utils.web.Result;
+import com.example.communityserver.utils.web.TableDataInfo;
 import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

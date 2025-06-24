@@ -1,7 +1,7 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.po.LoginLog;
+import com.example.communityserver.entity.model.LoginLog;
 
 import javax.servlet.http.HttpServletRequest;
 

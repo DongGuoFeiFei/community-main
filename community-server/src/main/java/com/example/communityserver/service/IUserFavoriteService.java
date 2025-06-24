@@ -2,13 +2,13 @@ package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.dto.AddFavoriteArticle;
-import com.example.communityserver.entity.dto.GetUserFavoListParam;
-import com.example.communityserver.entity.dto.MoveFavoriteDto;
-import com.example.communityserver.entity.po.UserFavorite;
-import com.example.communityserver.entity.vo.FavArticleVo;
-import com.example.communityserver.entity.vo.MoveFavoriteVo;
-import com.example.communityserver.entity.vo.UserFavoListVo;
+import com.example.communityserver.entity.request.AddFavoriteArticle;
+import com.example.communityserver.entity.request.GetUserFavoListParam;
+import com.example.communityserver.entity.request.MoveFavoriteDto;
+import com.example.communityserver.entity.model.UserFavorite;
+import com.example.communityserver.entity.response.FavArticleVo;
+import com.example.communityserver.entity.response.MoveFavoriteVo;
+import com.example.communityserver.entity.response.UserFavoListVo;
 
 /**
  * <p>

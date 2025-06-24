@@ -1,9 +1,9 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.po.Comment;
-import com.example.communityserver.entity.vo.CommentVo;
-import com.example.communityserver.entity.vo.ReplyVo;
+import com.example.communityserver.entity.model.Comment;
+import com.example.communityserver.entity.response.CommentVo;
+import com.example.communityserver.entity.response.ReplyVo;
 
 import java.util.List;
 

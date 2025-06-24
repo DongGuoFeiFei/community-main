@@ -1,6 +1,6 @@
 package com.example.communityserver.mapping;
 
-import com.example.communityserver.entity.vo.ArticleDtlVo;
+import com.example.communityserver.entity.response.ArticleDtlVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;

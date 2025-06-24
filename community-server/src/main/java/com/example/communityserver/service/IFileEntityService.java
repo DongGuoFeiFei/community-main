@@ -1,7 +1,7 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.po.FileEntity;
+import com.example.communityserver.entity.model.FileEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

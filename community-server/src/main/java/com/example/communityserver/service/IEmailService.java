@@ -15,4 +15,7 @@ import javax.mail.MessagingException;
 public interface IEmailService {
     public void sendVerificationCode(String toEmail, String username) ;
     public void sendWelcomeEmail(String toEmail, String username) ;
+    public boolean verifyCode(String email, String code);
+
+
 }

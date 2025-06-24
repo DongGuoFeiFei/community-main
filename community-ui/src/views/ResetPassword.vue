@@ -26,7 +26,7 @@
 import {onMounted, ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
-import {resetPassword} from '../api';
+import {resetPassword} from '@/api/auth.js';
 
 const route = useRoute();
 const router = useRouter();

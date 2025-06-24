@@ -1,11 +1,11 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.po.Article;
-import com.example.communityserver.entity.vo.ArticleCardVo;
-import com.example.communityserver.entity.vo.ArticleDtlVo;
-import com.example.communityserver.entity.vo.ArticleListVo;
-import com.example.communityserver.entity.vo.EditorArticlesVo;
+import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.response.ArticleCardVo;
+import com.example.communityserver.entity.response.ArticleDtlVo;
+import com.example.communityserver.entity.response.ArticleListVo;
+import com.example.communityserver.entity.response.EditorArticlesVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

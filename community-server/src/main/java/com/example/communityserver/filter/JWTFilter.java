@@ -1,8 +1,8 @@
 package com.example.communityserver.filter;
 
-import com.example.communityserver.entity.po.LoginUser;
-import com.example.communityserver.utils.JWTUtil;
-import com.example.communityserver.utils.RedisUtil;
+import com.example.communityserver.entity.model.LoginUser;
+import com.example.communityserver.utils.security.JWTUtil;
+import com.example.communityserver.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

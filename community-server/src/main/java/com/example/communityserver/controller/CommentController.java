@@ -1,10 +1,10 @@
 package com.example.communityserver.controller;
 
-import com.example.communityserver.entity.dto.AddCommentDto;
-import com.example.communityserver.entity.vo.CommentVo;
-import com.example.communityserver.entity.vo.ReplyVo;
+import com.example.communityserver.entity.request.AddCommentDto;
+import com.example.communityserver.entity.response.CommentVo;
+import com.example.communityserver.entity.response.ReplyVo;
 import com.example.communityserver.service.ICommentService;
-import com.example.communityserver.utils.Result;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

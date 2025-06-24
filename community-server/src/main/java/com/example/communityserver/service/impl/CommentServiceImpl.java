@@ -1,15 +1,15 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.dto.AddCommentDto;
-import com.example.communityserver.entity.po.Article;
-import com.example.communityserver.entity.po.Comment;
-import com.example.communityserver.entity.po.NotificationEntity;
-import com.example.communityserver.entity.vo.CommentVo;
-import com.example.communityserver.entity.vo.ReplyVo;
+import com.example.communityserver.entity.request.AddCommentDto;
+import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.model.Comment;
+import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.response.CommentVo;
+import com.example.communityserver.entity.response.ReplyVo;
 import com.example.communityserver.mapper.*;
 import com.example.communityserver.service.ICommentService;
-import com.example.communityserver.utils.SecurityUtils;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,13 +1,13 @@
 package com.example.communityserver.controller;
 
 
-import com.example.communityserver.entity.dto.UpdateUserInfo;
-import com.example.communityserver.entity.po.User;
+import com.example.communityserver.entity.request.UpdateUserInfo;
+import com.example.communityserver.entity.model.User;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
-import com.example.communityserver.utils.RedisUtil;
-import com.example.communityserver.utils.Result;
-import com.example.communityserver.utils.SecurityUtils;
+import com.example.communityserver.utils.redis.RedisUtil;
+import com.example.communityserver.utils.web.Result;
+import com.example.communityserver.utils.security.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;

@@ -2,11 +2,11 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.po.FileEntity;
+import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.service.IFileEntityService;
-import com.example.communityserver.utils.FileUtils;
-import com.example.communityserver.utils.SecurityUtils;
+import com.example.communityserver.utils.file.FileUtils;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

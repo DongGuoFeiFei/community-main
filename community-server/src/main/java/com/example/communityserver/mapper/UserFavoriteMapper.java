@@ -2,9 +2,9 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.communityserver.entity.dto.GetUserFavoListParam;
-import com.example.communityserver.entity.po.UserFavorite;
-import com.example.communityserver.entity.vo.UserFavoListVo;
+import com.example.communityserver.entity.request.GetUserFavoListParam;
+import com.example.communityserver.entity.model.UserFavorite;
+import com.example.communityserver.entity.response.UserFavoListVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
