@@ -1,6 +1,8 @@
 package com.example.communityserver.controller;
 
 
+import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.enums.ValidateCodeTypeEnum;
 import com.example.communityserver.entity.model.FileEntity;
@@ -13,6 +15,7 @@ import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.ILoginLogService;
 import com.example.communityserver.service.IUserService;
+import com.example.communityserver.utils.common.CaptchaUtil;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.JWTUtil;
@@ -22,20 +25,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Api(tags = "登录等验证")
 @RequestMapping("/auth")
 public class AuthController {
-
-    @Autowired
-    private IUserService service;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -52,9 +55,13 @@ public class AuthController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     // TODO: 2025/5/21 @PreAuthorize("@vip.myAuthority('superAdmin')")权限划分失败
     // TODO: 2025/6/2 后续需要处理，如果用户没有登录就默认是游客登录
-    // TODO: 2025/6/23 动态生成一个验证码，验证真人验证码 
+    // TODO: 2025/6/24 限制登录次数，登录5次限制登录
+    // TODO: 2025/6/24 退出登录，销毁token
     /*
     隐私合规：确保符合GDPR等隐私法规，在隐私政策中说明数据收集方式
     数据清理：设置合理的过期时间，避免存储过多无用数据
@@ -68,11 +75,29 @@ public class AuthController {
     private Result<LoginResponse> login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
-        LoginRequest loginRequest = new LoginRequest(requestBody.get("username"), requestBody.get("password"));
+        LoginRequest loginRequest = new LoginRequest(
+                requestBody.get("username"),
+                requestBody.get("password"),
+                requestBody.get("captchaCode"),
+                requestBody.get("captchaKey")
+        );
         LoginResponse loginResponse = new LoginResponse();
 
+        // 验证验证码是否正确
+        String redisKey = CacheKeyConstants.CAPTCHA_CODE + loginRequest.getCaptchaKey();
+        String correctCode = redisTemplate.opsForValue().get(redisKey);
+        if (correctCode == null) {
+            return Result.error("验证码已过期");
+        }
+        if (!correctCode.equalsIgnoreCase(loginRequest.getCaptchaCode())) { // 忽视大小写
+            return Result.error("验证码错误");
+        }
+        // 验证码验证通过后删除
+        redisTemplate.delete(redisKey);
+
+
         // 此次获取的token
-        String token = service.login(loginRequest.getUsername(), loginRequest.getPassword());
+        String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
         // 此时，token还未传入security中
         loginResponse.setToken(token);
@@ -81,7 +106,7 @@ public class AuthController {
         LoginUser loginUser = redisUtil.getCacheObject("user:" + userId);
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
-        loginResponse.setExpiresIn(259200);
+        loginResponse.setExpiresIn((int) (3 * SystemConstants.ONE_DAY_MILLIS / 1000));
 
         loginResponse.setUserInfo(loginUser.getUser());
         FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());
@@ -96,7 +121,7 @@ public class AuthController {
 
     @ApiOperation("获取新的token")
     @PostMapping("/newToken")
-    public Result<String> newToken() {
+    public Result<String> refreshToken() {
         return Result.success(JWTUtil.createToken(SecurityUtils.getLoginUserId()));
     }
 
@@ -143,9 +168,27 @@ public class AuthController {
         return Result.success();
     }
 
-    @GetMapping
-    public Result<Void> test(RegisterDto dto) {
-        emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
-        return null;
+    // 生成验证码图片
+    @ApiOperation("生成验证码图片")
+    @GetMapping("/captcha")
+    public Result<CaptchaUtil.Captcha> getCaptcha() {
+        // 生成验证码
+        CaptchaUtil.Captcha captcha = CaptchaUtil.generate();
+
+        // 生成验证码key
+        String captchaKey = UUID.randomUUID().toString();
+
+        // 存储验证码到Redis，有效期5分钟
+        redisTemplate.opsForValue().set(
+                CacheKeyConstants.CAPTCHA_CODE + captchaKey,
+                captcha.getCode(),
+                5,
+                TimeUnit.MINUTES
+        );
+
+        // 返回验证码图片和key
+        return Result.success(new CaptchaUtil.Captcha(captchaKey, captcha.getImage()));
     }
+
+
 }

@@ -1,15 +1,8 @@
 // api/index.js
 import request from '../utils/request';
 
-export const login = (data) => {
-    return request.post('/auth/login', data).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
-};
+
+
 export const fetchPosts = (params) => {
     return request.get('/posts', {params}).then(res => {
         if (res.code === 200) {

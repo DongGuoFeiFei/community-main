@@ -1,6 +1,21 @@
 // api/auth.js
 import request from '../utils/request';
 
+
+export const login = (data) => {
+    return request.post('/auth/login', data).then(res => {
+        if (res.code === 200) {
+            return res.data;
+        } else {
+            throw new Error(res.msg);
+        }
+    });
+};
+
+export const getCaptcha = () => {
+    return request.get('/auth/captcha');
+};
+
 export const getEmailCode = (data) => {
     return request.post('/auth/registerCode', {
         ...data,

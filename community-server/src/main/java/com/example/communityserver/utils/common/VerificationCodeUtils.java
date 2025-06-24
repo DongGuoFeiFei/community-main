@@ -14,7 +14,7 @@ import java.util.Random;
 public class VerificationCodeUtils {
 
     // 验证码字符集（去除了容易混淆的字符，如 0/O, 1/I）
-    private static final String CODE_CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+    private static final String CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
     private static final Random random = new Random();
 
     /**

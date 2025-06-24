@@ -26,4 +26,10 @@ public class LoginRequest {
     @NotBlank(message = "密码不能为空")
     @Size(min = 6, max = 20, message = "密码长度6-20位")
     private String password;
+    @NotBlank(message = "验证码不能为空")
+    private String captchaCode;
+    @NotBlank(message = "验证码键不能为空")
+    private String captchaKey;
+
+
 }

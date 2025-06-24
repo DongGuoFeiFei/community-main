@@ -82,9 +82,9 @@ import Header from "@/components/Header.vue";
           </el-main>
           <el-aside width="200px"></el-aside>
         </el-container>
-        <el-footer>
-          <Footer/>
-        </el-footer>
+<!--        <el-footer>-->
+<!--          <Footer/>-->
+<!--        </el-footer>-->
       </el-container>
     </div>
     <div class="cloud-container"></div>
