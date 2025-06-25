@@ -1,9 +1,10 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
-import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.response.ArticleCardVo;
 import com.example.communityserver.entity.response.ArticleDtlVo;
 import com.example.communityserver.entity.response.ArticleListVo;
@@ -11,7 +12,6 @@ import com.example.communityserver.entity.response.EditorArticlesVo;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.web.TableDataInfo;
-import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +39,9 @@ public class ArticleController {
     @ApiOperation("搜索文章")
     @GetMapping
     public TableDataInfo fetchPosts(SearchParam param) {
-        TableDataInfo tableDataInfo = new TableDataInfo();
-        PageHelper.startPage(param.getPageNum(), param.getPageSize());
-        List<ArticleCardVo> voList = postsService.getPostsCardVoList(param.getTitle());
-        List<ArticleCardVo> list = postsService.getPostsCardVoList(param.getTitle());
-        System.out.println(voList);
+        Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
+        TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setCode(200);
-        tableDataInfo.setTotal(list.size());
-        tableDataInfo.setRows(voList);
         tableDataInfo.setMsg("成功");
         return tableDataInfo;
     }
@@ -87,12 +82,8 @@ public class ArticleController {
     @ApiOperation("获取文章列表")
     @GetMapping("/getArticleList")
     public TableDataInfo getArticleList(GetArticleListDto dto) {
-        TableDataInfo tableDataInfo = new TableDataInfo();
-        PageHelper.startPage(dto.getPage(), dto.getSize());
-        List<ArticleListVo> listVo = postsService.getArticleList(dto.getTitle(), dto.getStatus(), dto.getSortField(), dto.getIsAsc());
-        tableDataInfo.setRows(listVo);
-        List<ArticleListVo> listVos = postsService.getArticleList(dto.getTitle(), dto.getStatus(), dto.getSortField(), dto.getIsAsc());
-        tableDataInfo.setTotal(listVos.size());
+        Page<ArticleListVo> page = postsService.getArticleList(dto);
+        TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setMsg("成功");
         tableDataInfo.setCode(200);
         return tableDataInfo;
@@ -100,7 +91,7 @@ public class ArticleController {
 
     @ApiOperation("删除文章")
     @DeleteMapping("/del/{id}")
-    public Result deleteArticle(@PathVariable Long id) {
+    public Result<Void> deleteArticle(@PathVariable Long id) {
         return postsService.delById(id) ? Result.success() : Result.error("失败");
     }
 

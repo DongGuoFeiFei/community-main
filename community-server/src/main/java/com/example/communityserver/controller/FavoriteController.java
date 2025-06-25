@@ -63,7 +63,7 @@ public class FavoriteController {
 
     @ApiOperation("取消文章收藏")
     @DeleteMapping("/{articleId}")
-    public Result delFavArticle(@PathVariable Long articleId) {
+    public Result<Void> delFavArticle(@PathVariable Long articleId) {
         LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(articleId != null, UserFavorite::getArticleId, articleId)
                 .eq(SecurityUtils.getLoginUserId() != null, UserFavorite::getUserId, SecurityUtils.getLoginUserId());
@@ -82,7 +82,7 @@ public class FavoriteController {
 
     @ApiOperation("删除收藏夹")
     @DeleteMapping("/folders/{folderId}")
-    public Result delFolder(@PathVariable Long folderId) {
+    public Result<Void> delFolder(@PathVariable Long folderId) {
         // 删除--收藏夹下的收藏一并删除
         return favoriteFolderService.delFolder(folderId) ? Result.success(200, "收藏夹删除成功", null) : Result.error("收藏夹删除失败");
     }
@@ -103,5 +103,7 @@ public class FavoriteController {
     }
 
     // TODO: 2025/6/23 后续添加   复制文章收藏到某收藏夹中
+    // TODO: 2025/6/25 目前不能同时收藏多个文章，前端一次性创建多次收藏夹时，有着连同效果（同时选中，同时取消，连体了） 
+    // TODO: 2025/6/25 后续再文章中取消收藏时，要先打开收藏夹弹窗再取消 
 
 }

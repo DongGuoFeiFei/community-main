@@ -2,6 +2,7 @@ package com.example.communityserver.utils.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.imageio.ImageIO;
@@ -91,7 +92,6 @@ public class CaptchaUtil {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "jpg", baos);
             String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
-
             return new Captcha(sb.toString(), "data:image/jpeg;base64," + base64Image);
         } catch (IOException e) {
             throw new RuntimeException("生成验证码失败", e);

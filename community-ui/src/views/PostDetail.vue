@@ -215,7 +215,6 @@ const handleCollect = async ({itemId}) => {
 }
 
 const handleCollectSuccess = () => {
-  collectArticle()
   post.value.isCollected = 1
   post.value.collectCount += 1
   ElMessage.success('收藏成功')

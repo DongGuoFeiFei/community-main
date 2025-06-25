@@ -14,7 +14,7 @@
               :key="folder.id"
               class="folder-item"
           >
-            <el-checkbox :label="folder.id">
+            <el-checkbox :value="folder.id">
               <div class="folder-info">
                 <span class="folder-name">{{ folder.name }}</span>
                 <span class="folder-count">{{ folder.articleCount }}篇</span>
@@ -76,6 +76,8 @@ const props = defineProps({
     required: true
   }
 })
+
+console.log("props",props)
 
 const emit = defineEmits(['update:visible', 'success'])
 
@@ -143,7 +145,6 @@ const handleConfirm = async () => {
     )
     await Promise.all(promises)
     emit('success')
-    ElMessage.success(`已收藏到${selectedFolders.value.length}个文件夹`)
     handleClose()
   } catch (error) {
     console.error('收藏失败:', error)

@@ -70,12 +70,15 @@
         IFNULL((
         SELECT COUNT(*)
         FROM likes al
-        WHERE al.target_id = a.target_id
+        WHERE al.target_id = a.article_id
+        AND al.type = 'article' -- 添加类型条件
+        AND al.is_like = 1
         ), 0) AS likeCount,
         IFNULL((
         SELECT COUNT(*)
         FROM comments c
         WHERE c.article_id = a.article_id
+        AND c.is_del = 0
         ), 0) AS commentCount,
         DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') AS createTime,
         DATE_FORMAT(a.updated_at, '%Y-%m-%d %H:%i:%s') AS updateTime
@@ -84,16 +87,17 @@
         LEFT JOIN file f ON a.file_id = f.file_id
         WHERE
         a.is_del = 1
-        <if test="title != null and title != ''">
-            AND a.title LIKE CONCAT('%', #{title}, '%')
+        AND a.user_id = #{loginUserId}
+        <if test="dto.title != null and dto.title != ''">
+            AND a.title LIKE CONCAT('%', #{dto.title}, '%')
         </if>
-        <if test="status != null">
-            AND a.is_drafts = #{status}
+        <if test="dto.status != null">
+            AND a.is_drafts = #{dto.status}
         </if>
         ORDER BY
         <choose>
-            <when test="sortField != null and sortField != ''">
-                ${sortField} ${isAsc ? 'ASC' : 'DESC'}
+            <when test="dto.sortField != null and dto.sortField != ''">
+                ${dto.sortField} ${dto.isAsc ? 'ASC' : 'DESC'}
             </when>
             <otherwise>
                 a.updated_at DESC

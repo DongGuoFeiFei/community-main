@@ -41,6 +41,7 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
         userFavorite.setArticleId(param.getArticleId());
         userFavorite.setFolderId(param.getFolderId());
         userFavorite.setUserId(SecurityUtils.getLoginUserId());
+        userFavorite.setType(FavoriteTypeEnum.ARTICLE);
         int insert = userFavoriteMapper.insert(userFavorite);
         FavArticleVo favArticleVo = new FavArticleVo();
         if (insert > 0) {

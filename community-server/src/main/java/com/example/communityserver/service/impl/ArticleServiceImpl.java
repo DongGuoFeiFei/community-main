@@ -2,10 +2,13 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleView;
+import com.example.communityserver.entity.request.AddArticleDto;
+import com.example.communityserver.entity.request.GetArticleListDto;
+import com.example.communityserver.entity.request.SearchParam;
 import com.example.communityserver.entity.response.ArticleCardVo;
 import com.example.communityserver.entity.response.ArticleDtlVo;
 import com.example.communityserver.entity.response.ArticleListVo;
@@ -49,13 +52,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private LikesMapper likesMapper;
 
-    @Override
-    public List<ArticleCardVo> getPostsCardVoList(String title) {
-
-
-        return postsMapper.getPostsCardVoList(title);
-
-    }
 
     @Override
     public List<ArticleCardVo> getPostsCardVoById(Long id) {
@@ -92,10 +88,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return postsMapper.insert(article) > 0;
     }
 
-    @Override
-    public List<ArticleListVo> getArticleList(String title, Integer status, String sortField, Boolean isAsc) {
-        return postsMapper.getArticleList(title, status, sortField, isAsc);
-    }
 
     @Override
     public boolean delById(Long id) {
@@ -120,6 +112,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo1, articleDtlVo);
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo2, articleDtlVo);
         return articleDtlVo;
+    }
+
+    @Override
+    public Page<ArticleCardVo> getPostsCardVoList(SearchParam param) {
+
+        Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
+
+        return postsMapper.getPostsCardVoList(page, param.getTitle());
+
+    }
+
+
+    @Override
+    public Page<ArticleListVo> getArticleList(GetArticleListDto dto) {
+
+        Page<ArticleListVo> page = new Page<>(dto.getPage(), dto.getSize());
+        return postsMapper.getArticleList(page, dto, SecurityUtils.getLoginUserId());
     }
 
 }

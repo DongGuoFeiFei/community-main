@@ -76,13 +76,13 @@ const menuData = ref([
       icon: 'el-icon-document'
     }
   },
-  {
-    path: '/user/dustbin',
-    meta: {
-      title: '垃圾箱',
-      icon: 'el-icon-edit-outline'
-    }
-  },
+  // {
+  //   path: '/user/dustbin',
+  //   meta: {
+  //     title: '垃圾箱',
+  //     icon: 'el-icon-edit-outline'
+  //   }
+  // },
   // {
   //   path: '/user/comments',
   //   meta: {

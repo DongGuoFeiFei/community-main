@@ -66,7 +66,6 @@ const handleMenuClick = (index) => {
 const handleDropdownClick = (command) => {
   switch (command) {
     case 'user':
-      // todo 目前先跳转导这里，后面更改
       router.push('/user/profile'); // 跳转到个人中心
       break;
     case 'settings':

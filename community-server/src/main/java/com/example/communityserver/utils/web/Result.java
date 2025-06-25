@@ -1,8 +1,6 @@
 package com.example.communityserver.utils.web;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,7 +12,8 @@ import java.util.List;
  * @author: DongGuo
  * @create: 2025-04-23
  **/
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Result<T> {
@@ -60,7 +59,8 @@ public class Result<T> {
         return new Result<>(200, "success", new PageData<>(total, rows));
     }
     // 分页数据类
-    @Data
+    @Getter
+    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PageData<T> {
