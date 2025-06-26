@@ -12,6 +12,17 @@ export const login = (data) => {
     });
 };
 
+
+// 刷新token
+export const refreshToken = () => {
+    return request.post("/auth/refreshToken").then(res => {
+        if (res.code === 200) {
+            return res;
+        } else {
+            throw new Error(res.msg);
+        }
+    })
+}
 export const getCaptcha = () => {
     return request.get('/auth/captcha');
 };

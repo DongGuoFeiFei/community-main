@@ -120,7 +120,7 @@ public class AuthController {
     }
 
     @ApiOperation("获取新的token")
-    @PostMapping("/newToken")
+    @PostMapping("/refreshToken")
     public Result<String> refreshToken() {
         return Result.success(JWTUtil.createToken(SecurityUtils.getLoginUserId()));
     }
