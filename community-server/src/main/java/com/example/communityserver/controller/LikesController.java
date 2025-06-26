@@ -25,7 +25,7 @@ public class LikesController {
 
     @ApiOperation("添加或改变当前文章的喜欢")
     @PutMapping("/addLike/{id}")
-    public Result addLike(@PathVariable Long id) {
+    public Result<Void> addLike(@PathVariable Long id) {
 
         return likesService.addLike(id)?Result.success():Result.error();
     }

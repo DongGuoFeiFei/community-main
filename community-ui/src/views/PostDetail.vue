@@ -233,7 +233,7 @@ const handleCollectSuccess = () => {
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  color: #fff; /* 默认白色，适配背景 */
+  color: #7e7e7e; /* 默认白色，适配背景 */
   font-size: 16px;
   margin-bottom: 20px;
   transition: color 0.3s;

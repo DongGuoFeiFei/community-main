@@ -13,6 +13,7 @@
         <span>个人中心</span>
       </div>
 
+<!--    todo 优化，可以收缩，  -->
       <!-- 动态生成菜单（目前只有一集菜单，有需要时在进行添加） -->
       <el-menu-item
           v-for="item in menuData"

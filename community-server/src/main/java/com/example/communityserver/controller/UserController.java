@@ -1,13 +1,13 @@
 package com.example.communityserver.controller;
 
 
-import com.example.communityserver.entity.request.UpdateUserInfo;
 import com.example.communityserver.entity.model.User;
+import com.example.communityserver.entity.request.UpdateUserInfo;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("/updateUserProfile")
     @ApiOperation("修改用户信息")
-    public Result updateUserProfile(@RequestBody UpdateUserInfo info) {
+    public Result<Void> updateUserProfile(@RequestBody UpdateUserInfo info) {
         User user = new User();
         user.setUserId(SecurityUtils.getLoginUserId());
         // TODO: 2025/5/10 密码验证，邮箱确认
@@ -43,7 +43,7 @@ public class UserController {
 
     @PostMapping("/updateUserCoverId")
     @ApiOperation("更换用户头像")
-    public Result updateUserCoverId(@RequestBody Long fileId) {
+    public Result<Void> updateUserCoverId(@RequestBody Long fileId) {
         Long loginUserId = SecurityUtils.getLoginUserId();
         User user = userService.getById(loginUserId);
         if (user.getFileId() > 10) {

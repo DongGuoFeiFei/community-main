@@ -43,8 +43,7 @@ public class FileController {
 
     @ApiOperation("通过文件id删除文件")
     @PostMapping("/delFileById/{id}")
-    public Result delFileById(@PathVariable Long id) {
-        System.out.println(id);
+    public Result<Void> delFileById(@PathVariable Long id) {
         // 判断发起人是否是文件上传者本人
         // 删除文件
         return fileService.delFileById(id) ? Result.success() : Result.error("未找到文件,删除失败");

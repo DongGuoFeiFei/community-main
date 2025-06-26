@@ -48,7 +48,7 @@ public class ArticleController {
 
     @ApiOperation("文章详情(打开一篇文章)")
     @GetMapping("/{id}")
-    public Result fetchPostsDetail(@PathVariable Long id) {
+    public Result<ArticleDtlVo> fetchPostsDetail(@PathVariable Long id) {
         ArticleDtlVo articleDtlVo = postsService.getArticleDtlVo(id);
         return articleDtlVo != null ? Result.success(articleDtlVo) : Result.error();
     }
@@ -63,13 +63,13 @@ public class ArticleController {
 
     @ApiOperation("添加文章")
     @PostMapping("/addArticle")
-    public Result addArticle(@RequestBody AddArticleDto dto) {
-        return postsService.addArticle(dto) ? Result.success("成功") : Result.error("失败");
+    public Result<Void> addArticle(@RequestBody AddArticleDto dto) {
+        return postsService.addArticle(dto) ? Result.success() : Result.error("失败");
     }
 
     @ApiOperation("更新文章")
     @PutMapping("/updateArticleDtl/{id}")
-    public Result updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
+    public Result<Void> updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
         Article article = new Article();
         article.setIsDrafts(updateDto.getStatus());
         article.setArticleId(id);

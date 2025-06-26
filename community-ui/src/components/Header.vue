@@ -9,7 +9,7 @@
           @select="handleMenuClick"
           class="nav-menu"
           background-color="transparent"
-          text-color="#fff"
+          text-color="#666"
           active-text-color="#ffd04b"
       >
         <el-menu-item index="card">发现</el-menu-item>
