@@ -62,9 +62,9 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
-import { collectArticle, createFolder, fetchFolders } from '@/api/collectApi'
+import {defineEmits, defineProps, ref, watch} from 'vue'
+import {ElMessage} from 'element-plus'
+import {collectArticle, createFolder, fetchFolders} from '@/api/collectApi'
 
 const props = defineProps({
   visible: {
@@ -77,7 +77,7 @@ const props = defineProps({
   }
 })
 
-console.log("props",props)
+console.log("props", props)
 
 const emit = defineEmits(['update:visible', 'success'])
 
@@ -107,11 +107,13 @@ const handleCreateFolder = async () => {
 
   try {
     isLoading.value = true
-    const res = await createFolder({ name: newFolderName.value })
+    const res = await createFolder({name: newFolderName.value})
+    console.log(res)
     folders.value.unshift({
       ...res.data,
       articleCount: 0
     })
+    console.log("folders.value", folders.value)
     selectedFolders.value.push(res.data.id)
     newFolderName.value = ''
     ElMessage.success('收藏夹创建成功')

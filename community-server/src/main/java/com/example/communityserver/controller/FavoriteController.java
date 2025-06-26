@@ -2,21 +2,22 @@ package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.model.UserFavorite;
+import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.FolderVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
 import com.example.communityserver.service.IFavoriteFolderService;
 import com.example.communityserver.service.IUserFavoriteService;
-import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class FavoriteController {
 
     @ApiOperation("收藏文章")
     @PostMapping
-    public Result<FavArticleVo> addFavArticle(@RequestBody AddFavoriteArticle param) {
+    public Result<FavArticleVo> addFavArticle(@RequestBody @Valid AddFavoriteArticle param) {
         FavArticleVo favArticleVo = userFavoriteService.addFavArticle(param);
         return favArticleVo != null ? Result.success(favArticleVo) : Result.error();
     }

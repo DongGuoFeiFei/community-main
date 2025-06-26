@@ -4,21 +4,21 @@
       <h2>我的通知</h2>
       <div class="actions">
         <el-button
-            type="text"
+            link
             :disabled="selectedIds.length === 0"
             @click="handleMarkSelectedAsRead"
         >
           标记已读
         </el-button>
         <el-button
-            type="text"
+            link
             :disabled="selectedIds.length === 0"
             @click="handleDeleteSelected"
         >
           删除
         </el-button>
         <el-button
-            type="text"
+            link
             @click="handleMarkAllAsRead"
         >
           全部已读
@@ -46,9 +46,9 @@
           style="margin-left: 15px"
           @change="fetchNotifications"
       >
-        <el-radio-button label="all">全部</el-radio-button>
-        <el-radio-button label="unread">未读</el-radio-button>
-        <el-radio-button label="read">已读</el-radio-button>
+        <el-radio-button value="all">全部</el-radio-button>
+        <el-radio-button value="unread">未读</el-radio-button>
+        <el-radio-button value="read">已读</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -88,14 +88,14 @@
           <template #default="{ row }">
             <el-button
                 size="small"
-                type="text"
+               link
                 @click.stop="handleMarkAsRead(row.notification_id)"
             >
               标记已读
             </el-button>
             <el-button
                 size="small"
-                type="text"
+                link
                 @click.stop="handleDelete(row.notification_id)"
             >
               删除

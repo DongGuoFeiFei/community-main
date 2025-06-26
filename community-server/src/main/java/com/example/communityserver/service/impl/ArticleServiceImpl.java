@@ -19,6 +19,8 @@ import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.utils.common.StringUtil;
+import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -118,9 +120,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public Page<ArticleCardVo> getPostsCardVoList(SearchParam param) {
 
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
-
-        return postsMapper.getPostsCardVoList(page, param.getTitle());
-
+        Page<ArticleCardVo> voPage = postsMapper.getPostsCardVoList(page, param.getTitle());
+        voPage.getRecords().forEach(articleCardVo -> {
+            String content = MarkDownUtils.toPlainText(articleCardVo.getContent());
+            articleCardVo.setContent(StringUtil.truncate(content, 100));
+        });
+        return voPage;
     }
 
 

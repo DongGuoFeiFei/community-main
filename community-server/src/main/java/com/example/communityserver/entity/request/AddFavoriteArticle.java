@@ -2,6 +2,8 @@ package com.example.communityserver.entity.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p>
  *
@@ -13,6 +15,8 @@ import lombok.Data;
 
 @Data
 public class AddFavoriteArticle {
+    @NotNull
     private Long articleId;
+    @NotNull
     private Long folderId;
 }

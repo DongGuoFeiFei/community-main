@@ -1,89 +1,101 @@
 <template>
   <div class="card-page">
-    <div class="toolbar">
-      <el-input
-          v-model="searchParam.title"
-          placeholder="搜索文章标题"
-          prefix-icon="ep:search"
-          @keyup.enter="loadPosts"
-          clearable
-          @clear="loadPosts"
-          class="search-input"
-      />
+    <!-- 骨架屏 -->
+    <div v-if="loading" class="skeleton-container">
+      <div v-for="i in skeletonCount" :key="`skeleton-${i}`" class="skeleton-card">
+        <div class="skeleton-cover"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-meta"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="post-list">
-      <el-card
-          v-for="post in posts"
-          :key="post.id"
-          class="post-card"
-          @click="goToDetail(post.id)"
-      >
-        <div class="card-content">
-          <el-image
-              v-if="post.cover"
-              :src="post.cover"
-              fit="cover"
-              class="cover"
-          />
-          <div v-else class="no-cover">无封面</div>
-          <div class="text-content">
-            <h3>{{ post.title }}</h3>
-            <p class="summary">{{ truncateSummary(post.summary) }}</p>
-            <div class="meta">
-              <span>作者：{{ post.author }}</span>
-              <span>{{ formatDate(post.date) }}</span>
+    <!-- 实际内容 -->
+    <div v-else>
+      <div class="toolbar">
+        <el-input
+            v-model="searchParam.title"
+            placeholder="搜索文章标题"
+            prefix-icon="ep:search"
+            @keyup.enter="loadPosts"
+            clearable
+            @clear="loadPosts"
+            class="search-input"
+        />
+      </div>
+
+      <div class="post-list">
+        <el-card
+            v-for="post in posts"
+            :key="post.id"
+            class="post-card"
+            @click="goToDetail(post.id)"
+        >
+          <div class="card-content">
+            <el-image
+                v-if="post.cover"
+                :src="post.cover"
+                fit="cover"
+                class="cover"
+                loading="lazy"
+            />
+            <div v-else class="no-cover">无封面</div>
+            <div class="text-content">
+              <h3>{{ post.title }}</h3>
+              <p class="summary">{{ truncateSummary(post.summary) }}</p>
+              <div class="meta">
+                <span>作者：{{ post.author }}</span>
+                <span>{{ formatDate(post.date) }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </el-card>
-    </div>
+        </el-card>
+      </div>
 
-    <el-pagination
-        v-model:current-page="searchParam.pageNum"
-        :page-size="searchParam.pageSize"
-        :total="total"
-        layout="prev, pager, next"
-        background
-        @current-change="loadPosts"
-        class="pagination"
-    />
+      <div class="pagination-container">
+        <el-pagination
+            v-model:current-page="searchParam.pageNum"
+            :page-size="searchParam.pageSize"
+            :total="total"
+            layout="prev, pager, next"
+            background
+            @current-change="loadPosts"
+            class="pagination"
+            :disabled="loading"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {fetchPosts} from '@/api'
-import MarkdownIt from "markdown-it";
-import {localStore} from "@/stores/localStores.js";
-
+import {fetchPosts} from '@/api/index.js' // 假设你已按照模块化组织API
+import {localStore} from "@/stores/localStores.js"
 
 const lStore = localStore()
-const md = new MarkdownIt({
-  html: true,        // 允许HTML标签
-  linkify: true,     // 自动转换URL为链接
-  typographer: true,  // 美化排版
-  breaks: true  // 换行转换为 <br>
-
-})
-const SANITIZE_CONFIG = {
-  ALLOWED_TAGS: [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'p', 'br', 'strong', 'em', 'blockquote',
-    'ul', 'ol', 'li', 'code', 'pre', 'a',
-    'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
-  ],
-  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel']
-}
 const router = useRouter()
-const posts = ref(null)
-const total = ref(0)
 const route = useRoute()
+
+// 数据状态
+const posts = ref([])
+const total = ref(0)
+const loading = ref(true)
+
+// 搜索参数
 const searchParam = reactive({
   title: '',
-  pageSize: 5,
+  pageSize: 8,
   pageNum: 1,
+})
+
+// 计算骨架屏数量，根据当前页面大小动态变化
+const skeletonCount = computed(() => {
+  return searchParam.pageSize
 })
 
 // 格式化日期
@@ -105,24 +117,33 @@ const goToDetail = (id) => {
 
 // 加载文章
 const loadPosts = async () => {
-  const res = await fetchPosts(searchParam)
-  posts.value = res.rows.map(item => ({
-    id: item.id,
-    title: item.title,
-    author: item.author,
-    summary: "",
-    date: item.date,
-    cover: item.cover ? lStore.baseURL + item.cover : null
-  }))
+  loading.value = true
+  try {
+    const res = await fetchPosts(searchParam)
+    posts.value = res.rows.map(item => ({
+      id: item.id,
+      title: item.title,
+      author: item.author,
+      summary: item.summary || "",
+      date: item.date,
+      cover: item.cover ? lStore.baseURL + item.cover : null
+    }))
+    total.value = res.total
 
-  total.value = res.total
-  // 更新URL但不触发重新加载
-  await router.replace({
-    query: {
-      page: searchParam.pageNum,
-      keyword: searchParam.title
-    }
-  })
+    console.log("posts.value ", posts.value)
+    // 更新URL但不触发重新加载
+    await router.replace({
+      query: {
+        page: searchParam.pageNum,
+        keyword: searchParam.title
+      }
+    })
+  } catch (error) {
+    console.error('加载文章失败:', error)
+    // 可以在这里添加错误处理，如显示错误提示
+  } finally {
+    loading.value = false
+  }
 }
 
 // 初始化时从路由读取页码
@@ -133,7 +154,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .card-page {
   padding: 20px;
   display: flex;
@@ -149,6 +170,7 @@ onMounted(() => {
   .search-input {
     width: 100%;
     height: 3vw;
+    min-height: 40px;
   }
 }
 
@@ -227,8 +249,79 @@ onMounted(() => {
   }
 }
 
-.pagination {
-  align-self: center;
+.pagination-container {
+  display: flex;
+  justify-content: center;
   margin-top: 16px;
+  width: 100%;
+}
+
+/* 骨架屏样式 */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-cover {
+  width: 160px;
+  height: 120px;
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 4px;
+}
+
+.skeleton-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 60%;
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+
+  &:nth-child(3) {
+    width: 80%;
+  }
+}
+
+.skeleton-meta {
+  height: 14px;
+  width: 40%;
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 </style>

@@ -56,8 +56,9 @@
   <CommentSection v-if="post" :postId="post.articleId"/>
 
   <CollectDialog
+      v-if="post"
       v-model:visible="collectDialogVisible"
-      :articleId="post?.articleId"
+      :articleId="post.articleId"
       @success="handleCollectSuccess"
   />
 </template>
@@ -75,7 +76,7 @@ import NProgress from "nprogress";
 import {localStore} from "@/stores/localStores.js";
 import LikeCollect from "@/components/LikeCollect.vue";
 import {addLike} from "@/api/likeApi.js";
-import {cancelCollect, collectArticle} from "@/api/collectApi.js";
+import {cancelCollect} from "@/api/collectApi.js";
 import CollectDialog from "@/components/CollectDialog.vue";
 
 const md = new MarkdownIt(

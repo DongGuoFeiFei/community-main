@@ -44,12 +44,17 @@ public class FavoriteFolderServiceImpl extends ServiceImpl<FavoriteFolderMapper,
         FavoriteFolder favoriteFolder = new FavoriteFolder();
         favoriteFolder.setFolderName(name);
         favoriteFolder.setUserId(SecurityUtils.getLoginUserId());
-        FolderVo folderVo = new FolderVo();
-        folderVo.setId(favoriteFolder.getFolderId());
-        folderVo.setName(favoriteFolder.getFolderName());
-        folderVo.setCreateAt(favoriteFolder.getCreatedAt());
-        folderVo.setArticleCount(0L);
-        return favoriteFolderMapper.insert(favoriteFolder) > 0 ? folderVo : null;
+
+        int insert = favoriteFolderMapper.insert(favoriteFolder);
+        if (insert>0){
+            FolderVo folderVo = new FolderVo();
+            folderVo.setId(favoriteFolder.getFolderId());
+            folderVo.setName(favoriteFolder.getFolderName());
+            folderVo.setCreateAt(favoriteFolder.getCreatedAt());
+            folderVo.setArticleCount(0L);
+            return folderVo;
+        }
+        return null;
     }
 
     @Override
