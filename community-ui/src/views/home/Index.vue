@@ -1,6 +1,7 @@
 <script setup lang="js">
 import Header from "@/components/Header.vue";
 import Card from "@/views/home/Card.vue";
+import Footer from "@/components/Footer.vue";
 </script>
 
 <template>
@@ -17,6 +18,9 @@ import Card from "@/views/home/Card.vue";
           </el-main>
           <el-aside width="200px"></el-aside>
         </el-container>
+        <el-footer>
+          <Footer/>
+        </el-footer>
       </el-container>
     </div>
     <div class="cloud-container"></div>

@@ -46,5 +46,5 @@ public class ArticleView {
      */
     private String deviceInfo;
 
-    private Long notificationId;
+//    private Long notificationId;
 }

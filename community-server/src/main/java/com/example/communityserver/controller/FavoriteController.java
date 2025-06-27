@@ -65,10 +65,7 @@ public class FavoriteController {
     @ApiOperation("取消文章收藏")
     @DeleteMapping("/{articleId}")
     public Result<Void> delFavArticle(@PathVariable Long articleId) {
-        LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(articleId != null, UserFavorite::getTargetId, articleId)
-                .eq(SecurityUtils.getLoginUserId() != null, UserFavorite::getUserId, SecurityUtils.getLoginUserId());
-        boolean remove = userFavoriteService.remove(queryWrapper);
+        boolean remove = userFavoriteService.removeFavorite(articleId);
         return remove ? Result.success() : Result.error();
 
     }

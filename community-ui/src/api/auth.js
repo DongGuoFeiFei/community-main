@@ -11,7 +11,15 @@ export const login = (data) => {
         }
     });
 };
-
+export const logout = () => {
+    return request.post('/auth/logout').then(res => {
+        if (res.code === 200) {
+            return res.data;
+        } else {
+            throw new Error(res.msg);
+        }
+    });
+};
 
 // 刷新token
 export const refreshToken = () => {

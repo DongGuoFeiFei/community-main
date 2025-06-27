@@ -34,11 +34,11 @@
           style="width: 150px"
           @change="fetchNotifications"
       >
-        <el-option label="点赞" value="like" />
-        <el-option label="评论" value="comment" />
-        <el-option label="回复" value="reply" />
-        <el-option label="关注" value="follow" />
-        <el-option label="系统" value="system" />
+        <el-option label="点赞" value="like"/>
+        <el-option label="评论" value="comment"/>
+        <el-option label="回复" value="reply"/>
+        <el-option label="关注" value="follow"/>
+        <el-option label="系统" value="system"/>
       </el-select>
 
       <el-radio-group
@@ -61,11 +61,15 @@
           @selection-change="handleSelectionChange"
           @row-click="handleRowClick"
       >
-        <el-table-column type="selection" width="50" />
+        <el-table-column type="selection" width="50"/>
 
         <el-table-column prop="type" label="类型" width="100">
           <template #default="{ row }">
-            <el-tag :type="getTagType(row.type)" size="small">
+            <el-tag
+                :type="getTagType(row.type)"
+                size="large"
+                :color="row.color"
+            >
               {{ getTypeText(row.type) }}
             </el-tag>
           </template>
@@ -84,21 +88,22 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button
                 size="small"
-                link
                 @click.stop="handleMarkAsRead(row.notificationId)"
+                circle
             >
-              标记已读
+              <el-icon><Check /></el-icon>
             </el-button>
             <el-button
                 size="small"
-                link
+                type="danger"
                 @click.stop="handleDelete(row.notificationId)"
+                circle
             >
-              删除
+              <el-icon><Delete /></el-icon>
             </el-button>
           </template>
         </el-table-column>
@@ -106,10 +111,10 @@
 
       <div class="pagination">
         <el-pagination
-            v-model:current-page="pagination.current"
-            v-model:page-size="pagination.size"
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
             :page-sizes="[10, 20, 30, 50]"
-            :total="pagination.total"
+            :total="total"
             layout="total, sizes, prev, pager, next, jumper"
             @size-change="handleSizeChange"
             @current-change="handlePageChange"
@@ -120,10 +125,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { Check, Delete } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
-import { getNotifications, markAsRead, deleteNotifications } from '@/api/notification';
+import { deleteNotifications, getNotifications, markAsRead } from '@/api/notification';
 import { sessionStore } from '@/stores/sessionStores';
 import { useRouter } from "vue-router";
 
@@ -139,12 +145,10 @@ const loading = ref(false);
 const filterType = ref(null);
 const filterReadStatus = ref('all');
 
-// 分页 - 使用 ref 替代 reactive
-const pagination = ref({
-  current: 1,
-  size: 10,
-  total: 0
-});
+// 分页
+const currentPage = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
 
 // 格式化日期时间
 const formatDateTime = (datetime) => {
@@ -196,18 +200,16 @@ const fetchNotifications = async () => {
   loading.value = true;
   try {
     const params = {
-      page: pagination.value.current,
-      size: pagination.value.size,
+      page: currentPage.value,
+      size: pageSize.value,
       type: filterType.value,
       isRead: filterReadStatus.value === 'all' ? null : filterReadStatus.value === 'read'
     };
 
-    console.log('Fetching notifications with params:', params); // 调试日志
-
     const res = await getNotifications(params);
     if (res.code === 200) {
-      notifications.value = res.rows;
-      pagination.value.total = res.total;
+      notifications.value = res.data.rows;
+      total.value = res.data.total || 0;
 
       // 更新未读数量
       await sStore.updateUnreadCount();
@@ -215,10 +217,10 @@ const fetchNotifications = async () => {
       throw new Error(res.msg || '获取通知列表失败');
     }
   } catch (error) {
-    console.error('Fetch notifications error:', error); // 错误日志
+    console.error('Fetch notifications error:', error);
     ElMessage.error('获取通知列表失败: ' + error.message);
-    // 出错时重置到第一页
-    pagination.value.current = 1;
+    currentPage.value = 1;
+    total.value = 0;
   } finally {
     loading.value = false;
   }
@@ -230,7 +232,10 @@ const handleSelectionChange = (selection) => {
 };
 
 // 处理行点击
-const handleRowClick = (row) => {
+const handleRowClick = (row, column) => {
+  // 忽略操作列的点击
+  if (column?.property === 'operation') return;
+
   // 标记为已读
   if (!row.isRead) {
     handleMarkAsRead(row.notificationId);
@@ -255,7 +260,7 @@ const handleRowClick = (row) => {
 // 标记为已读
 const handleMarkAsRead = async (id) => {
   try {
-    await markAsRead(id);
+    await markAsRead([id]);
     ElMessage.success('标记已读成功');
     await fetchNotifications();
   } catch (error) {
@@ -286,7 +291,11 @@ const handleMarkAllAsRead = async () => {
       type: 'warning'
     });
 
-    await markAsRead('all');
+    const unreadIds = notifications.value
+        .filter(item => !item.isRead)
+        .map(item => item.notificationId);
+
+    await markAsRead(unreadIds);
     ElMessage.success('所有通知已标记为已读');
     await fetchNotifications();
   } catch (error) {
@@ -305,7 +314,7 @@ const handleDelete = async (id) => {
       type: 'warning'
     });
 
-    await deleteNotifications(id);
+    await deleteNotifications([id]);
     ElMessage.success('删除成功');
     await fetchNotifications();
   } catch (error) {
@@ -320,7 +329,7 @@ const handleDeleteSelected = async () => {
   if (selectedIds.value.length === 0) return;
 
   try {
-    await ElMessageBox.confirm(`确定要删除选中的 ${selectedIds.value.length} 条通知吗？`, '提示', {
+    await ElMessageBox.confirm(`确定要删除选中的${selectedIds.value.length} 条通知吗？`, '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -339,18 +348,19 @@ const handleDeleteSelected = async () => {
 
 // 处理分页大小变化
 const handleSizeChange = (size) => {
-  pagination.value.size = size;
-  pagination.value.current = 1;  // 重置到第一页
+  pageSize.value = size;
+  currentPage.value = 1;
   fetchNotifications();
 };
 
 // 处理页码变化
 const handlePageChange = (page) => {
-  pagination.value.current = page;
+  currentPage.value = page;
   fetchNotifications();
 };
 
-onMounted(() => {
+// 在组件创建前预加载数据
+onBeforeMount(() => {
   fetchNotifications();
 });
 </script>
@@ -368,6 +378,13 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 20px;
 
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: #303133;
+  }
+
   .actions {
     display: flex;
     gap: 10px;
@@ -382,6 +399,7 @@ onMounted(() => {
 
 .notification-list {
   margin-top: 20px;
+  min-height: 400px;
 
   .notification-content {
     padding: 8px 0;
@@ -392,6 +410,7 @@ onMounted(() => {
 
     .content-main {
       margin-bottom: 4px;
+      line-height: 1.5;
     }
 
     .content-time {
@@ -404,7 +423,7 @@ onMounted(() => {
 .pagination {
   margin-top: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .user-link {
@@ -416,11 +435,29 @@ onMounted(() => {
   }
 }
 
-:deep(.el-table__row) {
-  cursor: pointer;
+/* 统一表格样式 */
+:deep(.el-table) {
+  .el-table__row {
+    transition: background-color 0.1s ease;
 
-  &:hover {
-    background-color: #f5f7fa;
+    &:hover {
+      background-color: #f5f7fa;
+    }
   }
+
+  .el-table__cell {
+    padding: 12px 0;
+  }
+
+  .el-table__header-wrapper {
+    th {
+      background-color: #f8f9fa;
+      font-weight: 500;
+    }
+  }
+}
+
+.el-button + .el-button {
+  margin-left: 8px;
 }
 </style>

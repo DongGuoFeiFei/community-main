@@ -27,4 +27,5 @@ public interface IUserFavoriteService extends IService<UserFavorite> {
 
     MoveFavoriteVo moveFavoriteVoResult(MoveFavoriteDto dto);
 
+    boolean removeFavorite(Long articleId);
 }

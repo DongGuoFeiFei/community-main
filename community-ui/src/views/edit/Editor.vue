@@ -235,8 +235,15 @@ const loading = ElLoading.service({
 });
 
 onMounted(() => {
+  // 使用 setTimeout 确保 DOM 完全加载
+  setTimeout(() => {
+    initEditor();
+  }, 100);
+});
+
+const initEditor = () => {
   vditorInstance.value = new Vditor("vditor", {
-    mode: "wysiwyg",
+    mode: "ir",
     height: 450,
     toolbarConfig: {
       pin: true,
@@ -255,7 +262,6 @@ onMounted(() => {
       headers: {
         'token': localStorage.getItem('token')
       },
-      // todo 研究是什么
       format: (files, responseText) => {
         const res = JSON.parse(responseText);
         if (res.code === 200) {
@@ -326,8 +332,7 @@ onMounted(() => {
       loading.close();
     },
   });
-});
-
+}
 
 </script>
 <style scoped>

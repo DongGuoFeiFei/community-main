@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.model.NotificationEntity;
 import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.request.AddFavoriteArticle;
 import com.example.communityserver.entity.request.GetUserFavoListParam;
@@ -11,13 +13,17 @@ import com.example.communityserver.entity.request.MoveFavoriteDto;
 import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
+import com.example.communityserver.mapper.ArticleMapper;
+import com.example.communityserver.mapper.NotificationEntityMapper;
 import com.example.communityserver.mapper.UserFavoriteMapper;
 import com.example.communityserver.mapping.FavoriteMapping;
+import com.example.communityserver.service.INotificationEntityService;
 import com.example.communityserver.service.IUserFavoriteService;
 import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -34,6 +40,13 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
     @Autowired
     private UserFavoriteMapper userFavoriteMapper;
 
+    @Autowired
+    private INotificationEntityService notificationEntityService;
+    @Autowired
+    private NotificationEntityMapper notificationEntityMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public FavArticleVo addFavArticle(AddFavoriteArticle param) {
@@ -47,6 +60,16 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
         if (insert > 0) {
             BeanUtils.copyProperties(userFavorite, favArticleVo);
             favArticleVo.setArticleId(userFavorite.getTargetId());
+
+            // 插入通知数据
+            NotificationEntity notificationEntity = new NotificationEntity();
+            Article article = articleMapper.selectById(param.getArticleId());
+            notificationEntity.setUserId(article.getUserId());
+            notificationEntity.setType(NotificationTypeEnum.FAVORITE);
+            notificationEntity.setParentSourceId(param.getArticleId());
+            notificationEntity.setSonSourceId(userFavorite.getFavoriteId());
+            notificationEntityService.save(notificationEntity);
+
         } else {
             favArticleVo = null;
         }
@@ -84,5 +107,17 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             }
         }
         return vo;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeFavorite(Long articleId) {
+        LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(articleId != null, UserFavorite::getTargetId, articleId)
+                .eq(SecurityUtils.getLoginUserId() != null, UserFavorite::getUserId, SecurityUtils.getLoginUserId());
+        UserFavorite userFavorite = userFavoriteMapper.selectOne(queryWrapper);
+        userFavoriteMapper.deleteById(userFavorite.getFavoriteId());
+        Integer integer = notificationEntityService.deleteNotification(userFavorite.getType(), userFavorite.getFavoriteId());
+        return integer > 0;
     }
 }

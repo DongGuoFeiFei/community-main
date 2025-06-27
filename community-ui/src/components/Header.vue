@@ -46,6 +46,7 @@ import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {localStore} from "@/stores/localStores.js";
 import {sessionStore} from "@/stores/sessionStores.js";
+import {logout} from "@/api/auth.js";
 
 const router = useRouter()
 const activeMenu = ref('home')
@@ -72,6 +73,7 @@ const handleDropdownClick = (command) => {
       router.push('/settings'); // 跳转到设置
       break;
     case 'logout':
+      logout();
       router.push("/login"); //
       break;
     default:

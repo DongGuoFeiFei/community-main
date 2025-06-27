@@ -32,8 +32,6 @@ public class NotificationEntityController {
     @Autowired
     private INotificationEntityService notificationEntityService;
 
-    // todo 数据库设计不合理，不完美
-    // TODO: 2025/6/27 通知表中的数据不够完善，需要添加发起者的id，通知删除不方便，将会触发通知的表格中添加对应的通知id，方便删除通知联系紧密的表格关联主键
     @ApiOperation("获取通知列表接口")
     @GetMapping
     public Result<Result.PageData<NotificationListVo>> getNotifications(@Valid GetNotificationsParam param) {

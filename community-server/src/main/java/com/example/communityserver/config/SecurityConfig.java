@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/auth/login",
                         "/auth/register",
                         "/auth/send-email",
+                        "/auth/captcha",
+                        "/auth/registerCode",
                         "/uploads/**",
                         "/swagger-ui.html",
                         "/doc.html",

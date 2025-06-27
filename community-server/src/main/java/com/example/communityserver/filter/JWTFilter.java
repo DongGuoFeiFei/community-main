@@ -28,6 +28,9 @@ public class JWTFilter extends OncePerRequestFilter {
     private static final List<String> WHITE_LIST = Arrays.asList(
             "/auth/login",
             "/auth/register",
+            "/auth/registerCode",
+            "/auth/send-email",
+            "/auth/captcha",
             "/auth/send-email",
             "/uploads/**"
     );
@@ -62,7 +65,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Long userId = JWTUtil.getUserId(token);
 
         // 6. 从redis获取用户信息
-        LoginUser loginUser = redisUtil.getCacheObject("user:" + userId);
+        LoginUser loginUser = redisUtil.getCacheObject("loginUserId" + userId);
         if (loginUser == null) {
             throw new RuntimeException("用户信息已过期，请重新登录");
         }

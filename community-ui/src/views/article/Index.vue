@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header.vue";
 import PostDetail from "@/views/article/PostDetail.vue";
+import Footer from "@/components/Footer.vue";
 </script>
 
 <template>
@@ -19,6 +20,9 @@ import PostDetail from "@/views/article/PostDetail.vue";
           <el-aside width="200px"></el-aside>
         </el-container>
       </el-container>
+      <el-footer>
+        <Footer/>
+      </el-footer>
     </div>
     <div class="cloud-container"></div>
   </div>

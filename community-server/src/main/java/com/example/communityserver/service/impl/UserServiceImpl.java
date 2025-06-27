@@ -42,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 获取authenticate中的LoginUser对象
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 把loginUser存入redis中
-        redisUtil.setCacheObject("user:" + loginUser.getUser().getUserId(), loginUser);
+        redisUtil.setCacheObject("loginUserId" + loginUser.getUser().getUserId(), loginUser);
         return JWTUtil.createToken(loginUser.getUser().getUserId());
     }
 

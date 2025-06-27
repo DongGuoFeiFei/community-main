@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Likes;
 import com.example.communityserver.entity.model.NotificationEntity;
-import com.example.communityserver.entity.request.IdsListParam;
+import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.mapper.NotificationEntityMapper;
 import com.example.communityserver.service.ILikesService;
@@ -15,8 +16,6 @@ import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -37,6 +36,9 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
     @Autowired
     private INotificationEntityService notificationEntityService;
 
+    @Autowired
+    private ArticleMapper articleMapper;
+
     @Override
     @Transactional
     public boolean addLike(Long id) {
@@ -52,9 +54,7 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
             LambdaUpdateWrapper<Likes> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.setSql("is_like = 1 - is_like");
             likesMapper.update(null, updateWrapper);
-            IdsListParam idsListParam = new IdsListParam(new ArrayList<>());
-            idsListParam.getIds().add(likes.getNotificationId());
-            notificationEntityService.deleteNotifications(idsListParam);
+            Integer del = notificationEntityService.deleteNotification(likes.getType(), likes.getLikeId());
             return true;
         } else {
             likes = new Likes();
@@ -68,10 +68,9 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
                 notificationEntity.setType(NotificationTypeEnum.LIKE);
                 notificationEntity.setParentSourceId(likes.getTargetId());
                 notificationEntity.setSonSourceId(likes.getLikeId());
-                notificationEntity.setUserId(SecurityUtils.getLoginUserId());
+                Article article = articleMapper.selectById(likes.getTargetId());
+                notificationEntity.setUserId(article.getUserId());
                 notificationEntityMapper.insert(notificationEntity);
-                likes.setNotificationId(notificationEntity.getNotificationId());
-                likesMapper.updateById(likes);
                 return true;
             }
         }

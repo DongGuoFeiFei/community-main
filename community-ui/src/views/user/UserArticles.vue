@@ -165,7 +165,7 @@ const baseUrl = lStore.baseURL // 根据你的实际后端地址调整
 
 // 格式化日期时间
 const formatDateTime = (datetime) => {
-  return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')
+  return dayjs(datetime).format('YYYY-MM-DD HH:mm')
 }
 
 // 获取文章列表

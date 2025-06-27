@@ -71,6 +71,27 @@ public class AuthController {
     /*
     注册新用户时，同步新建一个文章默认收藏夹
      */
+    @ApiOperation("生成验证码图片")
+    @GetMapping("/captcha")
+    public Result<CaptchaUtil.Captcha> getCaptcha() {
+        // 生成验证码
+        CaptchaUtil.Captcha captcha = CaptchaUtil.generate();
+
+        // 生成验证码key
+        String captchaKey = UUID.randomUUID().toString();
+
+        // 存储验证码到Redis，有效期5分钟
+        redisTemplate.opsForValue().set(
+                CacheKeyConstants.CAPTCHA_CODE + captchaKey,
+                captcha.getCode(),
+                5,
+                TimeUnit.MINUTES
+        );
+
+        // 返回验证码图片和key
+        return Result.success(new CaptchaUtil.Captcha(captchaKey, captcha.getImage()));
+    }
+
     @PostMapping("/login")
     private Result<LoginResponse> login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -95,7 +116,6 @@ public class AuthController {
         // 验证码验证通过后删除
         redisTemplate.delete(redisKey);
 
-
         // 此次获取的token
         String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -103,7 +123,7 @@ public class AuthController {
         loginResponse.setToken(token);
         Long userId = JWTUtil.getUserId(loginResponse.getToken());
         // 根据userId从redis中拿到loginUser数据
-        LoginUser loginUser = redisUtil.getCacheObject("user:" + userId);
+        LoginUser loginUser = redisUtil.getCacheObject("loginUserId" + userId);
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
         loginResponse.setExpiresIn((int) (3 * SystemConstants.ONE_DAY_MILLIS / 1000));
@@ -123,6 +143,14 @@ public class AuthController {
     @PostMapping("/refreshToken")
     public Result<String> refreshToken() {
         return Result.success(JWTUtil.createToken(SecurityUtils.getLoginUserId()));
+    }
+
+
+    @ApiOperation("退出登录")
+    @PostMapping("/logout")
+    public Result<Void> logout(){
+        redisUtil.deleteObject("loginUserId" + SecurityUtils.getLoginUserId());
+        return Result.success();
     }
 
     @ApiOperation("发送验证码")
@@ -168,27 +196,7 @@ public class AuthController {
         return Result.success();
     }
 
-    // 生成验证码图片
-    @ApiOperation("生成验证码图片")
-    @GetMapping("/captcha")
-    public Result<CaptchaUtil.Captcha> getCaptcha() {
-        // 生成验证码
-        CaptchaUtil.Captcha captcha = CaptchaUtil.generate();
 
-        // 生成验证码key
-        String captchaKey = UUID.randomUUID().toString();
-
-        // 存储验证码到Redis，有效期5分钟
-        redisTemplate.opsForValue().set(
-                CacheKeyConstants.CAPTCHA_CODE + captchaKey,
-                captcha.getCode(),
-                5,
-                TimeUnit.MINUTES
-        );
-
-        // 返回验证码图片和key
-        return Result.success(new CaptchaUtil.Captcha(captchaKey, captcha.getImage()));
-    }
 
 
 }

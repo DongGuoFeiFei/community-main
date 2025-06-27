@@ -28,7 +28,6 @@ public class CommentController {
     @Autowired
     private ICommentService commentService;
 
-
     /*
      * 两种获取评论区的数据方式
      * 一、获取评论区多层级树图

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.NotificationEntity;
 import com.example.communityserver.entity.request.GetNotificationsParam;
 import com.example.communityserver.entity.request.IdsListParam;
@@ -34,16 +35,24 @@ public class NotificationEntityServiceImpl extends ServiceImpl<NotificationEntit
     public IPage<NotificationListVo> getNotifications(GetNotificationsParam param) {
         Page<NotificationEntity> page = new Page<>(param.getPage(), param.getSize());
         LambdaQueryWrapper<NotificationEntity> queryWrapper = new LambdaQueryWrapper<>();
+        if (param.getType() != null) {
+            param.setType(param.getType().toUpperCase());
+        }
         queryWrapper
                 .eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId())
                 .eq(param.getType() != null, NotificationEntity::getType, param.getType())
-                .eq(param.getIsRead() != null, NotificationEntity::getIsRead, Boolean.TRUE.equals(param.getIsRead()) ? 1 : 0);
+                .eq(param.getIsRead() != null, NotificationEntity::getIsRead, Boolean.TRUE.equals(param.getIsRead()) ? 1 : 0)
+                .eq(NotificationEntity::getIsDel, 0)
+                .orderByDesc(NotificationEntity::getCreatedAt);
+
 
         Page<NotificationEntity> entityPage = notificationEntityMapper.selectPage(page, queryWrapper);
         IPage<NotificationListVo> voPage;
         voPage = entityPage.convert(entity -> {
             NotificationListVo vo = new NotificationListVo();
             BeanUtils.copyProperties(entity, vo);
+            vo.setType(entity.getType().getLabel());
+            vo.setColor(entity.getType().getColor());
             vo.setIsRead(entity.getIsRead() != null && entity.getIsRead() == 1);
             return vo;
         });
@@ -68,5 +77,15 @@ public class NotificationEntityServiceImpl extends ServiceImpl<NotificationEntit
                 .eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId())
                 .setSql("is_del = 1 - is_del");
         return notificationEntityMapper.update(null, updateWrapper);
+    }
+
+    @Override
+    public Integer deleteNotification(NotificationTypeEnum type, Long sonSourceId) {
+        LambdaUpdateWrapper<NotificationEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(type != null, NotificationEntity::getType, type)
+                .eq(sonSourceId != null, NotificationEntity::getSonSourceId, sonSourceId)
+                .setSql("is_del = 1 - is_del");
+        return notificationEntityMapper.update(null, updateWrapper);
+
     }
 }

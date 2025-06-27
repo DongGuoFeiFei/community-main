@@ -2,10 +2,10 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
-import com.example.communityserver.entity.request.AddCommentDto;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Comment;
 import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.request.AddCommentDto;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.ReplyVo;
 import com.example.communityserver.mapper.*;
@@ -43,7 +43,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public List<CommentVo> getCommentsById(Integer postId) {
-        return commentMapper.getCommentsById(postId);
+        List<CommentVo> voList = null;
+        voList = commentMapper.getCommentsById(postId);
+        // TODO: 2025/6/27 将评论数据放在redis中，再更新、删除、插入时移除redis数据，下次查询再添加
+
+        return voList;
     }
 
     @Transactional

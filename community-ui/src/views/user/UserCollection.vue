@@ -359,7 +359,7 @@ const submitFolderForm = async () => {
 
 // 确认删除收藏夹
 const confirmDeleteFolder = (folderId) => {
-  ElMessageBox.confirm('确定要删除这个收藏夹吗？收藏夹内的文章将移动到默认收藏夹。', '提示', {
+  ElMessageBox.confirm('确定要删除这个收藏夹吗？收藏夹内的文章将一并删除。', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

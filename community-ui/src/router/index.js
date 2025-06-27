@@ -63,13 +63,13 @@ const router = createRouter({
         {
             path: '/editor',
             name: 'editor',
-            component: () => import("@/views/edit/Editor.vue"),
+            component: () => import("@/views/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
-            component: () => import("@/views/edit/Editor.vue"),
+            component: () => import("@/views/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {

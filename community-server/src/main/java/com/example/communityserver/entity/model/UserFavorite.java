@@ -43,5 +43,5 @@ public class UserFavorite {
     @ApiModelProperty(value = "收藏类型", example = "ARTICLE")
     private NotificationTypeEnum type;
 
-    private Long notificationId;
+//    private Long notificationId;
 }

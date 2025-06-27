@@ -45,5 +45,5 @@ public class Likes {
     @ApiModelProperty(value = "点赞类型", example = "article", allowableValues = "comment,follow,article")
     private NotificationTypeEnum type;
 
-    private Long notificationId;
+//    private Long notificationId;
 }
