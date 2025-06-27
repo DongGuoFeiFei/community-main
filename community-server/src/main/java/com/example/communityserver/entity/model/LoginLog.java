@@ -43,4 +43,6 @@ public class LoginLog {
 
     @ApiModelProperty(value = "登录地点", example = "中国北京")
     private String loginLocation;
+
+    private String deviceInfo;
 }

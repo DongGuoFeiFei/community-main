@@ -3,6 +3,7 @@ package com.example.communityserver.entity.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,7 +31,7 @@ public class NotificationEntity {
     @ApiModelProperty(value = "接收通知的用户ID", example = "1001")
     private Long userId;
     @ApiModelProperty(value = "通知类型", example = "like")
-    private String type;
+    private NotificationTypeEnum type;
     @ApiModelProperty(value = "触发通知的接收ID（被评论者）（如点赞ID、评论ID）", example = "1001")
     private Long parentSourceId;
     @ApiModelProperty(value = "触发通知的发起ID（评论者）（如点赞ID、评论ID）", example = "1001")
@@ -40,4 +41,5 @@ public class NotificationEntity {
     @ApiModelProperty(value = "通知时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
+    private Integer isDel;
 }

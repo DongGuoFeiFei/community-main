@@ -46,4 +46,6 @@ public class Comment {
     @ApiModelProperty(value = "评论时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
+
+    private Long notificationId;
 }

@@ -15,12 +15,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum NotificationTypeEnum {
-
     LIKE("like"),
     COMMENT("comment"),
+    ARTICLE("article"),
     FOLLOW("follow"),
     SYSTEM("system"),
+    FAVORITE("favorite"),
     REPLY("reply");
-
     private final String value;
 }

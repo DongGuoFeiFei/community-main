@@ -3,11 +3,11 @@ package com.example.communityserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.request.AddFavoriteArticle;
 import com.example.communityserver.entity.request.GetUserFavoListParam;
 import com.example.communityserver.entity.request.MoveFavoriteDto;
-import com.example.communityserver.entity.enums.FavoriteTypeEnum;
-import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
@@ -38,14 +38,15 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
     @Override
     public FavArticleVo addFavArticle(AddFavoriteArticle param) {
         UserFavorite userFavorite = new UserFavorite();
-        userFavorite.setArticleId(param.getArticleId());
+        userFavorite.setTargetId(param.getArticleId());
         userFavorite.setFolderId(param.getFolderId());
         userFavorite.setUserId(SecurityUtils.getLoginUserId());
-        userFavorite.setType(FavoriteTypeEnum.ARTICLE);
+        userFavorite.setType(NotificationTypeEnum.ARTICLE);
         int insert = userFavoriteMapper.insert(userFavorite);
         FavArticleVo favArticleVo = new FavArticleVo();
         if (insert > 0) {
             BeanUtils.copyProperties(userFavorite, favArticleVo);
+            favArticleVo.setArticleId(userFavorite.getTargetId());
         } else {
             favArticleVo = null;
         }
@@ -65,7 +66,7 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
         MoveFavoriteVo vo = new MoveFavoriteVo();
         LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SecurityUtils.getLoginUserId() != null, UserFavorite::getUserId, SecurityUtils.getLoginUserId())
-                .eq(dto.getArticleId() != null, UserFavorite::getArticleId, dto.getArticleId())
+                .eq(dto.getArticleId() != null, UserFavorite::getTargetId, dto.getArticleId())
                 .eq(dto.getActiveFolderId() != null, UserFavorite::getFolderId, dto.getActiveFolderId());
         UserFavorite userFavorite = userFavoriteMapper.selectOne(queryWrapper);
         if (userFavorite != null) {
@@ -73,7 +74,7 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             if (delete > 0) {
                 userFavorite.setFavoriteId(null);
                 userFavorite.setFolderId(dto.getFolderId());
-                userFavorite.setType(FavoriteTypeEnum.ARTICLE);
+                userFavorite.setType(NotificationTypeEnum.ARTICLE);
                 int insert = userFavoriteMapper.insert(userFavorite);
                 if (insert > 0) {
                     FavoriteMapping.INSTANCE.updateMoveVoFromUserFavorite(userFavorite, vo);

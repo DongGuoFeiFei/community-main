@@ -35,7 +35,7 @@
     </div>
 
     <div class="illustration">
-      <img src="@/assets/images/404-illustration.png" alt="404 illustration">
+      <img src="../../assets/images/404-illustration.png" alt="404 illustration">
     </div>
   </div>
 </template>

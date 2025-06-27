@@ -73,12 +73,12 @@
 
         <el-table-column prop="content" label="内容" min-width="300">
           <template #default="{ row }">
-            <div class="notification-content" :class="{ 'unread': !row.is_read }">
+            <div class="notification-content" :class="{ 'unread': !row.isRead }">
               <div class="content-main">
                 <span v-html="renderContent(row)"></span>
               </div>
               <div class="content-time">
-                {{ formatDateTime(row.created_at) }}
+                {{ formatDateTime(row.createdAt) }}
               </div>
             </div>
           </template>
@@ -88,15 +88,15 @@
           <template #default="{ row }">
             <el-button
                 size="small"
-               link
-                @click.stop="handleMarkAsRead(row.notification_id)"
+                link
+                @click.stop="handleMarkAsRead(row.notificationId)"
             >
               标记已读
             </el-button>
             <el-button
                 size="small"
                 link
-                @click.stop="handleDelete(row.notification_id)"
+                @click.stop="handleDelete(row.notificationId)"
             >
               删除
             </el-button>
@@ -120,12 +120,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import dayjs from 'dayjs';
 import { getNotifications, markAsRead, deleteNotifications } from '@/api/notification';
 import { sessionStore } from '@/stores/sessionStores';
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const sStore = sessionStore();
@@ -139,8 +139,8 @@ const loading = ref(false);
 const filterType = ref(null);
 const filterReadStatus = ref('all');
 
-// 分页
-const pagination = reactive({
+// 分页 - 使用 ref 替代 reactive
+const pagination = ref({
   current: 1,
   size: 10,
   total: 0
@@ -177,7 +177,7 @@ const getTagType = (type) => {
 
 // 渲染通知内容
 const renderContent = (notification) => {
-  const { type, son_source_id: sourceId } = notification;
+  const { type, sonSourceId: sourceId } = notification;
   const userLink = `<a href="/user/${sourceId}" class="user-link">用户${sourceId}</a>`;
 
   const contents = {
@@ -196,24 +196,29 @@ const fetchNotifications = async () => {
   loading.value = true;
   try {
     const params = {
-      page: pagination.current,
-      size: pagination.size,
+      page: pagination.value.current,
+      size: pagination.value.size,
       type: filterType.value,
       isRead: filterReadStatus.value === 'all' ? null : filterReadStatus.value === 'read'
     };
 
+    console.log('Fetching notifications with params:', params); // 调试日志
+
     const res = await getNotifications(params);
     if (res.code === 200) {
       notifications.value = res.rows;
-      pagination.total = res.total;
+      pagination.value.total = res.total;
 
       // 更新未读数量
-      sStore.updateUnreadCount();
+      await sStore.updateUnreadCount();
     } else {
       throw new Error(res.msg || '获取通知列表失败');
     }
   } catch (error) {
+    console.error('Fetch notifications error:', error); // 错误日志
     ElMessage.error('获取通知列表失败: ' + error.message);
+    // 出错时重置到第一页
+    pagination.value.current = 1;
   } finally {
     loading.value = false;
   }
@@ -221,14 +226,14 @@ const fetchNotifications = async () => {
 
 // 处理选择变化
 const handleSelectionChange = (selection) => {
-  selectedIds.value = selection.map(item => item.notification_id);
+  selectedIds.value = selection.map(item => item.notificationId);
 };
 
 // 处理行点击
 const handleRowClick = (row) => {
   // 标记为已读
-  if (!row.is_read) {
-    handleMarkAsRead(row.notification_id);
+  if (!row.isRead) {
+    handleMarkAsRead(row.notificationId);
   }
 
   // 根据类型跳转到相应页面
@@ -236,10 +241,10 @@ const handleRowClick = (row) => {
     case 'like':
     case 'comment':
     case 'reply':
-      router.push(`/article/${row.parent_source_id}`);
+      router.push(`/article/${row.parentSourceId}`);
       break;
     case 'follow':
-      router.push(`/user/${row.son_source_id}`);
+      router.push(`/user/${row.sonSourceId}`);
       break;
     default:
       // 系统消息或其他类型不做跳转
@@ -266,7 +271,7 @@ const handleMarkSelectedAsRead = async () => {
     await markAsRead(selectedIds.value);
     ElMessage.success(`已成功标记 ${selectedIds.value.length} 条通知为已读`);
     selectedIds.value = [];
-    fetchNotifications();
+    await fetchNotifications();
   } catch (error) {
     ElMessage.error('标记已读失败: ' + error.message);
   }
@@ -281,10 +286,9 @@ const handleMarkAllAsRead = async () => {
       type: 'warning'
     });
 
-    // 这里可以调用API标记所有为已读，或者根据实际情况处理
     await markAsRead('all');
     ElMessage.success('所有通知已标记为已读');
-    fetchNotifications();
+    await fetchNotifications();
   } catch (error) {
     if (error !== 'cancel') {
       ElMessage.error('标记全部已读失败: ' + error.message);
@@ -303,7 +307,7 @@ const handleDelete = async (id) => {
 
     await deleteNotifications(id);
     ElMessage.success('删除成功');
-    fetchNotifications();
+    await fetchNotifications();
   } catch (error) {
     if (error !== 'cancel') {
       ElMessage.error('删除失败: ' + error.message);
@@ -325,7 +329,7 @@ const handleDeleteSelected = async () => {
     await deleteNotifications(selectedIds.value);
     ElMessage.success(`已删除 ${selectedIds.value.length} 条通知`);
     selectedIds.value = [];
-    fetchNotifications();
+    await fetchNotifications();
   } catch (error) {
     if (error !== 'cancel') {
       ElMessage.error('删除失败: ' + error.message);
@@ -335,14 +339,14 @@ const handleDeleteSelected = async () => {
 
 // 处理分页大小变化
 const handleSizeChange = (size) => {
-  pagination.size = size;
-  pagination.current = 1;
+  pagination.value.size = size;
+  pagination.value.current = 1;  // 重置到第一页
   fetchNotifications();
 };
 
 // 处理页码变化
 const handlePageChange = (page) => {
-  pagination.current = page;
+  pagination.value.current = page;
   fetchNotifications();
 };
 

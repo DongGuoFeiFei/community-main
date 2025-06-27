@@ -1,6 +1,7 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.request.AddCommentDto;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Comment;
@@ -65,12 +66,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         NotificationEntity notificationEntity = new NotificationEntity();
         if (comment.getParentId() != null) { // 回复
             Comment parentComment = commentMapper.selectById(comment.getParentId());
-            notificationEntity.setType("reply");
+            notificationEntity.setType(NotificationTypeEnum.REPLY);
             notificationEntity.setUserId(parentComment.getUserId());
             notificationEntity.setParentSourceId(parentComment.getCommentId());
         } else { // 评论
             Article article = articleMapper.selectById(comment.getArticleId());
-            notificationEntity.setType("comment");
+            notificationEntity.setType(NotificationTypeEnum.COMMENT);
             notificationEntity.setUserId(article.getUserId());
             notificationEntity.setParentSourceId(article.getArticleId());
         }

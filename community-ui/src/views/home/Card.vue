@@ -74,7 +74,7 @@
 <script setup>
 import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {fetchPosts} from '@/api/index.js' // 假设你已按照模块化组织API
+import {fetchPosts} from '@/api/index.js'
 import {localStore} from "@/stores/localStores.js"
 
 const lStore = localStore()

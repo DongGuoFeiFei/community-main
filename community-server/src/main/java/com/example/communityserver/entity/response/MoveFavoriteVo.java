@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 public class MoveFavoriteVo {
     private Long id;
+
     private Long articleId;
     private Date createdAt;
     private Long folderId;

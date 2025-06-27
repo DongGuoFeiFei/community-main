@@ -1,0 +1,31 @@
+package com.example.communityserver.mapping;
+
+import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.response.NotificationListVo;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+
+/**
+ * <p>
+ * TODO
+ * <p>
+ *
+ * @author: DongGuo
+ * @create: 2025-06-26
+ **/
+
+@Mapper
+public interface NotificationMapping {
+    NotificationMapping INSTANCE = Mappers.getMapper(NotificationMapping.class);
+
+    @Mapping(target = "isRead", source = "isRead", qualifiedByName = "intToBoolean")
+    void toNotificationListVo(NotificationEntity entity, @MappingTarget NotificationListVo vo);
+
+    @Named("intToBoolean")
+    default Boolean intToBoolean(Integer value) {
+        return value != null && value == 1;
+    }
+}

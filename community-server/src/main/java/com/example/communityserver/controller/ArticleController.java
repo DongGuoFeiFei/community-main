@@ -40,7 +40,6 @@ public class ArticleController {
     @GetMapping
     public TableDataInfo fetchPosts(SearchParam param) {
         Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
-        System.out.println(page.getRecords().get(0).getContent());
         TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setCode(200);
         tableDataInfo.setMsg("成功");

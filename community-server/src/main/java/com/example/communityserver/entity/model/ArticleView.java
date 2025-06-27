@@ -45,4 +45,6 @@ public class ArticleView {
      * 设备信息（如：Mozilla/5.0 (Windows NT 10.0...)）
      */
     private String deviceInfo;
+
+    private Long notificationId;
 }

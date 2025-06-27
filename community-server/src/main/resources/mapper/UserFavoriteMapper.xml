@@ -20,7 +20,7 @@
         FROM
         user_favorites uf
         JOIN
-        article a ON uf.article_id = a.article_id
+        article a ON uf.target_id = a.article_id
         LEFT JOIN
         file f ON a.file_id = f.file_id
         JOIN

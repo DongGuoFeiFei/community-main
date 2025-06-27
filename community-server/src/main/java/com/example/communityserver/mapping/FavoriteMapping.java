@@ -25,6 +25,7 @@ public interface FavoriteMapping {
     FavoriteMapping INSTANCE = Mappers.getMapper(FavoriteMapping.class);
 
     @Mapping(source = "favoriteId", target = "id")
+    @Mapping(source = "targetId", target = "articleId")
     void updateMoveVoFromUserFavorite(UserFavorite source, @MappingTarget MoveFavoriteVo target);
 
 }

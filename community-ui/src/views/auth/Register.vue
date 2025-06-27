@@ -49,7 +49,7 @@
 import {computed, onUnmounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
-import {getEmailCode, register} from '../api/auth';
+import {getEmailCode, register} from '../../api/auth.js';
 
 const router = useRouter();
 const loading = ref(false);

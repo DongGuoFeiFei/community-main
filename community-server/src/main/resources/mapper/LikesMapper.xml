@@ -9,13 +9,13 @@
                 WHERE target_id = #{articleId}
                   AND type = 'article'
                   and is_like = 1)                                                             AS likeCount,
-               (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE article_id = #{articleId}) AS collectCount,
+               (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE target_id = #{articleId}) AS collectCount,
                IFNULL((SELECT is_like
                        FROM likes
                        WHERE target_id = #{articleId}
                          AND user_id = #{userId}
                          AND type = 'article'), 0)                                             AS isLiked,
-               (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE article_id = #{articleId} AND user_id = #{userId}) >
+               (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE target_id = #{articleId} AND user_id = #{userId}) >
                0                                                                               AS isCollected
     </select>
 

@@ -1,7 +1,7 @@
 // router/sessionStores.js
 
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '../views/Index.vue'
+import Index from '../views/home/Index.vue'
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
 
@@ -15,7 +15,7 @@ const router = createRouter({
         {
             path: '/register',
             name: 'Register',
-            component: () => import('@/views/Register.vue'),
+            component: () => import('@/views/auth/Register.vue'),
             meta: {
                 requiresAuth: false,
                 title: '注册'
@@ -24,7 +24,7 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component: () => import("@/views/Login.vue"),
+            component: () => import("@/views/auth/Login.vue"),
             meta: {
                 requiresAuth: false,
                 title: '登录'
@@ -33,7 +33,7 @@ const router = createRouter({
         {
             path: '/forgot-password',
             name: 'ForgotPassword',
-            component: () => import('@/views/ForgotPassword.vue'),
+            component: () => import('@/views/auth/ForgotPassword.vue'),
             meta: {
                 requiresAuth: false,
                 title: '找回密码'
@@ -50,26 +50,26 @@ const router = createRouter({
                 {
                     path: 'index',
                     name: 'card',
-                    component: () => import("@/views/Card.vue"),
+                    component: () => import("@/views/home/Card.vue"),
+                },
 
-                },
-                {
-                    path: 'index/article/:id',
-                    name: 'article',
-                    component: () => import("@/views/PostDetail.vue"),
-                },
             ]
+        },
+        {
+            path: '/index/article/:id',
+            name: 'article',
+            component: () => import("@/views/article/Index.vue"),
         },
         {
             path: '/editor',
             name: 'editor',
-            component: () => import("@/views/Editor.vue"),
+            component: () => import("@/views/edit/Editor.vue"),
             meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
-            component: () => import("@/views/Editor.vue"),
+            component: () => import("@/views/edit/Editor.vue"),
             meta: {requiresAuth: true}
         },
         {
@@ -124,7 +124,7 @@ const router = createRouter({
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
-            component: () => import("@/views/NotFound.vue"),
+            component: () => import("@/views/auth/NotFound.vue"),
             meta: {
                 title: '404 - 页面未找到'
             }
