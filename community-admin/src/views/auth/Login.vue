@@ -101,13 +101,13 @@ const handleLogin = () => {
       } else {
         ElMessage.error(res?.msg || '登录失败');
         // 登录失败刷新验证码
-        refreshCaptcha();
+        await refreshCaptcha();
       }
     } catch (error) {
       console.error('登录出错:', error);
       ElMessage.error(error.response?.data?.msg || '登录失败，请检查用户名或密码');
       // 登录失败刷新验证码
-      refreshCaptcha();
+      await refreshCaptcha();
     } finally {
       loading.value = false;
     }

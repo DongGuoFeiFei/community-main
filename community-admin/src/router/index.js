@@ -1,7 +1,6 @@
 // router/sessionStores.js
 
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '@/views/pages/views/home/Index.vue'
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
 
@@ -10,7 +9,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/index',
+            redirect: '/admin',
         },
         {
             path: '/register',

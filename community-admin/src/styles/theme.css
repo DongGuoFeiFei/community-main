@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+    padding: 0;
+    /*background: radial-gradient(circle at 15% 50%, #409EFF 0%, #B8E1FF 70%, #FFF 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #636E72 0%, #B2BEC3 70%, #FFFFFF 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #E8F5E9 0%, #C8E6C9 70%, #FFFFFF 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #FAFAFA 0%, #EEEEEE 70%, #FFFFFF 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #f5f5f5 0%, #fafafa 70%, #ffffff 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #f8f4e8 0%, #fcfaf5 70%, #ffffff 100%);*/
+    background: radial-gradient(circle at 15% 50%, #f0f5ff 0%, #f7faff 70%, #ffffff 100%);
+    /*background: radial-gradient(circle at 15% 50%, #e0e0e0 0%, #f0f0f0 70%, #ffffff 100%);*/
+    /*background: radial-gradient(circle at 15% 50%, #fff5f5 0%, #fffafa 70%, #ffffff 100%);*/
+    font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 全局高度设置（确保在App.vue中已设置） */
+html, body, #app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 全局样式或组件样式 */
+#nprogress {
+    pointer-events: none;
+}
+
+#nprogress .bar {
+    background: #409eff; /* 使用Element Plus的主色 */
+    position: fixed;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+}
+
+#nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0px;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 10px #409eff, 0 0 5px #409eff;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* 如果显示spinner */
+#nprogress .spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031;
+    top: 15px;
+    right: 15px;
+}
+
+#nprogress .spinner-icon {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+    border-top-color: #409eff;
+    border-left-color: #409eff;
+    border-radius: 50%;
+    animation: nprogress-spinner 400ms linear infinite;
+}
+
+
+.clouds {
+    position: fixed;
+    left: -50px;
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg t='1745743807331' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='1927' width='200' height='200'%3E%3Cpath d='M686.8992 277.2992c-67.6864 0-128.6144 28.672-171.4176 74.4448-22.9376-26.4192-56.832-43.1104-94.5152-43.1104-69.12 0-125.1328 56.0128-125.1328 125.1328v3.1744c-42.9056 8.704-79.36 34.9184-101.6832 70.8608h-74.752c-9.4208 0-17.1008 7.68-17.1008 17.1008s7.68 17.1008 17.1008 17.1008H358.4c9.4208 0 17.1008-7.68 17.1008-17.1008s-7.68-17.1008-17.1008-17.1008H236.8512c17.408-19.0464 40.5504-32.256 65.8432-37.376l28.0576-5.7344-0.7168-28.5696v-2.2528c0-50.176 40.8576-91.0336 91.0336-91.0336 26.4192 0 51.4048 11.4688 68.8128 31.4368l24.8832 28.5696 25.9072-27.648c18.6368-19.8656 40.5504-35.5328 65.3312-46.4896 25.6-11.3664 52.9408-17.1008 81.2032-17.1008 53.5552 0 103.936 20.8896 141.824 58.7776S887.808 458.6496 887.808 512.2048s-20.8896 103.936-58.7776 141.824-88.2688 58.7776-141.824 58.7776H119.5008c-9.4208 0-17.1008 7.68-17.1008 17.1008s7.68 17.1008 17.1008 17.1008h567.3984C816.5376 746.7008 921.6 641.6384 921.6 512S816.5376 277.2992 686.8992 277.2992z' p-id='1928'%3E%3C/path%3E%3Cpath d='M187.6992 610.0992c-9.4208 0-17.1008 7.68-17.1008 17.1008s7.68 17.1008 17.1008 17.1008h238.8992c9.4208 0 17.1008-7.68 17.1008-17.1008s-7.68-17.1008-17.1008-17.1008H187.6992z' p-id='1929'%3E%3C/path%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0;
+    animation: floatHorizontal 15s linear infinite;
+    z-index: 1000;
+}
+
+@keyframes floatHorizontal {
+    0% {
+        transform: translateX(-100%) translateY(20vh); /* 移除了 rotate(0deg) */
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(100vw) translateY(10vh); /* 移除了 rotate(360deg) */
+        opacity: 0;
+    }
+}

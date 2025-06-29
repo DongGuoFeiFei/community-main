@@ -1,7 +1,8 @@
 // api/index.js
-import request from '../../../community-ui/src/utils/request.js';
 
 
+
+import request from "@/utils/request.js";
 
 export const fetchPosts = (params) => {
     return request.get('/posts', {params}).then(res => {
