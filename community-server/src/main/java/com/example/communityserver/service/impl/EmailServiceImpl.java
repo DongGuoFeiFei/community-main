@@ -19,6 +19,8 @@ import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -121,6 +123,26 @@ public class EmailServiceImpl implements IEmailService {
         }
 
         return isValid;
+    }
+
+    public String getEmailGravatarUrl(String email) {
+        try {
+            // 计算邮箱的MD5哈希值
+            String hash = md5Hex(email.trim().toLowerCase());
+            return "https://www.gravatar.com/avatar/" + hash + "?d=identicon";
+        } catch (Exception e) {
+            return "https://www.gravatar.com/avatar/?d=identicon";
+        }
+    }
+
+    private String md5Hex(String input) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] digest = md.digest(input.getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
     /**

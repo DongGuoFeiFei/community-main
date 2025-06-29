@@ -1,182 +1,145 @@
 <template>
-  <div class="layout-container">
-    <!-- 左侧菜单栏 -->
-    <el-menu
-        class="el-menu-vertical"
-        :default-active="activeMenu"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-    >
-      <!-- 菜单顶部Logo/标题 -->
-      <div class="menu-logo">
-        <span>个人中心</span>
-      </div>
-
-<!--    todo 优化，可以收缩，  -->
-      <!-- 动态生成菜单（目前只有一集菜单，有需要时在进行添加） -->
-      <el-menu-item
-          v-for="item in menuData"
-          :key="item.path"
-          :index="item.path"
-          @click="handleMenuSelect(item)"
+  <div class="user-header">
+    <div class="nav-menu">
+      <el-menu
+          mode="horizontal"
+          :default-active="activeMenu"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
       >
-        <el-icon>
-          <component :is="item.meta.iconComponent"/>
-        </el-icon>
-        <span>{{ item.meta.title }}</span>
-      </el-menu-item>
-    </el-menu>
+        <el-menu-item
+            v-for="item in menuData"
+            :key="item.path"
+            :index="item.path"
+            @click="handleMenuSelect(item)"
+        >
+          <el-icon>
+            <component :is="item.meta.iconComponent"/>
+          </el-icon>
+          <span>{{ item.meta.title }}</span>
+        </el-menu-item>
+      </el-menu>
+    </div>
+
+    <div class="user-actions">
+      <el-dropdown trigger="click" @command="handleDropdownClick">
+        <div class="user-dropdown-trigger">
+          <span class="username">{{ lStore.userInfo.userInfo.nickname }}</span>
+          <el-avatar :size="40" :src="lStore.baseURL + lStore.userInfo.avatarUrl"/>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="index">返回首页</el-dropdown-item>
+            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
+import { localStore } from '@/stores/localStores'
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import {
+  User as ElIconUser,
+  Document as ElIconDocument,
+  Star as ElIconStar,
+  Bell as ElIconBell
+} from '@element-plus/icons-vue'
 
+const lStore = localStore()
 const router = useRouter()
 const route = useRoute()
-// 响应式状态
-const activeMenu = ref('/user/profile')
-activeMenu.value = route.path
-const props = defineProps({
-  isCollapse: {
-    type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(["changeCollapse"])
 
-// 菜单数据 - 个人中心相关功能
+const activeMenu = ref('/user/profile')
+watch(() => route.path, (newPath) => {
+  activeMenu.value = newPath
+}, { immediate: true })
+
 const menuData = ref([
-  // {
-  //   path: '/user/dashboard',
-  //   meta: {
-  //     title: '仪表板',
-  //     icon: 'el-icon-s-data' // 或者 'el-icon-monitor'
-  //   }
-  // },
   {
     path: '/user/profile',
     meta: {
       title: '个人信息',
-      icon: 'el-icon-user'
+      iconComponent: ElIconUser
     }
   },
-  // {
-  //   path: '/user/account',
-  //   meta: {
-  //     title: '账号安全',
-  //     icon: 'el-icon-lock'
-  //   }
-  // },
   {
     path: '/user/articles',
     meta: {
       title: '我的文章',
-      icon: 'el-icon-document'
+      iconComponent: ElIconDocument
     }
   },
-  // {
-  //   path: '/user/dustbin',
-  //   meta: {
-  //     title: '垃圾箱',
-  //     icon: 'el-icon-edit-outline'
-  //   }
-  // },
-  // {
-  //   path: '/user/comments',
-  //   meta: {
-  //     title: '我的评论',
-  //     icon: 'el-icon-chat-dot-round'
-  //   }
-  // },
   {
     path: '/user/collections',
     meta: {
       title: '我的收藏',
-      icon: 'el-icon-star-off'
+      iconComponent: ElIconStar
     }
   },
-  // {
-  //   path: '/user/likes',
-  //   meta: {
-  //     title: '我的点赞',
-  //     icon: 'el-icon-thumb'
-  //   }
-  // },
-  // {
-  //   path: '/user/follows',
-  //   meta: {
-  //     title: '关注/粉丝',
-  //     icon: 'el-icon-connection'
-  //   }
-  // },
   {
     path: '/user/notifications',
     meta: {
       title: '消息通知',
-      icon: 'el-icon-bell'
+      iconComponent: ElIconBell
     }
-  },
-  // {
-  //   path: '/user/settings',
-  //   meta: {
-  //     title: '个人设置',
-  //     icon: 'el-icon-setting'
-  //   }
-  // }
+  }
 ])
 
-// 方法
-const toggleCollapse = () => {
-  emit("changeCollapse", !props.isCollapse)
+const handleMenuSelect = (menuItem) => {
+  router.push(menuItem.path)
 }
 
-// 改变路由
-const handleMenuSelect = (menuItem) => {
-  activeMenu.value = menuItem.path
-  router.push(menuItem.path)
+const handleDropdownClick = (command) => {
+  if (command === 'index') {
+    router.push('/index')
+  } else if (command === "logout") {
+    router.push("/login")
+  }
 }
 </script>
 
-<style scoped>
-.layout-container {
+<style scoped lang="scss">
+.user-header {
   display: flex;
-  height: 100vh;
-  width: 100%;
-}
-
-.el-menu-vertical {
-  height: 100%;
-  border-right: none;
-  width: 100%;
-  background-color: #545c64; /* 确保背景色设置在这里 */
-  overflow-y: auto; /* 添加滚动条 */
-}
-
-.menu-logo {
+  justify-content: space-between;
+  align-items: center;
   height: 60px;
-  line-height: 60px;
-  text-align: center;
+  padding: 0 20px;
+  background-color: #545c64;
   color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #434a50;
-  cursor: pointer;
-}
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-.el-menu-item [class^=el-icon-] {
-  vertical-align: middle;
-  margin-right: 5px;
-  width: 24px;
-  text-align: center;
-  font-size: 18px;
-}
+  .nav-menu {
+    flex: 1;
 
-/*隐藏滚轮*/
-.el-menu-vertical::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
-}
+    .el-menu {
+      border-bottom: none;
+    }
 
+    .el-menu-item {
+      height: 60px;
+      line-height: 60px;
+    }
+  }
+
+  .user-actions {
+    .user-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .username {
+        margin-right: 10px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}
 </style>

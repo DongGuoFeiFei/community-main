@@ -1,5 +1,6 @@
 package com.example.communityserver.filter;
 
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.utils.security.JWTUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
@@ -65,7 +66,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Long userId = JWTUtil.getUserId(token);
 
         // 6. 从redis获取用户信息
-        LoginUser loginUser = redisUtil.getCacheObject("loginUserId" + userId);
+        LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
         if (loginUser == null) {
             throw new RuntimeException("用户信息已过期，请重新登录");
         }

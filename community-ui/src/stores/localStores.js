@@ -46,7 +46,17 @@ export const localStore = defineStore('localStores', () => {
         }
     })
 
-    return {userInfo, baseURL, isTokenExpired, tokenInfo}
+    function clearStorage() {
+        localStorage.removeItem('my-localStore')
+    }
+
+    return {
+        userInfo,
+        baseURL,
+        isTokenExpired,
+        tokenInfo,
+        clearStorage
+    }
 }, {
     persist: {
         key: 'my-localStore',

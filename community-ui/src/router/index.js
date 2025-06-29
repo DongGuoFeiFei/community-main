@@ -44,7 +44,7 @@ const router = createRouter({
             name: 'index',
             component: Index,
             meta: {
-                requiresAuth: true
+                requiresAuth: false
             },
             children: [
                 {
@@ -59,6 +59,9 @@ const router = createRouter({
             path: '/index/article/:id',
             name: 'article',
             component: () => import("@/views/article/Index.vue"),
+            meta: {
+                requiresAuth: false
+            },
         },
         {
             path: '/editor',
@@ -89,8 +92,8 @@ const router = createRouter({
                     name: "articles",
                     component: () => import("@/views/user/UserArticles.vue"),
                     mete: {
-                        title: '我的文章',
                         requiresAuth: true,
+                        title: '我的文章',
                     }
                 },
                 {
@@ -98,8 +101,8 @@ const router = createRouter({
                     name: 'dustbin',
                     component: () => import("@/views/user/UserTrash.vue"),
                     meta: {
-                        title: "我的垃圾箱",
                         requiresAuth: true,
+                        title: "我的垃圾箱",
                     }
                 }, {
                     path: 'collections',

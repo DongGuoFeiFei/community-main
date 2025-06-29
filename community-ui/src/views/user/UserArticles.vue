@@ -31,7 +31,6 @@
         <el-option label="已发布" :value="0"/>
         <el-option label="草稿" :value="1"/>
       </el-select>
-
     </div>
 
     <div class="article-list">
@@ -256,7 +255,6 @@ const handleDelete = async (id) => {
     }
   }
 }
-
 
 
 onMounted(() => {

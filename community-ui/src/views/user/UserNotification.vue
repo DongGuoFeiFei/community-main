@@ -17,12 +17,13 @@
         >
           删除
         </el-button>
-        <el-button
-            link
-            @click="handleMarkAllAsRead"
-        >
-          全部已读
-        </el-button>
+<!--全部已读需要一个全新的接口-->
+<!--        <el-button-->
+<!--            link-->
+<!--            @click="handleMarkAllAsRead"-->
+<!--        >-->
+<!--          全部已读-->
+<!--        </el-button>-->
       </div>
     </div>
 
@@ -181,18 +182,23 @@ const getTagType = (type) => {
 
 // 渲染通知内容
 const renderContent = (notification) => {
-  const { type, sonSourceId: sourceId } = notification;
-  const userLink = `<a href="/user/${sourceId}" class="user-link">用户${sourceId}</a>`;
+  const { type, sonSourceId: sourceId, parentSourceId, content } = notification;
 
-  const contents = {
-    like: `${userLink} 点赞了你的内容`,
-    comment: `${userLink} 评论了你的内容`,
-    reply: `${userLink} 回复了你的评论`,
-    follow: `${userLink} 关注了你`,
-    system: `系统消息: ${notification.content || '请查看详情'}`
+  // 用户链接模板
+  const userLink = (id, name) =>
+      `<a href="/user/${id}" class="user-link">${name || '用户' + id}</a>`;
+
+  // todo 将类型的下拉框改为选项框，返回通知的具体内容，通知内容，单开一页
+  // 内容模板映射
+  const contentTemplates = {
+    like: `${userLink(sourceId)} 点赞了你的内容`,
+    comment: `${userLink(sourceId)} 评论了你的内容`,
+    reply: `${userLink(sourceId)} 回复了你在 ${userLink(parentSourceId, '文章')} 的评论`,
+    follow: `${userLink(sourceId)} 关注了你`,
+    system: `系统消息: ${content || '请查看详情'}`
   };
 
-  return contents[type] || '新通知';
+  return contentTemplates[type] || '新通知';
 };
 
 // 获取通知列表

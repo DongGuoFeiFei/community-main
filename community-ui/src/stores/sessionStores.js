@@ -32,14 +32,21 @@ export const sessionStore = defineStore("sessionStores", () => {
         isEditMode.value = !isEditMode.value
     }
 
-    return {isAuthenticated,
+    function clearStorage() {
+        localStorage.removeItem('my-sessionStore')
+    }
+
+    return {
+        isAuthenticated,
         baseURL,
         isEditMode,
         unreadCount,
         lastNotificationCheck,
         updateUnreadCount,
         changeEditStatus,
-        editorArticleId}
+        editorArticleId,
+        clearStorage
+    }
 }, {
     persist: {
         key: 'my-sessionStore',

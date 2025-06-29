@@ -2,6 +2,7 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
@@ -42,7 +43,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 获取authenticate中的LoginUser对象
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 把loginUser存入redis中
-        redisUtil.setCacheObject("loginUserId" + loginUser.getUser().getUserId(), loginUser);
+        redisUtil.setCacheObject(CacheKeyConstants.LOGIN_USER_ID + loginUser.getUser().getUserId(), loginUser);
         return JWTUtil.createToken(loginUser.getUser().getUserId());
     }
 

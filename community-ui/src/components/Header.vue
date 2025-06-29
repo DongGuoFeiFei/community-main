@@ -1,7 +1,10 @@
 <template>
   <div class="header-wrapper">
     <div class="header-content">
-      <div class="logo">🧩 Vue社区</div>
+      <div class="logo">
+        <el-image src="/favicon.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
+        <span>采芙蓉</span>
+      </div>
 
       <el-menu
           mode="horizontal"
@@ -12,7 +15,11 @@
           text-color="#666"
           active-text-color="#ffd04b"
       >
-        <el-menu-item index="card">发现</el-menu-item>
+        <el-menu-item index="card">
+<!--          <el-icon>-->
+<!--            <VideoPlay />-->
+<!--          </el-icon>-->
+          发现</el-menu-item>
         <el-menu-item index="messages">消息</el-menu-item>
         <el-menu-item index="game">游戏</el-menu-item>
         <el-menu-item index="anime">动漫</el-menu-item>
@@ -22,10 +29,11 @@
         <el-dropdown
             @command="handleDropdownClick"
             trigger="click">
-          <span class="el-dropdown-link">
+          <span class="user-avatar">
             <el-avatar :size="32"
                        :src="avatarUrl"
             />
+            <span class="username">{{ lStore.userInfo.userInfo.nickname || '用户' }}</span>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
@@ -73,6 +81,8 @@ const handleDropdownClick = (command) => {
       router.push('/settings'); // 跳转到设置
       break;
     case 'logout':
+      lStore.clearStorage();
+      sStore.clearStorage();
       logout();
       router.push("/login"); //
       break;
@@ -105,13 +115,21 @@ const handleDropdownClick = (command) => {
   padding: 0 24px;
   color: #000000;
 }
-
 .logo {
+  display: flex;
+  align-items: center;  // 垂直居中
   font-size: 22px;
   font-weight: 600;
   background: linear-gradient(to right, #ff9a9e, #fad0c4);
   -webkit-background-clip: text;
   color: transparent;
+  cursor: default;
+
+  .el-image {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
 }
 
 .nav-menu {
@@ -125,6 +143,27 @@ const handleDropdownClick = (command) => {
 .user-section {
   display: flex;
   align-items: center;
+
+  .user-avatar {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    .username {
+      margin-left: 8px;
+      font-size: 14px;
+      color: #666;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
 
   .el-avatar {
     cursor: pointer;

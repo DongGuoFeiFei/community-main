@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * <p>
@@ -35,6 +34,10 @@ import java.util.List;
 public class ArticleController {
     @Autowired
     private IArticleService postsService;
+
+
+    // TODO: 2025/6/28 游客能够直接使用查看文章功能 
+    // TODO: 2025/6/28 权限使用
 
     @ApiOperation("搜索文章")
     @GetMapping

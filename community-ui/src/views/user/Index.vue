@@ -1,53 +1,69 @@
 <script setup>
-import UserSidebar from './UserSidebar.vue'
-import UserHeader from '@/components/user/UserHeader.vue'
-import {ref} from "vue";
-
-const isCollapse = ref(false)
-const sidebarWidth = ref("230px")
-
-const handleCollapse = () => {
-
-}
-
+import UserHeader from "@/views/user/UserHeader.vue";
+import Footer from "@/components/Footer.vue";
 </script>
 
 <template>
-  <div class="common-layout">
-    <el-container>
-      <el-aside :width=sidebarWidth>
-        <UserSidebar
-            :isCollapse="isCollapse"
-            @changeCollapse="handleCollapse"
-        />
-      </el-aside>
-      <el-container>
-        <el-header>
-          <UserHeader/>
+  <div class="main-container">
+    <div class="common-layout">
+      <el-container class="layout-container">
+        <el-header class="header">
+          <user-header />
         </el-header>
-        <el-main class="main">
-          <router-view/>
-        </el-main>
+        <el-container class="content-container">
+          <el-main class="main-content">
+            <router-view />
+          </el-main>
+        </el-container>
+        <el-footer class="footer">
+          <Footer />
+        </el-footer>
       </el-container>
-    </el-container>
+    </div>
   </div>
 </template>
 
-<style scoped lang="less">
+<style scoped lang="scss">
+.main-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--el-bg-color-page);
 
-:deep(.el-footer) {
-  --el-footer-padding: 0 20px 0 0;
-}
+  .common-layout {
+    flex: 1;
+    display: flex;
+    min-height: 100%;
 
-.common-layout {
-  height: 100%;
-  background-color: #f5f5f5;
+    .layout-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100%;
 
-  .el-container {
-    height: 100%;
+      .header {
+        padding: 0;
+        height: auto;
+      }
 
-    .main {
-      height: 100%;
+      .content-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .main-content {
+          flex: 1;
+          padding: 20px 0;
+          max-width: 1200px;
+          width: 100%;
+          margin: 0 auto;
+        }
+      }
+
+      .footer {
+        padding: 0;
+      }
     }
   }
 }

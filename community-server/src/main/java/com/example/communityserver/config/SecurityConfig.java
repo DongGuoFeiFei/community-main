@@ -62,7 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         http// 将自己定义的过滤器加到UsernamePasswordAuthenticationFilter之前
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
 
         // 配置异常处理器
         http

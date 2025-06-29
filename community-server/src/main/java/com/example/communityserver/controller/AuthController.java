@@ -123,7 +123,7 @@ public class AuthController {
         loginResponse.setToken(token);
         Long userId = JWTUtil.getUserId(loginResponse.getToken());
         // 根据userId从redis中拿到loginUser数据
-        LoginUser loginUser = redisUtil.getCacheObject("loginUserId" + userId);
+        LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
         loginResponse.setExpiresIn((int) (3 * SystemConstants.ONE_DAY_MILLIS / 1000));
@@ -149,7 +149,7 @@ public class AuthController {
     @ApiOperation("退出登录")
     @PostMapping("/logout")
     public Result<Void> logout(){
-        redisUtil.deleteObject("loginUserId" + SecurityUtils.getLoginUserId());
+        redisUtil.deleteObject(CacheKeyConstants.LOGIN_USER_ID + SecurityUtils.getLoginUserId());
         return Result.success();
     }
 

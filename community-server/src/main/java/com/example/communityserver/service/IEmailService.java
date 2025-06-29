@@ -17,5 +17,7 @@ public interface IEmailService {
     public void sendWelcomeEmail(String toEmail, String username) ;
     public boolean verifyCode(String email, String code);
 
+    public String getEmailGravatarUrl(String email);
+
 
 }
