@@ -123,41 +123,6 @@ const router = createRouter({
             ]
         },
         {
-            path: "/admin",
-            name: "admin",
-            component: () => import("@/views/admin/Index.vue"),
-            meta: {
-                title: "后台管理系统",
-                requiresAuth: true
-            },
-            children: [
-                {
-                    path: "articles",
-                    name: 'adminArticles',
-                    component: () => import("@/views/admin/views/article/Index.vue"),
-                    meta: {
-                        title: "文章管理"
-                    }
-                },
-                {
-                    path: "comments",
-                    name: 'adminComments',
-                    component: () => import("@/views/admin/views/comment/Index.vue"),
-                    meta: {
-                        title: "评论管理"
-                    }
-                },
-                {
-                    path: "notificationSystem",
-                    name: 'adminNotificationSystem',
-                    component: () => import("@/views/admin/views/notificationSystem/Index.vue"),
-                    meta: {
-                        title: "消息通知"
-                    }
-                },
-            ]
-        },
-        {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
             component: () => import("@/views/auth/NotFound.vue"),
