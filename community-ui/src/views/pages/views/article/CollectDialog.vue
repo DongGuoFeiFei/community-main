@@ -64,7 +64,7 @@
 <script setup>
 import {defineEmits, defineProps, ref, watch} from 'vue'
 import {ElMessage} from 'element-plus'
-import {collectArticle, createFolder, fetchFolders} from '@/api/collectApi'
+import {collectArticle, createFolder, fetchFolders} from '@/api/collectApi.js'
 
 const props = defineProps({
   visible: {

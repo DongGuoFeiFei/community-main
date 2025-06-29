@@ -71,13 +71,13 @@ import {ArrowLeft} from '@element-plus/icons-vue'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
-import CommentSection from "@/components/CommentSection.vue";
+import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStore} from "@/stores/localStores.js";
-import LikeCollect from "@/components/LikeCollect.vue";
+import LikeCollect from "@/views/pages/views/article/LikeCollect.vue";
 import {addLike} from "@/api/likeApi.js";
 import {cancelCollect} from "@/api/collectApi.js";
-import CollectDialog from "@/components/CollectDialog.vue";
+import CollectDialog from "@/views/pages/views/article/CollectDialog.vue";
 
 const md = new MarkdownIt(
     {

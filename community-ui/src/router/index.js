@@ -1,7 +1,7 @@
 // router/sessionStores.js
 
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '@/views/pages/home/Index.vue'
+import Index from '@/views/pages/views/home/Index.vue'
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
 
@@ -50,7 +50,7 @@ const router = createRouter({
                 {
                     path: 'index',
                     name: 'card',
-                    component: () => import("@/views/pages/home/Card.vue"),
+                    component: () => import("@/views/pages/views/home/Card.vue"),
                     meta: {
                         title: "采芙蓉"
                     },
@@ -61,7 +61,7 @@ const router = createRouter({
         {
             path: '/index/article/:id',
             name: 'article',
-            component: () => import("@/views/pages/article/Index.vue"),
+            component: () => import("@/views/pages/views/article/Index.vue"),
             meta: {
                 requiresAuth: false
             },
@@ -69,13 +69,13 @@ const router = createRouter({
         {
             path: '/editor',
             name: 'editor',
-            component: () => import("@/views/pages/edit/Index.vue"),
+            component: () => import("@/views/pages/views/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
-            component: () => import("@/views/pages/edit/Index.vue"),
+            component: () => import("@/views/pages/views/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {
