@@ -16,15 +16,14 @@
           active-text-color="#ffd04b"
       >
         <el-menu-item index="card">
-<!--          <el-icon>-->
-<!--            <VideoPlay />-->
-<!--          </el-icon>-->
-          发现</el-menu-item>
+          发现
+        </el-menu-item>
         <el-menu-item index="messages">消息</el-menu-item>
         <el-menu-item index="game">游戏</el-menu-item>
         <el-menu-item index="anime">动漫</el-menu-item>
       </el-menu>
 
+      <NotificationBadge/>
       <div class="user-section">
         <el-dropdown
             @command="handleDropdownClick"
@@ -54,7 +53,8 @@ import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {localStore} from "@/stores/localStores.js";
 import {sessionStore} from "@/stores/sessionStores.js";
-import {logout} from "@/api/auth.js";
+import {logout} from "../../../../../community-admin/src/api/auth.js";
+import NotificationBadge from "@/components/NotificationBadge.vue";
 
 const router = useRouter()
 const activeMenu = ref('home')
@@ -115,9 +115,10 @@ const handleDropdownClick = (command) => {
   padding: 0 24px;
   color: #000000;
 }
+
 .logo {
   display: flex;
-  align-items: center;  // 垂直居中
+  align-items: center; // 垂直居中
   font-size: 22px;
   font-weight: 600;
   background: #000000;;

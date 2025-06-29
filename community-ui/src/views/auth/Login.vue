@@ -41,7 +41,7 @@
 import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
-import {login, getCaptcha} from '@/api/auth.js';
+import {login, getCaptcha} from '../../../../community-admin/src/api/auth.js';
 import {localStore} from "@/stores/localStores.js";
 
 const lStore = localStore()

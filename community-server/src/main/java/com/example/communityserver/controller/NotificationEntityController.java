@@ -32,6 +32,7 @@ public class NotificationEntityController {
     @Autowired
     private INotificationEntityService notificationEntityService;
 
+    // TODO: 2025/6/30 消息通知接收将不同类别的通知分开接收
     @ApiOperation("获取通知列表接口")
     @GetMapping
     public Result<Result.PageData<NotificationListVo>> getNotifications(@Valid GetNotificationsParam param) {
@@ -57,8 +58,7 @@ public class NotificationEntityController {
     @GetMapping("/unread-count")
     public Result<Long> getUnreadCount() {
         LambdaQueryWrapper<NotificationEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId())
-                .eq(NotificationEntity::getIsRead, 0);
+        queryWrapper.eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId()).eq(NotificationEntity::getIsRead, 0);
         long count = notificationEntityService.count(queryWrapper);
         return Result.success(count);
     }

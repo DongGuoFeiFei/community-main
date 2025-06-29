@@ -61,6 +61,7 @@ import {
   Key as ElIconKey,
   List as ElIconList,
   Lock as ElIconLock,
+  Message as ElIconMessage,
   Monitor as ElIconMonitor,
   Notebook as ElIconLog,
   Setting as ElIconSetting,
@@ -256,8 +257,43 @@ const menuData = [
     path: '/admin/notification',
     meta: {
       title: '消息通知',
-      iconComponent: ElIconBell
-    }
+      iconComponent: ElIconBell,
+      roles: ['admin'] // 基础管理员权限
+    },
+    children: [
+      {
+        path: '/admin/notificationSystem',
+        meta: {
+          title: '系统通知',
+          iconComponent: ElIconMessage,
+          roles: ['admin']
+        }
+      },
+      {
+        path: '/admin/notificationUser',
+        meta: {
+          title: '用户消息',
+          iconComponent: ElIconUser,
+          roles: ['admin']
+        }
+      },
+      {
+        path: '/admin/notificationTemplate',
+        meta: {
+          title: '消息模板',
+          iconComponent: ElIconDocument,
+          roles: ['super-admin'] // 仅超级管理员可配置
+        }
+      },
+      {
+        path: '/admin/notificationSettings',
+        meta: {
+          title: '通知设置',
+          iconComponent: ElIconSetting,
+          roles: ['super-admin']
+        }
+      }
+    ]
   }
 ];
 

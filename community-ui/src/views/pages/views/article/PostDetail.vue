@@ -68,15 +68,15 @@ import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
 import {ArrowLeft} from '@element-plus/icons-vue'
-import {fetchPostDetail} from '@/api/index.js'
+import {fetchPostDetail} from '../../../../../../community-admin/src/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStore} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/views/article/LikeCollect.vue";
-import {addLike} from "@/api/likeApi.js";
-import {cancelCollect} from "@/api/collectApi.js";
+import {addLike} from "../../../../../../community-admin/src/api/likeApi.js";
+import {cancelCollect} from "../../../../../../community-admin/src/api/collectApi.js";
 import CollectDialog from "@/views/pages/views/article/CollectDialog.vue";
 
 const md = new MarkdownIt(

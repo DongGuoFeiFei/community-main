@@ -156,7 +156,7 @@
 import {computed, onMounted, ref} from 'vue'
 import {ElMessage} from 'element-plus'
 import {sessionStore} from "@/stores/sessionStores.js"
-import {fetchCommentsByPostId, submitCommentToPost} from '@/api/index.js'
+import {fetchCommentsByPostId, submitCommentToPost} from '../../../../../../community-admin/src/api/index.js'
 
 const sStore = sessionStore()
 

@@ -81,7 +81,7 @@ import {useRouter} from 'vue-router'
 import {Setting, SwitchButton, User} from '@element-plus/icons-vue'
 import {localStore} from '@/stores/localStores.js'
 import {sessionStore} from '@/stores/sessionStores.js'
-import {logout} from '@/api/auth.js'
+import {logout} from '../../../../../community-admin/src/api/auth.js'
 
 const router = useRouter()
 const lStore = localStore()

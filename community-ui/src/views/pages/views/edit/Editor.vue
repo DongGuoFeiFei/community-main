@@ -55,7 +55,7 @@ import {onMounted, reactive, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "@/api/index.js";
+import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "../../../../../../community-admin/src/api/index.js";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 import {localStore} from "@/stores/localStores.js";
 import {sessionStore} from "@/stores/sessionStores.js";

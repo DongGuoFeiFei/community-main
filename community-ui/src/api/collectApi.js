@@ -1,5 +1,5 @@
 // api/collectApi.js
-import request from "@/utils/request.js";
+import request from "../../../community-ui/src/utils/request.js";
 
 // 获取用户收藏夹列表
 export const fetchFolders = () => {

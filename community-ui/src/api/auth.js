@@ -1,5 +1,5 @@
 // api/auth.js
-import request from '../utils/request';
+import request from '../../../community-ui/src/utils/request.js';
 
 
 export const login = (data) => {

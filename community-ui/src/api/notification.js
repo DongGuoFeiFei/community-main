@@ -1,4 +1,4 @@
-import request from '../utils/request';
+import request from '../../../community-ui/src/utils/request.js';
 
 /**
  * 获取通知列表

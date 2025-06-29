@@ -76,7 +76,7 @@
 <script setup>
 import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {fetchPosts} from '@/api/index.js'
+import {fetchPosts} from '../../../../../../community-admin/src/api/index.js'
 import {localStore} from "@/stores/localStores.js"
 
 const lStore = localStore()
