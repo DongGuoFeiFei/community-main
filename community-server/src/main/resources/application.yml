@@ -44,10 +44,6 @@ spring:
         transport:
           protocol: smtp
   #        debug: true
-  # 控制台颜色配置开启
-  output:
-    ansi:
-      enabled: ALWAYS
 # mybatis-plus 配置
 mybatis-plus:
   config-locations: classpath:mapper/*.xml
