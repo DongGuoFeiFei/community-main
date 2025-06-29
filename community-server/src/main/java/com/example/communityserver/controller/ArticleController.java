@@ -82,7 +82,7 @@ public class ArticleController {
         return postsService.updateById(article) ? Result.success() : Result.error("更新失败，稍后重试");
     }
 
-    @ApiOperation("获取首页文章列表")
+    @ApiOperation("获取文章列表")
     @GetMapping("/getArticleList")
     public TableDataInfo getArticleList(GetArticleListDto dto) {
         Page<ArticleListVo> page = postsService.getArticleList(dto);

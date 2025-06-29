@@ -43,28 +43,6 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
-    /**
-     * 设置有效时间
-     *
-     * @param key     Redis键
-     * @param timeout 超时时间
-     * @return true=设置成功；false=设置失败
-     */
-    public boolean expire(final String key, final long timeout) {
-        return expire(key, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 设置有效时间
-     *
-     * @param key     Redis键
-     * @param timeout 超时时间
-     * @param unit    时间单位
-     * @return true=设置成功；false=设置失败
-     */
-    public boolean expire(final String key, final long timeout, final TimeUnit unit) {
-        return redisTemplate.expire(key, timeout, unit);
-    }
 
     /**
      * 获得缓存的基本对象。
@@ -94,6 +72,29 @@ public class RedisUtil {
      */
     public long deleteObject(final Collection collection) {
         return redisTemplate.delete(collection);
+    }
+
+    /**
+     * 设置有效时间
+     *
+     * @param key     Redis键
+     * @param timeout 超时时间
+     * @return true=设置成功；false=设置失败
+     */
+    public boolean expire(final String key, final long timeout) {
+        return expire(key, timeout, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 设置有效时间
+     *
+     * @param key     Redis键
+     * @param timeout 超时时间
+     * @param unit    时间单位
+     * @return true=设置成功；false=设置失败
+     */
+    public boolean expire(final String key, final long timeout, final TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
     }
 
     /**

@@ -51,6 +51,9 @@ const router = createRouter({
                     path: 'index',
                     name: 'card',
                     component: () => import("@/views/home/Card.vue"),
+                    meta: {
+                        title: "采芙蓉"
+                    },
                 },
 
             ]
@@ -124,6 +127,16 @@ const router = createRouter({
                 },
             ]
         },
+        {
+            path: "/admin",
+            name: "admin",
+            component: () => import("@/views/admin/Index.vue"),
+            meta: {
+                title: "管理员",
+                requiresAuth: true
+            }
+        },
+
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',

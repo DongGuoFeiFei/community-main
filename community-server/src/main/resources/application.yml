@@ -43,7 +43,11 @@ spring:
           writetimeout: 5000
         transport:
           protocol: smtp
-#        debug: true
+  #        debug: true
+  # 控制台颜色配置开启
+  output:
+    ansi:
+      enabled: ALWAYS
 # mybatis-plus 配置
 mybatis-plus:
   config-locations: classpath:mapper/*.xml
@@ -60,3 +64,18 @@ swagger:
 file:
   upload:
     path: ./path/to/upload/directory
+#日志
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    com.example: debug
+    com.baomidou.mybatisplus: debug #开发
+  #    com.baomidou.mybatisplus: warn #生产
+  file:
+    name: ./logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 300MB

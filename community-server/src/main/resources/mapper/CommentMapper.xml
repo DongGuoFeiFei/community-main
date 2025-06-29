@@ -3,7 +3,7 @@
 <mapper namespace="com.example.communityserver.mapper.CommentMapper">
 
     <!-- 查询所有顶级评论（parent_id为null的评论） -->
-    <select id="getCommentsById" resultMap="CommentsMap">
+    <select id="getCommentsByArticleId" resultMap="CommentsMap">
         SELECT c.comment_id,
                c.article_id,
                CASE WHEN c.is_del = 1 THEN null ELSE c.user_id END                AS user_id,

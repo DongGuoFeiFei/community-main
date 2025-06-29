@@ -27,6 +27,7 @@
         />
       </div>
 
+
       <div class="post-list">
         <el-card
             v-for="post in posts"
@@ -35,6 +36,7 @@
             @click="goToDetail(post.id)"
         >
           <div class="card-content">
+            <!-- todo 降低图片质量-->
             <el-image
                 v-if="post.cover"
                 :src="post.cover"

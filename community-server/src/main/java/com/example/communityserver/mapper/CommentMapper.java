@@ -19,7 +19,7 @@ import java.util.List;
 
 public interface CommentMapper extends BaseMapper<Comment> {
 
-    List<CommentVo> getCommentsById(Integer postId);
+    List<CommentVo> getCommentsByArticleId(Integer postId);
 
     ReplyVo getReplyById(Long commentId);
 }

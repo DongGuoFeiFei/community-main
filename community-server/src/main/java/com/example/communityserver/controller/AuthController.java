@@ -61,7 +61,7 @@ public class AuthController {
     // TODO: 2025/5/21 @PreAuthorize("@vip.myAuthority('superAdmin')")权限划分失败
     // TODO: 2025/6/2 后续需要处理，如果用户没有登录就默认是游客登录
     // TODO: 2025/6/24 限制登录次数，登录5次限制登录
-    // TODO: 2025/6/24 退出登录，销毁token
+    // TODO: 2025/6/29 登录认证，前端部分，未登录时，出错，检测，添加白名单
     /*
     隐私合规：确保符合GDPR等隐私法规，在隐私政策中说明数据收集方式
     数据清理：设置合理的过期时间，避免存储过多无用数据
@@ -148,7 +148,7 @@ public class AuthController {
 
     @ApiOperation("退出登录")
     @PostMapping("/logout")
-    public Result<Void> logout(){
+    public Result<Void> logout() {
         redisUtil.deleteObject(CacheKeyConstants.LOGIN_USER_ID + SecurityUtils.getLoginUserId());
         return Result.success();
     }
@@ -195,8 +195,6 @@ public class AuthController {
 
         return Result.success();
     }
-
-
 
 
 }

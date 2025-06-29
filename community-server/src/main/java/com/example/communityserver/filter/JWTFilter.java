@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
@@ -32,14 +35,13 @@ public class JWTFilter extends OncePerRequestFilter {
             "/auth/registerCode",
             "/auth/send-email",
             "/auth/captcha",
-            "/auth/send-email",
             "/uploads/**",
-
-            "/posts/{id}",
-            "/posts/getArticleList"
+            "/posts/\\d+",  // 匹配数字ID（如 /posts/123）
+            "/posts"        // 匹配 /posts
     );
 
-
+    // Ant风格路径匹配器（支持 ** 和 *）
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
             throws ServletException, IOException {
@@ -86,9 +88,23 @@ public class JWTFilter extends OncePerRequestFilter {
 
     // 检查请求URI是否在白名单中
     private boolean isWhiteList(String requestURI) {
-        return WHITE_LIST.stream().anyMatch(whitePath ->
-                requestURI.equals(whitePath) ||
-                        (whitePath.contains("**") && requestURI.startsWith(whitePath.replace("**", "")))
-        );
-    }
-}
+        for (String whitePath : WHITE_LIST) {
+            // 情况1：完全匹配（如 /auth/login）
+            if (whitePath.equals(requestURI)) {
+                return true;
+            }
+            // 情况2：Ant风格通配符（如 /uploads/**）
+            if (antPathMatcher.match(whitePath, requestURI)) {
+                return true;
+            }
+            // 情况3：正则表达式（如 /posts/\\d+）
+            try {
+                if (Pattern.matches(whitePath, requestURI)) {
+                    return true;
+                }
+            } catch (PatternSyntaxException e) {
+                // 忽略非正则表达式的路径（如 /uploads/**）
+            }
+        }
+        return false;
+    }}

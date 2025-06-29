@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 /**
  * SpringSecurity的配置类要求继承WebSecurityConfigurerAdapter
@@ -33,6 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+    // 放行，权限控制，还能进行权限控制
+    // TODO: 2025/6/29 学习配置放行设置 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -56,10 +60,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources",
                         "/swagger-resources/**",
                         "/v2/**",
-                        "/posts/{id}",
-                        "/posts/getArticleList"
-                )
-                .anonymous()
+                        "/posts"
+                ).permitAll()
+                .requestMatchers(new RegexRequestMatcher("/posts/\\d+", "GET")).permitAll()
+                .antMatchers("/posts/**").authenticated()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
