@@ -130,8 +130,8 @@ import { ref, onBeforeMount } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Check, Delete } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
-import { deleteNotifications, getNotifications, markAsRead } from '@/api/notification';
-import { sessionStore } from '@/stores/sessionStores';
+import { deleteNotifications, getNotifications, markAsRead } from '@/api/notification.js';
+import { sessionStore } from '@/stores/sessionStores.js';
 import { useRouter } from "vue-router";
 
 const router = useRouter();

@@ -8,7 +8,7 @@ import { Icon } from '@iconify/vue'
       <div class="left-section">
         <span class="copyright">
           <Icon icon="mdi:copyright" width="16"/>
-          {{ new Date().getFullYear() }} 社区网 · All rights reserved.
+          {{ new Date().getFullYear() }} 采芙蓉 · All rights reserved.
         </span>
       </div>
       <div class="right-section">

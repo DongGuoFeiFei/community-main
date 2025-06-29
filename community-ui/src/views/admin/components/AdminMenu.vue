@@ -81,28 +81,28 @@ const route = useRoute();
 
 const menuData = [
   {
-    path: '/dashboard',
+    path: '/admin/dashboard',
     meta: {
       title: '控制台',
       iconComponent: ElIconMonitor
     }
   },
   {
-    path: '/content',
+    path: '/admin/content',
     meta: {
       title: '内容管理',
       iconComponent: ElIconGrid,
     },
     children: [
       {
-        path: '/content/articles',
+        path: '/admin/articles',
         meta: {
           title: '文章管理',
           iconComponent: ElIconDocument
         }
       },
       {
-        path: '/content/comments',
+        path: '/admin/comments',
         meta: {
           title: '评论管理',
           iconComponent: ElIconChat
@@ -111,21 +111,21 @@ const menuData = [
     ]
   },
   {
-    path: '/community',
+    path: '/admin/community',
     meta: {
       title: '社区管理',
       iconComponent: ElIconConnection
     },
     children: [
       {
-        path: '/community/topics',
+        path: '/admin/topics',
         meta: {
           title: '话题管理',
           iconComponent: ElIconCollection
         }
       },
       {
-        path: '/community/activities',
+        path: '/admin/activities',
         meta: {
           title: '活动管理',
           iconComponent: ElIconTrend
@@ -134,21 +134,21 @@ const menuData = [
     ]
   },
   {
-    path: '/user',
+    path: '/admin/user',
     meta: {
       title: '用户管理',
       iconComponent: ElIconUser
     },
     children: [
       {
-        path: '/user/list',
+        path: '/admin/userList',
         meta: {
           title: '用户列表',
           iconComponent: ElIconUser
         }
       },
       {
-        path: '/user/audit',
+        path: '/admin/userAudit',
         meta: {
           title: '用户审核',
           iconComponent: ElIconWarning
@@ -157,7 +157,7 @@ const menuData = [
     ]
   },
   {
-    path: '/permission',
+    path: '/admin/permission',
     meta: {
       title: '权限管理',
       iconComponent: ElIconLock,
@@ -165,7 +165,7 @@ const menuData = [
     },
     children: [
       {
-        path: '/permission/role',
+        path: '/admin/permissionRole',
         meta: {
           title: '角色管理',
           iconComponent: ElIconKey,
@@ -173,7 +173,7 @@ const menuData = [
         }
       },
       {
-        path: '/permission/user',
+        path: '/admin/permissionUser',
         meta: {
           title: '用户权限',
           iconComponent: ElIconUser,
@@ -181,7 +181,7 @@ const menuData = [
         }
       },
       {
-        path: '/permission/menu',
+        path: '/admin/permissionMenu',
         meta: {
           title: '菜单权限',
           iconComponent: ElIconList,
@@ -189,15 +189,15 @@ const menuData = [
         }
       },
       {
-        path: '/permission/log',
+        path: '/admin/permissionLog',
         meta: {
-          title: '操作日志',
+          title: '权限操作日志',
           iconComponent: ElIconLog,
           roles: ['super-admin', 'admin']
         }
       },
       {
-        path: '/permission/setting',
+        path: '/admin/permissionSetting',
         meta: {
           title: '权限设置',
           iconComponent: ElIconSetting,
@@ -207,21 +207,21 @@ const menuData = [
     ]
   },
   {
-    path: '/moderation',
+    path: '/admin/moderation',
     meta: {
       title: '内容审核',
       iconComponent: ElIconFlag
     },
     children: [
       {
-        path: '/moderation/reports',
+        path: '/admin/moderationReports',
         meta: {
           title: '举报处理',
           iconComponent: ElIconFlag
         }
       },
       {
-        path: '/moderation/sensitive',
+        path: '/admin/moderationSensitive',
         meta: {
           title: '敏感词过滤',
           iconComponent: ElIconWarning
@@ -230,30 +230,30 @@ const menuData = [
     ]
   },
   {
-    path: '/system',
+    path: '/admin/system',
     meta: {
       title: '系统设置',
       iconComponent: ElIconSetting
     },
     children: [
       {
-        path: '/system/basic',
+        path: '/admin/systemBasic',
         meta: {
           title: '基础配置',
           iconComponent: ElIconSetting
         }
       },
       {
-        path: '/system/logs',
+        path: '/admin/systemLogs',
         meta: {
-          title: '操作日志',
+          title: '系统操作日志',
           iconComponent: ElIconDocument
         }
       }
     ]
   },
   {
-    path: '/notification',
+    path: '/admin/notification',
     meta: {
       title: '消息通知',
       iconComponent: ElIconBell

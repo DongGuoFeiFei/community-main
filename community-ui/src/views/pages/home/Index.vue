@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="js">
 import Header from "@/components/Header.vue";
-import PostDetail from "@/views/article/PostDetail.vue";
+import Card from "@/views/pages/home/Card.vue";
 import Footer from "@/components/Footer.vue";
 </script>
 
@@ -14,24 +14,27 @@ import Footer from "@/components/Footer.vue";
         <el-container>
           <el-aside width="200px"></el-aside>
           <el-main>
-            <post-detail/>
+            <Card/>
           </el-main>
           <el-aside width="200px"></el-aside>
         </el-container>
+        <el-footer>
+          <Footer/>
+        </el-footer>
       </el-container>
-      <el-footer>
-        <Footer/>
-      </el-footer>
     </div>
+    <div class="cloud-container"></div>
   </div>
 </template>
 
 <style scoped lang="less">
 .main-container {
+  min-height: 100vh;
   .common-layout {
     .el-container {
       height: 100%;
     }
   }
 }
+
 </style>

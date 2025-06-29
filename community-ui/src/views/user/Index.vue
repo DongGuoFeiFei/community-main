@@ -1,6 +1,6 @@
 <script setup>
-import UserHeader from "@/views/user/UserHeader.vue";
-import Footer from "@/components/Footer.vue";
+import UserHeader from "@/views/user/components/UserHeader.vue";
+import UserFooter from "@/views/user/components/UserFooter.vue";
 </script>
 
 <template>
@@ -8,15 +8,15 @@ import Footer from "@/components/Footer.vue";
     <div class="common-layout">
       <el-container class="layout-container">
         <el-header class="header">
-          <user-header />
+          <user-header/>
         </el-header>
         <el-container class="content-container">
           <el-main class="main-content">
-            <router-view />
+            <router-view/>
           </el-main>
         </el-container>
         <el-footer class="footer">
-          <Footer />
+          <UserFooter/>
         </el-footer>
       </el-container>
     </div>

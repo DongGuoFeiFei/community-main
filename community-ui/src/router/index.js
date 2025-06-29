@@ -1,7 +1,7 @@
 // router/sessionStores.js
 
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '../views/home/Index.vue'
+import Index from '@/views/pages/home/Index.vue'
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
 
@@ -50,7 +50,7 @@ const router = createRouter({
                 {
                     path: 'index',
                     name: 'card',
-                    component: () => import("@/views/home/Card.vue"),
+                    component: () => import("@/views/pages/home/Card.vue"),
                     meta: {
                         title: "采芙蓉"
                     },
@@ -61,7 +61,7 @@ const router = createRouter({
         {
             path: '/index/article/:id',
             name: 'article',
-            component: () => import("@/views/article/Index.vue"),
+            component: () => import("@/views/pages/article/Index.vue"),
             meta: {
                 requiresAuth: false
             },
@@ -69,13 +69,13 @@ const router = createRouter({
         {
             path: '/editor',
             name: 'editor',
-            component: () => import("@/views/edit/Index.vue"),
+            component: () => import("@/views/pages/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
-            component: () => import("@/views/edit/Index.vue"),
+            component: () => import("@/views/pages/edit/Index.vue"),
             meta: {requiresAuth: true}
         },
         {
@@ -87,7 +87,7 @@ const router = createRouter({
                 {
                     path: "profile",
                     name: "profile",
-                    component: () => import("@/views/user/UserProfile.vue"),
+                    component: () => import("@/views/user/views/UserProfile.vue"),
                     meta: {
                         requiresAuth: true,
                         title: "个人中心"
@@ -96,7 +96,7 @@ const router = createRouter({
                 {
                     path: "articles",
                     name: "articles",
-                    component: () => import("@/views/user/UserArticles.vue"),
+                    component: () => import("@/views/user/views/UserArticles.vue"),
                     meta: {
                         requiresAuth: true,
                         title: '我的文章',
@@ -105,7 +105,7 @@ const router = createRouter({
                 {
                     path: 'collections',
                     name: 'collections',
-                    component: () => import("@/views/user/UserCollection.vue"),
+                    component: () => import("@/views/user/views/UserCollection.vue"),
                     meta: {
                         title: "我的收藏",
                         requiresAuth: true,
@@ -114,7 +114,7 @@ const router = createRouter({
                 {
                     path: 'notifications',
                     name: 'notifications',
-                    component: () => import('@/views/user/UserNotification.vue'),
+                    component: () => import('@/views/user/views/UserNotification.vue'),
                     meta: {
                         title: '通知',
                         requiresAuth: true,
@@ -130,6 +130,24 @@ const router = createRouter({
                 title: "后台管理系统",
                 requiresAuth: true
             },
+            children: [
+                {
+                    path: "articles",
+                    name: 'adminArticles',
+                    component: () => import("@/views/admin/views/article/Index.vue"),
+                    meta: {
+                        title: "文章管理"
+                    }
+                },
+                {
+                    path: "comments",
+                    name: 'adminComments',
+                    component: () => import("@/views/admin/views/comment/Index.vue"),
+                    meta: {
+                        title: "评论管理"
+                    }
+                },
+            ]
         },
         {
             path: '/:pathMatch(.*)*',

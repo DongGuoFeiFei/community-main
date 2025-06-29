@@ -87,7 +87,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
-import {localStore} from '@/stores/localStores'
+import {localStore} from '@/stores/localStores.js'
 import {Camera} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
