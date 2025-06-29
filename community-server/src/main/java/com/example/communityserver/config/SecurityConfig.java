@@ -55,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**",
                         "/swagger-resources",
                         "/swagger-resources/**",
-                        "/v2/**"
+                        "/v2/**",
+                        "/posts/{id}",
+                        "/posts/getArticleList"
                 )
                 .anonymous()
                 // 除上面外的所有请求全部需要鉴权认证

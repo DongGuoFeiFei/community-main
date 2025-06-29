@@ -33,8 +33,12 @@ public class JWTFilter extends OncePerRequestFilter {
             "/auth/send-email",
             "/auth/captcha",
             "/auth/send-email",
-            "/uploads/**"
+            "/uploads/**",
+
+            "/posts/{id}",
+            "/posts/getArticleList"
     );
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
