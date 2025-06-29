@@ -88,26 +88,21 @@ const router = createRouter({
                     path: "profile",
                     name: "profile",
                     component: () => import("@/views/user/UserProfile.vue"),
-                    meta: {requiresAuth: true},
+                    meta: {
+                        requiresAuth: true,
+                        title: "个人中心"
+                    },
                 },
                 {
                     path: "articles",
                     name: "articles",
                     component: () => import("@/views/user/UserArticles.vue"),
-                    mete: {
+                    meta: {
                         requiresAuth: true,
                         title: '我的文章',
                     }
                 },
                 {
-                    path: 'dustbin',
-                    name: 'dustbin',
-                    component: () => import("@/views/user/UserTrash.vue"),
-                    meta: {
-                        requiresAuth: true,
-                        title: "我的垃圾箱",
-                    }
-                }, {
                     path: 'collections',
                     name: 'collections',
                     component: () => import("@/views/user/UserCollection.vue"),
@@ -132,11 +127,10 @@ const router = createRouter({
             name: "admin",
             component: () => import("@/views/admin/Index.vue"),
             meta: {
-                title: "管理员",
+                title: "后台管理系统",
                 requiresAuth: true
-            }
+            },
         },
-
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',

@@ -120,7 +120,7 @@ const handleDropdownClick = (command) => {
   align-items: center;  // 垂直居中
   font-size: 22px;
   font-weight: 600;
-  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  background: #000000;;
   -webkit-background-clip: text;
   color: transparent;
   cursor: default;

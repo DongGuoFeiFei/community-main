@@ -16,27 +16,27 @@
           active-text-color="#ffd04b"
       >
         <el-menu-item index="profile">
-          <el-icon>
-            <User/>
-          </el-icon>
+          <!--          <el-icon>-->
+          <!--            <User/>-->
+          <!--          </el-icon>-->
           <span>个人信息</span>
         </el-menu-item>
         <el-menu-item index="articles">
-          <el-icon>
-            <Document/>
-          </el-icon>
+          <!--          <el-icon>-->
+          <!--            <Document/>-->
+          <!--          </el-icon>-->
           <span>我的文章</span>
         </el-menu-item>
         <el-menu-item index="collections">
-          <el-icon>
-            <Star/>
-          </el-icon>
+          <!--          <el-icon>-->
+          <!--            <Star/>-->
+          <!--          </el-icon>-->
           <span>我的收藏</span>
         </el-menu-item>
         <el-menu-item index="notifications">
-          <el-icon>
-            <Bell/>
-          </el-icon>
+          <!--          <el-icon>-->
+          <!--            <Bell/>-->
+          <!--          </el-icon>-->
           <span>消息通知</span>
         </el-menu-item>
       </el-menu>
@@ -78,7 +78,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {Bell, Document, Setting, Star, SwitchButton, User} from '@element-plus/icons-vue'
+import {Setting, SwitchButton, User} from '@element-plus/icons-vue'
 import {localStore} from '@/stores/localStores'
 import {sessionStore} from '@/stores/sessionStores'
 import {logout} from '@/api/auth'
@@ -154,7 +154,7 @@ const handleDropdownClick = async (command) => {
   align-items: center; // 垂直居中
   font-size: 22px;
   font-weight: 600;
-  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  background: #000000;
   -webkit-background-clip: text;
   color: transparent;
   cursor: pointer;
