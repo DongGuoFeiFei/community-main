@@ -3,7 +3,7 @@
     <div class="panel-header">
       <span>通知中心</span>
       <el-button
-          type="text"
+        link
           @click="markAllAsRead"
           v-if="notifications.length > 0 && unreadCount > 0"
       >
@@ -49,7 +49,7 @@
     </div>
 
     <div class="panel-footer">
-      <el-button type="text" @click="viewAll">查看全部</el-button>
+      <el-button link @click="viewAll">查看全部</el-button>
     </div>
   </div>
 </template>

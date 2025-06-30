@@ -60,7 +60,7 @@ import {computed, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {useFullscreen} from '@vueuse/core'
 import {Expand, Fold, FullScreen, Setting, SwitchButton, User} from '@element-plus/icons-vue'
-import {localStore} from "@/stores/localStores.js";
+import {localStores} from "@/stores/localStores.js";
 
 const props = defineProps({
   isCollapse: Boolean
@@ -68,7 +68,7 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle-collapse'])
 
-const lStore = localStore()
+const lStore = localStores()
 
 // 路由相关
 const route = useRoute()

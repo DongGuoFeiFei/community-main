@@ -1,11 +1,12 @@
 // store/sessionStores.js
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia'
-import {getUnreadCount} from "../../../community-admin/src/api/notification.js";
+import {getUnreadCount} from "@/api/notification.js";
+import config from "@/config.js";
 
-export const sessionStore = defineStore("sessionStores", () => {
+export const sessionStores = defineStore("sessionStores", () => {
     const token = ref(localStorage.getItem('token') || null)
-    const baseURL = ref('http://127.0.0.1:8080')
+    const baseURL = ref(config.apiBaseUrl)
 
     const isAuthenticated = computed(() => !!token.value)
 

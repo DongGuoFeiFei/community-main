@@ -1,10 +1,10 @@
 <script setup>
 
-import Article from "@/views/admin/views/article/Article.vue";
+import ArticleList from "@/views/admin/views/article/ArticleList.vue";
 </script>
 
 <template>
-  <Article/>
+  <article-list/>
 </template>
 
 <style scoped lang="scss">

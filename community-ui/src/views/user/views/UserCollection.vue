@@ -206,11 +206,11 @@ import {
   moveFavorite,
   updateFolder
 } from '../../../../../community-admin/src/api/collectApi.js'
-import {localStore} from '@/stores/localStores.js'
+import {localStores} from '@/stores/localStores.js'
 import {useRouter} from "vue-router";
 
 const router = useRouter()
-const lStore = localStore()
+const lStore = localStores()
 
 // 基础URL，用于拼接图片路径
 const baseUrl = lStore.baseURL

@@ -76,10 +76,10 @@
 <script setup>
 import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {fetchPosts} from '../../../../../../community-admin/src/api/index.js'
-import {localStore} from "@/stores/localStores.js"
+import {fetchPosts} from '@/api/index.js'
+import {localStores} from "@/stores/localStores.js"
 
-const lStore = localStore()
+const lStore = localStores()
 const router = useRouter()
 const route = useRoute()
 
@@ -114,7 +114,7 @@ const truncateSummary = (summary) => {
 
 // 跳转到详情
 const goToDetail = (id) => {
-  router.push(`/index/article/${id}`)
+  window.open(`/index/article/${id}`, '_blank');
 }
 
 // 加载文章

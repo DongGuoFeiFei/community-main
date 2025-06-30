@@ -12,30 +12,12 @@ const router = createRouter({
             redirect: '/admin',
         },
         {
-            path: '/register',
-            name: 'Register',
-            component: () => import('@/views/auth/Register.vue'),
-            meta: {
-                requiresAuth: false,
-                title: '注册'
-            }
-        },
-        {
             path: '/login',
             name: 'login',
             component: () => import("@/views/auth/Login.vue"),
             meta: {
                 requiresAuth: false,
                 title: '登录'
-            }
-        },
-        {
-            path: '/forgot-password',
-            name: 'ForgotPassword',
-            component: () => import('@/views/auth/ForgotPassword.vue'),
-            meta: {
-                requiresAuth: false,
-                title: '找回密码'
             }
         },
         {
@@ -67,6 +49,14 @@ const router = createRouter({
                     path: "notificationSystem",
                     name: 'adminNotificationSystem',
                     component: () => import("@/views/admin/views/notificationSystem/Index.vue"),
+                    meta: {
+                        title: "消息通知"
+                    }
+                },
+                {
+                    path: "dashboard",
+                    name: 'dashboard',
+                    component: () => import("@/views/admin/views/dashboard/Index.vue"),
                     meta: {
                         title: "消息通知"
                     }

@@ -19,7 +19,9 @@
     </div>
 
     <!-- Vditor 编辑器 -->
-    <div id="vditor" ref="vditorRef" v-show="editorLoaded"></div>
+    <MarkdownEditor
+        v-model="content"
+    />
 
     <!-- 封面选择区域 -->
     <div class="cover-section">
@@ -53,23 +55,25 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import Vditor from "vditor";
-import "vditor/dist/index.css";
-import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "../../../../../../community-admin/src/api/index.js";
-import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
-import {localStore} from "@/stores/localStores.js";
-import {sessionStore} from "@/stores/sessionStores.js";
 
-const lStore = localStore()
+
+import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "@/api/index.js";
+import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
+import {localStores} from "@/stores/localStores.js";
+import {sessionStores} from "@/stores/sessionStores.js";
+import MarkdownEditor from "@/views/pages/views/edit/MarkdownEditor.vue";
+
+const content = ref('')
+
+const lStore = localStores()
 const baseUrl = lStore.baseURL;
 const router = useRouter();
-const vditorRef = ref(null);
 const fileInput = ref(null);
-const vditorInstance = ref(null);
+const modelValue = ref('朋友，有趣的故事，你来分享🎉️！');
 
-const sStore = sessionStore()
+
+const sStore = sessionStores()
 const isEditMode = ref(sStore.isEditMode)
-const editorLoaded = ref(false);
 
 const route = useRoute()
 // 文章数据
@@ -171,7 +175,7 @@ const saveArticle = (status) => {
     return;
   }
 
-  articleData.content = vditorInstance.value.getValue();
+  articleData.content = content.value;
   articleData.status = status;
 
   if (!articleData.content.trim()) {
@@ -211,6 +215,29 @@ const saveArticle = (status) => {
         });
   }
 };
+// 设置是否是旧值
+const isEditor = () => {
+  if (route.path === '/editor') {
+    isEditMode.value = false
+  }
+  if (route.path === '/editor-edit') {
+    isEditMode.value = true
+  }
+  if (isEditMode.value) {
+    getArticleById(sStore.editorArticleId).then(res => {
+      Object.assign(editArticle, res)
+      const {title, content, fileId, status} = editArticle
+      Object.assign(articleData, {title, content, fileId, status})
+      coverImageData.fileId = editArticle.fileId
+      coverImageData.accessUrl = sStore.baseURL + editArticle.coverUrl
+      content.value = articleData.content;
+    })
+  }
+}
+onMounted(() => {
+  isEditor()
+})
+
 
 // 返回上一页
 const goBack = async () => {
@@ -225,113 +252,6 @@ const goBack = async () => {
   } catch {
     console.log('用户取消了返回操作')
   }
-}
-
-// 加载编辑器
-const loading = ElLoading.service({
-  lock: true,
-  text: '正在加载编辑器...',
-  background: 'rgba(255, 255, 255, 0.8)',
-});
-
-onMounted(() => {
-  // 使用 setTimeout 确保 DOM 完全加载
-  setTimeout(() => {
-    initEditor();
-  }, 100);
-});
-
-const initEditor = () => {
-  vditorInstance.value = new Vditor("vditor", {
-    mode: "ir",
-    height: 450,
-    toolbarConfig: {
-      pin: true,
-    },
-    toolbar: [
-      "emoji", "headings", "bold", "italic", "strike", "link", "|",
-      "list", "ordered-list", "check", "outdent", "indent", "|",
-      "quote", "line", "|", "upload", "|",
-      "undo", "redo", "|", "outline", "fullscreen",
-    ],
-    upload: {
-      url: "/files/upload",
-      accept: "image/*",
-      max: 10 * 1024 * 1024,
-      fieldName: "file",
-      headers: {
-        'token': localStorage.getItem('token')
-      },
-      format: (files, responseText) => {
-        const res = JSON.parse(responseText);
-        if (res.code === 200) {
-          const imageUrl = baseUrl + res.data.accessUrl;
-          return JSON.stringify({
-            msg: "上传成功",
-            code: 0,
-            data: {
-              errFiles: [],
-              succMap: {
-                [files[0].name]: imageUrl
-              }
-            }
-          });
-        } else {
-          throw new Error(res.message || "上传失败");
-        }
-      },
-      success: (editor, msg) => {
-        console.log("上传成功:", msg);
-      },
-      error: (msg) => {
-        alert(`上传失败: ${msg}`);
-      },
-      // 文章中的图片上传
-      handler: (files) => {
-        return new Promise((resolve, reject) => {
-          const formData = new FormData();
-          formData.append('file', files[0]);
-          uploadFile(formData)
-              .then(res => {
-                const imageUrl = baseUrl + res.data.accessUrl;
-                resolve(imageUrl);
-                const markdownImage = `![${files[0].name.replace(/\.[^/.]+$/, "")}](${imageUrl})`;
-                vditorInstance.value.insertValue(markdownImage);
-              })
-              .catch(err => {
-                reject(err);
-              });
-        });
-      }
-    },
-    counter: {
-      enable: true,
-    },
-    cache: {
-      enable: true,
-    },
-    after: () => {
-      if (route.path === '/editor') {
-        isEditMode.value = false
-      }
-      if (route.path === '/editor-edit') {
-        isEditMode.value = true
-      }
-      if (isEditMode.value) {
-        getArticleById(sStore.editorArticleId).then(res => {
-          Object.assign(editArticle, res)
-          const {title, content, fileId, status} = editArticle
-          Object.assign(articleData, {title, content, fileId, status})
-          coverImageData.fileId = editArticle.fileId
-          coverImageData.accessUrl = sStore.baseURL + editArticle.coverUrl
-          vditorInstance.value.setValue(articleData.content);
-        })
-      }
-      vditorInstance.value.setValue(articleData.content);
-      editorLoaded.value = true;
-      loading.close();
-    },
-  });
 }
 
 </script>

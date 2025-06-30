@@ -131,11 +131,11 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import { Check, Delete } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import { deleteNotifications, getNotifications, markAsRead } from '../../../../../community-admin/src/api/notification.js';
-import { sessionStore } from '@/stores/sessionStores.js';
+import { sessionStores } from '@/stores/sessionStores.js';
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const sStore = sessionStore();
+const sStore = sessionStores();
 
 // 通知数据
 const notifications = ref([]);

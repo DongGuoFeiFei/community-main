@@ -13,12 +13,22 @@
         </el-header>
         <!--主体-->
         <el-main>
-          <RouterView/>
+          <div class="main">
+            <RouterView v-slot="{Component}">
+              <component :is="Component" v-if="Component"></component>
+              <div v-else>
+                <WelcomePage/>
+              </div>
+            </RouterView>
+          </div>
+          <div>
+            <!--脚部-->
+            <el-footer class="footer">
+              <AdminFooter/>
+            </el-footer>
+          </div>
         </el-main>
-        <!--脚部-->
-        <el-footer class="footer">
-          <AdminFooter/>
-        </el-footer>
+
       </el-container>
     </el-container>
   </div>
@@ -30,6 +40,7 @@ import AdminHeader from "@/views/admin/components/AdminHeader.vue";
 import AdminMenu from "@/views/admin/components/AdminMenu.vue";
 import AdminFooter from "@/views/admin/components/AdminFooter.vue";
 import {ref} from "vue";
+import WelcomePage from "@/views/admin/components/WelcomePage.vue";
 
 const isCollapse = ref(false);
 
@@ -66,17 +77,21 @@ const toggleCollapse = () => {
 
       .el-main {
         flex: 1; // 占据剩余空间
-        padding: 20px;
+
         overflow-y: auto; // 允许内容滚动
         background-color: #f0f2f5;
+
+        .main {
+          padding: 20px;
+        }
+
+        .el-footer {
+          padding: 0;
+          background-color: #fff;
+          border-top: 1px solid #e8e8e8;
+        }
       }
 
-      .el-footer {
-        padding: 0;
-        background-color: #fff;
-        border-top: 1px solid #e8e8e8;
-
-      }
     }
   }
 }

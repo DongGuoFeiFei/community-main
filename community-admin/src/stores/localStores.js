@@ -1,8 +1,9 @@
 import {computed, ref} from 'vue'
 import {defineStore} from 'pinia'
 import dayjs from "dayjs";
+import config from "@/config.js";
 
-export const localStore = defineStore('localStores', () => {
+export const localStores = defineStore('localStores', () => {
     const userInfo = ref({
         avatarUrl: "",
         expiresIn: "",
@@ -21,13 +22,14 @@ export const localStore = defineStore('localStores', () => {
             username: ""
         }
     })
+    const baseURL = ref( config.apiBaseUrl)
 
     const tokenInfo = ref({
         token: "",
         refreshTime: "",
         expiresIn: ""
     })
-    const baseURL = ref('http://127.0.0.1:8080')
+
 
     // token是否过期
     const isTokenExpired = computed(() => {

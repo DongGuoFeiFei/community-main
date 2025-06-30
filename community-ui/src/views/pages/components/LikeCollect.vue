@@ -25,7 +25,7 @@
 <script setup>
 import {ref, watch} from 'vue';
 import {ElMessage} from 'element-plus';
-import {localStore} from "@/stores/localStores.js";
+import {localStores} from "@/stores/localStores.js";
 
 // 获取父组件数据
 const props = defineProps({
@@ -55,7 +55,7 @@ const props = defineProps({
 // 向父组件传递数据
 const emit = defineEmits(['like', 'collect']);
 
-const lStore = localStore();
+const lStore = localStores();
 
 // 状态
 const likeCount = ref(props.initialLikeCount);

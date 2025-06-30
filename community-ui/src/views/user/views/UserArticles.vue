@@ -136,14 +136,14 @@ import {Delete, Edit, Search} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
 import {deleteArticle, getMyArticles} from '../../../../../community-admin/src/api/index.js'
-import {localStore} from "@/stores/localStores.js";
-import {sessionStore} from "@/stores/sessionStores.js";
+import {localStores} from "@/stores/localStores.js";
+import {sessionStores} from "@/stores/sessionStores.js";
 
 const router = useRouter()
 
 // 文章数据
 const articles = ref([])
-const sStore = sessionStore()
+const sStore = sessionStores()
 // 搜索和筛选
 const searchQuery = ref('')
 const filterStatus = ref(null)
@@ -158,7 +158,7 @@ const pagination = reactive({
 })
 
 const loading = ref(false)
-const lStore = localStore()
+const lStore = localStores()
 // 基础URL，用于拼接图片路径
 const baseUrl = lStore.baseURL // 根据你的实际后端地址调整
 

@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="logo">
         <el-image src="/favicon.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
-        <span>采芙蓉</span>
+        <router-link to="/index" class="text">采芙蓉</router-link>
       </div>
 
       <el-menu
@@ -51,15 +51,15 @@
 <script setup lang="js">
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {localStore} from "@/stores/localStores.js";
-import {sessionStore} from "@/stores/sessionStores.js";
+import {localStores} from "@/stores/localStores.js";
+import {sessionStores} from "@/stores/sessionStores.js";
 import {logout} from "../../../../../community-admin/src/api/auth.js";
 import NotificationBadge from "@/components/NotificationBadge.vue";
 
 const router = useRouter()
 const activeMenu = ref('home')
-const lStore = localStore()
-const sStore = sessionStore()
+const lStore = localStores()
+const sStore = sessionStores()
 const avatarUrl = ref(lStore.baseURL + lStore.userInfo.avatarUrl)
 const handleMenuClick = (index) => {
   activeMenu.value = index
@@ -121,7 +121,7 @@ const handleDropdownClick = (command) => {
   align-items: center; // 垂直居中
   font-size: 22px;
   font-weight: 600;
-  background: #000000;;
+  background: #000000;
   -webkit-background-clip: text;
   color: transparent;
   cursor: default;
@@ -130,6 +130,17 @@ const handleDropdownClick = (command) => {
     width: 32px;
     height: 32px;
     margin-right: 8px;
+  }
+
+  .text {
+    color: inherit; // 继承父元素颜色
+
+    // 如果需要，可以同时覆盖激活状态
+    &.router-link-active,
+    &.router-link-exact-active {
+      color: inherit;
+      text-decoration: none;
+    }
   }
 }
 

@@ -1,13 +1,5 @@
 <template>
   <div class="post-container">
-    <!-- 返回按钮 -->
-    <div class="back-button" @click="goBack">
-      <el-icon>
-        <ArrowLeft/>
-      </el-icon>
-      返回上一页
-    </div>
-
     <!-- 单个帖子卡片 -->
     <el-card class="post-card" v-if="post">
       <div class="card-content">
@@ -67,17 +59,24 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
-import {ArrowLeft} from '@element-plus/icons-vue'
 import {fetchPostDetail} from '../../../../../../community-admin/src/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 import NProgress from "nprogress";
-import {localStore} from "@/stores/localStores.js";
-import LikeCollect from "@/views/pages/views/article/LikeCollect.vue";
+import {localStores} from "@/stores/localStores.js";
+import LikeCollect from "@/views/pages/components/LikeCollect.vue";
 import {addLike} from "../../../../../../community-admin/src/api/likeApi.js";
 import {cancelCollect} from "../../../../../../community-admin/src/api/collectApi.js";
-import CollectDialog from "@/views/pages/views/article/CollectDialog.vue";
+import CollectDialog from "@/views/pages/components/CollectDialog.vue";
+
+defineProps({
+  modelValue: {
+    type: [String, Number],
+    default: undefined,
+  },
+});
+const emit = defineEmits(['update:modelValue']);
 
 const md = new MarkdownIt(
     {
@@ -89,7 +88,7 @@ const md = new MarkdownIt(
     }
 )
 
-const lStore = localStore()
+const lStore = localStores()
 const SANITIZE_CONFIG = {
   ALLOWED_TAGS: [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -105,6 +104,7 @@ const router = useRouter()
 const post = ref(null);
 const loading = ref(true)
 const error = ref(null)
+
 
 const article = computed(() => {
   if (!post.value) return {
@@ -142,6 +142,7 @@ const fetchPostData = async (id) => {
     NProgress.start()
     loading.value = true
     error.value = null
+    emit("update:modelValue", id)
     const response = await fetchPostDetail(id)
 
     // 正确获取数据
@@ -155,6 +156,7 @@ const fetchPostData = async (id) => {
           SANITIZE_CONFIG
       )
     }
+    document.title = post.value.title
   } catch (err) {
     error.value = err.message || '获取帖子详情失败'
     console.error('Error fetching post:', err)

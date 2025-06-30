@@ -37,15 +37,15 @@
 import {onMounted, ref} from 'vue'
 import {Bell} from '@element-plus/icons-vue'
 import NotificationPanel from './NotificationPanel.vue'
-import {sessionStore} from "@/stores/sessionStores.js"
+import {sessionStores} from "@/stores/sessionStores.js"
 
 const unreadCount = ref(0)
 const showPanel = ref(false)
-const lStore = sessionStore()
+const sStore = sessionStores()
 
 const fetchUnreadCount = async () => {
   try {
-    unreadCount.value = lStore.unreadCount
+    unreadCount.value = sStore.unreadCount
   } catch (error) {
     console.error('获取未读消息失败:', error)
   }

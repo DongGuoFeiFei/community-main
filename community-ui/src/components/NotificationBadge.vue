@@ -37,11 +37,11 @@
 import {onMounted, ref} from 'vue'
 import {Bell} from '@element-plus/icons-vue'
 import NotificationPanel from './NotificationPanel.vue'
-import {sessionStore} from "@/stores/sessionStores.js"
+import {sessionStores} from "@/stores/sessionStores.js"
 
 const unreadCount = ref(0)
 const showPanel = ref(false)
-const lStore = sessionStore()
+const lStore = sessionStores()
 
 const fetchUnreadCount = async () => {
   try {

@@ -103,6 +103,13 @@ const menuData = [
         }
       },
       {
+        path: '/admin/tags',
+        meta: {
+          title: '标签管理',
+          iconComponent: ElIconCollection
+        }
+      },
+      {
         path: '/admin/comments',
         meta: {
           title: '评论管理',

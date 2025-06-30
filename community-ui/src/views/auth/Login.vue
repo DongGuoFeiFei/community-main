@@ -42,9 +42,9 @@ import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
 import {login, getCaptcha} from '@/api/auth.js';
-import {localStore} from "@/stores/localStores.js";
+import {localStores} from "@/stores/localStores.js";
 
-const lStore = localStore()
+const lStore = localStores()
 const router = useRouter();
 const loading = ref(false);
 const formRef = ref(null);

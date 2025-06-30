@@ -2,10 +2,11 @@
 import axios from 'axios';
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
+import config from "@/config.js";
 
 
 const request = axios.create({
-    baseURL: 'http://127.0.0.1:8080', // 后端接口的基础URL
+    baseURL: config.apiBaseUrl, // 后端接口的基础URL
     timeout: 5000, // 请求超时
     headers: {
         'Content-Type': 'application/json',

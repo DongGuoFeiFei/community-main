@@ -87,13 +87,13 @@
 
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
-import {localStore} from '@/stores/localStores.js'
+import {localStores} from '@/stores/localStores.js'
 import {Camera} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
 import {updateUserCoverId, updateUserProfile, uploadFile} from "../../../../../community-admin/src/api/index.js";
 
-const lStore = localStore()
+const lStore = localStores()
 const loading = ref(false)
 
 // 表单数据

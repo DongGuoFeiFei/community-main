@@ -79,13 +79,13 @@
 import {computed, ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {Setting, SwitchButton, User} from '@element-plus/icons-vue'
-import {localStore} from '@/stores/localStores.js'
-import {sessionStore} from '@/stores/sessionStores.js'
+import {localStores} from '@/stores/localStores.js'
+import {sessionStores} from '@/stores/sessionStores.js'
 import {logout} from '../../../../../community-admin/src/api/auth.js'
 
 const router = useRouter()
-const lStore = localStore()
-const sStore = sessionStore()
+const lStore = localStores()
+const sStore = sessionStores()
 const activeMenu = ref(router.currentRoute.value.path.split('/')[2] || 'profile')
 
 const user = computed(() => lStore.userInfo || {})
