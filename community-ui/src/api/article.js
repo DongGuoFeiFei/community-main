@@ -9,3 +9,8 @@ export const getRelatedPosts = (articleId) => {
 export const getHotTags = () => {
     return request.get('/tags/hot');
 };
+export const sharePost = () => {
+    return request.get('/tags/hot');
+};
+
+

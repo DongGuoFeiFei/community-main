@@ -51,7 +51,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         voList = redisUtil.getCacheList(CacheKeyConstants.ARTICLE_COMMENT + postId);
         if (voList.isEmpty()) {
             voList = commentMapper.getCommentsByArticleId(postId);
-            redisUtil.setCacheList(CacheKeyConstants.ARTICLE_COMMENT + postId, voList);
+            if (!voList.isEmpty()) {
+                redisUtil.setCacheList(CacheKeyConstants.ARTICLE_COMMENT + postId, voList);
+                redisUtil.expire(CacheKeyConstants.ARTICLE_COMMENT + postId, 3, TimeUnit.DAYS);
+            }
+            return voList;
         }
         redisUtil.expire(CacheKeyConstants.ARTICLE_COMMENT + postId, 3, TimeUnit.DAYS);
         return voList;

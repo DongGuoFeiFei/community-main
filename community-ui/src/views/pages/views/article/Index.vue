@@ -5,6 +5,7 @@ import Footer from "@/views/pages/components/Footer.vue";
 import AuthorInfo from "@/views/pages/views/article/AuthorInfo.vue";
 import RecommendSidebar from "@/views/pages/views/article/RecommendSidebar.vue";
 import {ref} from "vue";
+import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 
 const articleId = ref(null)
 </script>
@@ -17,14 +18,15 @@ const articleId = ref(null)
           <Header/>
         </el-header>
         <el-container>
-          <el-aside width="350px">
-            <AuthorInfo v-if="articleId" :articleId="Number(articleId)" />
-            <RecommendSidebar :articleId="Number(articleId)" />
+          <el-aside width="400px">
+            <AuthorInfo v-if="articleId" :articleId="Number(articleId)"/>
+            <RecommendSidebar :articleId="Number(articleId)"/>
           </el-aside>
           <el-main>
-            <post-detail v-model="articleId" />
+            <post-detail v-model="articleId"/>
+            <CommentSection v-if="Number(articleId)" :postId="Number(articleId)"/>
           </el-main>
-          <el-aside width="150px">
+          <el-aside width="100px">
 
           </el-aside>
         </el-container>

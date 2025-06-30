@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getRelatedPosts, getHotTags } from '@/api/article';
-import { useRouter } from 'vue-router';
+import {onMounted, ref} from 'vue';
+import {getHotTags, getRelatedPosts} from '@/api/article';
+import {useRouter} from 'vue-router';
 
 const props = defineProps({
   articleId: {
@@ -66,37 +66,37 @@ onMounted(() => {
           <div class="post-title">{{ post.title }}</div>
           <div class="post-meta">
             <span class="post-views">
-              <el-icon><View /></el-icon> {{ post.viewCount }}
+              <el-icon><View/></el-icon> {{ post.viewCount }}
             </span>
             <span class="post-likes">
-              <el-icon><Star /></el-icon> {{ post.likeCount }}
+              <el-icon><Star/></el-icon> {{ post.likeCount }}
             </span>
           </div>
         </div>
-        <el-empty v-if="!loading && relatedPosts.length === 0" description="暂无相关文章" />
+        <el-empty v-if="!loading && relatedPosts.length === 0" description="暂无相关文章"/>
       </div>
     </el-card>
-
-    <!-- 热门标签 -->
-    <el-card class="recommend-card" shadow="hover">
-      <template #header>
-        <div class="card-header">
-          <span>热门标签</span>
-        </div>
-      </template>
-      <div v-loading="loading" class="tags-container">
-        <el-tag
-            v-for="tag in hotTags"
-            :key="tag.name"
-            class="tag-item"
-            effect="plain"
-            @click="navigateToTag(tag.name)"
-        >
-          {{ tag.name }} ({{ tag.count }})
-        </el-tag>
-        <el-empty v-if="!loading && hotTags.length === 0" description="暂无标签数据" />
-      </div>
-    </el-card>
+    <!-- todo 添加标签推荐，再文章下面（通过标签搜索页面，参考知乎）文章粘贴标签，文章查询区分标签区 -->
+    <!--    &lt;!&ndash; 热门标签 &ndash;&gt;-->
+    <!--    <el-card class="recommend-card" shadow="hover">-->
+    <!--      <template #header>-->
+    <!--        <div class="card-header">-->
+    <!--          <span>热门标签</span>-->
+    <!--        </div>-->
+    <!--      </template>-->
+    <!--      <div v-loading="loading" class="tags-container">-->
+    <!--        <el-tag-->
+    <!--            v-for="tag in hotTags"-->
+    <!--            :key="tag.name"-->
+    <!--            class="tag-item"-->
+    <!--            effect="plain"-->
+    <!--            @click="navigateToTag(tag.name)"-->
+    <!--        >-->
+    <!--          {{ tag.name }} ({{ tag.count }})-->
+    <!--        </el-tag>-->
+    <!--        <el-empty v-if="!loading && hotTags.length === 0" description="暂无标签数据" />-->
+    <!--      </div>-->
+    <!--    </el-card>-->
   </div>
 </template>
 

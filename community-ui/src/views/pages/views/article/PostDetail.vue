@@ -25,6 +25,7 @@
           @like="handleLike"
           @collect="handleCollect"
       />
+      <ShareButton :post-id="article.id"/>
     </el-card>
 
     <!-- 加载状态 -->
@@ -45,8 +46,6 @@
     />
   </div>
 
-  <CommentSection v-if="post" :postId="post.articleId"/>
-
   <CollectDialog
       v-if="post"
       v-model:visible="collectDialogVisible"
@@ -59,16 +58,17 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
-import {fetchPostDetail} from '../../../../../../community-admin/src/api/index.js'
+import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStores} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/components/LikeCollect.vue";
-import {addLike} from "../../../../../../community-admin/src/api/likeApi.js";
-import {cancelCollect} from "../../../../../../community-admin/src/api/collectApi.js";
+import {addLike} from "@/api/likeApi.js";
+import {cancelCollect} from "@/api/collectApi.js";
 import CollectDialog from "@/views/pages/components/CollectDialog.vue";
+import ShareButton from "@/views/pages/components/ShareButton.vue";
 
 defineProps({
   modelValue: {
@@ -76,8 +76,13 @@ defineProps({
     default: undefined,
   },
 });
-const emit = defineEmits(['update:modelValue']);
 
+const emit = defineEmits(['update:modelValue']);
+const route = useRoute()
+const router = useRouter()
+const post = ref(null);
+const loading = ref(true)
+const error = ref(null)
 const md = new MarkdownIt(
     {
       html: true,        // 允许HTML标签
@@ -99,11 +104,6 @@ const SANITIZE_CONFIG = {
   ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel']
 }
 // 点赞组件的相关数据
-const route = useRoute()
-const router = useRouter()
-const post = ref(null);
-const loading = ref(true)
-const error = ref(null)
 
 
 const article = computed(() => {
