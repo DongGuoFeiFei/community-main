@@ -86,7 +86,6 @@ const greetingMessage = computed(() => {
   if (hour < 14) return '中午好，记得午休哦！'
   if (hour < 18) return '下午好，保持专注！'
   if (hour < 22) return '晚上好，今天辛苦了！'
-  return '夜深了，注意休息！'
 })
 </script>
 
