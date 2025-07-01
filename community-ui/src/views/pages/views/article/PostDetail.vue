@@ -61,7 +61,6 @@ import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
-import CommentSection from "@/views/pages/views/article/CommentSection.vue";
 import NProgress from "nprogress";
 import {localStores} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/components/LikeCollect.vue";

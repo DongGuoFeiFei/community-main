@@ -58,7 +58,35 @@ const router = createRouter({
                     name: 'dashboard',
                     component: () => import("@/views/admin/views/dashboard/Index.vue"),
                     meta: {
-                        title: "消息通知"
+                        title: "控制台"
+                    }
+                }, {
+                    path: "tags",
+                    name: 'tags',
+                    component: () => import("@/views/admin/views/tag/Index.vue"),
+                    meta: {
+                        title: "标签管理"
+                    }
+                }, {
+                    path: "topics",
+                    name: 'topics',
+                    component: () => import("@/views/admin/views/topic/Index.vue"),
+                    meta: {
+                        title: "话题管理"
+                    }
+                }, {
+                    path: "activities",
+                    name: 'activities',
+                    component: () => import("@/views/admin/views/activity/Index.vue"),
+                    meta: {
+                        title: "活动管理"
+                    }
+                },{
+                    path: "userList",
+                    name: 'userList',
+                    component: () => import("@/views/admin/views/user/Index.vue"),
+                    meta: {
+                        title: "活动管理"
                     }
                 },
             ]

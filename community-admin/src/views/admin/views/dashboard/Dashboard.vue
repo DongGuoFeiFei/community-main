@@ -28,7 +28,6 @@
           :activities="recentActivities"
       />
 
-
       <!-- 快速操作 -->
       <QuickActions
           class="dashboard-section"
@@ -47,9 +46,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { sessionStores } from '@/stores/sessionStores';
-import { getDashboardData } from '@/api/dashboard';
+import {onMounted, ref} from 'vue';
+import {sessionStores} from '@/stores/sessionStores';
+import {getDashboardData} from '@/api/dashboard';
 import RecentActivities from "@/views/admin/views/dashboard/RecentActivities.vue"
 import SystemStatus from "@/views/admin/views/dashboard/SystemStatus.vue"
 import DashboardCard from "@/views/admin/views/dashboard/DashboardCard.vue";
@@ -61,12 +60,12 @@ const showCharts = ref(true);
 
 // 数据卡片
 const cards = ref([
-  { title: '总用户数', value: 0, icon: 'User', color: 'primary' },
-  { title: '今日新增', value: 0, icon: 'UserFilled', color: 'success' },
-  { title: '总帖子数', value: 0, icon: 'Document', color: 'warning' },
-  { title: '今日发帖', value: 0, icon: 'EditPen', color: 'danger' },
-  { title: '总评论数', value: 0, icon: 'ChatLineRound', color: 'info' },
-  { title: '活跃用户', value: 0, icon: 'DataLine', color: '' }
+  {title: '总用户数', value: 0, icon: 'User', color: 'primary'},
+  {title: '今日新增', value: 0, icon: 'UserFilled', color: 'success'},
+  {title: '总帖子数', value: 0, icon: 'Document', color: 'warning'},
+  {title: '今日发帖', value: 0, icon: 'EditPen', color: 'danger'},
+  {title: '总评论数', value: 0, icon: 'ChatLineRound', color: 'info'},
+  {title: '活跃用户', value: 0, icon: 'DataLine', color: ''}
 ]);
 
 // 最近活动数据

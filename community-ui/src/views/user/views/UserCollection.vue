@@ -205,7 +205,7 @@ import {
   fetchFolders,
   moveFavorite,
   updateFolder
-} from '../../../../../community-admin/src/api/collectApi.js'
+} from '@/api/collectApi.js'
 import {localStores} from '@/stores/localStores.js'
 import {useRouter} from "vue-router";
 

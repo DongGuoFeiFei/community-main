@@ -5,7 +5,7 @@
       trigger="click"
   >
     <template #reference>
-      <el-button icon="el-icon-share" type="text">转发</el-button>
+      <el-button icon="el-icon-share" link>转发</el-button>
     </template>
     <div class="share-popover">
       <el-input

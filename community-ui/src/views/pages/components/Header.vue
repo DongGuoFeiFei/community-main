@@ -2,7 +2,7 @@
   <div class="header-wrapper">
     <div class="header-content">
       <div class="logo">
-        <el-image src="/favicon.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
+        <el-image src="/芙蓉花.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
         <router-link to="/index" class="text">采芙蓉</router-link>
       </div>
 

@@ -1,9 +1,6 @@
 // api/index.js
 import request from '@/utils/request.js';
 
-
-
-
 export const fetchPosts = (params) => {
     return request.get('/posts', {params}).then(res => {
         if (res.code === 200) {
@@ -71,38 +68,6 @@ export const addArticle = (data) => {
             throw new Error(res.message)
         }
     })
-}
-
-
-export const fetchCommentsByPostId = async (postId) => {
-    try {
-        const res = await request.get(`/comments/getCommentsById`, {params: {postId}})
-        if (res.code === 200) {
-            return res
-        } else {
-            throw new Error(res.message || '获取评论失败')
-        }
-    } catch (error) {
-        throw error
-    }
-}
-
-export const submitCommentToPost = async (postId, {content, parentId, firstId}) => {
-    try {
-        const res = await request.post('/comments/addComment', {
-            articleId: postId,
-            content,
-            parentId,
-            firstId
-        })
-        if (res.code === 200) {
-            return res
-        } else {
-            throw new Error(res.message || '评论失败')
-        }
-    } catch (error) {
-        throw error
-    }
 }
 
 export const updateUserProfile = (formData) => {

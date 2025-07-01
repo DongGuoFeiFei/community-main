@@ -151,12 +151,11 @@
 </template>
 
 <!--todo 添加一个评论删除按钮 ， 将回复框设置为弹窗-->
-
 <script setup>
 import {computed, onMounted, ref} from 'vue'
 import {ElMessage} from 'element-plus'
 import {sessionStores} from "@/stores/sessionStores.js"
-import {fetchCommentsByPostId, submitCommentToPost} from '../../../../../../community-admin/src/api/index.js'
+import {fetchCommentsByPostId, submitCommentToPost} from '@/api/index.js'
 
 const sStore = sessionStores()
 
