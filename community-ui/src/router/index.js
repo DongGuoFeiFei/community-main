@@ -71,13 +71,19 @@ const router = createRouter({
             path: '/editor',
             name: 'editor',
             component: () => import("@/views/pages/views/edit/Index.vue"),
-            meta: {requiresAuth: true}
+            meta: {
+                requiresAuth: true,
+                title: "编辑文章"
+            }
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
             component: () => import("@/views/pages/views/edit/Index.vue"),
-            meta: {requiresAuth: true}
+            meta: {
+                requiresAuth: true,
+                title: "修改文章"
+            }
         },
         {
             path: '/user',

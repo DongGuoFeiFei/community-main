@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleView;
 import com.example.communityserver.entity.request.AddArticleDto;
@@ -21,6 +22,7 @@ import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
+import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -41,9 +44,11 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
 
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
-    private ArticleMapper postsMapper;
+    private ArticleMapper articleMapper;
 
     @Autowired
     private FileEntityMapper fileEntityMapper;
@@ -75,7 +80,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleView.setViewTime(new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()));
             articleViewMapper.updateById(articleView);
         }
-        return postsMapper.getPostsCardVoById(id);
+        return articleMapper.getPostsCardVoById(id);
     }
 
     @Override
@@ -87,7 +92,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setTitle(dto.getTitle());
         article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
-        return postsMapper.insert(article) > 0;
+        return articleMapper.insert(article) > 0;
     }
 
 
@@ -96,20 +101,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Article::getIsDel, 0).eq(Article::getArticleId, id);
         Article article = new Article();
-        return postsMapper.update(null, updateWrapper) > 0;
+        return articleMapper.update(null, updateWrapper) > 0;
     }
 
     @Override
     public EditorArticlesVo getEditorArticleDtl(Long id) {
         Long loginUserId = SecurityUtils.getLoginUserId();
-        return postsMapper.getEditorArticleDtl(id, loginUserId);
+        return articleMapper.getEditorArticleDtl(id, loginUserId);
 
     }
 
     @Override
     public ArticleDtlVo getArticleDtlVo(Long id) {
         ArticleDtlVo articleDtlVo = new ArticleDtlVo();
-        ArticleDtlVo articleDtlVo1 = postsMapper.getArticleDtlVo(id);
+        ArticleDtlVo articleDtlVo1 = articleMapper.getArticleDtlVo(id);
         ArticleDtlVo articleDtlVo2 = likesMapper.getArticleLike(id, SecurityUtils.getLoginUserId());
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo1, articleDtlVo);
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo2, articleDtlVo);
@@ -120,7 +125,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public Page<ArticleCardVo> getPostsCardVoList(SearchParam param) {
 
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
-        Page<ArticleCardVo> voPage = postsMapper.getPostsCardVoList(page, param.getTitle());
+        Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param.getTitle());
         voPage.getRecords().forEach(articleCardVo -> {
             String content = MarkDownUtils.toPlainText(articleCardVo.getContent());
             articleCardVo.setContent(StringUtil.truncate(content, 100));
@@ -133,7 +138,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public Page<ArticleListVo> getArticleList(GetArticleListDto dto) {
 
         Page<ArticleListVo> page = new Page<>(dto.getPage(), dto.getSize());
-        return postsMapper.getArticleList(page, dto, SecurityUtils.getLoginUserId());
+        return articleMapper.getArticleList(page, dto, SecurityUtils.getLoginUserId());
+    }
+
+    @Override
+    public Long countByUser(Long id) {
+        Long articleCount = redisUtil.getCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + id);
+        if (articleCount == null) {
+            articleCount = articleMapper.countByUser(id);
+        }
+        redisUtil.expire(CacheKeyConstants.USER_ARTICLE_COUNT + id, 3, TimeUnit.DAYS);
+        return articleCount;
     }
 
 }

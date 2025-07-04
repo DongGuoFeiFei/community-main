@@ -75,7 +75,7 @@ const handleMenuClick = (index) => {
 const handleDropdownClick = (command) => {
   switch (command) {
     case 'user':
-      router.push('/user/profile'); // 跳转到个人中心
+      router.push('/user'); // 跳转到个人中心
       break;
     case 'settings':
       router.push('/settings'); // 跳转到设置

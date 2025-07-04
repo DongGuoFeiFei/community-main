@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.communityserver.mapper.FollowMapper">
+
+    <select id="countFollowers" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM follows f
+        WHERE f.follower_id = #{id}
+    </select>
+    <select id="countFollowing" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM follows f
+        WHERE f.following_id = #{id}
+    </select>
+</mapper>

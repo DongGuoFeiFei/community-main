@@ -2,6 +2,7 @@ package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
@@ -10,6 +11,7 @@ import com.example.communityserver.entity.response.ArticleDtlVo;
 import com.example.communityserver.entity.response.ArticleListVo;
 import com.example.communityserver.entity.response.EditorArticlesVo;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.web.TableDataInfo;
 import io.swagger.annotations.Api;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -35,6 +38,8 @@ public class ArticleController {
     @Autowired
     private IArticleService postsService;
 
+    @Autowired
+    private ITagService tagService;
 
     // TODO: 2025/6/28 游客能够直接使用查看文章功能 
     // TODO: 2025/6/28 权限使用
@@ -96,6 +101,13 @@ public class ArticleController {
     @DeleteMapping("/del/{id}")
     public Result<Void> deleteArticle(@PathVariable Long id) {
         return postsService.delById(id) ? Result.success() : Result.error("失败");
+    }
+
+    @ApiOperation("获取文章标签")
+    @GetMapping("/{postId}/tags")
+    public Result<List<Tag>> getPostTags(@PathVariable Long postId) {
+        List<Tag> tags = tagService.getPostTags(postId);
+        return tags != null ? Result.success(tags) : Result.error();
     }
 
 }

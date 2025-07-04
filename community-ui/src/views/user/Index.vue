@@ -1,6 +1,7 @@
 <script setup>
 import UserHeader from "@/views/user/components/UserHeader.vue";
 import UserFooter from "@/views/user/components/UserFooter.vue";
+import WelcomePage from "@/views/user/components/WelcomePage.vue";
 </script>
 
 <template>
@@ -12,7 +13,12 @@ import UserFooter from "@/views/user/components/UserFooter.vue";
         </el-header>
         <el-container class="content-container">
           <el-main class="main-content">
-            <router-view/>
+            <router-view v-slot="{Component}">
+              <component :is="Component" v-if="Component"></component>
+              <div v-else>
+                <WelcomePage/>
+              </div>
+            </router-view>
           </el-main>
         </el-container>
         <el-footer class="footer">

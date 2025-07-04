@@ -13,6 +13,7 @@
               最后更新：{{ formatDate(post.updatedAt) }}
             </span>
           </div>
+          <el-divider border-style="dashed" />
           <div v-html="post.content"></div>
         </div>
       </div>
@@ -25,7 +26,8 @@
           @like="handleLike"
           @collect="handleCollect"
       />
-      <ShareButton :post-id="article.id"/>
+      <!--  todo 添加转发按钮，完善点赞和收藏    -->
+      <!--      <ShareButton :post-id="article.id"/>-->
     </el-card>
 
     <!-- 加载状态 -->
@@ -67,7 +69,6 @@ import LikeCollect from "@/views/pages/components/LikeCollect.vue";
 import {addLike} from "@/api/likeApi.js";
 import {cancelCollect} from "@/api/collectApi.js";
 import CollectDialog from "@/views/pages/components/CollectDialog.vue";
-import ShareButton from "@/views/pages/components/ShareButton.vue";
 
 defineProps({
   modelValue: {

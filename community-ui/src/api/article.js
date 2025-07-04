@@ -13,4 +13,12 @@ export const sharePost = () => {
     return request.get('/tags/hot');
 };
 
+/**
+ * 获取文章标签
+ * @param {number} postId 文章ID
+ * @returns {Promise}
+ */
+export const getPostTags = (postId) => {
+    return request.get(`/posts/${postId}/tags`)
+}
 

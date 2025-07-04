@@ -140,4 +140,11 @@
           and p.is_drafts = '0'
           AND p.article_id = #{id}
     </select>
+    <select id="countByUser" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM article a
+        WHERE a.user_id = #{id}
+          AND a.is_del = 1
+          AND a.is_drafts = 0
+    </select>
 </mapper>

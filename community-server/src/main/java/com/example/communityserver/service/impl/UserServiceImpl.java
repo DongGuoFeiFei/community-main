@@ -7,7 +7,11 @@ import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.RegisterDto;
+import com.example.communityserver.entity.response.AuthorInfoVo;
+import com.example.communityserver.mapper.ArticleMapper;
+import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.mapper.UserMapper;
+import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.JWTUtil;
@@ -17,6 +21,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
@@ -29,6 +35,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IArticleService articleService;
+
+    @Autowired
+    private ArticleMapper articleMapper;
+
+    @Autowired
+    private FollowMapper followMapper;
 
     @Override
     public String login(String username, String password) {
@@ -92,6 +107,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         } else {
             return MessageCodeEnum.REGISTER_ERROR;
         }
+    }
+
+    @Override
+    public AuthorInfoVo getAuthorInfoVo(Long articleId) {
+        AuthorInfoVo vo = userMapper.getAuthorInfoVo(articleId, SecurityUtils.getLoginUserId());
+        if (vo == null) {
+            return null;
+        }
+        Long postCount = redisUtil.getCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId());
+        if (postCount == null) {
+            postCount = articleMapper.countByUser(vo.getId());
+        }
+        redisUtil.expire(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId(), 3, TimeUnit.DAYS);
+        Long followerCount = redisUtil.getCacheObject(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId());
+        if (followerCount == null) {
+            followerCount = followMapper.countFollowers(vo.getId());
+        }
+        redisUtil.expire(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId(), 3, TimeUnit.DAYS);
+        Long followingCount = redisUtil.getCacheObject(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId());
+        if (followingCount == null) {
+            followingCount = followMapper.countFollowing(vo.getId());
+        }
+        redisUtil.expire(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId(), 3, TimeUnit.DAYS);
+        vo.setPostCount(postCount);
+        vo.setFollowerCount(followerCount);
+        vo.setFollowingCount(followingCount);
+        return vo;
     }
 
 

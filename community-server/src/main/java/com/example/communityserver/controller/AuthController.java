@@ -2,6 +2,7 @@ package com.example.communityserver.controller;
 
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.constants.SecurityConstants;
 import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.enums.ValidateCodeTypeEnum;
@@ -126,7 +127,7 @@ public class AuthController {
         LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
-        loginResponse.setExpiresIn((int) (3 * SystemConstants.ONE_DAY_MILLIS / 1000));
+        loginResponse.setExpiresIn((int) SecurityConstants.TOKEN_EXPIRATION);
 
         loginResponse.setUserInfo(loginUser.getUser());
         FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());

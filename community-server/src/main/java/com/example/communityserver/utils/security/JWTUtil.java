@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import java.util.Calendar;
 
+// TODO: 2025/7/3 后期研究安全设置  token密钥时间等集中管理，开发环境，生产环境等
 public class JWTUtil {
     // 加密的秘钥封装一下
     private static final String SECRET = "asdadasdsad12as32d1a23";

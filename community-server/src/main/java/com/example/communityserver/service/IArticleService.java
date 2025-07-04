@@ -40,4 +40,6 @@ public interface IArticleService extends IService<Article> {
     Page<ArticleCardVo> getPostsCardVoList(SearchParam param);
 
     Page<ArticleListVo> getArticleList(GetArticleListDto dto);
+
+    Long countByUser(Long id);
 }

@@ -1,8 +1,10 @@
 package com.example.communityserver.controller;
 
 
+import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.UpdateUserInfo;
+import com.example.communityserver.entity.response.AuthorInfoVo;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
@@ -12,10 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api(tags = "用户信息")
@@ -49,11 +48,20 @@ public class UserController {
         if (user.getFileId() > 10) {
             fileEntityService.delFileById(user.getFileId());
         }
+        FileEntity fileEntity = fileEntityService.getById(fileId);
         user.setUserId(loginUserId);
         user.setFileId(fileId);
+        user.setAvatar(fileEntity.getAccessUrl());
         return userService.updateById(user) ? Result.success() : Result.error("更换失败。");
     }
 
-    // TODO: 2025/6/28 用户信息方面需要修改 
+    @ApiOperation("获取作者详情")
+    @GetMapping("/{articleId}/info")
+    public Result<AuthorInfoVo> getAuthorInfoVo(@PathVariable Long articleId) {
+        AuthorInfoVo vo = userService.getAuthorInfoVo(articleId);
+        return vo != null ? Result.success(vo) : Result.error();
+    }
+
+    // TODO: 2025/6/28 用户信息方面需要修改
 
 }

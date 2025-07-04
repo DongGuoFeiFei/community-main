@@ -74,7 +74,7 @@ import {logout} from '@/api/auth.js'
 const router = useRouter()
 const lStore = localStores()
 const sStore = sessionStores()
-const activeMenu = ref(router.currentRoute.value.path.split('/')[2] || 'profile')
+const activeMenu = ref(router.currentRoute.value.path.split('/')[2])
 
 const user = computed(() => lStore.userInfo || {})
 const avatarUrl = computed(() => {

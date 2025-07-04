@@ -6,6 +6,7 @@ import AuthorInfo from "@/views/pages/views/article/AuthorInfo.vue";
 import RecommendSidebar from "@/views/pages/views/article/RecommendSidebar.vue";
 import {ref} from "vue";
 import CommentSection from "@/views/pages/views/article/CommentSection.vue";
+import Tags from "@/views/pages/views/article/Tags.vue";
 
 const articleId = ref(null)
 </script>
@@ -24,6 +25,7 @@ const articleId = ref(null)
           </el-aside>
           <el-main>
             <post-detail v-model="articleId"/>
+            <tags v-if="Number(articleId)" :postId="Number(articleId)"/>
             <CommentSection v-if="Number(articleId)" :postId="Number(articleId)"/>
           </el-main>
           <el-aside width="100px">

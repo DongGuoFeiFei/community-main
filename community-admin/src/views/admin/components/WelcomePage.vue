@@ -21,8 +21,8 @@
               <SuccessFilled/>
             </el-icon>
             <div>
-              <div class="card-title">登录状态</div>
-              <div class="card-value">已登录</div>
+              <div class="card-title">确定登录</div>
+              <div class="card-value">yes, sir</div>
             </div>
           </div>
         </el-card>
@@ -33,8 +33,8 @@
               <SuccessFilled/>
             </el-icon>
             <div>
-              <div class="card-title">网络状态</div>
-              <div class="card-value">已处理</div>
+              <div class="card-title">调整网络</div>
+              <div class="card-value">yes, sir</div>
             </div>
           </div>
         </el-card>
@@ -45,8 +45,8 @@
               <SuccessFilled/>
             </el-icon>
             <div>
-              <div class="card-title">心情状态</div>
-              <div class="card-value">已放松</div>
+              <div class="card-title">调整心情</div>
+              <div class="card-value">yes, sir</div>
             </div>
           </div>
         </el-card>

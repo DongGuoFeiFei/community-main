@@ -81,7 +81,7 @@ const router = createRouter({
                     meta: {
                         title: "活动管理"
                     }
-                },{
+                }, {
                     path: "userList",
                     name: 'userList',
                     component: () => import("@/views/admin/views/user/Index.vue"),
@@ -125,7 +125,7 @@ router.beforeEach((to, from, next) => {
         // 检查 token 是否存在且未过期
         if (!token || isTokenExpired(userInfo)) {
             next({
-                path: '/login',
+                path: '/admin',
                 query: {redirect: to.fullPath} // 保存目标路径以便登录后跳转
             })
         } else {

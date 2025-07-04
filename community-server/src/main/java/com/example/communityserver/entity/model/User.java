@@ -36,4 +36,5 @@ public class User implements Serializable {
     private String createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String lastLogin;
+    private String avatar;
 }

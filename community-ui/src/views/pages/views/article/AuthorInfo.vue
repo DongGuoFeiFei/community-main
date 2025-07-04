@@ -1,58 +1,8 @@
-<script setup>
-import {onMounted, ref} from 'vue'
-import {getUserInfo} from '@/api/user'
-import {ElAvatar, ElButton, ElTag} from 'element-plus'
-
-const props = defineProps({
-  articleId: {
-    type: Number,
-    required: true
-  }
-})
-
-const authorInfo = ref({
-  id: null,
-  username: '',
-  nickname: '',
-  avatar: '',
-  bio: '',
-  joinDate: '',
-  postCount: 0,
-  followerCount: 0,
-  followingCount: 0,
-  isFollowing: false
-})
-
-// 获取作者信息
-const fetchAuthorInfo = async () => {
-  try {
-    if (props.articleId) {
-      const res = await getUserInfo(props.articleId)
-      authorInfo.value = res.data
-    }
-  } catch (error) {
-    console.error('获取作者信息失败:', error)
-  }
-}
-
-// 关注/取消关注
-const toggleFollow = () => {
-  authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-  authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
-  // 这里应该调用API更新关注状态
-}
-
-onMounted(() => {
-  fetchAuthorInfo()
-})
-</script>
-
 <template>
   <div class="author-card">
     <div class="author-header">
-      <el-avatar :size="80" :src="authorInfo.avatar"/>
-      <h3>{{ authorInfo.nickname || authorInfo.username }}</h3>
-      <p class="username">@{{ authorInfo.username }}</p>
+      <el-avatar :size="80" :src="store.baseURL + authorInfo.avatar"/>
+      <router-link to="/user/{{authorInfo.id}}"><h3>{{ authorInfo.nickname }}</h3></router-link>
     </div>
 
     <div class="author-bio">
@@ -91,6 +41,58 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import {onMounted, ref} from 'vue'
+import {getUserInfo} from '@/api/user'
+import {ElAvatar, ElButton, ElTag} from 'element-plus'
+import {localStores} from "@/stores/localStores.js";
+
+
+const props = defineProps({
+  articleId: {
+    type: Number,
+    required: true
+  }
+})
+
+const store = localStores()
+const authorInfo = ref({
+  id: null,
+  username: '',
+  nickname: '',
+  avatar: '',
+  bio: '',
+  joinDate: '',
+  postCount: 0,
+  followerCount: 0,
+  followingCount: 0,
+  isFollowing: false
+})
+
+// 获取作者信息
+const fetchAuthorInfo = async () => {
+  try {
+    if (props.articleId) {
+      const res = await getUserInfo(props.articleId)
+      authorInfo.value = res.data
+    }
+  } catch (error) {
+    console.error('获取作者信息失败:', error)
+  }
+}
+
+// 关注/取消关注
+const toggleFollow = () => {
+  authorInfo.value.isFollowing = !authorInfo.value.isFollowing
+  authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
+  // 这里应该调用API更新关注状态
+}
+
+onMounted(() => {
+  fetchAuthorInfo()
+})
+</script>
 
 <style scoped lang="scss">
 .author-card {

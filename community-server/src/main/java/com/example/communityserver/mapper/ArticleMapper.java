@@ -35,4 +35,5 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     Page<ArticleListVo> getArticleList(Page<ArticleListVo> page, @Param("dto") GetArticleListDto dto,@Param("loginUserId") Long loginUserId);
 
+    Long countByUser(Long id);
 }
