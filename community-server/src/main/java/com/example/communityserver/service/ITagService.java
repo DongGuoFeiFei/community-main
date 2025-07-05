@@ -3,6 +3,7 @@ package com.example.communityserver.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.model.NotificationEntity;
 import com.example.communityserver.entity.model.Tag;
+import com.example.communityserver.entity.response.TagVo;
 
 import java.util.List;
 
@@ -17,5 +18,11 @@ import java.util.List;
 
 
 public interface ITagService extends IService<Tag> {
-    List<Tag> getPostTags(Long postId);
+    List<TagVo> getPostTags(Long postId);
+
+    List<TagVo> getPopularTags();
+
+    int batchInsert(List<Long> tagIds, Long articleId);
+
+    boolean delTagArticle(List<Long> tagIds);
 }

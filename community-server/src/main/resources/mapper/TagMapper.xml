@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.communityserver.mapper.TagMapper">
+    <insert id="batchInsert" parameterType="map">
+        INSERT INTO article_tag (
+        article_id,
+        tag_id,
+        create_at
+        )
+        VALUES
+        <foreach collection="tagIds" item="tagId" separator=",">
+            (
+            #{articleId},
+            #{tagId},
+            NOW()
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        id = id <!-- 唯一键冲突时不操作 -->
+    </insert>
+
+    <!-- 批量删除文章-标签关联关系 -->
+    <delete id="delTagArticle" parameterType="java.util.List">
+        DELETE FROM article_tag
+        WHERE tag_id IN
+        <foreach collection="tagIds" item="tagId" open="(" separator="," close=")">
+            #{tagId}
+        </foreach>
+    </delete>
 
     <select id="getPostTags" resultType="com.example.communityserver.entity.model.Tag">
-        SELECT t.id,
-               t.name,
-               t.slug,
-               t.description,
-               t.icon,
-               t.color,
-               t.create_at,
-               t.create_at,
-               t.is_del
+        SELECT *
         FROM tag t
                  INNER JOIN
              article_tag at

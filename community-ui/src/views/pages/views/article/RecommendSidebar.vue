@@ -2,6 +2,7 @@
 import {onMounted, ref} from 'vue';
 import {getHotTags, getRelatedPosts} from '@/api/article';
 import {useRouter} from 'vue-router';
+import {Star, View} from "@element-plus/icons-vue";
 
 const props = defineProps({
   articleId: {

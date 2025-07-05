@@ -6,6 +6,9 @@
         <div class="post-details">
           <h2 class="post-title">{{ post.title }}</h2>
 
+          <el-divider border-style="dashed"/>
+          <div v-html="post.content"></div>
+          <el-divider border-style="dashed"/>
           <div class="post-meta">
             <span class="author">作者：{{ post.nickname }}</span>
             <span class="date">发布时间：{{ formatDate(post.createdAt) }}</span>
@@ -13,8 +16,6 @@
               最后更新：{{ formatDate(post.updatedAt) }}
             </span>
           </div>
-          <el-divider border-style="dashed" />
-          <div v-html="post.content"></div>
         </div>
       </div>
       <LikeCollect
@@ -69,6 +70,7 @@ import LikeCollect from "@/views/pages/components/LikeCollect.vue";
 import {addLike} from "@/api/likeApi.js";
 import {cancelCollect} from "@/api/collectApi.js";
 import CollectDialog from "@/views/pages/components/CollectDialog.vue";
+import dayjs from "dayjs";
 
 defineProps({
   modelValue: {
@@ -127,7 +129,7 @@ const article = computed(() => {
 // 格式化日期
 const formatDate = (dateString) => {
   if (!dateString) return '未知时间'
-  const date = new Date(dateString)
+  const date = dayjs().format('YYYY-MM-DD')
   return date.toLocaleString()
 }
 

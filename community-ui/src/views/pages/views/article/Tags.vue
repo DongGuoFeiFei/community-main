@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {getPostTags} from '@/api/article'
 import {useRouter} from 'vue-router'
 
@@ -14,12 +14,15 @@ const router = useRouter()
 const tags = ref([])
 const loading = ref(false)
 
-// 获取文章标签
+const activeTags = computed(() => {
+  return tags.value.filter(tag => tag.status === 1)
+})
 const fetchTags = async () => {
   try {
     loading.value = true
     const response = await getPostTags(props.postId)
     tags.value = response.data || []
+    console.log(tags.value)
   } catch (error) {
     console.error('获取标签失败:', error)
   } finally {
@@ -27,7 +30,9 @@ const fetchTags = async () => {
   }
 }
 
-// 跳转到标签搜索页
+// watch(tags, (newTags) => {
+//   activeTags.value = newTags.filter(tag => tag.status === 1)
+// }, {immediate: true, deep: true})
 const navigateToTag = (tagName) => {
   router.push({
     name: 'tag-search',
@@ -38,6 +43,8 @@ const navigateToTag = (tagName) => {
 onMounted(() => {
   fetchTags()
 })
+
+
 </script>
 
 <template>
@@ -47,7 +54,7 @@ onMounted(() => {
     </div>
     <div v-else class="tags-list">
       <el-tag
-          v-for="tag in tags"
+          v-for="tag in activeTags"
           :key="tag.id"
           class="tag-item"
           effect="plain"
@@ -56,7 +63,7 @@ onMounted(() => {
       >
         {{ tag.name }}
       </el-tag>
-      <el-tag v-if="tags.length === 0" type="info" effect="plain">
+      <el-tag v-if="activeTags.length === 0" type="info" effect="plain">
         暂无标签
       </el-tag>
     </div>
@@ -83,6 +90,12 @@ onMounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+
+    .el-tag {
+      cursor: pointer;
+      user-select: none;
+      color: #303133;
+    }
 
     .tag-item {
       cursor: pointer;

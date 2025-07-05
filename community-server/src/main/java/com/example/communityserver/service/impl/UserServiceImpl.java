@@ -115,21 +115,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (vo == null) {
             return null;
         }
-        Long postCount = redisUtil.getCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId());
+        Long postCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId(), Long.class);
+        System.out.println(postCount);
         if (postCount == null) {
             postCount = articleMapper.countByUser(vo.getId());
         }
-        redisUtil.expire(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId(), 3, TimeUnit.DAYS);
-        Long followerCount = redisUtil.getCacheObject(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId());
+        redisUtil.setCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId(), postCount, 3, TimeUnit.DAYS);
+        Long followerCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId(), Long.class);
         if (followerCount == null) {
             followerCount = followMapper.countFollowers(vo.getId());
         }
-        redisUtil.expire(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId(), 3, TimeUnit.DAYS);
-        Long followingCount = redisUtil.getCacheObject(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId());
+        redisUtil.setCacheObject(CacheKeyConstants.USER_FOLLOWER_COUNT + vo.getId(), followerCount, 3, TimeUnit.DAYS);
+        Long followingCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId(), Long.class);
         if (followingCount == null) {
             followingCount = followMapper.countFollowing(vo.getId());
         }
-        redisUtil.expire(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId(), 3, TimeUnit.DAYS);
+        redisUtil.setCacheObject(CacheKeyConstants.USER_FOLLOWING_COUNT + vo.getId(), followingCount, 3, TimeUnit.DAYS);
         vo.setPostCount(postCount);
         vo.setFollowerCount(followerCount);
         vo.setFollowingCount(followingCount);

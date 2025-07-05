@@ -54,4 +54,10 @@ public class Tag {
 
     @ApiModelProperty(value = "是否删除(0:未删除,1:已删除)", example = "0")
     private Integer isDel;
+
+    private Long creatorId;
+
+    private Integer status;
+
+    private Long createCount;
 }

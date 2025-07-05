@@ -2,14 +2,10 @@ package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.model.Article;
-import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
-import com.example.communityserver.entity.response.ArticleCardVo;
-import com.example.communityserver.entity.response.ArticleDtlVo;
-import com.example.communityserver.entity.response.ArticleListVo;
-import com.example.communityserver.entity.response.EditorArticlesVo;
+import com.example.communityserver.entity.response.*;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
@@ -17,6 +13,7 @@ import com.example.communityserver.utils.web.TableDataInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -77,6 +74,7 @@ public class ArticleController {
 
     @ApiOperation("更新文章")
     @PutMapping("/updateArticleDtl/{id}")
+    @Transactional
     public Result<Void> updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
         Article article = new Article();
         article.setIsDrafts(updateDto.getStatus());
@@ -84,7 +82,11 @@ public class ArticleController {
         article.setFileId(updateDto.getFileId());
         article.setContent(updateDto.getContent());
         article.setTitle(updateDto.getTitle());
-        return postsService.updateById(article) ? Result.success() : Result.error("更新失败，稍后重试");
+        boolean b = postsService.updateById(article);
+        boolean delTagArticle = tagService.delTagArticle(updateDto.getTagIds());
+        int i = tagService.batchInsert(updateDto.getTagIds(), article.getArticleId());
+        return i > 0 ? Result.success() : Result.error("失败");
+
     }
 
     @ApiOperation("获取文章列表")
@@ -105,8 +107,8 @@ public class ArticleController {
 
     @ApiOperation("获取文章标签")
     @GetMapping("/{postId}/tags")
-    public Result<List<Tag>> getPostTags(@PathVariable Long postId) {
-        List<Tag> tags = tagService.getPostTags(postId);
+    public Result<List<TagVo>> getPostTags(@PathVariable Long postId) {
+        List<TagVo> tags = tagService.getPostTags(postId);
         return tags != null ? Result.success(tags) : Result.error();
     }
 

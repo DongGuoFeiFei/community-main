@@ -1,8 +1,8 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.model.NotificationEntity;
 import com.example.communityserver.entity.model.Tag;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +19,8 @@ import java.util.List;
 public interface TagMapper extends BaseMapper<Tag> {
 
     List<Tag> getPostTags(Long postId);
+
+    int batchInsert(@Param("tagIds") List<Long> tagIds,@Param("articleId") Long articleId);
+
+    boolean delTagArticle(List<Long> tagIds);
 }

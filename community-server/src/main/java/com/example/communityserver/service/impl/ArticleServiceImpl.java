@@ -20,10 +20,12 @@ import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.utils.web.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +61,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private LikesMapper likesMapper;
 
+    @Autowired
+    private ITagService tagService;
+
 
     @Override
     public List<ArticleCardVo> getPostsCardVoById(Long id) {
@@ -92,7 +97,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setTitle(dto.getTitle());
         article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
-        return articleMapper.insert(article) > 0;
+        int insert = articleMapper.insert(article);
+        int batchInsert = tagService.batchInsert(dto.getTagIds(), article.getArticleId());
+        return batchInsert > 0;
     }
 
 

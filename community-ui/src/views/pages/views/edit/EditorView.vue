@@ -13,7 +13,7 @@
 
     <!-- 标签选择器 -->
     <TagSelector
-        v-model="articleData.tags"
+        v-model="tags"
         class="tag-selector-container"
         :max-tags="5"
     />
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElLoading, ElMessage, ElMessageBox} from 'element-plus'
 
@@ -65,8 +65,10 @@ const articleData = reactive({
   fileId: null,
   content: '朋友，有趣的故事，你来分享🎉️！',
   status: 0, // 0: 发布, 1: 草稿
-  tags: [] // 新增标签数组
+  tagIds: computed(() => tags.value.map(tag => tag.id))
 })
+
+const tags = ref([])
 
 // 封面数据
 const coverImageData = reactive({
@@ -159,18 +161,19 @@ const saveArticle = (status) => {
   })
 
   if (sStore.isEditMode) {
-    updateArticle(sStore.editorArticleId, articleData)
-        .then(res => {
-          ElMessage.success(status === 0 ? '文章重发布成功' : '草稿修改成功')
-          router.back()
-        })
-        .catch(err => {
-          ElMessage.warning('操作失败，稍后重试。')
-        })
-        .finally(() => {
-          sStore.isEditMode = false
-          loading.close()
-        })
+    articleData.tags =
+        updateArticle(sStore.editorArticleId, articleData)
+            .then(res => {
+              ElMessage.success(status === 0 ? '文章重发布成功' : '草稿修改成功')
+              router.back()
+            })
+            .catch(err => {
+              ElMessage.warning('操作失败，稍后重试。')
+            })
+            .finally(() => {
+              sStore.isEditMode = false
+              loading.close()
+            })
   } else {
     addArticle(articleData)
         .then(res => {

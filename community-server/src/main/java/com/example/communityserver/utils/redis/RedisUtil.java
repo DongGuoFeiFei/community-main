@@ -56,6 +56,25 @@ public class RedisUtil {
     }
 
     /**
+     * 获得缓存的数字基本对象。
+     *
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
+     */
+    public <T extends Number> T getCacheObjectAsNumber(String key, Class<T> targetType) {
+        Object value = getCacheObject(key);
+        if (value == null) return null;
+
+        if (value instanceof Number) {
+            if (targetType == Long.class) {
+                return targetType.cast(((Number) value).longValue());
+            }
+            // 其他数字类型处理...
+        }
+        throw new IllegalArgumentException("Unsupported number type conversion");
+    }
+
+    /**
      * 删除单个对象
      *
      * @param key

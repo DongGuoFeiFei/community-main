@@ -3,7 +3,7 @@
     <div class="panel-header">
       <span>通知中心</span>
       <el-button
-        link
+          link
           @click="markAllAsRead"
           v-if="notifications.length > 0 && unreadCount > 0"
       >
@@ -58,7 +58,7 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {CircleCheck, InfoFilled, Warning} from '@element-plus/icons-vue'
-import {deleteNotifications as deleteNotificationApi, getNotifications, markAsRead} from '../../../community-admin/src/api/notification'
+import {deleteNotifications, getNotifications, markAsRead} from '@/api/notification'
 
 const props = defineProps({
   unreadCount: {
@@ -75,8 +75,11 @@ const notifications = ref([])
 // 获取通知列表
 const fetchNotifications = async () => {
   try {
-    const res = await getNotifications({pageSize: 5})
-    notifications.value = res.list
+    const res = await getNotifications({
+      page: 5,
+      size: 5
+    })
+    notifications.value = res.data.rows
   } catch (error) {
     console.error('获取通知列表失败:', error)
   }
@@ -93,7 +96,7 @@ const markAllAsRead = async () => {
   try {
     await markAsRead(unreadIds)
     emit('read', props.unreadCount - unreadIds.length)
-    fetchNotifications()
+    await fetchNotifications()
   } catch (error) {
     console.error('标记已读失败:', error)
   }
@@ -102,7 +105,7 @@ const markAllAsRead = async () => {
 // 删除通知
 const deleteNotification = async (id) => {
   try {
-    await deleteNotificationApi(id)
+    await deleteNotifications(id)
     const index = notifications.value.findIndex(item => item.id === id)
     if (index !== -1) {
       const wasUnread = !notifications.value[index].read

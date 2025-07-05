@@ -58,7 +58,8 @@ public class NotificationEntityController {
     @GetMapping("/unread-count")
     public Result<Long> getUnreadCount() {
         LambdaQueryWrapper<NotificationEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId()).eq(NotificationEntity::getIsRead, 0);
+        queryWrapper.eq(NotificationEntity::getUserId, SecurityUtils.getLoginUserId())
+                .eq(NotificationEntity::getIsRead, 0);
         long count = notificationEntityService.count(queryWrapper);
         return Result.success(count);
     }

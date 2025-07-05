@@ -86,7 +86,7 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import {Search} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import {getAllTags, getPopularTags} from "@/api/tag.js";
+import {createTag, getAllTags, getPopularTags} from "@/api/tag.js";
 
 // 组件属性
 const props = defineProps({
@@ -226,6 +226,7 @@ const createNewTag = async () => {
     allTags.value.push(newTag)
     toggleTag(newTag)
     searchQuery.value = ''
+    ElMessage.success('创建标签提交审核')
   } catch (error) {
     ElMessage.error('创建标签失败')
     console.error('创建标签失败:', error)
@@ -312,9 +313,11 @@ watch(searchQuery, (newVal) => {
       gap: 8px;
       margin-bottom: 16px;
 
+
       .el-tag {
         cursor: pointer;
         user-select: none;
+        color: #303133;
       }
     }
 
