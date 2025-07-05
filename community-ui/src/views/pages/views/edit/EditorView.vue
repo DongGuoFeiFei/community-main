@@ -8,15 +8,15 @@
         @save="saveArticle"
     />
 
+    <!-- 编辑器主体 -->
+    <MarkdownEditor v-model="content"/>
+
     <!-- 标签选择器 -->
     <TagSelector
         v-model="articleData.tags"
         class="tag-selector-container"
         :max-tags="5"
     />
-
-    <!-- 编辑器主体 -->
-    <MarkdownEditor v-model="content"/>
 
     <!-- 封面区域 -->
     <CoverSection
@@ -64,7 +64,7 @@ const articleData = reactive({
   title: '',
   fileId: null,
   content: '朋友，有趣的故事，你来分享🎉️！',
-  status: 0 , // 0: 发布, 1: 草稿
+  status: 0, // 0: 发布, 1: 草稿
   tags: [] // 新增标签数组
 })
 
@@ -233,6 +233,7 @@ const goBack = async () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+
   .tag-selector-container {
     margin-bottom: 20px;
   }

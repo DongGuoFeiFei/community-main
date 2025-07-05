@@ -10,7 +10,9 @@
           @clear="filterTags"
       >
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <el-icon>
+            <Search/>
+          </el-icon>
         </template>
       </el-input>
     </div>
@@ -81,9 +83,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { Search } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import {computed, onMounted, ref, watch} from 'vue'
+import {Search} from '@element-plus/icons-vue'
+import {ElMessage} from 'element-plus'
+import {getAllTags, getPopularTags} from "@/api/tag.js";
 
 // 组件属性
 const props = defineProps({
@@ -125,7 +128,7 @@ const showCreateNewTag = computed(() => {
       !allTags.value.some(tag =>
           tag.name.toLowerCase() === searchQuery.value.toLowerCase()
       ) &&
-      !isTagSelected({ name: searchQuery.value })
+      !isTagSelected({name: searchQuery.value})
 })
 
 // 初始化加载标签
@@ -138,17 +141,17 @@ onMounted(async () => {
 const loadAllTags = async () => {
   try {
     // 这里替换为实际的API调用
-    // const response = await getAllTags()
-    // allTags.value = response.data
+    const response = await getAllTags()
+    allTags.value = response.data
 
     // 模拟数据
-    allTags.value = [
-      { id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章' },
-      { id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章' },
-      { id: 3, name: '前端', slug: 'frontend', color: '#E6A23C', description: '前端开发相关' },
-      { id: 4, name: '后端', slug: 'backend', color: '#F56C6C', description: '后端开发相关' },
-      { id: 5, name: '数据库', slug: 'database', color: '#909399', description: '数据库相关' }
-    ]
+    // allTags.value = [
+    //   {id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章'},
+    //   {id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章'},
+    //   {id: 3, name: '前端', slug: 'frontend', color: '#E6A23C', description: '前端开发相关'},
+    //   {id: 4, name: '后端', slug: 'backend', color: '#F56C6C', description: '后端开发相关'},
+    //   {id: 5, name: '数据库', slug: 'database', color: '#909399', description: '数据库相关'}
+    // ]
   } catch (error) {
     ElMessage.error('加载标签失败')
     console.error('加载标签失败:', error)
@@ -159,15 +162,15 @@ const loadAllTags = async () => {
 const loadPopularTags = async () => {
   try {
     // 这里替换为实际的API调用
-    // const response = await getPopularTags()
-    // popularTags.value = response.data
+    const response = await getPopularTags()
+    popularTags.value = response.data
 
     // 模拟数据
-    popularTags.value = [
-      { id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章' },
-      { id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章' },
-      { id: 3, name: 'Vue', slug: 'vue', color: '#42b983', description: 'Vue.js相关' }
-    ]
+    // popularTags.value = [
+    //   {id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章'},
+    //   {id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章'},
+    //   {id: 3, name: 'Vue', slug: 'vue', color: '#42b983', description: 'Vue.js相关'}
+    // ]
   } catch (error) {
     ElMessage.error('加载热门标签失败')
     console.error('加载热门标签失败:', error)
@@ -204,21 +207,21 @@ const createNewTag = async () => {
   isCreatingTag.value = true
   try {
     // 这里替换为实际的API调用
-    // const response = await createTag({
-    //   name: searchQuery.value,
-    //   slug: generateSlug(searchQuery.value),
-    //   color: getRandomColor()
-    // })
-    // const newTag = response.data
-
-    // 模拟创建新标签
-    const newTag = {
-      id: Date.now(), // 临时ID
+    const response = await createTag({
       name: searchQuery.value,
       slug: generateSlug(searchQuery.value),
-      color: getRandomColor(),
-      description: ''
-    }
+      color: getRandomColor()
+    })
+    const newTag = response.data
+
+    // 模拟创建新标签
+    // const newTag = {
+    //   id: Date.now(), // 临时ID
+    //   name: searchQuery.value,
+    //   slug: generateSlug(searchQuery.value),
+    //   color: getRandomColor(),
+    //   description: ''
+    // }
 
     allTags.value.push(newTag)
     toggleTag(newTag)

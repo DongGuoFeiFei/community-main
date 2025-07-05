@@ -46,11 +46,11 @@ public class Tag {
 
     @ApiModelProperty(value = "创建时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String createdAt;
+    private String createAt;
 
     @ApiModelProperty(value = "更新时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String updatedAt;
+    private String updateAt;
 
     @ApiModelProperty(value = "是否删除(0:未删除,1:已删除)", example = "0")
     private Integer isDel;
