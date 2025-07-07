@@ -135,7 +135,7 @@ import {useRouter} from 'vue-router'
 import {Delete, Edit, Search} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
-import {deleteArticle, getMyArticles} from '../../../../../community-admin/src/api/index.js'
+import {deleteArticle, getMyArticles} from '../../../../../../community-admin/src/api/index.js'
 import {localStores} from "@/stores/localStores.js";
 import {sessionStores} from "@/stores/sessionStores.js";
 

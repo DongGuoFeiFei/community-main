@@ -10,6 +10,7 @@ export const localStores = defineStore('localStores', () => {
         token: "",
         tokenType: "",
         userInfo: {
+            avatar: "",
             createTime: "",
             email: "",
             fileId: "",

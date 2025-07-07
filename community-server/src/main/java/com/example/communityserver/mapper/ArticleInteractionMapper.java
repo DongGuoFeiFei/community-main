@@ -1,7 +1,7 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.model.ArticleView;
+import com.example.communityserver.entity.model.ArticleInteraction;
 
 /**
  * <p>
@@ -13,7 +13,7 @@ import com.example.communityserver.entity.model.ArticleView;
  **/
 
 
-public interface ArticleViewMapper extends BaseMapper<ArticleView> {
+public interface ArticleInteractionMapper extends BaseMapper<ArticleInteraction> {
 
 
 }

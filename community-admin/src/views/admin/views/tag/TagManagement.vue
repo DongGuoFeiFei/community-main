@@ -6,10 +6,16 @@
           <span>文章标签管理</span>
           <div>
             <el-button type="primary" @click="handleCreate">
-              <el-icon><plus /></el-icon>新增标签
+              <el-icon>
+                <plus/>
+              </el-icon>
+              新增标签
             </el-button>
             <el-button type="danger" :disabled="!selectedIds.length" @click="handleBatchDelete">
-              <el-icon><delete /></el-icon>批量删除
+              <el-icon>
+                <delete/>
+              </el-icon>
+              批量删除
             </el-button>
           </div>
         </div>
@@ -18,7 +24,7 @@
       <!-- 搜索表单 -->
       <el-form :inline="true" :model="searchForm" class="search-form">
         <el-form-item label="标签名称">
-          <el-input v-model="searchForm.name" placeholder="请输入标签名称" clearable />
+          <el-input v-model="searchForm.name" placeholder="请输入标签名称" clearable/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
@@ -35,11 +41,11 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="标签名称" />
-        <el-table-column prop="slug" label="标签别名" />
-        <el-table-column prop="description" label="描述" />
+        <el-table-column type="selection" width="55"/>
+        <el-table-column prop="id" label="ID" width="80"/>
+        <el-table-column prop="name" label="标签名称"/>
+        <el-table-column prop="slug" label="标签别名"/>
+        <el-table-column prop="description" label="描述"/>
         <el-table-column prop="createdAt" label="创建时间" width="180">
           <template #default="{ row }">
             {{ formatDate(row.createdAt) }}
@@ -49,6 +55,7 @@
           <template #default="{ row }">
             <el-button size="small" @click="handleEdit(row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(row)">审批</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,10 +83,10 @@
     >
       <el-form ref="tagForm" :model="tagForm" :rules="rules" label-width="80px">
         <el-form-item label="标签名称" prop="name">
-          <el-input v-model="tagForm.name" placeholder="请输入标签名称" />
+          <el-input v-model="tagForm.name" placeholder="请输入标签名称"/>
         </el-form-item>
         <el-form-item label="标签别名" prop="slug">
-          <el-input v-model="tagForm.slug" placeholder="请输入标签别名" />
+          <el-input v-model="tagForm.slug" placeholder="请输入标签别名"/>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
@@ -101,17 +108,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { Plus, Delete } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {onMounted, reactive, ref} from 'vue';
+import {Delete, Plus} from '@element-plus/icons-vue';
+import {ElMessage, ElMessageBox} from 'element-plus';
 import dayjs from 'dayjs';
-import {
-  getTagList,
-  createTag,
-  updateTag,
-  deleteTag,
-  batchDeleteTags
-} from '@/api/tag';
+import {batchDeleteTags, createTag, deleteTag, getTagList, updateTag} from '@/api/tag';
 
 // 数据
 const loading = ref(false);
@@ -140,12 +141,12 @@ const tagForm = reactive({
 
 const rules = reactive({
   name: [
-    { required: true, message: '请输入标签名称', trigger: 'blur' },
-    { max: 20, message: '长度不能超过20个字符', trigger: 'blur' }
+    {required: true, message: '请输入标签名称', trigger: 'blur'},
+    {max: 20, message: '长度不能超过20个字符', trigger: 'blur'}
   ],
   slug: [
-    { required: true, message: '请输入标签别名', trigger: 'blur' },
-    { max: 20, message: '长度不能超过20个字符', trigger: 'blur' }
+    {required: true, message: '请输入标签别名', trigger: 'blur'},
+    {max: 20, message: '长度不能超过20个字符', trigger: 'blur'}
   ]
 });
 
@@ -249,7 +250,8 @@ const handleDelete = (row) => {
       console.error('删除失败:', error);
       ElMessage.error('删除失败');
     }
-  }).catch(() => {});
+  }).catch(() => {
+  });
 };
 
 const handleBatchDelete = () => {
@@ -269,7 +271,8 @@ const handleBatchDelete = () => {
       console.error('批量删除失败:', error);
       ElMessage.error('批量删除失败');
     }
-  }).catch(() => {});
+  }).catch(() => {
+  });
 };
 
 // 生命周期

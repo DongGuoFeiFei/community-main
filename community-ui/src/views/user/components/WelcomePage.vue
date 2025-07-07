@@ -3,9 +3,9 @@
     <!-- 用户欢迎卡片 -->
     <el-card class="welcome-card">
       <div class="welcome-header">
-        <el-avatar :size="80" :src="userInfo.avatar || defaultAvatar"/>
+        <el-avatar :size="80" :src="store.baseURL + userInfo.userInfo.avatar || defaultAvatar"/>
         <div class="welcome-text">
-          <h2 class="welcome-title">欢迎回来, {{ userInfo.nickname || userInfo.username }}!</h2>
+          <h2 class="welcome-title">欢迎回来, {{ userInfo.userInfo.nickname }}!</h2>
           <p class="welcome-subtitle">今天是 {{ currentDate }}，祝您度过愉快的一天</p>
         </div>
       </div>
@@ -23,10 +23,6 @@
         <div class="stat-item">
           <div class="stat-value">{{ userStats.following || 0 }}</div>
           <div class="stat-label">关注</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ userStats.likes || 0 }}</div>
-          <div class="stat-label">获赞</div>
         </div>
       </div>
     </el-card>
@@ -98,8 +94,7 @@ const userInfo = computed(() => store.userInfo)
 const userStats = ref({
   postCount: 0,
   followers: 0,
-  following: 0,
-  likes: 0
+  following: 0
 })
 
 // 最近活动
@@ -130,7 +125,8 @@ const navigateTo = (path) => {
 // 加载用户数据
 onMounted(async () => {
   try {
-    const response = await getUserStats(userInfo.value.id)
+    console.log(userInfo.value)
+    const response = await getUserStats(userInfo.value.userInfo.userId)
     if (response.code === 200) {
       userStats.value = response.data
     }

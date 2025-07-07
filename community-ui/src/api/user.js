@@ -12,5 +12,5 @@ export const unfollowUser = (userId) => {
     return request.delete(`/user/${userId}/follow`)
 }
 export const getUserStats = (userId) => {
-    return request.get(`/user/${userId}/follow`)
+    return request.get(`/user/${userId}/stats`)
 }

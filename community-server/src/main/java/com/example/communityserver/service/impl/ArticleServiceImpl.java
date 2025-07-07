@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.Article;
-import com.example.communityserver.entity.model.ArticleView;
+import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
@@ -15,7 +15,7 @@ import com.example.communityserver.entity.response.ArticleDtlVo;
 import com.example.communityserver.entity.response.ArticleListVo;
 import com.example.communityserver.entity.response.EditorArticlesVo;
 import com.example.communityserver.mapper.ArticleMapper;
-import com.example.communityserver.mapper.ArticleViewMapper;
+import com.example.communityserver.mapper.ArticleInteractionMapper;
 import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.mapping.ArticleMapping;
@@ -25,7 +25,6 @@ import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
-import com.example.communityserver.utils.web.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +55,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private FileEntityMapper fileEntityMapper;
 
     @Autowired
-    private ArticleViewMapper articleViewMapper;
+    private ArticleInteractionMapper articleInteractionMapper;
 
     @Autowired
     private LikesMapper likesMapper;
@@ -70,20 +69,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 添加一条阅读记录
         Long loginUserId = SecurityUtils.getLoginUserId();
         // 判断是否已经有了记录，若已有记录则更新阅读时间，若没有记录，则添加一条记录
-        LambdaQueryWrapper<ArticleView> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ArticleView::getArticleId, id)
-                .eq(ArticleView::getUserId, loginUserId);
-        ArticleView articleView = articleViewMapper.selectOne(queryWrapper);
-        if (articleView == null) {
+        LambdaQueryWrapper<ArticleInteraction> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleInteraction::getArticleId, id)
+                .eq(ArticleInteraction::getUserId, loginUserId);
+        ArticleInteraction articleInteraction = articleInteractionMapper.selectOne(queryWrapper);
+        if (articleInteraction == null) {
             // 处理无记录的情况（如初始化浏览记录）
-            articleView = new ArticleView();
-            articleView.setArticleId(id);
-            articleView.setUserId(loginUserId);
-            articleViewMapper.insert(articleView);
+            articleInteraction = new ArticleInteraction();
+            articleInteraction.setArticleId(id);
+            articleInteraction.setUserId(loginUserId);
+            articleInteractionMapper.insert(articleInteraction);
         } else {
             // 处理已有记录的情况，更新阅读记录
-            articleView.setViewTime(new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()));
-            articleViewMapper.updateById(articleView);
+            articleInteraction.setCreatedAt(new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()));
+            articleInteractionMapper.updateById(articleInteraction);
         }
         return articleMapper.getPostsCardVoById(id);
     }
@@ -154,7 +153,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if (articleCount == null) {
             articleCount = articleMapper.countByUser(id);
         }
-        redisUtil.expire(CacheKeyConstants.USER_ARTICLE_COUNT + id, 3, TimeUnit.DAYS);
+        redisUtil.setCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + id, articleCount, 3, TimeUnit.DAYS);
         return articleCount;
     }
 

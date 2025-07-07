@@ -27,6 +27,9 @@
         <el-menu-item index="notifications">
           <span>消息通知</span>
         </el-menu-item>
+        <el-menu-item index="follow&fans">
+          <span>关注&粉丝</span>
+        </el-menu-item>
       </el-menu>
 
       <div class="user-section">

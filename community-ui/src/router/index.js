@@ -94,7 +94,7 @@ const router = createRouter({
                 {
                     path: "profile",
                     name: "profile",
-                    component: () => import("@/views/user/views/UserProfile.vue"),
+                    component: () => import("@/views/user/views/profile/index.vue"),
                     meta: {
                         requiresAuth: true,
                         title: "个人中心"
@@ -103,7 +103,7 @@ const router = createRouter({
                 {
                     path: "articles",
                     name: "articles",
-                    component: () => import("@/views/user/views/UserArticles.vue"),
+                    component: () => import("@/views/user/views/articles/index.vue"),
                     meta: {
                         requiresAuth: true,
                         title: '我的文章',
@@ -112,7 +112,7 @@ const router = createRouter({
                 {
                     path: 'collections',
                     name: 'collections',
-                    component: () => import("@/views/user/views/UserCollection.vue"),
+                    component: () => import("@/views/user/views/collection/index.vue"),
                     meta: {
                         title: "我的收藏",
                         requiresAuth: true,
@@ -121,9 +121,18 @@ const router = createRouter({
                 {
                     path: 'notifications',
                     name: 'notifications',
-                    component: () => import('@/views/user/views/UserNotification.vue'),
+                    component: () => import('@/views/user/views/notification/index.vue'),
                     meta: {
                         title: '通知',
+                        requiresAuth: true,
+                    }
+                },
+                {
+                    path: 'follow&fans',
+                    name: 'follow&fans',
+                    component: () => import('@/views/user/views/follow&fans/index.vue'),
+                    meta: {
+                        title: '关注&粉丝',
                         requiresAuth: true,
                     }
                 },

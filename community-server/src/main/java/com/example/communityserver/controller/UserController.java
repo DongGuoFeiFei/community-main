@@ -5,6 +5,7 @@ import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.UpdateUserInfo;
 import com.example.communityserver.entity.response.AuthorInfoVo;
+import com.example.communityserver.entity.response.UserCountStats;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
@@ -61,6 +62,16 @@ public class UserController {
         AuthorInfoVo vo = userService.getAuthorInfoVo(articleId);
         return vo != null ? Result.success(vo) : Result.error();
     }
+    @ApiOperation("获取用户的相关信息数量")
+    @GetMapping("/{userId}/stats")
+    public Result<UserCountStats> getUserStats(@PathVariable Long  userId){
+        UserCountStats stats = userService.getUserStats(userId);
+
+        return stats!=null? Result.success(stats): Result.error();
+    }
+
+
+
 
     // TODO: 2025/6/28 用户信息方面需要修改
 

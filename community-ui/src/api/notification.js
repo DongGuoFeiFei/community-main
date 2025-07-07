@@ -1,3 +1,4 @@
+// @/api/notification.js
 import request from "@/utils/request.js";
 
 /**
@@ -9,7 +10,7 @@ import request from "@/utils/request.js";
  * @returns {Promise} 通知列表
  */
 export const getNotifications = (params) => {
-    return request.get('/notifications', { params });
+    return request.get('/notifications', {params});
 };
 
 /**
@@ -18,7 +19,7 @@ export const getNotifications = (params) => {
  * @returns {Promise} 操作结果
  */
 export const markAsRead = (ids) => {
-    return request.put('/notifications/read', { ids: Array.isArray(ids) ? ids : [ids] });
+    return request.put('/notifications/read', {ids: Array.isArray(ids) ? ids : [ids]});
 };
 
 /**
@@ -27,7 +28,7 @@ export const markAsRead = (ids) => {
  * @returns {Promise} 操作结果
  */
 export const deleteNotifications = (ids) => {
-    return request.delete('/notifications', { data: { ids: Array.isArray(ids) ? ids : [ids] } });
+    return request.delete('/notifications', {data: {ids: Array.isArray(ids) ? ids : [ids]}});
 };
 
 /**
@@ -36,4 +37,26 @@ export const deleteNotifications = (ids) => {
  */
 export const getUnreadCount = () => {
     return request.get('/notifications/unread-count');
+};
+
+// 标记全部为已读
+export const markAllAsRead = () => {
+    return request.post('/notifications/mark-all-read');
+};
+
+
+/**
+ * 获取各类型未读数量统计
+ * @returns {Promise} 各类型未读数量
+ */
+export const getUnreadCountByType = () => {
+    return request.get('/notifications/unread-count-by-type');
+};
+
+/**
+ * 获取通知类型映射
+ * @returns {Promise} 通知类型映射
+ */
+export const getNotificationTypes = () => {
+    return request.get('/notifications/types');
 };

@@ -49,6 +49,7 @@ import {sessionStores} from '@/stores/sessionStores.js'
 import CoverSection from "@/views/pages/views/edit/CoverSection.vue";
 import EditorHeader from "@/views/pages/views/edit/EditorHeader.vue";
 import TagSelector from "@/views/pages/views/edit/TagSelector.vue";
+import {getPostTags} from "@/api/article.js";
 
 const content = ref('朋友，有趣的故事，你来分享🎉️！')
 const lStore = localStores()
@@ -207,6 +208,9 @@ const isEditor = () => {
       coverImageData.fileId = res.fileId
       coverImageData.accessUrl = sStore.baseURL + res.coverUrl
       content.value = articleData.content
+    })
+    getPostTags(sStore.editorArticleId).then(res => {
+      tags.value = res.data
     })
   }
 }

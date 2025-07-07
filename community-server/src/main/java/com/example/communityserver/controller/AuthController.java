@@ -3,7 +3,6 @@ package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SecurityConstants;
-import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.enums.ValidateCodeTypeEnum;
 import com.example.communityserver.entity.model.FileEntity;
@@ -130,6 +129,8 @@ public class AuthController {
         loginResponse.setExpiresIn((int) SecurityConstants.TOKEN_EXPIRATION);
 
         loginResponse.setUserInfo(loginUser.getUser());
+
+        // TODO: 2025/7/6 头像取消连接文件表 
         FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());
         loginResponse.setAvatarUrl(fileEntity.getAccessUrl());
 

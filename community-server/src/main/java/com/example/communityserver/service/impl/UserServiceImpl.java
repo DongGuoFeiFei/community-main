@@ -8,10 +8,12 @@ import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.response.AuthorInfoVo;
+import com.example.communityserver.entity.response.UserCountStats;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.mapper.UserMapper;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.JWTUtil;
@@ -41,6 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private IFollowService followService;
 
     @Autowired
     private FollowMapper followMapper;
@@ -116,7 +121,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return null;
         }
         Long postCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_ARTICLE_COUNT + vo.getId(), Long.class);
-        System.out.println(postCount);
         if (postCount == null) {
             postCount = articleMapper.countByUser(vo.getId());
         }
@@ -135,6 +139,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         vo.setFollowerCount(followerCount);
         vo.setFollowingCount(followingCount);
         return vo;
+    }
+
+    @Override
+    public UserCountStats getUserStats(Long userId) {
+        Long postCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_ARTICLE_COUNT + userId, Long.class);
+        if (postCount == null) {
+            postCount = articleMapper.countByUser(userId);
+        }
+        redisUtil.setCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + userId, postCount, 3, TimeUnit.DAYS);
+        Long followerCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWER_COUNT + userId, Long.class);
+        if (followerCount == null) {
+            followerCount = followMapper.countFollowers(userId);
+        }
+        redisUtil.setCacheObject(CacheKeyConstants.USER_FOLLOWER_COUNT + userId, followerCount, 3, TimeUnit.DAYS);
+        Long followingCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWING_COUNT + userId, Long.class);
+        if (followingCount == null) {
+            followingCount = followMapper.countFollowing(userId);
+        }
+        redisUtil.setCacheObject(CacheKeyConstants.USER_FOLLOWING_COUNT + userId, followingCount, 3, TimeUnit.DAYS);
+        UserCountStats stats = new UserCountStats();
+        stats.setFollowers(followerCount);
+        stats.setFollowing(followingCount);
+        stats.setPostCount(postCount);
+        return stats;
     }
 
 

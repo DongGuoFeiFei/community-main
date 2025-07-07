@@ -10,9 +10,7 @@ import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class TagController {
     private ITagService tagService;
 
     @ApiOperation("所有标签")
-    @RequestMapping("/getAllTags")
+    @GetMapping("/getAllTags")
     public Result<List<TagVo>> getAllTags() {
         List<Tag> list = tagService.list();
         ArrayList<TagVo> tagVos = new ArrayList<>();
@@ -43,7 +41,7 @@ public class TagController {
     }
 
     @ApiOperation("热门标签")
-    @RequestMapping("/getPopularTags")
+    @GetMapping("/getPopularTags")
     public Result<List<TagVo>> getPopularTags() {
         // TODO: 2025/7/5 根据用户喜好推荐热门标签
         List<TagVo> tags = tagService.getPopularTags();
@@ -51,7 +49,7 @@ public class TagController {
     }
 
     @ApiOperation("创建新标签")
-    @RequestMapping("/createTag")
+    @PostMapping("/createTag")
     public Result<TagVo> createTag(@RequestBody CreateTagParam param) {
         // TODO: 2025/7/5 添加敏感词检测 标签
         Tag tag = new Tag();

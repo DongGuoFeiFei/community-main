@@ -1,0 +1,12 @@
+<script setup>
+
+import UserCollection from "@/views/user/views/collection/UserCollection.vue";
+</script>
+
+<template>
+ <user-collection/>
+</template>
+
+<style scoped lang="scss">
+
+</style>

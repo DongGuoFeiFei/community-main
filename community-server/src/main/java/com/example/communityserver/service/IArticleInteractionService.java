@@ -1,7 +1,7 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.model.ArticleView;
+import com.example.communityserver.entity.model.ArticleInteraction;
 
 /**
  * <p>
@@ -13,5 +13,5 @@ import com.example.communityserver.entity.model.ArticleView;
  **/
 
 
-public interface IArticleViewService extends IService<ArticleView> {
+public interface IArticleInteractionService extends IService<ArticleInteraction> {
 }

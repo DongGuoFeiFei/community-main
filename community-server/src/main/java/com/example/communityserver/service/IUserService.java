@@ -5,6 +5,7 @@ import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.response.AuthorInfoVo;
+import com.example.communityserver.entity.response.UserCountStats;
 
 
 public interface IUserService extends IService<User> {
@@ -16,4 +17,6 @@ public interface IUserService extends IService<User> {
     MessageCodeEnum register(RegisterDto dto);
 
     AuthorInfoVo getAuthorInfoVo(Long articleId);
+
+    UserCountStats getUserStats(Long userId);
 }
