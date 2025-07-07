@@ -52,6 +52,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 .eq(param.getType() != null, Notification::getType, param.getType())
                 .eq(param.getIsRead() != null, Notification::getIsRead, Boolean.TRUE.equals(param.getIsRead()) ? 1 : 0)
                 .eq(Notification::getIsDel, 0)
+                .orderByAsc(Notification::getIsRead)
                 .orderByDesc(Notification::getCreatedAt);
 
         Page<Notification> entityPage = notificationMapper.selectPage(page, queryWrapper);
@@ -78,12 +79,13 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 .eq(Notification::getIsDel, 0)
                 .eq(Notification::getType, param.getType().toUpperCase())
                 .set(Notification::getIsRead, 1);
+        int update = notificationMapper.update(null, updateWrapper);
+
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
         if (vo == null) {
-            return notificationMapper.update(null, updateWrapper);
+            return update;
         }
-
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
                 .eq(Notification::getType, param.getType().toUpperCase())
                 .eq(Notification::getIsRead, 0)
@@ -115,9 +117,10 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
             }
             default -> throw new IllegalArgumentException("无效类型: " + param.getType());
         }
+
         redisUtil.setCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId(), vo, 3, TimeUnit.DAYS);
 
-        return notificationMapper.update(null, updateWrapper);
+        return update;
 
     }
 
@@ -128,10 +131,11 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
                 .setSql("is_del = 1 - is_del");
 
+        int update = notificationMapper.update(null, updateWrapper);
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
         if (vo == null) {
-            return notificationMapper.update(null, updateWrapper);
+            return update;
         }
 
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
@@ -167,7 +171,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         }
         redisUtil.setCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId(), vo, 3, TimeUnit.DAYS);
 
-        return notificationMapper.update(null, updateWrapper);
+        return update;
     }
 
     @Override
@@ -179,10 +183,12 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         updateWrapper.eq(Notification::getType, type)
                 .eq(sonSourceId != null, Notification::getSonSourceId, sonSourceId)
                 .setSql("is_del = 1 - is_del");
+        int update = notificationMapper.update(null, updateWrapper);
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
+
         if (vo == null) {
-            return notificationMapper.update(null, updateWrapper);
+            return update;
         }
 
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
@@ -219,7 +225,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         }
         redisUtil.setCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId(), vo, 3, TimeUnit.DAYS);
 
-        return notificationMapper.update(null, updateWrapper);
+        return update;
 
     }
 

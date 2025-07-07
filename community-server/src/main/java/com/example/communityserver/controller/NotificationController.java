@@ -1,11 +1,11 @@
 package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.request.GetNotificationsParam;
-import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.MarkAsReadParam;
 import com.example.communityserver.entity.response.NotificationListVo;
 import com.example.communityserver.entity.response.UnreadCountByTypeVo;
@@ -69,9 +69,9 @@ public class NotificationController {
         if (vo != null) {
             return Result.success(
                     vo.getComment() + vo.getLike()
-                    + vo.getFollow() + vo.getFavorite()
-                    + vo.getFavorite() + vo.getFavoriteArticle()
-                    + vo.getPrivateMessages() + vo.getReply());
+                            + vo.getFollow() + vo.getFavorite()
+                            + vo.getFavorite() + vo.getFavoriteArticle()
+                            + vo.getPrivateMessages() + vo.getReply());
         }
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
@@ -88,5 +88,16 @@ public class NotificationController {
         return Result.success(count);
     }
 
-
+    @ApiOperation("标记全部为已读")
+    @PostMapping("/mark-all-read")
+    public Result<Void> markAllAsRead() {
+        LambdaUpdateWrapper<Notification> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
+                .eq(Notification::getIsRead, 0)
+                .eq(Notification::getIsDel, 0)
+                .set(Notification::getIsRead, 1);
+        notificationEntityService.update(updateWrapper);
+        redisUtil.deleteObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
+        return Result.success();
+    }
 }

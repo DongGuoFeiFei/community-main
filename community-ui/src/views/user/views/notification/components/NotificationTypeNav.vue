@@ -21,7 +21,7 @@
     </div>
 
     <div class="nav-footer">
-      <el-button type="text" @click="emit('mark-all-read')">
+      <el-button link @click="emit('mark-all-read')">
         <el-icon>
           <CircleCheck/>
         </el-icon>

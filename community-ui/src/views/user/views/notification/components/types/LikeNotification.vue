@@ -24,14 +24,14 @@
     <div class="notification-actions">
       <el-button
           v-if="!notification.isRead"
-          type="text"
+          link
           size="small"
           @click.stop="$emit('read')"
       >
         标记已读
       </el-button>
       <el-button
-          type="text"
+          link
           size="small"
           @click.stop="$emit('delete')"
       >

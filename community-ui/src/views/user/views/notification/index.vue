@@ -14,6 +14,7 @@
     <div class="notification-content">
       <UserNotification
           :type="activeType"
+          ref="userNotificationRef"
           @read="handleMarkAsRead"
           @delete="handleDelete"
       />
@@ -40,6 +41,8 @@ const unreadCounts = ref({
   favoriteArticle: 0,
   privateMessages: 0 // 后续添加聊天室
 });
+
+const userNotificationRef = ref()
 // 获取未读通知数量
 const fetchUnreadCounts = async () => {
   try {
@@ -73,7 +76,7 @@ const handleMarkAsRead = async (ids) => {
     });
 
     await fetchUnreadCounts();
-
+    await userNotificationRef.value.fetchNotifications()
     ElMessage.success(`已成功标记 ${ids.length} 条通知为已读`);
   } catch (error) {
     console.error('标记为已读失败:', error);
@@ -93,6 +96,7 @@ const handleDelete = async (ids) => {
     });
 
     await fetchUnreadCounts(); // 刷新未读数量
+    await userNotificationRef.value.fetchNotifications()
     ElMessage.success(`成功删除 ${Array.isArray(ids) ? ids.length : 1} 条${getTypeLabel(activeType.value)}通知`);
   } catch (error) {
     console.error('删除通知失败:', error);
@@ -118,7 +122,8 @@ const getTypeLabel = (type) => {
 const handleMarkAllRead = async () => {
   try {
     await markAllAsRead();
-    await fetchUnreadCounts(); // 刷新未读数量
+    await fetchUnreadCounts();
+    await userNotificationRef.value.fetchNotifications()
   } catch (error) {
     console.error('全部标记为已读失败:', error);
   }

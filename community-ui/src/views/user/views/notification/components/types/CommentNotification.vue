@@ -34,7 +34,7 @@
         标记已读
       </el-button>
       <el-button
-          type="text"
+         link
           size="small"
           @click.stop="$emit('delete')"
       >

@@ -139,6 +139,11 @@ watch(currentType, () => {
   currentPage.value = 1;
   fetchNotifications();
 }, { immediate: true });
+
+
+defineExpose({
+  fetchNotifications
+});
 </script>
 
 <style lang="scss" scoped>
