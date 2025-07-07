@@ -5,7 +5,7 @@ import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Comment;
-import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.request.AddCommentDto;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.ReplyVo;
@@ -35,7 +35,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Autowired
     private CommentMapper commentMapper;
     @Autowired
-    private NotificationEntityMapper notificationEntityMapper;
+    private NotificationMapper notificationMapper;
     @Autowired
     private ArticleMapper articleMapper;
     @Autowired
@@ -80,20 +80,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         commentMapper.insert(comment);
 
         // parentId是否存在（评论or回复）  添加通知
-        NotificationEntity notificationEntity = new NotificationEntity();
+        Notification notification = new Notification();
         if (comment.getParentId() != null) { // 回复
             Comment parentComment = commentMapper.selectById(comment.getParentId());
-            notificationEntity.setType(NotificationTypeEnum.REPLY);
-            notificationEntity.setUserId(parentComment.getUserId());
-            notificationEntity.setParentSourceId(parentComment.getCommentId());
+            notification.setType(NotificationTypeEnum.REPLY);
+            notification.setUserId(parentComment.getUserId());
+            notification.setParentSourceId(parentComment.getCommentId());
         } else { // 评论
             Article article = articleMapper.selectById(comment.getArticleId());
-            notificationEntity.setType(NotificationTypeEnum.COMMENT);
-            notificationEntity.setUserId(article.getUserId());
-            notificationEntity.setParentSourceId(article.getArticleId());
+            notification.setType(NotificationTypeEnum.COMMENT);
+            notification.setUserId(article.getUserId());
+            notification.setParentSourceId(article.getArticleId());
         }
-        notificationEntity.setSonSourceId(comment.getCommentId());
-        notificationEntityMapper.insert(notificationEntity);
+        notification.setSonSourceId(comment.getCommentId());
+        notificationMapper.insert(notification);
 
         // 获取返回的数据
         return commentMapper.getReplyById(comment.getCommentId());

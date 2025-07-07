@@ -6,6 +6,7 @@ import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
 import com.example.communityserver.entity.response.*;
+import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -110,6 +112,15 @@ public class ArticleController {
     public Result<List<TagVo>> getPostTags(@PathVariable Long postId) {
         List<TagVo> tags = tagService.getPostTags(postId);
         return tags != null ? Result.success(tags) : Result.error();
+    }
+
+    @ApiOperation("热门文章")
+    @GetMapping("/hotPosts")
+    public Result<List<ArticleCardVo>> getHotPosts() {
+        List<Article> list = postsService.list();
+        List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
+        List<ArticleCardVo> cardVo = ArticleMapping.INSTANCE.toCardVo(collect);
+        return Result.success(cardVo);
     }
 
 }

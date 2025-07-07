@@ -22,7 +22,9 @@
 
     <div class="nav-footer">
       <el-button type="text" @click="emit('mark-all-read')">
-        <el-icon><CircleCheck /></el-icon>
+        <el-icon>
+          <CircleCheck/>
+        </el-icon>
         <span>全部标记为已读</span>
       </el-button>
     </div>
@@ -30,7 +32,7 @@
 </template>
 
 <script setup>
-import { CircleCheck } from '@element-plus/icons-vue';
+import {CircleCheck} from '@element-plus/icons-vue';
 
 const props = defineProps({
   activeType: {
@@ -39,21 +41,31 @@ const props = defineProps({
   },
   unreadCounts: {
     type: Object,
-    default: () => ({})
+    default: () => ({
+      like: 0,
+      comment: 0,
+      article: 0,
+      follow: 0,
+      system: 0,
+      favorite: 0,
+      reply: 0,
+      favoriteArticle: 0,
+      privateMessages: 0
+    })
   }
 });
 
 const emit = defineEmits(['type-change', 'mark-all-read']);
 
 const notificationTypes = [
-  { value: 'like', label: '点赞', color: '#FF4757' },
-  { value: 'comment', label: '评论', color: '#2ED573' },
-  { value: 'article', label: '文章回复', color: '#1E90FF' },
-  { value: 'follow', label: '关注', color: '#9C51B6' },
-  { value: 'system', label: '系统', color: '#FF7F50' },
-  { value: 'favorite', label: '收藏', color: '#25CCF7' },
-  { value: 'reply', label: '回复', color: '#FFD700' },
-  { value: 'favoriteArticle', label: '收藏文章', color: '#58B19F' }
+  {value: 'like', label: '点赞', color: '#FF4757'},
+  {value: 'comment', label: '评论', color: '#2ED573'},
+  {value: 'article', label: '文章回复', color: '#1E90FF'},
+  {value: 'follow', label: '关注', color: '#9C51B6'},
+  {value: 'system', label: '系统', color: '#FF7F50'},
+  {value: 'favorite', label: '收藏', color: '#25CCF7'},
+  {value: 'reply', label: '回复', color: '#FFD700'},
+  {value: 'favoriteArticle', label: '收藏文章', color: '#58B19F'}
 ];
 </script>
 

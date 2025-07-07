@@ -1,8 +1,7 @@
 <script setup>
 import {onMounted, ref} from 'vue';
-import {getHotTags, getRelatedPosts} from '@/api/article';
+import {getHotPosts, getHotTags} from '@/api/article';
 import {useRouter} from 'vue-router';
-import {Star, View} from "@element-plus/icons-vue";
 
 const props = defineProps({
   articleId: {
@@ -20,12 +19,14 @@ const fetchRecommendations = async () => {
   try {
     loading.value = true;
     // 获取相关文章
-    const postsResponse = await getRelatedPosts(props.articleId);
-    relatedPosts.value = postsResponse.data.slice(0, 5); // 只显示5篇
+    // const postsResponse = await getRelatedPosts(props.articleId);
+    const postsResponse = await getHotPosts();
+    relatedPosts.value = postsResponse.data;
+    console.log(relatedPosts.value)
 
     // 获取热门标签
-    const tagsResponse = await getHotTags();
-    hotTags.value = tagsResponse.data.slice(0, 10); // 只显示10个标签
+    // const tagsResponse = await getHotTags();
+    // hotTags.value = tagsResponse.data;
   } catch (error) {
     console.error('获取推荐内容失败:', error);
   } finally {
@@ -42,9 +43,10 @@ const navigateToTag = (tagName) => {
 };
 
 onMounted(() => {
-  if (props.articleId) {
-    fetchRecommendations();
-  }
+
+
+  fetchRecommendations();
+
 });
 </script>
 
@@ -54,25 +56,25 @@ onMounted(() => {
     <el-card class="recommend-card" shadow="hover">
       <template #header>
         <div class="card-header">
-          <span>相关文章推荐</span>
+          <span>热门文章推荐</span>
         </div>
       </template>
       <div v-loading="loading">
         <div
             v-for="post in relatedPosts"
-            :key="post.id"
+            :key="post.articleId"
             class="recommend-item"
-            @click="navigateToPost(post.id)"
+            @click="navigateToPost(post.articleId)"
         >
           <div class="post-title">{{ post.title }}</div>
-          <div class="post-meta">
-            <span class="post-views">
-              <el-icon><View/></el-icon> {{ post.viewCount }}
-            </span>
-            <span class="post-likes">
-              <el-icon><Star/></el-icon> {{ post.likeCount }}
-            </span>
-          </div>
+          <!--          <div class="post-meta">-->
+          <!--            <span class="post-views">-->
+          <!--              <el-icon><View/></el-icon> {{ post.viewCount }}-->
+          <!--            </span>-->
+          <!--            <span class="post-likes">-->
+          <!--              <el-icon><Star/></el-icon> {{ post.likeCount }}-->
+          <!--            </span>-->
+          <!--          </div>-->
         </div>
         <el-empty v-if="!loading && relatedPosts.length === 0" description="暂无相关文章"/>
       </div>

@@ -17,13 +17,13 @@
       </div>
 
       <div class="content-time">
-        {{ formatTime(notification.created_at) }}
+        {{ formatTime(notification.createdAt) }}
       </div>
     </div>
 
     <div class="notification-actions">
       <el-button
-          v-if="!notification.is_read"
+          v-if="!notification.isRead"
           type="text"
           size="small"
           @click.stop="$emit('read')"

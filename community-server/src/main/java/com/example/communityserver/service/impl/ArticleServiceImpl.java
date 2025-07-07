@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.request.AddArticleDto;
@@ -14,8 +15,8 @@ import com.example.communityserver.entity.response.ArticleCardVo;
 import com.example.communityserver.entity.response.ArticleDtlVo;
 import com.example.communityserver.entity.response.ArticleListVo;
 import com.example.communityserver.entity.response.EditorArticlesVo;
-import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.ArticleInteractionMapper;
+import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FileEntityMapper;
 import com.example.communityserver.mapper.LikesMapper;
 import com.example.communityserver.mapping.ArticleMapping;
@@ -71,14 +72,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 判断是否已经有了记录，若已有记录则更新阅读时间，若没有记录，则添加一条记录
         LambdaQueryWrapper<ArticleInteraction> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ArticleInteraction::getArticleId, id)
-                .eq(ArticleInteraction::getUserId, loginUserId);
+                .eq(ArticleInteraction::getUserId, loginUserId)
+                .eq(ArticleInteraction::getActionType, ArticleInteractionTypeEnum.VIEW)
+        ;
         ArticleInteraction articleInteraction = articleInteractionMapper.selectOne(queryWrapper);
         if (articleInteraction == null) {
             // 处理无记录的情况（如初始化浏览记录）
             articleInteraction = new ArticleInteraction();
             articleInteraction.setArticleId(id);
             articleInteraction.setUserId(loginUserId);
+            articleInteraction.setActionType(ArticleInteractionTypeEnum.VIEW);
             articleInteractionMapper.insert(articleInteraction);
+            LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.setSql("view_count = view_count + 1");
+            articleMapper.update(null, updateWrapper);
         } else {
             // 处理已有记录的情况，更新阅读记录
             articleInteraction.setCreatedAt(new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()));
@@ -100,7 +107,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         int batchInsert = tagService.batchInsert(dto.getTagIds(), article.getArticleId());
         return batchInsert > 0;
     }
-
 
     @Override
     public boolean delById(Long id) {

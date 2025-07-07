@@ -22,7 +22,8 @@ public enum NotificationTypeEnum {
     SYSTEM("system", "系统", "#FF7F50"),       // 珊瑚橙
     FAVORITE("favorite", "收藏", "#25CCF7"),  // 天蓝色
     REPLY("reply", "回复", "#FFD700"),        // 金色
-    FAVORITE_ARTICLE("favoriteArticle", "收藏文章", "#58B19F"); // 蓝绿色
+    FAVORITE_ARTICLE("favoriteArticle", "收藏文章", "#58B19F"),
+    PRIVATE_MESSAGES("privateMessages", "私信", "#59B89F"); // 蓝绿色
 
     private final String value;
     private final String label;

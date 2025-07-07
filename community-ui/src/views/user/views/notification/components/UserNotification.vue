@@ -5,7 +5,7 @@
       <div class="header-actions">
         <el-button
             v-if="hasUnread"
-            type="text"
+            link
             @click="markAllCurrentAsRead"
         >
           全部已读
@@ -25,10 +25,10 @@
       <component
           :is="getNotificationComponent(currentType)"
           v-for="notification in notifications"
-          :key="notification.notification_id"
+          :key="notification.notificationId"
           :notification="notification"
-          @read="$emit('read', notification.notification_id)"
-          @delete="$emit('delete', notification.notification_id)"
+          @read="$emit('read', notification.notificationId)"
+          @delete="$emit('delete', notification.notificationId)"
       />
 
       <div class="pagination-container">
@@ -89,7 +89,7 @@ const currentTypeLabel = computed(() => {
 });
 
 const hasUnread = computed(() => {
-  return notifications.value.some(n => !n.is_read);
+  return notifications.value.some(n => !n.isRead);
 });
 
 const notificationTypes = [
@@ -117,7 +117,7 @@ const fetchNotifications = async () => {
     };
 
     const response = await getNotifications(params);
-    notifications.value = response.data.list;
+    notifications.value = response.data.rows;
     total.value = response.data.total;
   } catch (error) {
     console.error('获取通知列表失败:', error);
@@ -128,9 +128,8 @@ const fetchNotifications = async () => {
 
 const markAllCurrentAsRead = () => {
   const unreadIds = notifications.value
-      .filter(n => !n.is_read)
-      .map(n => n.notification_id);
-
+      .filter(n => !n.isRead)
+      .map(n => n.notificationId);
   if (unreadIds.length > 0) {
     emit('read', unreadIds);
   }

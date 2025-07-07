@@ -1,7 +1,7 @@
 package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.model.Notification;
 
 /**
  * <p>
@@ -13,5 +13,5 @@ import com.example.communityserver.entity.model.NotificationEntity;
  **/
 
 
-public interface NotificationEntityMapper extends BaseMapper<NotificationEntity> {
+public interface NotificationMapper extends BaseMapper<Notification> {
 }

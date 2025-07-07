@@ -3,14 +3,13 @@ package com.example.communityserver.entity.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 文章互动记录实体类
@@ -41,10 +40,10 @@ public class ArticleInteraction {
     private Long userId;
 
     /**
-     * 互动类型：1浏览 2点赞 3评论 4分享
+     * 互动类型
      */
-    @ApiModelProperty(value = "互动类型(1浏览 2点赞 3评论 4分享)", example = "1")
-    private Integer actionType;
+    @ApiModelProperty(value = "互动类型", example = "")
+    private ArticleInteractionTypeEnum actionType;
 
     /**
      * 互动时间

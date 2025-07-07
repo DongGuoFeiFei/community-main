@@ -1,6 +1,6 @@
 package com.example.communityserver.mapping;
 
-import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.response.NotificationListVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,7 +22,7 @@ public interface NotificationMapping {
     NotificationMapping INSTANCE = Mappers.getMapper(NotificationMapping.class);
 
     @Mapping(target = "isRead", source = "isRead", qualifiedByName = "intToBoolean")
-    void toNotificationListVo(NotificationEntity entity, @MappingTarget NotificationListVo vo);
+    void toNotificationListVo(Notification entity, @MappingTarget NotificationListVo vo);
 
     @Named("intToBoolean")
     default Boolean intToBoolean(Integer value) {

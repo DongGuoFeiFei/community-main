@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Article;
-import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.request.AddFavoriteArticle;
 import com.example.communityserver.entity.request.GetUserFavoListParam;
@@ -14,10 +14,10 @@ import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
 import com.example.communityserver.mapper.ArticleMapper;
-import com.example.communityserver.mapper.NotificationEntityMapper;
+import com.example.communityserver.mapper.NotificationMapper;
 import com.example.communityserver.mapper.UserFavoriteMapper;
 import com.example.communityserver.mapping.FavoriteMapping;
-import com.example.communityserver.service.INotificationEntityService;
+import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.service.IUserFavoriteService;
 import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -41,9 +41,9 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
     private UserFavoriteMapper userFavoriteMapper;
 
     @Autowired
-    private INotificationEntityService notificationEntityService;
+    private INotificationService notificationEntityService;
     @Autowired
-    private NotificationEntityMapper notificationEntityMapper;
+    private NotificationMapper notificationMapper;
 
     @Autowired
     private ArticleMapper articleMapper;
@@ -62,13 +62,13 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             favArticleVo.setArticleId(userFavorite.getTargetId());
 
             // 插入通知数据
-            NotificationEntity notificationEntity = new NotificationEntity();
+            Notification notification = new Notification();
             Article article = articleMapper.selectById(param.getArticleId());
-            notificationEntity.setUserId(article.getUserId());
-            notificationEntity.setType(NotificationTypeEnum.FAVORITE);
-            notificationEntity.setParentSourceId(param.getArticleId());
-            notificationEntity.setSonSourceId(userFavorite.getFavoriteId());
-            notificationEntityService.save(notificationEntity);
+            notification.setUserId(article.getUserId());
+            notification.setType(NotificationTypeEnum.FAVORITE);
+            notification.setParentSourceId(param.getArticleId());
+            notification.setSonSourceId(userFavorite.getFavoriteId());
+            notificationEntityService.save(notification);
 
         } else {
             favArticleVo = null;

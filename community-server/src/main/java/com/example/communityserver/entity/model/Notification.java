@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @TableName("notifications")
 @ApiModel
-public class NotificationEntity {
+public class Notification {
     @TableId(type = IdType.AUTO)
     private Long notificationId;
     @ApiModelProperty(value = "接收通知的用户ID", example = "1001")

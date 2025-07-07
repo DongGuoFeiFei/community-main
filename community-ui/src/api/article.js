@@ -10,7 +10,7 @@ export const getHotTags = () => {
     return request.get('/tags/hot');
 };
 export const sharePost = () => {
-    return request.get('/tags/hot');
+    return request.get('/share/sharePost');
 };
 
 /**
@@ -20,5 +20,8 @@ export const sharePost = () => {
  */
 export const getPostTags = (postId) => {
     return request.get(`/posts/${postId}/tags`)
+}
+export const getHotPosts = () => {
+    return request.get(`/posts/hotPosts`)
 }
 

@@ -114,7 +114,7 @@ const truncateSummary = (summary) => {
 
 // 跳转到详情
 const goToDetail = (id) => {
-  window.open(`/index/article/${id}`, '_blank');
+  window.open(`/article/${id}`, '_blank');
 }
 
 // 加载文章

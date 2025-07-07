@@ -6,12 +6,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Likes;
-import com.example.communityserver.entity.model.NotificationEntity;
+import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.LikesMapper;
-import com.example.communityserver.mapper.NotificationEntityMapper;
+import com.example.communityserver.mapper.NotificationMapper;
 import com.example.communityserver.service.ILikesService;
-import com.example.communityserver.service.INotificationEntityService;
+import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
     private LikesMapper likesMapper;
 
     @Autowired
-    private NotificationEntityMapper notificationEntityMapper;
+    private NotificationMapper notificationMapper;
     @Autowired
-    private INotificationEntityService notificationEntityService;
+    private INotificationService notificationEntityService;
 
     @Autowired
     private ArticleMapper articleMapper;
@@ -64,13 +64,13 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
             likes.setUserId(SecurityUtils.getLoginUserId());
             likes.setTargetId(id);
             if (likesMapper.insert(likes) > 0) {
-                NotificationEntity notificationEntity = new NotificationEntity();
-                notificationEntity.setType(NotificationTypeEnum.LIKE);
-                notificationEntity.setParentSourceId(likes.getTargetId());
-                notificationEntity.setSonSourceId(likes.getLikeId());
+                Notification notification = new Notification();
+                notification.setType(NotificationTypeEnum.LIKE);
+                notification.setParentSourceId(likes.getTargetId());
+                notification.setSonSourceId(likes.getLikeId());
                 Article article = articleMapper.selectById(likes.getTargetId());
-                notificationEntity.setUserId(article.getUserId());
-                notificationEntityMapper.insert(notificationEntity);
+                notification.setUserId(article.getUserId());
+                notificationMapper.insert(notification);
                 return true;
             }
         }

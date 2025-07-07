@@ -22,18 +22,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import NotificationTypeNav from './components/NotificationTypeNav.vue';
 import UserNotification from './components/UserNotification.vue';
-import {deleteNotifications, getUnreadCount, markAllAsRead, markAsRead} from '@/api/notification';
+import {deleteNotifications, getUnreadCountByType, markAllAsRead, markAsRead} from '@/api/notification';
+import {ElMessage} from "element-plus";
 
 const activeType = ref('');
-const unreadCounts = ref({});
-
+const unreadCounts = ref({
+  like: 0,
+  comment: 0,
+  article: 0,
+  follow: 0,
+  system: 0,
+  favorite: 0,
+  reply: 0,
+  favoriteArticle: 0,
+  privateMessages: 0 // 后续添加聊天室
+});
 // 获取未读通知数量
 const fetchUnreadCounts = async () => {
   try {
-    const response = await getUnreadCount();
+    const response = await getUnreadCountByType();
     unreadCounts.value = response.data;
   } catch (error) {
     console.error('获取未读通知数量失败:', error);
@@ -50,22 +60,59 @@ const handleTypeChange = (type) => {
   activeType.value = type;
 };
 
+// 标记已读处理
 const handleMarkAsRead = async (ids) => {
   try {
-    await markAsRead(ids);
-    await fetchUnreadCounts(); // 刷新未读数量
+    if (!ids || (Array.isArray(ids) && ids.length === 0)) {
+      throw new Error('请选择要标记的通知');
+    }
+
+    await markAsRead({
+      ids: Array.isArray(ids) ? ids : [ids],
+      type: activeType.value
+    });
+
+    await fetchUnreadCounts();
+
+    ElMessage.success(`已成功标记 ${ids.length} 条通知为已读`);
   } catch (error) {
     console.error('标记为已读失败:', error);
+    ElMessage.error(`标记已读失败: ${error.message}`);
   }
 };
 
 const handleDelete = async (ids) => {
   try {
-    await deleteNotifications(ids);
+    if (!ids || (Array.isArray(ids) && ids.length === 0)) {
+      throw new Error('请选择要删除的通知');
+    }
+
+    await deleteNotifications({
+      ids: Array.isArray(ids) ? ids : [ids],
+      type: activeType.value
+    });
+
     await fetchUnreadCounts(); // 刷新未读数量
+    ElMessage.success(`成功删除 ${Array.isArray(ids) ? ids.length : 1} 条${getTypeLabel(activeType.value)}通知`);
   } catch (error) {
     console.error('删除通知失败:', error);
+    ElMessage.error(`删除失败: ${error.message}`);
   }
+};
+
+// 辅助函数：获取类型对应的中文标签
+const getTypeLabel = (type) => {
+  const typeMap = {
+    like: '点赞',
+    comment: '评论',
+    follow: '关注',
+    system: '系统',
+    favorite: '收藏',
+    reply: '回复',
+    favoriteArticle: '文章收藏',
+    privateMessages: '私信'
+  };
+  return typeMap[type] || '';
 };
 
 const handleMarkAllRead = async () => {

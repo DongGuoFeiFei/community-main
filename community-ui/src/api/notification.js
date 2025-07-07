@@ -16,10 +16,21 @@ export const getNotifications = (params) => {
 /**
  * 标记通知为已读
  * @param {number|Array} ids - 通知ID或ID数组
+ * @param type
  * @returns {Promise} 操作结果
  */
-export const markAsRead = (ids) => {
-    return request.put('/notifications/read', {ids: Array.isArray(ids) ? ids : [ids]});
+export const markAsRead = ({ids, type}) => {
+    if (!ids || ids.length === 0) {
+        return Promise.reject(new Error('至少需要一个通知ID'));
+    }
+    if (!type) {
+        return Promise.reject(new Error('通知类型不能为空'));
+    }
+
+    return request.put('/notifications/read', {
+        ids,
+        type
+    });
 };
 
 /**
@@ -27,8 +38,15 @@ export const markAsRead = (ids) => {
  * @param {number|Array} ids - 通知ID或ID数组
  * @returns {Promise} 操作结果
  */
-export const deleteNotifications = (ids) => {
-    return request.delete('/notifications', {data: {ids: Array.isArray(ids) ? ids : [ids]}});
+// api/notification.js
+// api/notification.js
+export const deleteNotifications = ({ids, type}) => {
+    return request.delete('/notifications', {
+        data: {
+            ids: Array.isArray(ids) ? ids : [ids],
+            type // 将type传递到后端
+        }
+    });
 };
 
 /**

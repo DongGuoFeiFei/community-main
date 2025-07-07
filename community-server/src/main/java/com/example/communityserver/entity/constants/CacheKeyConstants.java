@@ -24,7 +24,7 @@ public class CacheKeyConstants {
     // 文章相关缓存键
     public static final String ARTICLE_VIEW_COUNT = "article:view:count:";
     public static final String ARTICLE_LIKE_COUNT = "article:like:count:";
-
+    public static final String UNREAD_TYPE_VO_COUNT = "unread_count_by_type:";
     public static final String ARTICLE_COMMENT = "article:comment:";
 
     // 验证码相关

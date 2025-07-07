@@ -59,7 +59,7 @@ const router = createRouter({
             ]
         },
         {
-            path: '/index/article/:id',
+            path: '/article/:id',
             name: 'article',
             component: () => import("@/views/pages/views/article/Index.vue"),
             meta: {

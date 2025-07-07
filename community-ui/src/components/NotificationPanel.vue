@@ -36,7 +36,7 @@
             </div>
             <div class="notification-action">
               <el-button
-                  type="text"
+                  link
                   size="small"
                   @click.stop="deleteNotification(item.id)"
               >
