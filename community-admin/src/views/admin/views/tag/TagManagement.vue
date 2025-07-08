@@ -95,7 +95,6 @@
           <template #default="{ row }">
             <el-button size="small" @click="handleEdit(row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
-            <!--            <el-button size="small" type="danger" @click="handleApproval(row)">审批</el-button>-->
             <el-select
                 placeholder="审批状态"
                 clearable
@@ -135,7 +134,7 @@
         width="500px"
         :close-on-click-modal="false"
     >
-      <el-form ref="tagForm" :model="tagForm" :rules="rules" label-width="80px">
+      <el-form ref="tagFormRef" :model="tagForm" :rules="rules" label-width="80px">
         <el-form-item label="标签名称" prop="name">
           <el-input v-model="tagForm.name" placeholder="请输入标签名称"/>
         </el-form-item>
@@ -184,6 +183,8 @@ const dialogTitle = ref('');
 const isEditMode = ref(false);
 const currentId = ref(null);
 
+
+
 const searchForm = reactive({
   name: '',
   status: null
@@ -194,6 +195,9 @@ const pagination = reactive({
   size: 10,
   total: 0
 });
+
+
+const tagFormRef = ref(null);
 
 const tagForm = reactive({
   name: '',
@@ -277,15 +281,17 @@ const handleEdit = (row) => {
   isEditMode.value = true;
   currentId.value = row.id;
   console.log(row)
-  Object.assign(tagForm, row);
+  tagForm.name = row.name;
+  tagForm.slug = row.slug;
+  tagForm.color = row.color;
   console.log(tagForm)
   dialogVisible.value = true;
 };
 
 const resetForm = () => {
-  Object.keys(tagForm).forEach(key => {
-    tagForm[key] = '';
-  });
+  tagForm.name = '';
+  tagForm.slug = '';
+  tagForm.color = '';
 };
 
 const getStatusText = (data) => {
@@ -295,6 +301,9 @@ const getStatusText = (data) => {
 
 const submitForm = async () => {
   try {
+    // 验证表单
+    await tagFormRef.value.validate();
+
     if (isEditMode.value) {
       await updateTag(currentId.value, tagForm);
       ElMessage.success('更新标签成功');
@@ -305,8 +314,10 @@ const submitForm = async () => {
     dialogVisible.value = false;
     fetchTagList();
   } catch (error) {
-    console.error('操作失败:', error);
-    ElMessage.error(error.message || '操作失败');
+    if (error.name !== 'ValidationError') {
+      console.error('操作失败:', error);
+      ElMessage.error(error.message || '操作失败');
+    }
   }
 };
 

@@ -9,7 +9,7 @@ export const createTag = (data) => {
 };
 
 export const updateTag = (id, data) => {
-    return request.put(`/admin/tags/${id}`, data);
+    return request.put(`/admin/tags/updateTag/${id}`, data);
 };
 
 export const deleteTag = (id) => {

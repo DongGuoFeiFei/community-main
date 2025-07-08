@@ -8,10 +8,12 @@ import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.ApprovalTagParam;
 import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.SearchNameParam;
+import com.example.communityserver.entity.request.TagFormParam;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +57,7 @@ public class AdminTagController {
     }
 
     @ApiOperation("删除")
-    @DeleteMapping("tags/{id}")
+    @DeleteMapping("{id}")
     public Result<Void> deleteTag(@PathVariable Long id) {
         LambdaUpdateWrapper<Tag> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Tag::getId, id)
@@ -74,5 +76,29 @@ public class AdminTagController {
         boolean update = tagService.update(updateWrapper);
         return update ? Result.success() : Result.error();
     }
+
+    @PostMapping()
+    public Result<Void> createTag(@RequestBody TagFormParam param) {
+        Tag tag = new Tag();
+        BeanUtils.copyProperties(param, tag);
+        boolean b = tagService.save(tag);
+        return b ? Result.success() : Result.error();
+    }
+
+    @PutMapping("updateTag/{id}")
+    public Result<Void> updateTag(@PathVariable Long id,@RequestBody TagFormParam param){
+        LambdaUpdateWrapper<Tag> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                .eq(Tag::getId,id)
+                .set(Tag::getColor,param.getColor())
+                .set(Tag::getSlug,param.getSlug())
+                .set(Tag::getName,param.getName())
+                .set(Tag::getStatus,1);
+        boolean update = tagService.update(updateWrapper);
+
+        return update ? Result.success() : Result.error();
+    }
+
+
 
 }
