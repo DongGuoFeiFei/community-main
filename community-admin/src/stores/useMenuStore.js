@@ -216,6 +216,63 @@ export const useMenuStore = defineStore('menu', () => {
                     }
                 }
             ]
+        },{
+            path: '/admin/points',
+            meta: {
+                title: '积分管理',
+                icon: 'trend' // 使用趋势图表图标表示积分
+            },
+            children: [
+                {
+                    path: '/admin/points/account',
+                    meta: {
+                        title: '积分账户',
+                        icon: 'collection'
+                    }
+                },
+                {
+                    path: '/admin/points/rules',
+                    meta: {
+                        title: '积分规则',
+                        icon: 'key'
+                    }
+                },
+                {
+                    path: '/admin/points/levels',
+                    meta: {
+                        title: '等级设置',
+                        icon: 'list'
+                    }
+                },
+                {
+                    path: '/admin/points/goods',
+                    meta: {
+                        title: '积分商品',
+                        icon: 'document'
+                    }
+                },
+                {
+                    path: '/admin/points/orders',
+                    meta: {
+                        title: '积分订单',
+                        icon: 'connection'
+                    }
+                },
+                {
+                    path: '/admin/points/logs',
+                    meta: {
+                        title: '积分日志',
+                        icon: 'log'
+                    }
+                },
+                {
+                    path: '/admin/points/settings',
+                    meta: {
+                        title: '积分设置',
+                        icon: 'setting'
+                    }
+                }
+            ]
         },
         {
             path: '/admin/notification',

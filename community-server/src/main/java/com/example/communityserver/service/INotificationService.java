@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.request.GetNotificationsParam;
-import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.MarkAsReadParam;
 import com.example.communityserver.entity.response.NotificationListVo;
 import com.example.communityserver.entity.response.UnreadCountByTypeVo;

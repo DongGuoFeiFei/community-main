@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.model.LoginLog;
 import com.example.communityserver.mapper.LoginLogMapper;
 import com.example.communityserver.service.ILoginLogService;
+import com.example.communityserver.utils.common.IpUtil;
+import com.example.communityserver.utils.common.JacksonParserUtil;
 import com.example.communityserver.utils.security.HttpRequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,17 +26,27 @@ import java.util.Map;
 
 @Service
 public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> implements ILoginLogService {
+
+
     @Autowired
     private LoginLogMapper loginLogMapper;
+
+    @Autowired
+    private JacksonParserUtil jacksonParserUtil;
+
+    @Autowired
+    private IpUtil ipUtil;
 
     @Override
     public String addLoginLog(HttpServletRequest request, Long userId) {
         String ip = HttpRequestUtils.getClientIp(request);
         Map<String, String> deviceInfo = HttpRequestUtils.getDeviceInfo(request);
-        // todo 接入第三方库，获取当地地址
         LoginLog loginLog = new LoginLog();
         loginLog.setLoginIp(ip);
         loginLog.setUserId(userId);
+        String json = ipUtil.getIpLocation(ip);
+        JacksonParserUtil.IpLocation ipLocation = jacksonParserUtil.parseWithJackson(json);
+        loginLog.setLoginLocation(ipLocation.getIpAdd());
         loginLog.setDeviceInfo(deviceInfo.toString());
         return loginLogMapper.insert(loginLog) > 0 ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) : "";
     }

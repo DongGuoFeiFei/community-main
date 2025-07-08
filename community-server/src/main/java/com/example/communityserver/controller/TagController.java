@@ -5,6 +5,7 @@ import com.example.communityserver.entity.request.CreateTagParam;
 import com.example.communityserver.entity.response.TagVo;
 import com.example.communityserver.mapping.TagMapping;
 import com.example.communityserver.service.ITagService;
+import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -56,7 +57,11 @@ public class TagController {
         tag.setCreatorId(SecurityUtils.getLoginUserId());
         tag.setName(param.getName());
         tag.setColor(param.getColor());
+        if (StringUtil.isBlank(param.getSlug())){
+            param.setSlug(param.getName());
+        }
         tag.setSlug(param.getSlug());
+        tag.setCreateCount(1L);
         boolean b = tagService.save(tag);
         TagVo tagVo = new TagVo();
         TagMapping.INSTANCE.toTagVo(tag, tagVo);

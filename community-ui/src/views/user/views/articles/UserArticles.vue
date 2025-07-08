@@ -57,7 +57,7 @@
 
         <el-table-column prop="title" label="标题" min-width="200">
           <template #default="{ row }">
-            <router-link :to="`/index/article/${row.id}`" class="article-title">
+            <router-link :to="`/article/${row.id}`" class="article-title">
               {{ row.title }}
             </router-link>
             <el-tag

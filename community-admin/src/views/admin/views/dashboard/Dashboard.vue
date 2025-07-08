@@ -15,33 +15,33 @@
     </div>
 
     <!-- 图表区域 -->
-    <DashboardCharts
-        v-if="showCharts"
-        :user-growth="userGrowthData"
-        :post-growth="postGrowthData"
-    />
+<!--    <DashboardCharts-->
+<!--        v-if="showCharts"-->
+<!--        :user-growth="userGrowthData"-->
+<!--        :post-growth="postGrowthData"-->
+<!--    />-->
 
-    <div class="dashboard-bottom">
-      <!-- 最近活动 -->
-      <RecentActivities
-          class="dashboard-section"
-          :activities="recentActivities"
-      />
+<!--    <div class="dashboard-bottom">-->
+<!--      &lt;!&ndash; 最近活动 &ndash;&gt;-->
+<!--      <RecentActivities-->
+<!--          class="dashboard-section"-->
+<!--          :activities="recentActivities"-->
+<!--      />-->
 
-      <!-- 快速操作 -->
-      <QuickActions
-          class="dashboard-section"
-          @action="handleQuickAction"
-      />
+<!--      &lt;!&ndash; 快速操作 &ndash;&gt;-->
+<!--      <QuickActions-->
+<!--          class="dashboard-section"-->
+<!--          @action="handleQuickAction"-->
+<!--      />-->
 
-      <!-- 系统状态 -->
-      <SystemStatus
-          class="dashboard-section"
-          :cpu="systemStatus.cpu"
-          :memory="systemStatus.memory"
-          :disk="systemStatus.disk"
-      />
-    </div>
+<!--      &lt;!&ndash; 系统状态 &ndash;&gt;-->
+<!--      <SystemStatus-->
+<!--          class="dashboard-section"-->
+<!--          :cpu="systemStatus.cpu"-->
+<!--          :memory="systemStatus.memory"-->
+<!--          :disk="systemStatus.disk"-->
+<!--      />-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -144,6 +144,7 @@ onMounted(() => {
   }
 
   .dashboard-cards {
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;

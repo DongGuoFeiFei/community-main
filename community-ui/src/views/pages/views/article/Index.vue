@@ -27,6 +27,7 @@ const articleId = ref(null)
             <post-detail v-model="articleId"/>
             <tags v-if="Number(articleId)" :postId="Number(articleId)"/>
             <CommentSection v-if="Number(articleId)" :postId="Number(articleId)"/>
+            <!--    todo 付费内容    -->
           </el-main>
           <el-aside width="100px">
 

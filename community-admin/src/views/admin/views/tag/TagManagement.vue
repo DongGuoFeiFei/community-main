@@ -26,6 +26,21 @@
         <el-form-item label="标签名称">
           <el-input v-model="searchForm.name" placeholder="请输入标签名称" clearable/>
         </el-form-item>
+        <el-form-item label="标签名称">
+          <el-select
+              v-model="searchForm.status"
+              placeholder="请选择状态"
+              clearable
+              filterable
+          >
+            <el-option
+                v-for="(label, value) in statusOptions"
+                :key="value"
+                :label="label"
+                :value="Number(value)"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
           <el-button @click="resetSearch">重置</el-button>
@@ -38,24 +53,63 @@
           :data="tagList"
           border
           stripe
-          style="width: 100%"
           @selection-change="handleSelectionChange"
+          style="width: 100%; height: auto;"
       >
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="id" label="ID" width="80"/>
-        <el-table-column prop="name" label="标签名称"/>
-        <el-table-column prop="slug" label="标签别名"/>
-        <el-table-column prop="description" label="描述"/>
-        <el-table-column prop="createdAt" label="创建时间" width="180">
+        <el-table-column prop="name" label="标签名称" width="120">
           <template #default="{ row }">
-            {{ formatDate(row.createdAt) }}
+            <el-tag>
+              {{ row.name }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column prop="slug" label="标签别名" width="120">
+          <template #default="{ row }">
+            <el-tag
+                :color="row.color"
+            >
+              {{ row.slug }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <!--        <el-table-column prop="color" label="标签颜色" width="100"/>-->
+        <el-table-column prop="createAt" label="创建时间" width="180">
+          <template #default="{ row }">
+            {{ formatDate(row.createAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="updateAt" label="更新时间" width="180">
+          <template #default="{ row }">
+            {{ formatDate(row.updateAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="creatorId" label="创建者ID" width="100"/>
+        <el-table-column prop="status" label="状态" width="100">
+          <template #default="{ row }">
+            {{ getStatusText(row.status) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="createCount" label="使用次数" width="100"/>
+        <el-table-column label="操作" width="300" fixed="right">
           <template #default="{ row }">
             <el-button size="small" @click="handleEdit(row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(row)">审批</el-button>
+            <!--            <el-button size="small" type="danger" @click="handleApproval(row)">审批</el-button>-->
+            <el-select
+                placeholder="审批状态"
+                clearable
+                filterable
+                style="width: 100px"
+            >
+              <el-option
+                  v-for="(label, value) in statusOptions"
+                  :key="value"
+                  :label="label"
+                  :value="Number(value)"
+                  @click="handleApproval(row,value)"
+              />
+            </el-select>
           </template>
         </el-table-column>
       </el-table>
@@ -88,13 +142,20 @@
         <el-form-item label="标签别名" prop="slug">
           <el-input v-model="tagForm.slug" placeholder="请输入标签别名"/>
         </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input
-              v-model="tagForm.description"
-              type="textarea"
-              :rows="3"
-              placeholder="请输入标签描述"
-          />
+        <el-form-item label="颜色" prop="color">
+          <el-select
+              v-model="tagForm.color"
+              placeholder="请选择标签颜色"
+              style="width: 100%"
+          >
+            <el-option
+                v-for="item in colorOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -112,8 +173,8 @@ import {onMounted, reactive, ref} from 'vue';
 import {Delete, Plus} from '@element-plus/icons-vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import dayjs from 'dayjs';
-import {batchDeleteTags, createTag, deleteTag, getTagList, updateTag} from '@/api/tag';
-
+import {approvalTag, batchDeleteTags, createTag, deleteTag, getTagList, updateTag} from '@/api/tag';
+import {colorOptions, STATUS_MAP} from "@/utils/staticData.js";
 // 数据
 const loading = ref(false);
 const tagList = ref([]);
@@ -124,7 +185,8 @@ const isEditMode = ref(false);
 const currentId = ref(null);
 
 const searchForm = reactive({
-  name: ''
+  name: '',
+  status: null
 });
 
 const pagination = reactive({
@@ -136,7 +198,7 @@ const pagination = reactive({
 const tagForm = reactive({
   name: '',
   slug: '',
-  description: ''
+  color: ''
 });
 
 const rules = reactive({
@@ -150,6 +212,8 @@ const rules = reactive({
   ]
 });
 
+const statusOptions = STATUS_MAP;
+
 // 方法
 const formatDate = (date) => {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
@@ -159,12 +223,15 @@ const fetchTagList = async () => {
   try {
     loading.value = true;
     const params = {
-      ...searchForm,
+      name: searchForm.name,
+      status: searchForm.status,
       page: pagination.current,
       size: pagination.size
     };
+    console.log(params)
     const res = await getTagList(params);
-    tagList.value = res.data.list;
+    tagList.value = res.data.rows;
+    console.log(tagList.value)
     pagination.total = res.data.total;
   } catch (error) {
     console.error('获取标签列表失败:', error);
@@ -209,7 +276,9 @@ const handleEdit = (row) => {
   dialogTitle.value = '编辑标签';
   isEditMode.value = true;
   currentId.value = row.id;
+  console.log(row)
   Object.assign(tagForm, row);
+  console.log(tagForm)
   dialogVisible.value = true;
 };
 
@@ -218,6 +287,11 @@ const resetForm = () => {
     tagForm[key] = '';
   });
 };
+
+const getStatusText = (data) => {
+  const map = {0: '待审核', 1: '已审核', 2: '已拒绝'};
+  return map[data] || '未知'
+}
 
 const submitForm = async () => {
   try {
@@ -253,10 +327,30 @@ const handleDelete = (row) => {
   }).catch(() => {
   });
 };
+const handleApproval = (row, status) => {
+  ElMessageBox.confirm(`确定要统一审批标签 "${row.name}" 吗?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      const data = ref({
+        id: row.id,
+        status: status
+      })
+      await approvalTag(data.value);
+      ElMessage.success('审批成功');
+      fetchTagList();
+    } catch (error) {
+      console.error('审批失败:', error);
+      ElMessage.error('审批失败');
+    }
+  }).catch(() => {
+  });
+};
 
 const handleBatchDelete = () => {
   if (!selectedIds.value.length) return;
-
   ElMessageBox.confirm(`确定要删除选中的 ${selectedIds.value.length} 个标签吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -282,6 +376,13 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+
+.el-tag {
+  cursor: pointer;
+  user-select: none;
+  color: #303133;
+}
+
 .tag-management-container {
   padding: 20px;
   background-color: #f0f2f5;
@@ -299,6 +400,19 @@ onMounted(() => {
   .pagination-container {
     margin-top: 20px;
     text-align: center;
+  }
+
+  // 在组件样式或全局样式中添加
+  .el-table {
+    .el-table__body-wrapper {
+      // 禁用滚动条
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      // 禁用滚动行为
+      overflow: hidden !important;
+    }
   }
 }
 </style>
