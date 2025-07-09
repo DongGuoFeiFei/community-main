@@ -1,9 +1,15 @@
 package com.example.communityserver.adminController;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.communityserver.entity.model.Article;
+import com.example.communityserver.entity.request.ArticleSearchParam;
+import com.example.communityserver.entity.response.AdminArticleListVo;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.utils.web.Result;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -19,5 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminArticleController {
     @Autowired
     private IArticleService articleService;
+
+    @ApiOperation("获取文章列表")
+    @GetMapping("list")
+    public Result<Result.PageData<AdminArticleListVo>> getArticleList(ArticleSearchParam param) {
+        IPage<AdminArticleListVo> page = articleService.getAdminArticleList(param);
+        return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
+
+    }
+
+    @ApiOperation("删除文章")
+    @PostMapping("delete/{id}")
+    public Result<Void> deleteArticle(@PathVariable Long id) {
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getArticleId, id)
+                .set(Article::getIsDel, 0);
+        boolean b = articleService.update(updateWrapper);
+        return b ? Result.success() : Result.error();
+    }
 
 }

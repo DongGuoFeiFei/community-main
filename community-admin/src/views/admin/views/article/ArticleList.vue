@@ -2,9 +2,12 @@
   <div class="article-list-container">
     <el-card shadow="never">
       <div class="filter-container">
-        <ArticleFilter @search="handleSearch" />
+        <ArticleFilter @search="handleSearch"/>
         <el-button type="primary" @click="handleCreate" class="add-btn">
-          <el-icon><Plus /></el-icon> 新增文章
+          <el-icon>
+            <Plus/>
+          </el-icon>
+          新增文章
         </el-button>
       </div>
 
@@ -14,31 +17,26 @@
           border
           style="width: 100%"
       >
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="title" label="标题" min-width="200" />
-        <el-table-column prop="category.name" label="分类" width="120" />
-        <el-table-column label="标签" width="180">
-          <template #default="{ row }">
-            <el-tag
-                v-for="tag in row.tags"
-                :key="tag.id"
-                size="small"
-                class="mr-2"
-            >
-              {{ tag.name }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="viewCount" label="浏览" width="80" />
-        <el-table-column prop="commentCount" label="评论" width="80" />
-        <el-table-column prop="status" label="状态" width="100">
-          <template #default="{ row }">
-            <el-tag :type="statusMap[row.status].type">
-              {{ statusMap[row.status].label }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createTime" label="发布时间" width="180" />
+        <el-table-column prop="articleId" label="ID" width="80"/>
+        <el-table-column prop="title" label="标题" min-width="200"/>
+        <el-table-column prop="shareCount" label="分享" width="120"/>
+<!--        <el-table-column label="标签" width="180">-->
+<!--          <template #default="{ row }">-->
+<!--            <el-tag-->
+<!--                v-for="tag in row.tags"-->
+<!--                :key="tag.id"-->
+<!--                size="small"-->
+<!--                class="mr-2"-->
+<!--            >-->
+<!--              {{ tag.name }}-->
+<!--            </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+        <el-table-column prop="viewCount" label="浏览" width="80"/>
+        <el-table-column prop="commentCount" label="评论" width="80"/>
+        <el-table-column prop="isDrafts" label="状态" width="100"/>
+        <el-table-column prop="createdAt" label="发布时间" width="180"/>
+        <el-table-column prop="updatedAt" label="修改时间" width="180"/>
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button size="small" @click="handleEdit(row)">编辑</el-button>
@@ -46,7 +44,8 @@
                 size="small"
                 type="danger"
                 @click="handleDelete(row)"
-            >删除</el-button>
+            >删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -63,21 +62,22 @@
       </div>
     </el-card>
 
-<!--    <ArticleEditor-->
-<!--        v-model="editorVisible"-->
-<!--        :article="currentArticle"-->
-<!--        @success="handleEditorSuccess"-->
-<!--    />-->
+        <ArticleEditor
+            v-model="editorVisible"
+            :article="currentArticle"
+            @success="handleEditorSuccess"
+        />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
-import { getArticleList, deleteArticle } from '@/api/article'
+import {onMounted, reactive, ref} from 'vue'
+import {Plus} from '@element-plus/icons-vue'
+import {deleteArticle, getArticleList} from '@/api/article'
 import ArticleFilter from './ArticleFilter.vue'
-import ArticleEditor from './ArticleEditor.vue'
-import { useArticleStore } from '@/stores/articleStore'
+import {useArticleStore} from '@/stores/articleStore'
+import {ElMessage, ElMessageBox} from "element-plus";
+import ArticleEditor from "@/views/admin/views/article/ArticleEditor.vue";
 
 const articleStore = useArticleStore()
 
@@ -94,18 +94,18 @@ const pagination = reactive({
 })
 
 const statusMap = {
-  0: { label: '草稿', type: 'info' },
-  1: { label: '已发布', type: 'success' },
-  2: { label: '已下架', type: 'warning' }
+  0: {label: '草稿', type: 'info'},
+  1: {label: '已发布', type: 'success'},
+  2: {label: '已下架', type: 'warning'}
 }
 
 const searchParams = reactive({
   title: '',
-  categoryId: null,
-  tagId: null,
-  status: null,
-  startTime: null,
-  endTime: null
+  categoryId: '',
+  tagId: '',
+  status: '',
+  startTime: '',
+  endTime: ''
 })
 
 onMounted(() => {
@@ -120,9 +120,12 @@ const fetchData = async () => {
       pageNum: pagination.current,
       pageSize: pagination.size
     }
+
     const res = await getArticleList(params)
-    articleList.value = res.data.list
+    articleList.value = res.data.rows
     pagination.total = res.data.total
+
+    console.log(articleList.value)
   } finally {
     loading.value = false
   }
@@ -150,7 +153,9 @@ const handleCreate = () => {
 }
 
 const handleEdit = (article) => {
-  currentArticle.value = { ...article }
+
+  currentArticle.value = {...article}
+  console.log(currentArticle.value)
   editorVisible.value = true
 }
 
@@ -159,7 +164,7 @@ const handleDelete = async (article) => {
     await ElMessageBox.confirm(`确定删除文章 "${article.title}" 吗?`, '提示', {
       type: 'warning'
     })
-    await deleteArticle(article.id)
+    await deleteArticle(article.articleId)
     ElMessage.success('删除成功')
     fetchData()
   } catch (error) {

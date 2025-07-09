@@ -2,6 +2,7 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
@@ -9,12 +10,10 @@ import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.request.AddArticleDto;
+import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.SearchParam;
-import com.example.communityserver.entity.response.ArticleCardVo;
-import com.example.communityserver.entity.response.ArticleDtlVo;
-import com.example.communityserver.entity.response.ArticleListVo;
-import com.example.communityserver.entity.response.EditorArticlesVo;
+import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapper.ArticleInteractionMapper;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FileEntityMapper;
@@ -26,6 +25,7 @@ import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -161,6 +161,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         redisUtil.setCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + id, articleCount, 3, TimeUnit.DAYS);
         return articleCount;
+    }
+
+
+    @Override
+    public IPage<AdminArticleListVo> getAdminArticleList(ArticleSearchParam param) {
+        Page<Article> page = new Page<>(param.getPageNum(), param.getPageSize());
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        // 构建查询条件
+        queryWrapper
+                .eq(StringUtil.isNotBlank(param.getTitle()), Article::getTitle, param.getTitle())
+                .ge(StringUtil.isNotBlank(param.getStartTime()), Article::getCreatedAt, param.getStartTime())
+                .le(StringUtil.isNotBlank(param.getEndTime()), Article::getCreatedAt, param.getEndTime())
+                .eq(Article::getIsDel, 1)
+                .orderByDesc(Article::getHotScore);
+        IPage<Article> result = articleMapper.selectPage(page, queryWrapper);
+        IPage<AdminArticleListVo> voIPage = new Page<>();
+        BeanUtils.copyProperties(result, voIPage);
+        return voIPage;
     }
 
 }

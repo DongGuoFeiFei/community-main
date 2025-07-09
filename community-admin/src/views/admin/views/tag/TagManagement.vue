@@ -52,7 +52,6 @@
           v-loading="loading"
           :data="tagList"
           border
-          stripe
           @selection-change="handleSelectionChange"
           style="width: 100%; height: auto;"
       >
@@ -410,19 +409,6 @@ onMounted(() => {
   .pagination-container {
     margin-top: 20px;
     text-align: center;
-  }
-
-  // 在组件样式或全局样式中添加
-  .el-table {
-    .el-table__body-wrapper {
-      // 禁用滚动条
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      // 禁用滚动行为
-      overflow: hidden !important;
-    }
   }
 }
 </style>

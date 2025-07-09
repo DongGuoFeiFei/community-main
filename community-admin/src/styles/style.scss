@@ -1,0 +1,18 @@
+/* 禁用垂直滚动条，但保留水平滚动 */
+.el-table {
+  .el-table__body-wrapper {
+    /* 隐藏垂直滚动条 */
+    overflow-y: hidden !important;
+
+    /* 确保水平滚动仍然可用 */
+    overflow-x: auto !important;
+
+    /* 隐藏 WebKit 浏览器的滚动条（Chrome/Safari/Edge） */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 隐藏 Firefox 的滚动条 */
+    scrollbar-width: none;
+  }
+}

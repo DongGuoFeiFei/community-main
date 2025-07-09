@@ -16,7 +16,7 @@
             u.nickname,
             u.avatar,
             p.bio,
-            DATE_FORMAT(u.create_time, '%Y-%m-%d %H:%i:%s') AS joinDate
+            DATE_FORMAT(u.create_time, '%Y-%m-%d %H:%i:%s') AS joinDate,
             CASE
                 WHEN #{loginUserId} IS NULL THEN false
                 ELSE EXISTS (
