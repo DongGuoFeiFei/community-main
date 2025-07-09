@@ -28,6 +28,7 @@
 import { ref, watch } from 'vue'
 import { Plus, Delete } from '@element-plus/icons-vue'
 import { uploadImage } from '@/api/upload'
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   modelValue: String

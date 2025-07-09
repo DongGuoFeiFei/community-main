@@ -84,7 +84,7 @@
             {{ formatDate(row.updateAt) }}
           </template>
         </el-table-column>
-        <el-table-column prop="creatorId" label="创建者ID" width="100"/>
+        <!--        <el-table-column prop="creatorId" label="创建者ID" width="100"/>-->
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             {{ getStatusText(row.status) }}
@@ -182,7 +182,6 @@ const dialogVisible = ref(false);
 const dialogTitle = ref('');
 const isEditMode = ref(false);
 const currentId = ref(null);
-
 
 
 const searchForm = reactive({
@@ -295,7 +294,7 @@ const resetForm = () => {
 };
 
 const getStatusText = (data) => {
-  const map = {0: '待审核', 1: '已审核', 2: '已拒绝'};
+  const map = {0: '待审核', 1: '同意', 2: '已拒绝'};
   return map[data] || '未知'
 }
 
