@@ -1,21 +1,19 @@
 package com.example.communityserver.entity.request;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
  * <p>
- * TODO
+ *  搜索，分页
  * <p>
  *
  * @author: DongGuo
- * @create: 2025-07-08
+ * @create: 2025-04-24
  **/
 
 @Data
 public class SearchNameParam {
-    private String name;
-    private Integer status;
-    private Integer page;
-    private Integer size;
+    private String title;
+    private Integer pageSize;
+    private Integer pageNum;
 }

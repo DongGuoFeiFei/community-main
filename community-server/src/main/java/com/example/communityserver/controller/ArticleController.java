@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.request.SearchParam;
+import com.example.communityserver.entity.request.SearchNameParam;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
@@ -45,7 +45,7 @@ public class ArticleController {
 
     @ApiOperation("搜索文章")
     @GetMapping
-    public TableDataInfo fetchPosts(SearchParam param) {
+    public TableDataInfo fetchPosts(SearchNameParam param) {
         Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
         TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setCode(200);

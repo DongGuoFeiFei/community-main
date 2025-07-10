@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.model.Tag;
-import com.example.communityserver.entity.request.ApprovalTagParam;
+import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.request.IdsListParam;
-import com.example.communityserver.entity.request.SearchNameParam;
+import com.example.communityserver.entity.request.SearchNameStatusParam;
 import com.example.communityserver.entity.request.TagFormParam;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
@@ -35,7 +35,7 @@ public class AdminTagController {
 
     @ApiOperation("所有标签")
     @GetMapping()
-    public Result<Result.PageData<Tag>> getTagList(SearchNameParam param) {
+    public Result<Result.PageData<Tag>> getTagList(SearchNameStatusParam param) {
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .eq(Tag::getIsDel, 0)
@@ -68,7 +68,7 @@ public class AdminTagController {
 
     @ApiOperation("审批")
     @PutMapping()
-    public Result<Void> approvalTag(@RequestBody ApprovalTagParam param) {
+    public Result<Void> approvalTag(@RequestBody IdStatusParam param) {
         LambdaUpdateWrapper<Tag> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper
                 .eq(Tag::getId, param.getId())

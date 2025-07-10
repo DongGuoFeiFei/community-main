@@ -120,7 +120,8 @@ const initEditor = () => {
 };
 
 defineExpose({
-  vditorInstance
+  vditorInstance,
+  initEditor
 });
 
 onUnmounted(() => {

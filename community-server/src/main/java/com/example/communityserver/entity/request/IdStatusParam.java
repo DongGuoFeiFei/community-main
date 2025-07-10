@@ -4,14 +4,15 @@ import lombok.Data;
 
 /**
  * <p>
- *
+ * TODO
  * <p>
  *
  * @author: DongGuo
- * @create: 2025-06-16
+ * @create: 2025-07-08
  **/
 
 @Data
-public class AddFolderNameParam {
-    private String name;
+public class IdStatusParam {
+    private Long id;
+    private Integer status;
 }

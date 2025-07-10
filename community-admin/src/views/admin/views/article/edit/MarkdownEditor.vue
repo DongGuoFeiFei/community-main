@@ -120,7 +120,8 @@ const initEditor = () => {
 };
 
 defineExpose({
-  vditorInstance
+  vditorInstance,
+  initEditor
 });
 
 onUnmounted(() => {
@@ -139,5 +140,6 @@ watch(() => props.modelValue, (newValue) => {
 // 编辑器初始化
 onMounted(() => {
   initEditor();
+
 });
 </script>

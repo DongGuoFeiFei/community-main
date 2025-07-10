@@ -61,7 +61,7 @@ onMounted(() => {
           :color="tag.color"
           @click="navigateToTag(tag.name)"
       >
-        {{ tag.name }}
+        #{{ tag.name }}
       </el-tag>
       <el-tag v-if="activeTags.length === 0" type="info" effect="plain">
         暂无标签

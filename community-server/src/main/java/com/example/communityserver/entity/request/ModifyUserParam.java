@@ -8,11 +8,9 @@ import lombok.Data;
  * <p>
  *
  * @author: DongGuo
- * @create: 2025-07-08
+ * @create: 2025-07-10
  **/
 
 @Data
-public class ApprovalTagParam {
-    private Long id;
-    private Integer status;
+public class ModifyUserParam {
 }

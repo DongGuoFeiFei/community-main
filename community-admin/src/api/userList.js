@@ -7,7 +7,7 @@ import request from '@/utils/request';
  * @returns {Promise}
  */
 export const getUsers = (params) => {
-    return request.get('/admin/users', { params });
+    return request.get('/admin/users', {params});
 };
 
 /**
@@ -44,5 +44,9 @@ export const deleteUser = (userId) => {
  * @returns {Promise}
  */
 export const batchDeleteUsers = (userIds) => {
-    return request.post('/admin/users/batch-delete', { userIds });
+    return request.post('/admin/users/batch-delete', {userIds});
+};
+
+export const activeChange = (data) => {
+    return request.post('/admin/users/active-change', {data});
 };

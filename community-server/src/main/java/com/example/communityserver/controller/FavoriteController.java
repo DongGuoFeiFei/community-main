@@ -1,8 +1,6 @@
 package com.example.communityserver.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.FolderVo;
@@ -10,7 +8,6 @@ import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
 import com.example.communityserver.service.IFavoriteFolderService;
 import com.example.communityserver.service.IUserFavoriteService;
-import com.example.communityserver.utils.security.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +47,7 @@ public class FavoriteController {
 
     @ApiOperation("新建收藏夹")
     @PostMapping("/folders")
-    public Result<FolderVo> addFolder(@RequestBody AddFolderNameParam param) {
+    public Result<FolderVo> addFolder(@RequestBody NameParam param) {
         FolderVo folderVo = favoriteFolderService.addFolder(param.getName());
         return folderVo != null ? Result.success(folderVo) : Result.error();
     }

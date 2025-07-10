@@ -9,7 +9,7 @@
     />
 
     <!-- 编辑器主体 -->
-    <MarkdownEditor v-model="content"/>
+    <MarkdownEditor v-model="content" ref="editorRef"/>
 
     <!-- 标签选择器 -->
     <TagSelector
@@ -60,6 +60,7 @@ const sStore = sessionStores()
 const isEditMode = ref(sStore.isEditMode)
 const route = useRoute()
 
+const editorRef = ref(null);
 // 文章数据
 const articleData = reactive({
   title: '',
@@ -215,8 +216,13 @@ const isEditor = () => {
   }
 }
 
+const initEditor = () => {
+  editorRef.value.initEditor();
+};
+
 onMounted(() => {
   isEditor()
+  initEditor()
 })
 
 // 返回上一页

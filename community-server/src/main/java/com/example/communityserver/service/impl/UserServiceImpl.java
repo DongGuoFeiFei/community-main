@@ -1,14 +1,18 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.enums.MessageCodeEnum;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.RegisterDto;
+import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.AuthorInfoVo;
 import com.example.communityserver.entity.response.UserCountStats;
+import com.example.communityserver.entity.response.UserListVo;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.mapper.UserMapper;
@@ -163,6 +167,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stats.setFollowing(followingCount);
         stats.setPostCount(postCount);
         return stats;
+    }
+
+    @Override
+    public IPage<UserListVo> getUsers(UserSearchParam param) {
+        Page<UserListVo> page = new Page<>(param.getPage(), param.getSize());
+       return userMapper.getUsers(page,param);
     }
 
 

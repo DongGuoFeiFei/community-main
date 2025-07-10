@@ -30,7 +30,7 @@
               closable
               @close="removeTag(tag)"
           >
-            {{ tag.name }}
+            #{{ tag.name }}
           </el-tag>
         </div>
       </div>
@@ -46,7 +46,7 @@
               @click="toggleTag(tag)"
               :effect="isTagSelected(tag) ? 'dark' : 'plain'"
           >
-            {{ tag.name }}
+            #{{ tag.name }}
           </el-tag>
         </div>
       </div>
@@ -62,7 +62,7 @@
               @click="toggleTag(tag)"
               :effect="isTagSelected(tag) ? 'dark' : 'plain'"
           >
-            {{ tag.name }}
+            #{{ tag.name }}
           </el-tag>
         </div>
       </div>

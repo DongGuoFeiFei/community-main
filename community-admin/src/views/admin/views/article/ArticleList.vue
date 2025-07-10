@@ -20,18 +20,18 @@
         <el-table-column prop="articleId" label="ID" width="80"/>
         <el-table-column prop="title" label="标题" min-width="200"/>
         <el-table-column prop="shareCount" label="分享" width="120"/>
-<!--        <el-table-column label="标签" width="180">-->
-<!--          <template #default="{ row }">-->
-<!--            <el-tag-->
-<!--                v-for="tag in row.tags"-->
-<!--                :key="tag.id"-->
-<!--                size="small"-->
-<!--                class="mr-2"-->
-<!--            >-->
-<!--              {{ tag.name }}-->
-<!--            </el-tag>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column label="标签" width="180">-->
+        <!--          <template #default="{ row }">-->
+        <!--            <el-tag-->
+        <!--                v-for="tag in row.tags"-->
+        <!--                :key="tag.id"-->
+        <!--                size="small"-->
+        <!--                class="mr-2"-->
+        <!--            >-->
+        <!--              {{ tag.name }}-->
+        <!--            </el-tag>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column prop="viewCount" label="浏览" width="80"/>
         <el-table-column prop="commentCount" label="评论" width="80"/>
         <el-table-column prop="isDrafts" label="状态" width="100"/>
@@ -62,14 +62,14 @@
       </div>
     </el-card>
 
-        <ArticleEditor
-            v-model="editorVisible"
-            :article="currentArticle"
-            @success="handleEditorSuccess"
-        />
+    <ArticleEditor
+        v-model="editorVisible"
+        :article="currentArticle"
+        @success="handleEditorSuccess"
+    />
   </div>
 </template>
-
+<!--todo 编辑器还是会有问题，待修复 编辑器实例化，拉出提前实例化-->
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'

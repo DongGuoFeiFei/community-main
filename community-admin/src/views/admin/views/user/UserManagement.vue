@@ -1,8 +1,7 @@
-
-
 <template>
   <div class="user-management">
-    <UserSearch @search="handleSearch" />
+    <UserSearch @search="handleSearch"/>
+
     <UserList
         :users="users"
         :loading="loading"
@@ -11,22 +10,26 @@
         @delete="handleDelete"
         @batch-delete="handleBatchDelete"
         @page-change="handlePageChange"
+        @active-change="handleActiveChange"
     />
+
     <UserDetailDialog
         v-model="dialogVisible"
         :user="currentUser"
         @confirm="handleConfirm"
     />
+
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getUsers, deleteUser, batchDeleteUsers, updateUser } from '@/api/userList.js';
+import {onMounted, ref} from 'vue';
+import {activeChange, batchDeleteUsers, deleteUser, getUsers, updateUser} from '@/api/userList.js';
 import UserSearch from "@/views/admin/views/user/components/UserSearch.vue";
 import UserList from "@/views/admin/views/user/components/UserList.vue";
 import UserDetailDialog from "@/views/admin/views/user/components/UserDetailDialog.vue";
-
+import {ElMessage, ElMessageBox} from "element-plus";
+// todo 完善修改框，修改数据内容
 
 const users = ref([]);
 const loading = ref(false);
@@ -53,8 +56,10 @@ const fetchUsers = async () => {
       ...searchParams.value,
     };
     const res = await getUsers(params);
-    users.value = res.data.list;
+    users.value = res.data.rows;
     pagination.value.total = res.data.total;
+
+    console.log(users.value)
   } catch (error) {
     console.error('获取用户列表失败:', error);
   } finally {
@@ -71,28 +76,47 @@ const handleSearch = (params) => {
 
 // 编辑用户
 const handleEdit = (user) => {
-  currentUser.value = { ...user };
+  currentUser.value = {...user};
+  console.log(currentUser.value)
   dialogVisible.value = true;
 };
 
 // 删除用户
 const handleDelete = async (userId) => {
-  try {
-    await deleteUser(userId);
-    await fetchUsers();
-  } catch (error) {
-    console.error('删除用户失败:', error);
-  }
+
+  ElMessageBox.confirm(`确定删除用户吗?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      await deleteUser(userId);
+      await fetchUsers();
+    } catch (error) {
+      console.error('失败:', error);
+      ElMessage.error('失败');
+    }
+  }).catch(() => {
+  });
 };
 
 // 批量删除用户
 const handleBatchDelete = async (userIds) => {
-  try {
-    await batchDeleteUsers(userIds);
-    await fetchUsers();
-  } catch (error) {
-    console.error('批量删除用户失败:', error);
-  }
+
+  ElMessageBox.confirm(`确定删除用户吗?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      await batchDeleteUsers(userIds);
+      await fetchUsers();
+    } catch (error) {
+      console.error('失败:', error);
+      ElMessage.error('失败');
+    }
+  }).catch(() => {
+  });
 };
 
 // 分页变化
@@ -101,10 +125,35 @@ const handlePageChange = (page) => {
   fetchUsers();
 };
 
+const handleActiveChange = (row, status) => {
+  // 处理逻辑
+  console.log(row, status);
+  ElMessageBox.confirm(`确定修改用户 "${row.username}" 吗?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      const data = ref({
+        id: row.userId,
+        status: status
+      })
+      await activeChange(data.value);
+      ElMessage.success('成功');
+      fetchUsers();
+    } catch (error) {
+      console.error('失败:', error);
+      ElMessage.error('失败');
+    }
+  }).catch(() => {
+  });
+};
+
 // 确认更新用户
 const handleConfirm = async (userData) => {
+  console.log(userData)
   try {
-    await updateUser(userData.id, userData);
+    await updateUser(userData.userId, userData);
     dialogVisible.value = false;
     await fetchUsers();
   } catch (error) {

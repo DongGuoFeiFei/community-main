@@ -14,7 +14,11 @@ export const colorOptions = [
 ];
 
 export const STATUS_MAP = {
-    0: '待审核',
+    0: '待审',
     1: '同意',
-    2: '已拒绝'
+    2: '拒绝'
+};
+export const STATUS_ACTIVE = {
+    0: '激活',
+    1: '封禁'
 };

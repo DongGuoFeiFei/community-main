@@ -12,7 +12,7 @@ import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.request.SearchParam;
+import com.example.communityserver.entity.request.SearchNameParam;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapper.ArticleInteractionMapper;
 import com.example.communityserver.mapper.ArticleMapper;
@@ -134,7 +134,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public Page<ArticleCardVo> getPostsCardVoList(SearchParam param) {
+    public Page<ArticleCardVo> getPostsCardVoList(SearchNameParam param) {
 
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
         Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param.getTitle());
