@@ -73,7 +73,7 @@
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
-import {deleteArticle, getArticleList} from '@/api/article'
+import {deleteArticle, getArticleList} from '@/api/article/index.js'
 import ArticleFilter from './ArticleFilter.vue'
 import {useArticleStore} from '@/stores/articleStore'
 import {ElMessage, ElMessageBox} from "element-plus";

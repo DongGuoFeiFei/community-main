@@ -16,9 +16,17 @@ export const deleteTag = (id) => {
     return request.delete(`/admin/tags/${id}`);
 };
 export const approvalTag = (data) => {
-    return request.put(`/admin/tags`,data);
+    return request.put(`/admin/tags`, data);
 };
 
 export const batchDeleteTags = (ids) => {
     return request.delete('/admin/tags/batch', {data: {ids}});
 };
+
+export const getAllTags = () => {
+    return request.get(`/tag/getAllTags`)
+}
+
+export const getPopularTags = () => {
+    return request.get(`/tag/getPopularTags`)
+}
