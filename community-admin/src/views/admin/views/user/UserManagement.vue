@@ -11,10 +11,12 @@
         @batch-delete="handleBatchDelete"
         @page-change="handlePageChange"
         @active-change="handleActiveChange"
+        @handle-add-user="handleAddUser"
     />
 
     <UserDetailDialog
         v-model="dialogVisible"
+        :isEditor="isEditor"
         :user="currentUser"
         @confirm="handleConfirm"
     />
@@ -24,7 +26,7 @@
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {activeChange, batchDeleteUsers, deleteUser, getUsers, updateUser} from '@/api/userList.js';
+import {activeChange, addUser, batchDeleteUsers, deleteUser, getUsers, updateUser} from '@/api/userList.js';
 import UserSearch from "@/views/admin/views/user/components/UserSearch.vue";
 import UserList from "@/views/admin/views/user/components/UserList.vue";
 import UserDetailDialog from "@/views/admin/views/user/components/UserDetailDialog.vue";
@@ -35,7 +37,7 @@ const users = ref([]);
 const loading = ref(false);
 const dialogVisible = ref(false);
 const currentUser = ref(null);
-
+const isEditor = ref(false)
 // 分页参数
 const pagination = ref({
   current: 1,
@@ -76,7 +78,13 @@ const handleSearch = (params) => {
 
 // 编辑用户
 const handleEdit = (user) => {
+  isEditor.value = true
   currentUser.value = {...user};
+  console.log(currentUser.value)
+  dialogVisible.value = true;
+};
+const handleAddUser = () => {
+  isEditor.value = false
   console.log(currentUser.value)
   dialogVisible.value = true;
 };
@@ -150,14 +158,28 @@ const handleActiveChange = (row, status) => {
 };
 
 // 确认更新用户
-const handleConfirm = async (userData) => {
-  console.log(userData)
+const handleConfirm = async (userData, isEdit) => {
+
   try {
-    await updateUser(userData.userId, userData);
-    dialogVisible.value = false;
-    await fetchUsers();
+    console.log(isEdit,userData)
+    if (isEdit) {
+      console.log(userData)
+      await updateUser(userData.userId, userData);
+      dialogVisible.value = false;
+      await fetchUsers();
+    } else {
+      console.log(userData)
+      await addUser(userData);
+      dialogVisible.value = false;
+      await fetchUsers();
+    }
+    console.log(userData)
   } catch (error) {
-    console.error('更新用户失败:', error);
+    if (isEdit) {
+      console.error('更新用户失败:', error);
+    } else {
+      console.error('添加用户失败:', error);
+    }
   }
 };
 

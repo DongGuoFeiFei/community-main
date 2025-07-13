@@ -104,6 +104,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
         int insert = articleMapper.insert(article);
+        redisUtil.deleteObject(CacheKeyConstants.USER_ARTICLE_COUNT + SecurityUtils.getLoginUserId());
         int batchInsert = tagService.batchInsert(dto.getTagIds(), article.getArticleId());
         return batchInsert > 0;
     }
@@ -170,7 +171,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         // 构建查询条件
         queryWrapper
-                .eq(StringUtil.isNotBlank(param.getTitle()), Article::getTitle, param.getTitle())
+                .like(StringUtil.isNotBlank(param.getTitle()), Article::getTitle, param.getTitle())
                 .ge(StringUtil.isNotBlank(param.getStartTime()), Article::getCreatedAt, param.getStartTime())
                 .le(StringUtil.isNotBlank(param.getEndTime()), Article::getCreatedAt, param.getEndTime())
                 .eq(Article::getIsDel, 1)

@@ -52,12 +52,35 @@ export const localStores = defineStore('localStores', () => {
         localStorage.removeItem('my-localStore')
     }
 
+    // 公告关闭状态
+    const announcementClosed = ref(false)
+
+    // 获取公告关闭状态
+    const getAnnouncementClosedState = () => {
+        return announcementClosed.value
+    }
+
+    // 设置公告关闭状态
+    const setAnnouncementClosedState = (state) => {
+        announcementClosed.value = state
+    }
+
+    const hasReadLatestAnnouncement = ref(false)
+
+    const setHasReadLatestAnnouncement = (isRead) => {
+        hasReadLatestAnnouncement.value = isRead
+    }
+
     return {
+        getAnnouncementClosedState,
+        setAnnouncementClosedState,
         userInfo,
         baseURL,
         isTokenExpired,
         tokenInfo,
-        clearStorage
+        clearStorage,
+        hasReadLatestAnnouncement,
+        setHasReadLatestAnnouncement
     }
 }, {
     persist: {

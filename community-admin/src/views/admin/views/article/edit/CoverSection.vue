@@ -22,14 +22,14 @@
 </template>
 
 <script setup>
-const props=defineProps({
+const props = defineProps({
   coverUrl: {
     type: String,
     default: ''
   }
 })
 
-console.log(props.coverUrl)
+console.log("props.coverUrl", props.coverUrl)
 
 const emit = defineEmits(['select', 'remove'])
 </script>

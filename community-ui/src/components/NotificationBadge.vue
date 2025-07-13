@@ -1,15 +1,16 @@
 <template>
-  <!--  <div-->
-  <!--      class="notification-container"-->
-  <!--      @mouseenter="showPanel = true"-->
-  <!--      @mouseleave="showPanel = false"-->
-  <!--      v-if="unreadCount > 0"-->
-  <!--  >-->
+<!--    <div-->
+<!--        class="notification-container"-->
+<!--        @mouseenter="showPanel = true"-->
+<!--        @mouseleave="showPanel = false"-->
+<!--        v-if="unreadCount > 0"-->
+<!--    >-->
   <!-- todo 优化通知显示 -->
   <div
       class="notification-container"
       @mouseenter="showPanel = true"
       @mouseleave="showPanel = false"
+      v-if="unreadCount > 0"
   >
     <el-popover
         placement="bottom"

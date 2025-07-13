@@ -15,6 +15,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
@@ -129,6 +130,8 @@ public class EmailServiceImpl implements IEmailService {
         try {
             // 计算邮箱的MD5哈希值
             String hash = md5Hex(email.trim().toLowerCase());
+//            String emailHash = DigestUtils.md5DigestAsHex(email.trim().toLowerCase().getBytes());
+//            return "https://www.gravatar.com/avatar/" + emailHash + "?d=identicon";
             return "https://www.gravatar.com/avatar/" + hash + "?d=identicon";
         } catch (Exception e) {
             return "https://www.gravatar.com/avatar/?d=identicon";

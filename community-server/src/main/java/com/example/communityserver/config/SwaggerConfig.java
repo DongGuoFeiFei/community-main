@@ -26,7 +26,8 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())// 接口文档的一些信息
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.communityserver.controller"))//扫描的包路径
+                .apis(RequestHandlerSelectors.basePackage("com.example.communityserver.controller")
+                        .or(RequestHandlerSelectors.basePackage("com.example.communityserver.adminController")))
                 .build();
     }
 

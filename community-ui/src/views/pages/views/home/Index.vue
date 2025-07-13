@@ -2,6 +2,7 @@
 import Header from "@/views/pages/components/Header.vue";
 import Card from "@/views/pages/views/home/Card.vue";
 import Footer from "@/views/pages/components/Footer.vue";
+import Announcement from "@/views/pages/components/Announcement.vue";
 </script>
 
 <template>
@@ -12,8 +13,10 @@ import Footer from "@/views/pages/components/Footer.vue";
           <Header/>
         </el-header>
         <el-container>
-          <el-aside width="200px"></el-aside>
+          <el-aside width="200px">
+          </el-aside>
           <el-main>
+            <Announcement/>
             <Card/>
           </el-main>
           <el-aside width="200px"></el-aside>
@@ -30,6 +33,7 @@ import Footer from "@/views/pages/components/Footer.vue";
 <style scoped lang="less">
 .main-container {
   min-height: 100vh;
+
   .common-layout {
     .el-container {
       height: 100%;

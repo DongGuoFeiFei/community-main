@@ -17,6 +17,8 @@ import lombok.Getter;
 public enum MessageCodeEnum {
     USERNAME_EXIST(200, "用户名已经存在"),
     EMAIL_EXIST(200, "邮箱已经存在"),
+    PHONE_EXIST(200, "手机号已经存在"),
+    USER_NOT_EXIST(200, "用户不存在"),
     REGISTER_SUCCESS(200, "注册成功"),
     REGISTER_ERROR(500, "注册失败");
 

@@ -216,7 +216,7 @@ export const useMenuStore = defineStore('menu', () => {
                     }
                 }
             ]
-        },{
+        }, {
             path: '/admin/points',
             meta: {
                 title: '积分管理',
@@ -282,9 +282,9 @@ export const useMenuStore = defineStore('menu', () => {
             },
             children: [
                 {
-                    path: '/admin/notificationSystem',
+                    path: '/admin/announcement',
                     meta: {
-                        title: '系统通知',
+                        title: '系统公告',
                         icon: 'message'
                     }
                 },

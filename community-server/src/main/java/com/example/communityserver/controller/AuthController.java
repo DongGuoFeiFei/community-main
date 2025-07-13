@@ -169,8 +169,8 @@ public class AuthController {
         }
 
         // 验证库中邮箱和用户名是否重复
-        MessageCodeEnum codeEnum = userService.isExistUser(dto.getEmail(), dto.getUsername());
-        if (codeEnum != null) {
+        MessageCodeEnum codeEnum = userService.isExistUser(dto.getEmail(), dto.getUsername(), null);
+        if (codeEnum != MessageCodeEnum.USER_NOT_EXIST) {
             return Result.error(codeEnum.getValue());
         }
         emailService.sendVerificationCode(dto.getEmail(), dto.getNickname());

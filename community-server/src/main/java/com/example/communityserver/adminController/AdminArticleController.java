@@ -7,6 +7,7 @@ import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.response.AdminArticleListVo;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.web.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2025-07-08
  **/
 
+@Api(tags = "管理员文章管理")
 @RestController
 @RequestMapping("admin/article")
 public class AdminArticleController {

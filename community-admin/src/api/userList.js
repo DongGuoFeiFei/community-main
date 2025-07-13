@@ -28,6 +28,9 @@ export const getUserDetail = (userId) => {
 export const updateUser = (userId, data) => {
     return request.put(`/admin/users/${userId}`, data);
 };
+export const addUser = (data) => {
+    return request.put(`/admin/users/addUser`, data);
+};
 
 /**
  * 删除用户

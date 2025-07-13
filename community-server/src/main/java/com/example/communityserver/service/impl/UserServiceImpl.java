@@ -17,6 +17,7 @@ import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.mapper.UserMapper;
 import com.example.communityserver.service.IArticleService;
+import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
@@ -41,6 +42,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IEmailService emailService;
 
     @Autowired
     private IArticleService articleService;
@@ -80,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
 
     @Override
-    public MessageCodeEnum isExistUser(String email, String username) {
+    public MessageCodeEnum isExistUser(String email, String username, String phone) {
         // 验证邮箱、用户名、用户名和邮箱
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         User user;
@@ -94,13 +98,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user != null) {
             return MessageCodeEnum.USERNAME_EXIST;
         }
-        return null;
+        queryWrapper.eq(phone != null, User::getPhone, phone);
+        user = userMapper.selectOne(queryWrapper);
+        if (user != null) {
+            return MessageCodeEnum.PHONE_EXIST;
+        }
+
+        return MessageCodeEnum.USER_NOT_EXIST;
     }
 
 
     @Override
     public MessageCodeEnum register(RegisterDto dto) {
-        MessageCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername());
+        MessageCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername(), null);
         if (codeEnum != null) {
             return codeEnum;
         }
@@ -110,6 +120,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setNickname(dto.getNickname());
         user.setEmail(dto.getEmail());
         user.setPassword(SecurityUtils.encryptPassword(dto.getPassword()));
+
+        String emailGravatarUrl = emailService.getEmailGravatarUrl(dto.getEmail());
+        user.setAvatar(emailGravatarUrl);
         int insert = userMapper.insert(user);
         if (insert > 0) {
             return MessageCodeEnum.REGISTER_SUCCESS;
@@ -172,7 +185,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public IPage<UserListVo> getUsers(UserSearchParam param) {
         Page<UserListVo> page = new Page<>(param.getPage(), param.getSize());
-       return userMapper.getUsers(page,param);
+        return userMapper.getUsers(page, param);
     }
 
 

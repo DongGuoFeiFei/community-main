@@ -15,7 +15,7 @@ public interface IUserService extends IService<User> {
     String login(String username, String password);
 
 
-    MessageCodeEnum isExistUser(String email, String username);
+    MessageCodeEnum isExistUser(String email, String username,String phone);
 
     MessageCodeEnum register(RegisterDto dto);
 

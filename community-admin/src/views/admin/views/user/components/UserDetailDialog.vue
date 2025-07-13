@@ -13,26 +13,26 @@
         ref="formRef"
     >
       <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username" />
+        <el-input v-model="form.username"/>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="form.nickname" />
+        <el-input v-model="form.nickname"/>
       </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" type="email" />
+      <el-form-item v-if="isEditor" label="邮箱" prop="email">
+        <el-input v-model="form.email" type="email"/>
       </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input v-model="form.phone" />
+      <el-form-item v-if="isEditor" label="手机号" prop="phone">
+        <el-input v-model="form.phone"/>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.status">
+      <el-form-item label="状态" prop="isActive">
+        <el-radio-group v-model="form.isActive">
           <el-radio :label="1">正常</el-radio>
           <el-radio :label="0">禁用</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="个人简介" prop="bio">
-        <el-input v-model="form.bio" type="textarea" :rows="3" />
-      </el-form-item>
+      <!--      <el-form-item label="个人简介" prop="bio">-->
+      <!--        <el-input v-model="form.bio" type="textarea" :rows="3"/>-->
+      <!--      </el-form-item>-->
     </el-form>
 
     <template #footer>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import {ref, watch} from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -54,6 +54,10 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  isEditor: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const emit = defineEmits(['update:modelValue', 'confirm']);
@@ -63,28 +67,27 @@ const formRef = ref(null);
 
 // 初始化完整的表单数据
 const initFormData = () => ({
-  id: '',
+  userId: '',
   username: '',
   nickname: '',
   email: '',
   phone: '',
-  status: 1,
-  bio: '',
+  isActive: '',
 });
 
 const form = ref(initFormData());
 
 const rules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' },
+    {required: true, message: '请输入用户名', trigger: 'blur'},
+    {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'},
   ],
   email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' },
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur'},
   ],
-  status: [
-    { required: true, message: '请选择状态', trigger: 'change' },
+  isActive: [
+    {required: true, message: '请选择状态', trigger: 'change'},
   ],
 };
 
@@ -93,11 +96,16 @@ watch(
     (val) => {
       visible.value = val;
       if (val) {
-        // 合并传入的用户数据和默认值
-        form.value = {
-          ...initFormData(),
-          ...props.user
-        };
+        if (props.isEditor) {
+          form.value = {
+            ...initFormData(),
+            ...props.user
+          }
+          console.log(form.value)
+        } else {
+          form.value.isActive = null
+          form.value.userId = null
+        }
       }
     }
 );
@@ -117,7 +125,8 @@ const handleClose = () => {
 const handleConfirm = async () => {
   try {
     await formRef.value.validate();
-    emit('confirm', form.value);
+
+    emit('confirm', form.value, props.isEditor);
     handleClose();
   } catch (error) {
     console.error('表单验证失败:', error);

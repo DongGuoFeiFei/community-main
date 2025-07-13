@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2025-07-04
  **/
 
-@Api(tags = "标签管理")
+@Api(tags = "管理员标签管理")
 @RestController
 @RequestMapping("admin/tags")
 public class AdminTagController {

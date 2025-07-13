@@ -20,7 +20,7 @@ public class UserListVo {
     private String password;
     private String email;
     private String phone;
-    private String isActive;
+    private Integer isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

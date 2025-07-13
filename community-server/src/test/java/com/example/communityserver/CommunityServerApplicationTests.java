@@ -30,8 +30,8 @@ class CommunityServerApplicationTests {
 
     @Test
     void sendEmail(){
-//        emailService.sendVerificationCode("2422516737@qq.com", "2233");
-        emailService.sendWelcomeEmail("2422516737@qq.com", "2233");
+        String emailGravatarUrl = emailService.getEmailGravatarUrl("3151299156@qq.com");
+        System.out.println(emailGravatarUrl);
     }
 
     @Test

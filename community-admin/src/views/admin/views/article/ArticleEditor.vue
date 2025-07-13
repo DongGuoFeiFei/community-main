@@ -20,7 +20,10 @@
     />
 
     <!-- 编辑器主体 -->
-    <MarkdownEditor v-model="content"/>
+    <MarkdownEditor
+        v-model="content"
+        ref="editorRef"
+    />
 
     <!-- 标签选择器 -->
     <TagSelector
@@ -53,7 +56,7 @@ import EditorHeader from "@/views/admin/views/article/edit/EditorHeader.vue";
 import MarkdownEditor from "@/views/admin/views/article/edit/MarkdownEditor.vue";
 import TagSelector from "@/views/admin/views/article/edit/TagSelector.vue";
 import CoverSection from "@/views/admin/views/article/edit/CoverSection.vue";
-import {computed, reactive, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {localStores} from "@/stores/localStores.js";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from "@/api/index.js";
@@ -72,8 +75,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'success',])
-
-
+const editorRef = ref()
 const lStore = localStores()
 const baseUrl = lStore.baseURL
 const fileInput = ref(null)
@@ -99,6 +101,8 @@ const coverImageData = reactive({
   accessUrl: '',
   uploadTime: ''
 })
+
+const editorReady = ref(false)
 
 // 打开文件选择对话框
 const openFileDialog = () => {
@@ -163,6 +167,10 @@ const removeCover = () => {
 
 // 保存文章
 const saveArticle = async (status) => {
+  if (!editorReady.value) {
+    ElMessage.warning('编辑器正在初始化，请稍后')
+    return
+  }
   if (!articleData.title.trim()) {
     ElMessage.warning('请输入文章标题')
     return
@@ -291,6 +299,23 @@ watch(() => props.article, (newVal) => {
     resetForm()
   }
 }, {immediate: true})
+
+const initEdit = () => {
+  if (editorRef.value) {
+    editorRef.value.initEditor()
+    editorReady.value = true
+  }
+}
+
+onMounted(()=>{
+  initEdit()
+})
+onUnmounted(() => {
+  if (editorRef.value?.vditorInstance) {
+    editorRef.value.vditorInstance.destroy()
+  }
+})
+
 </script>
 
 <style lang="scss" scoped>

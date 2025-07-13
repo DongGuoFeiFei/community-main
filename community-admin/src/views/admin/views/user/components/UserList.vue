@@ -1,9 +1,14 @@
 <template>
   <div class="user-list">
     <div class="operation-bar">
-      <el-button type="danger" :disabled="!selectedUsers.length" @click="handleBatchDelete">
-        批量删除
-      </el-button>
+      <div class="operation-buttons">
+        <el-button type="danger" :disabled="!selectedUsers.length" @click="handleBatchDelete">
+          批量删除
+        </el-button>
+        <el-button type="primary" @click="handleAddUser">
+          添加用户
+        </el-button>
+      </div>
     </div>
 
     <el-table
@@ -25,8 +30,8 @@
       </el-table-column>
       <el-table-column prop="status" label="激活" width="100">
         <template #default="{ row }">
-          <el-tag :type="row.isActive === '1' ? 'success' : 'danger'">
-            {{ row.isActive === '1' ? '正常' : '封禁' }}
+          <el-tag :type="row.isActive === 1 ? 'success' : 'danger'">
+            {{ row.isActive === 1 ? '正常' : '封禁' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -97,6 +102,7 @@ const emit = defineEmits([
   'batch-delete',
   'page-change',
   'active-change',
+  "handle-add-user",
 ]);
 
 const selectedUsers = ref([]);
@@ -108,6 +114,10 @@ const handleSelectionChange = (selection) => {
 const handleEdit = (user) => {
   emit('edit', user);
 };
+
+const handleAddUser = () => {
+  emit('handle-add-user')
+}
 
 const handleDelete = (userId) => {
   emit('delete', userId);
@@ -123,6 +133,7 @@ const handlePageChange = (page) => {
 const handleApproval = (row, status) => {
   emit('active-change', row, status)
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -134,6 +145,13 @@ const handleApproval = (row, status) => {
   .operation-bar {
     padding: 10px 20px;
     border-bottom: 1px solid #ebeef5;
+    display: flex;
+    justify-content: flex-end; /* 将内容靠右对齐 */
+
+    .operation-buttons {
+      display: flex;
+      gap: 10px; /* 按钮之间的间距 */
+    }
   }
 
   .pagination {

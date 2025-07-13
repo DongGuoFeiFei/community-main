@@ -1,9 +1,5 @@
 package com.example.communityserver.entity.constants;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * <p>
  * 安全相关常量
@@ -29,4 +25,7 @@ public class SecurityConstants {
     public static final String LOGIN_URL = "/auth/login"; // 登录接口
     public static final String LOGOUT_URL = "/auth/logout"; // 登出接口
     public static final String REGISTER_URL = "/auth/register"; // 注册接口
+    public static final String ORIGINAL_PASSWORD = "123456"; // 原始密码
+    public static final String ORIGINAL_AVATAR = "/uploads/202507/a88240fb55244957ac71e5b3b2396ed8.jpg"; // 原始头像
+
 }
