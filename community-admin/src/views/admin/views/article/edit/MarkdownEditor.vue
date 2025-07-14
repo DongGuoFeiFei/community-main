@@ -1,6 +1,6 @@
 <!-- /components/editor/MarkdownEditor.vue -->
 <template>
-  <div id="vditor" ref="vditorRef"></div>
+  <div id="vditor" ref="vditorRef" class="markdown-editor"></div>
 </template>
 
 <script setup>
@@ -143,3 +143,19 @@ onMounted(() => {
 
 });
 </script>
+
+<style scoped>
+.markdown-editor {
+  border-radius: 4px;
+  border: 1px solid var(--el-border-color);
+  transition: border-color 0.2s;
+}
+
+.markdown-editor:hover {
+  border-color: var(--el-border-color-hover);
+}
+
+.markdown-editor:focus {
+  border-color: var(--el-color-primary);
+}
+</style>

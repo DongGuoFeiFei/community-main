@@ -304,6 +304,8 @@ const initEdit = () => {
   if (editorRef.value) {
     editorRef.value.initEditor()
     editorReady.value = true
+  }else {
+
   }
 }
 

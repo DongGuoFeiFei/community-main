@@ -1,8 +1,12 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.model.SysAnnouncement;
+import com.example.communityserver.entity.request.GetAnnouncementsParam;
 import com.example.communityserver.mapper.AnnouncementMapper;
 import com.example.communityserver.service.IAnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +62,22 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Sys
 
         List<SysAnnouncement> announcements = getActiveAnnouncements();
         return announcements.isEmpty() ? null : announcements.get(0);
+    }
+
+    @Override
+    public IPage<SysAnnouncement> GetAnnouncementsList(GetAnnouncementsParam param) {
+        Page<SysAnnouncement> page = new Page<>(param.getPage(), param.getPageSize());
+        LambdaQueryWrapper<SysAnnouncement> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(SysAnnouncement::getDeleted, 0)
+                .like(StringUtils.isNotBlank(param.getTitle()), SysAnnouncement::getTitle, param.getTitle())
+                .eq(StringUtils.isNotBlank(param.getPublisher()), SysAnnouncement::getPublisher, param.getPublisher())
+                .eq(param.getStatus() != null, SysAnnouncement::getStatus, param.getStatus())
+                .ge(StringUtils.isNotBlank(param.getStartTime()), SysAnnouncement::getPublishTime, param.getStartTime())
+                .le(StringUtils.isNotBlank(param.getEndTime()), SysAnnouncement::getPublishTime, param.getEndTime())
+                .orderByDesc(SysAnnouncement::getPriority)
+                .orderByDesc(SysAnnouncement::getPublishTime);
+
+        return announcementMapper.selectPage(page, queryWrapper);
     }
 }

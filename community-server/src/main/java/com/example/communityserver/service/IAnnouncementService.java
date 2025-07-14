@@ -1,7 +1,9 @@
 package com.example.communityserver.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.model.SysAnnouncement;
+import com.example.communityserver.entity.request.GetAnnouncementsParam;
 
 import java.util.List;
 
@@ -22,4 +24,6 @@ public interface IAnnouncementService extends IService<SysAnnouncement> {
     void removeAnnouncement(Long id);
 
     SysAnnouncement getLatestAnnouncement();
+
+    IPage<SysAnnouncement> GetAnnouncementsList(GetAnnouncementsParam param);
 }

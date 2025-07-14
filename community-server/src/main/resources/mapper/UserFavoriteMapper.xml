@@ -13,7 +13,7 @@
         END AS coverUrl,
         u.nickname AS author,
         a.user_id AS authorId,
-        (SELECT COUNT(*) FROM article_view av WHERE av.article_id = a.article_id) AS viewCount,
+        (SELECT COUNT(*) FROM article_interaction av WHERE av.article_id = a.article_id) AS viewCount,
         (SELECT COUNT(*) FROM likes l WHERE l.target_id = a.article_id AND l.type = 'article' AND l.is_like = 1) AS
         likeCount,
         DATE_FORMAT(uf.created_at, '%Y-%m-%d %H:%i:%s') AS collectTime

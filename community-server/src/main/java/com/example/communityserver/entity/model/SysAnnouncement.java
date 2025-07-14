@@ -1,6 +1,7 @@
 package com.example.communityserver.entity.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class SysAnnouncement {
     @NotBlank(message = "发布人不能为空")
     @Size(max = 50, message = "发布人不能超过50个字符")
     private String publisher;
+    private Long publisherId;
 
     @TableField("publish_time")
     private LocalDateTime publishTime;
@@ -45,25 +47,29 @@ public class SysAnnouncement {
     private Integer priority;
 
     @TableField("start_time")
-    private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String startTime;
 
     @TableField("end_time")
-    private LocalDateTime endTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String endTime;
 
-    @TableField(fill = FieldFill.INSERT)
-    private String createBy;
+//    @TableField(fill = FieldFill.INSERT)
+    private Long createBy;
 
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+//    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+//    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateBy;
+//
+//    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String updateTime;
 
     private String remark;
 
-    @TableLogic
+    @TableLogic(delval = "1", value = "0")// 逻辑删除 查询和删除时自动附加 WHERE deleted = 0 条件
     private Integer deleted;
 }

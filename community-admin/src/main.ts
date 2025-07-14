@@ -19,10 +19,14 @@ pinia.use(piniaPluginPersistedstate);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
+app.use(ElementPlus, {
+    focusTrap: {
+        enabled: false // 全局禁用焦点陷阱
+    }
+});
 
 // 拦截开发着工具
 // setupProtection()
-app.use(ElementPlus)
 app.use(pinia)
 app.use(router)
 app.mount('#app')

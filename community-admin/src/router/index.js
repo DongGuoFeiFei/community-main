@@ -89,6 +89,14 @@ const router = createRouter({
                         title: "活动管理"
                     }
                 },
+                {
+                    path: "announcement",
+                    name: 'announcement',
+                    component: () => import("@/views/admin/views/announcement/Index.vue"),
+                    meta: {
+                        title: "系统公告"
+                    }
+                },
             ]
         },
         {

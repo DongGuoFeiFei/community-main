@@ -1,6 +1,10 @@
 package com.example.communityserver.adminController;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.SysAnnouncement;
+import com.example.communityserver.entity.request.GetAnnouncementsParam;
 import com.example.communityserver.service.IAnnouncementService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -30,14 +34,14 @@ public class AnnouncementController {
 
     @GetMapping("/list")
     @ApiOperation("获取公告列表")
-    public Result<List<SysAnnouncement>> list() {
-        List<SysAnnouncement> list = announcementService.getActiveAnnouncements();
-        return Result.success(list);
+    public Result<Result.PageData<SysAnnouncement>> list(GetAnnouncementsParam param) {
+        IPage<SysAnnouncement> page = announcementService.GetAnnouncementsList(param);
+        return Result.pageSuccess(page.getTotal(), page.getRecords());
     }
 
     @PostMapping
     @ApiOperation("新增公告")
-    public Result<Void> add(@Validated @RequestBody SysAnnouncement announcement) {
+    public Result<Void> addAnnouncement(@Validated @RequestBody SysAnnouncement announcement) {
         announcementService.saveAnnouncement(announcement);
         return Result.success();
     }
@@ -69,4 +73,43 @@ public class AnnouncementController {
         SysAnnouncement announcement = announcementService.getLatestAnnouncement();
         return Result.success(announcement);
     }
+
+    @ApiOperation("发布公告")
+    @PostMapping("/publish/{id}")
+    public Result<Void> publishAnnouncement(@PathVariable Long id) {
+        LambdaUpdateWrapper<SysAnnouncement> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(SysAnnouncement::getId, id)
+                .set(SysAnnouncement::getStatus, 1);
+
+        return announcementService.update(updateWrapper) ? Result.success() : Result.error();
+    }
+
+    @ApiOperation("下线公告")
+    @PostMapping("/offline/{id}")
+    public Result<Void> offlineAnnouncement(@PathVariable Long id) {
+        LambdaUpdateWrapper<SysAnnouncement> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(SysAnnouncement::getId, id)
+                .set(SysAnnouncement::getStatus, 0);
+
+        return announcementService.update(updateWrapper) ? Result.success() : Result.error();
+    }
+
+//    /**
+// * 获取公告详情
+// * @param {Number} id 公告ID
+// * @returns {Promise}
+// */
+//export const getAnnouncementDetail = (id) => {
+//    return request.get(`/system/announcement/${id}`);
+//};
+
+    @ApiOperation("获取公告详情")
+    @GetMapping("{id}")
+    public Result<SysAnnouncement> getAnnouncementDetail(@PathVariable Long id) {
+        LambdaQueryWrapper<SysAnnouncement> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysAnnouncement::getId, id);
+        SysAnnouncement announcement = announcementService.getOne(queryWrapper);
+        return announcement!=null?Result.success(announcement):Result.error();
+    }
+
 }
