@@ -41,7 +41,9 @@
           <div class="comment-main">
             <div class="comment-header">
               <el-avatar :size="32" :src="getFullUrl(comment.accessUrl)"/>
-              <span class="comment-author">{{ comment.nickname }}</span>
+              <router-link to="/author/{{comment.userId}}" target="_blank"><span
+                  class="comment-author">{{ comment.nickname }}</span>
+              </router-link>
               <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
 
               <!-- 展开/收起按钮 -->
@@ -102,7 +104,10 @@
                 <span class="reply-author">
                   {{ reply.nickname || '匿名用户' }}
                   <span v-if="reply.repliedNickname" class="reply-to">
-                    回复 {{ reply.repliedNickname }}
+                    回复
+                    <router-link to="/author/{{comment.userId}}" target="_blank">&nbsp;&nbsp;<span
+                        class="reply-author">@{{ reply.repliedNickname }}</span>
+                      </router-link>
                   </span>
                 </span>
                 <span class="reply-time">{{ formatDate(reply.createdAt) }}</span>
@@ -459,6 +464,7 @@ onMounted(() => {
 .comment-author {
   font-weight: bold;
   margin: 0 10px;
+  color: black;
 }
 
 .comment-time {
@@ -524,6 +530,10 @@ onMounted(() => {
   color: #666;
   margin-left: 5px;
   font-size: 12px;
+
+  .reply-author {
+    color: #666;
+  }
 }
 
 .reply-time {

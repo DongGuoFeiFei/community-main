@@ -92,7 +92,7 @@ const goHome = () => {
 
 const handleMenuClick = (index) => {
   activeMenu.value = index
-  router.push(`/user/${index}`)
+  router.push(`/myself/${index}`)
 }
 
 const handleDropdownClick = async (command) => {

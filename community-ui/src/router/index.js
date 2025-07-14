@@ -86,8 +86,8 @@ const router = createRouter({
             }
         },
         {
-            path: '/user',
-            name: 'user',
+            path: '/myself',
+            name: 'myself',
             component: () => import('@/views/user/Index.vue'),
             meta: {requiresAuth: true},
             children: [
@@ -137,6 +137,15 @@ const router = createRouter({
                     }
                 },
             ]
+        },
+        {
+            path: '/author/:id',
+            name: 'author',
+            component: () => import("@/views/pages/views/author/Index.vue"),
+            meta: {
+                title: "作者主页",
+                requiresAuth: false
+            },
         },
         {
             path: '/:pathMatch(.*)*',

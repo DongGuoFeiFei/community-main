@@ -2,7 +2,7 @@
   <div class="author-card">
     <div class="author-header">
       <el-avatar :size="80" :src="store.baseURL + authorInfo.avatar"/>
-      <router-link to="/user/{{authorInfo.id}}"><h3>{{ authorInfo.nickname }}</h3></router-link>
+      <router-link to="/author/{{authorInfo.id}}" target="_blank"><h3>{{ authorInfo.nickname }}</h3></router-link>
     </div>
 
     <div class="author-bio">

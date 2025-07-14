@@ -9,6 +9,7 @@ import com.example.communityserver.entity.model.SysAnnouncement;
 import com.example.communityserver.entity.request.GetAnnouncementsParam;
 import com.example.communityserver.mapper.AnnouncementMapper;
 import com.example.communityserver.service.IAnnouncementService;
+import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,12 +44,14 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Sys
 
     @Override
     public void saveAnnouncement(SysAnnouncement announcement) {
+        announcement.setCreateBy(SecurityUtils.getLoginUserId());
         announcement.setPublishTime(LocalDateTime.now());
         save(announcement);
     }
 
     @Override
     public void updateAnnouncement(SysAnnouncement announcement) {
+        announcement.setUpdateBy(SecurityUtils.getLoginUserId());
         updateById(announcement);
     }
 
@@ -60,8 +63,15 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Sys
     @Override
     public SysAnnouncement getLatestAnnouncement() {
 
-        List<SysAnnouncement> announcements = getActiveAnnouncements();
-        return announcements.isEmpty() ? null : announcements.get(0);
+        LambdaQueryWrapper<SysAnnouncement> query = new LambdaQueryWrapper<>();
+        query.eq(SysAnnouncement::getStatus, 1)
+                .eq(SysAnnouncement::getDeleted, 0)
+                .le(SysAnnouncement::getStartTime, LocalDateTime.now())
+                .ge(SysAnnouncement::getEndTime, LocalDateTime.now())
+                .orderByDesc(SysAnnouncement::getPriority)
+                .orderByDesc(SysAnnouncement::getPublishTime);
+        List<SysAnnouncement> announcementList = announcementMapper.selectList(query);
+        return announcementList.isEmpty() ? null : announcementList.get(0);
     }
 
     @Override
@@ -76,7 +86,8 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Sys
                 .ge(StringUtils.isNotBlank(param.getStartTime()), SysAnnouncement::getPublishTime, param.getStartTime())
                 .le(StringUtils.isNotBlank(param.getEndTime()), SysAnnouncement::getPublishTime, param.getEndTime())
                 .orderByDesc(SysAnnouncement::getPriority)
-                .orderByDesc(SysAnnouncement::getPublishTime);
+                .orderByDesc(SysAnnouncement::getPublishTime)
+                .orderByDesc(SysAnnouncement::getStatus);
 
         return announcementMapper.selectPage(page, queryWrapper);
     }

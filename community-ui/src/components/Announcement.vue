@@ -1,6 +1,6 @@
 <script setup lang="js">
 import { ref, onMounted } from 'vue';
-import { getLatestAnnouncement } from '@/api/system/announcement';
+import { getLatestAnnouncement } from '@/api/system/announcement.js';
 import { ElIcon } from 'element-plus';
 import {Close, InfoFilled} from '@element-plus/icons-vue';
 
@@ -70,7 +70,7 @@ onMounted(() => {
 .announcement-container {
   margin-bottom: 16px;
   margin-top: 20px;
-  background-color: #f5f5f5;
+  background-color: #e7e0c2;
   border-radius: 4px;
   padding: 12px 16px;
   display: flex;

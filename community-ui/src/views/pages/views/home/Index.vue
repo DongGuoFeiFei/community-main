@@ -2,7 +2,7 @@
 import Header from "@/views/pages/components/Header.vue";
 import Card from "@/views/pages/views/home/Card.vue";
 import Footer from "@/views/pages/components/Footer.vue";
-import Announcement from "@/views/pages/components/Announcement.vue";
+import Announcement from "@/components/Announcement.vue";
 </script>
 
 <template>

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -195,6 +196,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 .eq(Notification::getType, type)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
+
 
         switch (type.getValue()) {
             case "like" -> {

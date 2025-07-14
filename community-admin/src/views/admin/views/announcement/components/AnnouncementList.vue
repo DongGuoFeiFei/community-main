@@ -46,6 +46,7 @@ const handleStatusChange = async (id, status) => {
         style="width: 100%"
     >
       <el-table-column prop="id" label="ID" width="80"/>
+      <el-table-column prop="priority" label="优先级" width="100"/>
       <el-table-column prop="title" label="标题" min-width="150"/>
       <el-table-column prop="publisher" label="发布人" width="120"/>
       <el-table-column prop="publishTime" label="发布时间" width="180">
@@ -73,7 +74,7 @@ const handleStatusChange = async (id, status) => {
           {{ new Date(row.endTime).toLocaleString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="priority" label="优先级" width="100"/>
+
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="{ row }">
           <el-button size="small" @click="emit('view', row.id)">查看</el-button>

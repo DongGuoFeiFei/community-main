@@ -36,7 +36,7 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="user">个人中心</el-dropdown-item>
+              <el-dropdown-item command="myself">个人中心</el-dropdown-item>
               <el-dropdown-item command="settings">设置</el-dropdown-item>
               <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -74,8 +74,8 @@ const handleMenuClick = (index) => {
 
 const handleDropdownClick = (command) => {
   switch (command) {
-    case 'user':
-      router.push('/user'); // 跳转到个人中心
+    case 'myself':
+      router.push('/myself'); // 跳转到个人中心
       break;
     case 'settings':
       router.push('/settings'); // 跳转到设置

@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * <p>
  * 系统通知（点赞、评论、关注等）
@@ -40,6 +42,6 @@ public class Notification {
     private Integer isRead;
     @ApiModelProperty(value = "通知时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String createdAt;
+    private Date createdAt;
     private Integer isDel;
 }
