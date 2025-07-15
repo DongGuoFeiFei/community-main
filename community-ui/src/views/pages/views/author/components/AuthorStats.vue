@@ -15,11 +15,6 @@
         <div class="stat-value">{{ stats.followerCount || 0 }}</div>
         <div class="stat-label">粉丝</div>
       </div>
-
-      <!--      <div class="stat-item">-->
-      <!--        <div class="stat-value">{{ stats.likeCount || 0 }}</div>-->
-      <!--        <div class="stat-label">获赞</div>-->
-      <!--      </div>-->
     </el-card>
   </div>
 </template>

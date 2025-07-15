@@ -1,7 +1,7 @@
 <template>
   <div class="user-basic-info">
     <div class="avatar-container">
-      <el-avatar :size="120" :src="user.avatar" />
+      <el-avatar :size="120" :src="user.avatar"/>
     </div>
 
     <div class="info-container">
@@ -9,16 +9,16 @@
       <p class="bio">{{ user.bio || '暂无简介' }}</p>
 
       <div class="meta-info">
-        <span><el-icon><Location /></el-icon> {{ user.location || '未知地区' }}</span>
-        <span><el-icon><Calendar /></el-icon> 加入于 {{ formatJoinDate(user.createdAt) }}</span>
+        <span><el-icon><Location/></el-icon> {{ user.location || '未知地区' }}</span>
+        <span><el-icon><Calendar/></el-icon> 加入于 {{ formatJoinDate(user.createdAt) }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { Location, Calendar } from '@element-plus/icons-vue'
-import { formatDate } from '@/utils/date'
+import {Calendar, Location} from '@element-plus/icons-vue'
+import {formatDate} from '@/utils/date'
 
 const props = defineProps({
   user: {

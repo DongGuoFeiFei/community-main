@@ -49,6 +49,9 @@
               <h3>{{ post.title }}</h3>
               <p class="summary">{{ truncateSummary(post.summary) }}</p>
               <div class="meta">
+<!--                <router-link to="/author/{{post.userId}}" target="_blank">-->
+<!--                  <span>作者：{{ post.author }}</span>-->
+<!--                </router-link>-->
                 <span>作者：{{ post.author }}</span>
                 <span>{{ formatDate(post.date) }}</span>
               </div>
@@ -248,6 +251,9 @@ onMounted(() => {
     color: #999;
     display: flex;
     gap: 12px;
+    span{
+      color: black;
+    }
   }
 }
 

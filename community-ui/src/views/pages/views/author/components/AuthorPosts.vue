@@ -2,11 +2,11 @@
   <div class="user-posts">
     <el-tabs v-model="activeTab">
       <el-tab-pane label="帖子" name="posts">
-        <post-list :list="postList" />
+        <PostList :list="postLists" />
       </el-tab-pane>
 
       <el-tab-pane label="收藏" name="favorites">
-        <post-list :list="favoriteList" />
+        <PostList :list="favoriteLists" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -25,13 +25,13 @@ const props = defineProps({
 })
 
 const activeTab = ref('posts')
-const postList = ref([])
-const favoriteList = ref([])
+const postLists = ref([])
+const favoriteLists = ref([])
 
 const fetchPosts = async () => {
   try {
     const response = await getUserPosts(props.userId)
-    postList.value = response.data
+    postLists.value = response.data
   } catch (error) {
     console.error('获取用户帖子失败:', error)
   }
@@ -40,7 +40,7 @@ const fetchPosts = async () => {
 const fetchFavorites = async () => {
   try {
     const response = await getUserFavorites(props.userId)
-    favoriteList.value = response.data
+    favoriteLists.value = response.data
   } catch (error) {
     console.error('获取用户收藏失败:', error)
   }
