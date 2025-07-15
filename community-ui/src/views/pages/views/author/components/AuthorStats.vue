@@ -24,6 +24,10 @@ const props = defineProps({
   stats: {
     type: Object,
     required: true
+  },
+  userId: {
+    type: [String, Number],
+    required: true
   }
 })
 </script>

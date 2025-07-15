@@ -195,6 +195,7 @@ public class AuthController {
         }
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
 
+        // TODO: 2025/7/15 完善数据库相关表格数据的插入 ，用户详情表
         return Result.success();
     }
 

@@ -8,7 +8,7 @@ import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.AuthorInfoVo;
 import com.example.communityserver.entity.response.UserCountStats;
-import com.example.communityserver.entity.response.UserListVo;
+import com.example.communityserver.entity.response.UserDelVo;
 
 
 public interface IUserService extends IService<User> {
@@ -23,5 +23,7 @@ public interface IUserService extends IService<User> {
 
     UserCountStats getUserStats(Long userId);
 
-    IPage<UserListVo> getUsers(UserSearchParam param);
+    IPage<UserDelVo> getUsers(UserSearchParam param);
+
+    UserDelVo getUserProfile(Long userId);
 }

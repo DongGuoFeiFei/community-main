@@ -1,16 +1,16 @@
 <template>
   <div class="user-basic-info">
     <div class="avatar-container">
-      <el-avatar :size="120" :src="user.avatar"/>
+      <el-avatar :size="120" :src="props.user.avatar"/>
     </div>
 
     <div class="info-container">
-      <h2>{{ user.username }}</h2>
-      <p class="bio">{{ user.bio || '暂无简介' }}</p>
+      <h2>{{ props.user.nickname }}</h2>
+      <p class="bio">{{ props.user.bio || '暂无简介' }}</p>
 
       <div class="meta-info">
-        <span><el-icon><Location/></el-icon> {{ user.location || '未知地区' }}</span>
-        <span><el-icon><Calendar/></el-icon> 加入于 {{ formatJoinDate(user.createdAt) }}</span>
+        <span><el-icon><Location/></el-icon> {{ props.user.location || '未知地区' }}</span>
+        <span><el-icon><Calendar/></el-icon> 加入于 {{ formatJoinDate(props.user.createTime) }}</span>
       </div>
     </div>
   </div>
@@ -26,7 +26,6 @@ const props = defineProps({
     required: true
   }
 })
-
 const formatJoinDate = (dateString) => {
   return formatDate(dateString, 'YYYY年MM月')
 }

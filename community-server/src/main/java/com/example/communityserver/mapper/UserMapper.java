@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.AuthorInfoVo;
-import com.example.communityserver.entity.response.UserListVo;
+import com.example.communityserver.entity.response.UserDelVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,5 +17,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     AuthorInfoVo getAuthorInfoVo(@Param("articleId") Long articleId, @Param("loginUserId") Long loginUserId);
 
-    IPage<UserListVo> getUsers(Page<UserListVo> page, @Param("param") UserSearchParam param);
+    IPage<UserDelVo> getUsers(Page<UserDelVo> page, @Param("param") UserSearchParam param);
+
+    UserDelVo getUserProfile(Long userId);
 }

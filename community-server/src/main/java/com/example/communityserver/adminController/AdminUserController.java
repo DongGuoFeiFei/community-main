@@ -9,7 +9,7 @@ import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.ModifyUserParam;
 import com.example.communityserver.entity.request.UserSearchParam;
-import com.example.communityserver.entity.response.UserListVo;
+import com.example.communityserver.entity.response.UserDelVo;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.security.SecurityUtils;
@@ -40,8 +40,9 @@ public class AdminUserController {
 
     @ApiOperation("获取用户列表")
     @GetMapping()
-    public Result<Result.PageData<UserListVo>> getUsers(UserSearchParam param) {
-        IPage<UserListVo> page = userService.getUsers(param);
+    public Result<Result.PageData<UserDelVo>> getUsers(UserSearchParam param) {
+        IPage<UserDelVo> page = userService.getUsers(param);
+
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
 

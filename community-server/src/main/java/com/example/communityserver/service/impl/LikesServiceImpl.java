@@ -66,8 +66,8 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
             if (likesMapper.insert(likes) > 0) {
                 Notification notification = new Notification();
                 notification.setType(NotificationTypeEnum.LIKE);
-                notification.setParentSourceId(likes.getTargetId());
-                notification.setSonSourceId(likes.getLikeId());
+                notification.setContentId(likes.getLikeId());
+                notification.setSenderId(SecurityUtils.getLoginUserId());
                 Article article = articleMapper.selectById(likes.getTargetId());
                 notification.setUserId(article.getUserId());
                 notificationMapper.insert(notification);

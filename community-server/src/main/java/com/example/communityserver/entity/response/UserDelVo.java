@@ -13,7 +13,7 @@ import lombok.Data;
  **/
 
 @Data
-public class UserListVo {
+public class UserDelVo {
     private Long userId;
     private String nickname;
     private String username;
@@ -27,10 +27,9 @@ public class UserListVo {
     private String lastLogin;
     private String avatar;
     private String fullName;
-
     private String bio;
-
     private Integer gender;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String birthDate;
+    private String location;
 }

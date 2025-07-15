@@ -85,14 +85,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             Comment parentComment = commentMapper.selectById(comment.getParentId());
             notification.setType(NotificationTypeEnum.REPLY);
             notification.setUserId(parentComment.getUserId());
-            notification.setParentSourceId(parentComment.getCommentId());
+            notification.setContentId(comment.getCommentId());
         } else { // 评论
             Article article = articleMapper.selectById(comment.getArticleId());
             notification.setType(NotificationTypeEnum.COMMENT);
             notification.setUserId(article.getUserId());
-            notification.setParentSourceId(article.getArticleId());
+            notification.setContentId(article.getArticleId());
         }
-        notification.setSonSourceId(comment.getCommentId());
+        notification.setSenderId(SecurityUtils.getLoginUserId());
         notificationMapper.insert(notification);
 
         // 获取返回的数据

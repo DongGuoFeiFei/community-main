@@ -182,7 +182,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         }
         LambdaUpdateWrapper<Notification> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Notification::getType, type)
-                .eq(sonSourceId != null, Notification::getSonSourceId, sonSourceId)
+                .eq(sonSourceId != null, Notification::getSenderId, sonSourceId)
                 .setSql("is_del = 1 - is_del");
         int update = notificationMapper.update(null, updateWrapper);
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();

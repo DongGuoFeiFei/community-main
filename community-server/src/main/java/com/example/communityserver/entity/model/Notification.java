@@ -34,10 +34,8 @@ public class Notification {
     private Long userId;
     @ApiModelProperty(value = "通知类型", example = "like")
     private NotificationTypeEnum type;
-    @ApiModelProperty(value = "触发通知的接收ID（被评论者）（如点赞ID、评论ID）", example = "1001")
-    private Long parentSourceId;
-    @ApiModelProperty(value = "触发通知的发起ID（评论者）（如点赞ID、评论ID）", example = "1001")
-    private Long sonSourceId;
+    private Long contentId;
+    private Long senderId;
     @ApiModelProperty(value = "0已读 1 未读", example = "1")
     private Integer isRead;
     @ApiModelProperty(value = "通知时间", example = "2023-10-01 12:00:00")

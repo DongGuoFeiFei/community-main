@@ -66,8 +66,8 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             Article article = articleMapper.selectById(param.getArticleId());
             notification.setUserId(article.getUserId());
             notification.setType(NotificationTypeEnum.FAVORITE);
-            notification.setParentSourceId(param.getArticleId());
-            notification.setSonSourceId(userFavorite.getFavoriteId());
+            notification.setContentId(userFavorite.getFavoriteId());
+            notification.setSenderId(SecurityUtils.getLoginUserId());
             notificationEntityService.save(notification);
 
         } else {

@@ -34,21 +34,9 @@
                 WHERE article_id = #{articleId} AND is_del = 1
             )
     </select>
-    <select id="getUsers" resultType="com.example.communityserver.entity.response.UserListVo">
+    <select id="getUsers" resultType="com.example.communityserver.entity.response.UserDelVo">
         SELECT
-        u.user_id,
-        u.nickname,
-        u.username,
-        u.email,
-        u.phone,
-        u.is_active AS isActive,
-        DATE_FORMAT(u.create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
-        DATE_FORMAT(u.last_login, '%Y-%m-%d %H:%i:%s') AS lastLogin,
-        u.avatar,
-        p.full_name AS fullName,
-        p.bio,
-        p.gender,
-        DATE_FORMAT(p.birth_date, '%Y-%m-%d') AS birthDate
+        *
         FROM
         user u
         LEFT JOIN
@@ -66,5 +54,12 @@
             and u.is_del = 0
         </where>
         ORDER BY u.create_time DESC
+    </select>
+    <select id="getUserProfile" resultType="com.example.communityserver.entity.response.UserDelVo">
+        SELECT *
+        FROM user u
+                 LEFT JOIN
+             profiles p ON u.user_id = p.user_id
+        where u.user_id = #{userId}
     </select>
 </mapper>

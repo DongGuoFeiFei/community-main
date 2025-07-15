@@ -6,7 +6,7 @@
 
     <div class="user-profile-content">
       <div class="user-profile-left">
-        <AuthorStats :stats="userStats"/>
+        <AuthorStats :stats="userStats" :userId="userId"/>
         <AuthorFollow :userId="userId"/>
       </div>
 
@@ -25,8 +25,10 @@ import AuthorStats from './AuthorStats.vue'
 import AuthorFollow from './AuthorFollow.vue'
 import AuthorPosts from './AuthorPosts.vue'
 import {getUserProfile} from '@/api/author'
+import {getUserStats} from "@/api/user.js";
 
 const route = useRoute()
+// 获取用户ID
 const userId = ref(route.params.id)
 const userData = ref({})
 const userStats = ref({})
@@ -34,8 +36,9 @@ const userStats = ref({})
 const fetchUserData = async () => {
   try {
     const response = await getUserProfile(userId.value)
-    userData.value = response.data.user
-    userStats.value = response.data.stats
+    userData.value = response.data
+    const count = await getUserStats(userId.value)
+    userStats.value = count.data
   } catch (error) {
     console.error('获取用户数据失败:', error)
   }
