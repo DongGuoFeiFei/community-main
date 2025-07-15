@@ -15,6 +15,8 @@ public class MyHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.setFieldValByName("createTime", new Date(), metaObject);
         this.setFieldValByName("createdAt", new Date(), metaObject);
+        this.setFieldValByName("updatedTime", new Date(), metaObject);
+        this.setFieldValByName("createAt", new Date(), metaObject);
         this.setFieldValByName("updateTime", new Date(), metaObject);
         this.setFieldValByName("createBy", SecurityUtils.getLoginUserId(), metaObject);
     }
@@ -22,6 +24,9 @@ public class MyHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         this.setFieldValByName("updateTime", new Date(), metaObject);
+        this.setFieldValByName("updatedTime", new Date(), metaObject);
+        this.setFieldValByName("updateAt", new Date(), metaObject);
+        this.setFieldValByName("updatedAt", new Date(), metaObject);
         this.setFieldValByName("loginLastTime", new Date(), metaObject);
         this.setFieldValByName("updateBy", SecurityUtils.getLoginUserId(), metaObject);
     }

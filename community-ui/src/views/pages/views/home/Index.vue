@@ -26,7 +26,6 @@ import Announcement from "@/components/Announcement.vue";
         </el-footer>
       </el-container>
     </div>
-    <div class="cloud-container"></div>
   </div>
 </template>
 

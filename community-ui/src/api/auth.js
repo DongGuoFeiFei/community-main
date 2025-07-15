@@ -11,6 +11,7 @@ export const login = (data) => {
         }
     });
 };
+
 export const logout = () => {
     return request.post('/auth/logout').then(res => {
         if (res.code === 200) {

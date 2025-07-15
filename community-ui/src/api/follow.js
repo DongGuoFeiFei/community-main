@@ -2,6 +2,13 @@
 
 import request from "@/utils/request.js";
 
-export const followAuthor = (data) => {
-    return request.post(`/follow/followAuthor`, data)
+export const addFollowAuthor = (id) => {
+    return request.post(`/follow/addFollowAuthor/${id}`)
+}
+export const delFollowAuthor = (id) => {
+    return request.delete(`/follow/delFollowAuthor/${id}`)
+}
+
+export const isFollowingAuthor = (id) => {
+    return request.get(`/follow/isFollowing/${id}`)
 }

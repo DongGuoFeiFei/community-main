@@ -2,7 +2,7 @@
   <div class="author-card">
     <div class="author-header">
       <el-avatar :size="80" :src="store.baseURL + authorInfo.avatar"/>
-      <router-link to="/author/{{authorInfo.id}}" target="_blank"><h3>{{ authorInfo.nickname }}</h3></router-link>
+      <router-link :to="{ path: `/author/${authorInfo.id}` }" target="_blank"><h3>{{ authorInfo.nickname }}</h3></router-link>
     </div>
 
     <div class="author-bio">
@@ -47,6 +47,7 @@ import {onMounted, ref} from 'vue'
 import {getUserInfo} from '@/api/user'
 import {ElAvatar, ElButton, ElTag} from 'element-plus'
 import {localStores} from "@/stores/localStores.js";
+import {addFollowAuthor, delFollowAuthor} from "@/api/follow.js";
 
 
 const props = defineProps({
@@ -84,9 +85,15 @@ const fetchAuthorInfo = async () => {
 
 // 关注/取消关注
 const toggleFollow = () => {
-  authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-  authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
-  // 这里应该调用API更新关注状态
+  if (authorInfo.value.isFollowing) {
+    delFollowAuthor(authorInfo.value.id)
+    authorInfo.value.isFollowing = !authorInfo.value.isFollowing
+    authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
+  } else {
+    addFollowAuthor(authorInfo.value.id)
+    authorInfo.value.isFollowing = !authorInfo.value.isFollowing
+    authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
+  }
 }
 
 onMounted(() => {

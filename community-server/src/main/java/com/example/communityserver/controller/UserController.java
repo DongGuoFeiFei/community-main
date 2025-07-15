@@ -71,7 +71,7 @@ public class UserController {
         return stats != null ? Result.success(stats) : Result.error();
     }
 
-    @ApiOperation("获取作者详情信息")
+    @ApiOperation("获取作者页面详情信息")
     @GetMapping("/profile/{userId}")
     public Result<UserDelVo> getUserProfile(@PathVariable Long userId) {
         UserDelVo vo = userService.getUserProfile(userId);

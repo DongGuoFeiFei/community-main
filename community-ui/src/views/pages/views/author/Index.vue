@@ -1,10 +1,24 @@
 <script setup>
 
 import AuthorProfile from "@/views/pages/views/author/components/AuthorProfile.vue";
+import Header from "@/views/pages/components/Header.vue";
+import Footer from "@/views/pages/components/Footer.vue";
 </script>
 
 <template>
-  <AuthorProfile/>
+
+  <el-container>
+    <el-header>
+      <Header/>
+    </el-header>
+    <el-main>
+      <AuthorProfile/>
+    </el-main>
+    <el-footer>
+      <Footer/>
+    </el-footer>
+  </el-container>
+
   <!-- todo 隐私设置，是否展示页面数据 -->
 </template>
 

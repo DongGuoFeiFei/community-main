@@ -20,8 +20,8 @@
             CASE
                 WHEN #{loginUserId} IS NULL THEN false
                 ELSE EXISTS (
-                    SELECT 1 FROM follows
-                    WHERE follower_id = #{loginUserId} AND following_id = u.user_id
+                    SELECT * FROM follows
+                    WHERE following_id = #{loginUserId} AND follower_id = u.user_id
                 )
                 END AS isFollowing
         FROM

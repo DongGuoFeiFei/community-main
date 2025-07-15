@@ -42,4 +42,18 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
     private Integer isDel;
+
+    /**
+     * @Description: 新建一个通知数据，必须内容
+     * @Param: [userId, type, contentId, senderId]
+     * @return:
+     * @Author: DongGuo
+     */
+
+    public Notification(Long userId, NotificationTypeEnum type, Long contentId, Long senderId) {
+        this.userId = userId;
+        this.type = type;
+        this.contentId = contentId;
+        this.senderId = senderId;
+    }
 }
