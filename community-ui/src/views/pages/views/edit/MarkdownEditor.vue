@@ -7,7 +7,7 @@
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import config from "@/config.js";
+import config from "@/utils/env.js";
 import {ElLoading} from "element-plus";
 import request from "@/utils/request.js";
 import {useDebounceFn} from '@vueuse/core';

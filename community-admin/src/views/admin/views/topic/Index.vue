@@ -1,5 +1,4 @@
 <script setup lang="js">
-
 import TopicList from "@/views/admin/views/topic/TopicList.vue";
 </script>
 

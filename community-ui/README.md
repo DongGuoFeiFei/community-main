@@ -77,7 +77,7 @@ my-vue-project/
 │       └── global.less          # 全局样式
 ├── .gitignore                   # Git 忽略文件
 ├── package.json                 # 项目依赖及配置信息
-├── vite.config.js               # Vite 配置文件
+├── vite.env.js               # Vite 配置文件
 └── README.md                    # 项目说明文件
 ```
 
@@ -102,7 +102,7 @@ my-vue-project/
 
 - **`package.json`**: 项目的依赖文件，包含了项目的所有依赖包以及配置。
 
-- **`vite.config.js`**: Vite 配置文件，包含项目的构建和开发配置。
+- **`vite.env.js`**: Vite 配置文件，包含项目的构建和开发配置。
 
 - **`README.md`**: 项目说明文件，描述项目的功能、安装步骤、使用方法等。
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {ElMessage, ElMessageBox} from "element-plus";
 import router from "@/router/index.js";
-import config from "@/config.js";
+import config from "@/utils/env.js";
 
 const request = axios.create({
     baseURL: config.apiBaseUrl,
