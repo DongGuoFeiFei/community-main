@@ -69,6 +69,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
             notificationService.save(notification);
         }
         redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + id);
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + SecurityUtils.getLoginUserId());
         return insert > 0;
     }
 
@@ -87,6 +88,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         notificationService.remove(wrapper);
         followMapper.deleteById(follow.getId());
         redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + id);
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + SecurityUtils.getLoginUserId());
         return true;
     }
 

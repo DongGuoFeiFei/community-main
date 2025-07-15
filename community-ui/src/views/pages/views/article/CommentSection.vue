@@ -41,7 +41,7 @@
           <div class="comment-main">
             <div class="comment-header">
               <el-avatar :size="32" :src="getFullUrl(comment.accessUrl)"/>
-              <router-link to="/author/{{comment.userId}}" target="_blank"><span
+              <router-link :to="{path:`/author/${comment.userId}`}" target="_blank"><span
                   class="comment-author">{{ comment.nickname }}</span>
               </router-link>
               <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
@@ -105,7 +105,7 @@
                   {{ reply.nickname || '匿名用户' }}
                   <span v-if="reply.repliedNickname" class="reply-to">
                     回复
-                    <router-link to="/author/{{comment.userId}}" target="_blank">&nbsp;&nbsp;<span
+                    <router-link :to="{path:`/author/${comment.userId}`}" target="_blank">&nbsp;&nbsp;<span
                         class="reply-author">@{{ reply.repliedNickname }}</span>
                       </router-link>
                   </span>
