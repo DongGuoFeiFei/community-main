@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.communityserver.mapper.UserFavoriteMapper">
-
+    <!--todo 旧代码遗留问题，文章的阅读数量在sql中-->
     <select id="selectFavoList" resultType="com.example.communityserver.entity.response.UserFavoListVo">
         SELECT
         a.article_id AS id,

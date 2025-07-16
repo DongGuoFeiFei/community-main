@@ -15,11 +15,11 @@
         <span class="stat-label">文章</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">{{ authorInfo.followerCount }}</span>
+        <span class="stat-number">{{ authorInfo.followingCount }}</span>
         <span class="stat-label">粉丝</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">{{ authorInfo.followingCount }}</span>
+        <span class="stat-number">{{ authorInfo.followerCount }}</span>
         <span class="stat-label">关注</span>
       </div>
     </div>
@@ -88,11 +88,11 @@ const toggleFollow = () => {
   if (authorInfo.value.isFollowing) {
     delFollowAuthor(authorInfo.value.id)
     authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-    authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
+    authorInfo.value.followingCount += authorInfo.value.isFollowing ? 1 : -1
   } else {
     addFollowAuthor(authorInfo.value.id)
     authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-    authorInfo.value.followerCount += authorInfo.value.isFollowing ? 1 : -1
+    authorInfo.value.followingCount += authorInfo.value.isFollowing ? 1 : -1
   }
 }
 

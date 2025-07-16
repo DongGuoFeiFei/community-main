@@ -3,6 +3,7 @@
 <mapper namespace="com.example.communityserver.mapper.LikesMapper">
 
 
+<!-- todo 文章内容的点赞、收藏数、转发数，优化   -->
     <select id="getArticleLike" resultType="com.example.communityserver.entity.response.ArticleDtlVo">
         SELECT (SELECT COUNT(*)
                 FROM likes

@@ -1,29 +1,28 @@
 <template>
   <div class="follow-list">
     <div v-if="list.length === 0" class="empty-tip">
-      <el-empty description="暂无数据" />
+      <el-empty description="暂无数据"/>
     </div>
 
     <div v-else class="list-container">
       <div v-for="item in list" :key="item.id" class="follow-item">
-        <el-avatar :size="50" :src="item.avatar" />
+        <el-avatar :size="50" :src="item.avatar"/>
 
         <div class="item-info">
-          <router-link :to="`/user/${item.id}`" class="username">{{ item.username }}</router-link>
+          <router-link :to="`/author/${item.id}`" target="_blank" class="username">{{ item.nickname }}</router-link>
           <p class="bio">{{ item.bio || '暂无简介' }}</p>
         </div>
 
-        <el-button v-if="type === 'followers'" size="small" @click="handleFollow(item.id)">
-          {{ item.isFollowing ? '已关注' : '关注' }}
-        </el-button>
+<!--        <el-button v-if="type === 'following'" size="small" @click="handleFollow(item.id)">-->
+<!--          {{ item.isFollowing ? '已关注' : '关注' }}-->
+<!--        </el-button>-->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { followUser } from '@/api/author'
+import {followUser} from '@/api/author'
 
 const props = defineProps({
   list: {

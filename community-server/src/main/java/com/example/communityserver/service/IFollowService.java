@@ -2,6 +2,9 @@ package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.model.Follow;
+import com.example.communityserver.entity.response.FollowVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,4 +26,8 @@ public interface IFollowService extends IService<Follow> {
     Boolean delFollowAuthor(Long id);
 
     Boolean isFollowing(Long id);
+
+    List<FollowVo> getFollowingList(Long userId);
+
+    List<FollowVo> getFollowerList(Long userId);
 }

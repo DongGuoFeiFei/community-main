@@ -38,7 +38,7 @@ public class Article {
     private String content;
 
     @ApiModelProperty(value = "图片URL（可空，支持多图需另建表）", example = "http://example.com/image.jpg")
-    private String imageUrl;
+    private String coverUrl;
 
     @ApiModelProperty(value = "视频URL（可空）", example = "http://example.com/video.mp4")
     private String videoUrl;

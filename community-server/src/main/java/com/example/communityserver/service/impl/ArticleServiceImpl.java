@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
+import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
@@ -100,6 +103,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Article article = new Article();
         article.setContent(dto.getContent());
         article.setFileId(dto.getFileId());
+        FileEntity fileEntity = fileEntityMapper.selectById(dto.getFileId());
+        article.setCoverUrl(fileEntity.getAccessUrl());
         article.setTitle(dto.getTitle());
         article.setIsDrafts(dto.getStatus());
         article.setUserId(SecurityUtils.getLoginUserId());
@@ -128,7 +133,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ArticleDtlVo getArticleDtlVo(Long id) {
         ArticleDtlVo articleDtlVo = new ArticleDtlVo();
         ArticleDtlVo articleDtlVo1 = articleMapper.getArticleDtlVo(id);
+        // TODO: 2025/7/16 like的数据获取优化
         ArticleDtlVo articleDtlVo2 = likesMapper.getArticleLike(id, SecurityUtils.getLoginUserId());
+
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo1, articleDtlVo);
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo2, articleDtlVo);
         return articleDtlVo;
@@ -180,6 +187,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         IPage<AdminArticleListVo> voIPage = new Page<>();
         BeanUtils.copyProperties(result, voIPage);
         return voIPage;
+    }
+
+    @Override
+    public List<UserPostVo> getUserPosts(Long userId) {
+        List<UserPostVo> userPosts = articleMapper.getUserPosts(userId);
+        userPosts.forEach(userPostVo -> {
+            userPostVo.setCoverUrl(SystemConstants.BASIC_URL + userPostVo.getCoverUrl());
+        });
+        return userPosts;
+    }
+
+    @Override
+    public List<UserPostVo> getUserFavorites(Long userId) {
+        List<UserPostVo> userPosts = articleMapper.getUserFavorites(userId, NotificationTypeEnum.ARTICLE);
+        userPosts.forEach(userPostVo -> {
+            userPostVo.setCoverUrl(SystemConstants.BASIC_URL + userPostVo.getCoverUrl());
+        });
+        return userPosts;
+
     }
 
 }

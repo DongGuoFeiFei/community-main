@@ -5,11 +5,51 @@
     <select id="countFollowers" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM follows f
-        WHERE f.follower_id = #{id}
+        WHERE f.following_id = #{id}
     </select>
     <select id="countFollowing" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM follows f
-        WHERE f.following_id = #{id}
+        WHERE f.follower_id = #{id}
+    </select>
+    <select id="getFollowingList" resultType="com.example.communityserver.entity.response.FollowVo">
+        SELECT
+            u.user_id AS id,
+            u.avatar,
+            p.bio,
+            u.nickname,
+            CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
+        FROM
+            follows fl
+                JOIN
+            user u ON fl.follower_id = u.user_id
+                LEFT JOIN
+            profiles p ON u.user_id = p.user_id
+                LEFT JOIN
+            follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
+        WHERE
+            fl.following_id = #{userId}
+          AND u.is_del = 0
+          AND u.is_active = '1'
+        ORDER BY
+            fl.created_at DESC
+    </select>
+    <select id="getFollowerList" resultType="com.example.communityserver.entity.response.FollowVo">
+        SELECT u.user_id                                        AS id,
+               u.avatar,
+               p.bio,
+               u.nickname,
+               CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
+        FROM follows fl
+                 JOIN
+             user u ON fl.following_id = u.user_id
+                 LEFT JOIN
+             profiles p ON u.user_id = p.user_id
+                 LEFT JOIN
+             follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
+        WHERE fl.follower_id = #{userId}
+          AND u.is_del = 0
+          AND u.is_active = '1'
+        ORDER BY fl.created_at DESC
     </select>
 </mapper>

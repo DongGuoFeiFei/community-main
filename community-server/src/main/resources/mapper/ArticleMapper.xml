@@ -40,15 +40,14 @@
                p.title,
                u.nickname,
                p.content,
-               f.access_url as image_url,
+               f.access_url                                   as image_url,
                DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
                DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at
-        FROM
-            article p
-                JOIN
-            user u ON p.user_id = u.user_id
-                join
-            file f on p.file_id = f.file_id
+        FROM article p
+                 JOIN
+             user u ON p.user_id = u.user_id
+                 join
+             file f on p.file_id = f.file_id
         WHERE p.is_del = '1'
           and p.is_drafts = '0'
           AND p.article_id = #{id}
@@ -64,14 +63,14 @@
         CASE WHEN a.is_drafts = 1 THEN 0 ELSE 1 END AS status,
         IFNULL((
         SELECT COUNT(*)
-        FROM article_view av
+        FROM article_interaction av
         WHERE av.article_id = a.article_id
         ), 0) AS viewCount,
         IFNULL((
         SELECT COUNT(*)
         FROM likes al
         WHERE al.target_id = a.article_id
-        AND al.type = 'article' -- 添加类型条件
+        AND al.type = 'article'
         AND al.is_like = 1
         ), 0) AS likeCount,
         IFNULL((
@@ -105,21 +104,18 @@
         </choose>
     </select>
     <select id="getEditorArticleDtl" resultType="com.example.communityserver.entity.response.EditorArticlesVo">
-        SELECT
-            a.article_id AS id,
-            a.title,
-            a.content,
-            a.is_drafts AS status,
-            a.file_id,
-            f.access_url AS coverUrl,
-            DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') AS createTime,
-            DATE_FORMAT(a.updated_at, '%Y-%m-%d %H:%i:%s') AS updateTime
-        FROM
-            article a
-                LEFT JOIN
-            file f ON a.file_id = f.file_id
-        WHERE
-            a.article_id = #{id}
+        SELECT a.article_id                                   AS id,
+               a.title,
+               a.content,
+               a.is_drafts                                    AS status,
+               a.file_id,
+               f.access_url                                   AS coverUrl,
+               DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') AS createTime,
+               DATE_FORMAT(a.updated_at, '%Y-%m-%d %H:%i:%s') AS updateTime
+        FROM article a
+                 LEFT JOIN
+             file f ON a.file_id = f.file_id
+        WHERE a.article_id = #{id}
           AND a.user_id = #{loginUserId}
           AND a.is_del = 1
     </select>
@@ -146,5 +142,82 @@
         WHERE a.user_id = #{id}
           AND a.is_del = 1
           AND a.is_drafts = 0
+    </select>
+    <select id="getUserPosts" resultMap="UserPostVoMap">
+        SELECT a.article_id,
+               a.title,
+               a.created_at,
+               a.view_count,
+               a.like_count,
+               a.content,
+               a.cover_url,
+               t.id   as tag_id,
+               t.name as tag_name,
+               t.slug,
+               t.description,
+               t.icon,
+               t.color
+        FROM article a
+                 LEFT JOIN
+             article_tag at
+        ON a.article_id = at.article_id
+            LEFT JOIN
+            tag t ON at.tag_id = t.id
+        WHERE
+            a.user_id = #{userId}
+          AND a.is_del = 1
+          AND a.is_drafts = 0
+          AND (t.is_del IS NULL
+           OR t.is_del = 0)
+        ORDER BY
+            a.created_at DESC
+    </select>
+    <resultMap id="UserPostVoMap" type="com.example.communityserver.entity.response.UserPostVo">
+        <id column="article_id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="content" property="content"/>
+        <result column="cover_url" property="coverUrl"/>
+        <collection property="tags" ofType="com.example.communityserver.entity.model.Tag">
+            <id column="tag_id" property="id"/>
+            <result column="tag_name" property="name"/>
+            <result column="slug" property="slug"/>
+            <result column="description" property="description"/>
+            <result column="icon" property="icon"/>
+            <result column="color" property="color"/>
+        </collection>
+    </resultMap>
+    <select id="getUserFavorites" resultMap="UserPostVoMap">
+        SELECT
+            a.article_id,
+            a.title,
+            a.created_at,
+            a.view_count,
+            a.like_count,
+            a.content,
+            a.cover_url,
+            t.id as tag_id,
+            t.name as tag_name,
+            t.slug,
+            t.description,
+            t.icon,
+            t.color
+        FROM
+            user_favorites uf
+                JOIN
+            article a ON uf.target_id = a.article_id
+                LEFT JOIN
+            article_tag at ON a.article_id = at.article_id
+            LEFT JOIN
+            tag t ON at.tag_id = t.id
+        WHERE
+            uf.user_id = #{userId}
+          AND a.is_del = 1
+          AND (t.is_del IS NULL OR t.is_del = 0)
+        and uf.type = #{article}
+        ORDER BY
+            uf.created_at DESC
     </select>
 </mapper>

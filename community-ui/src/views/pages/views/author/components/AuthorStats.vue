@@ -8,19 +8,20 @@
         </div>
 
         <div class="stat-item">
-          <div class="stat-value">{{ stats.followers || 0 }}</div>
-          <div class="stat-label">关注</div>
+          <div class="stat-value">{{ stats.following || 0 }}</div>
+          <div class="stat-label">粉丝</div>
         </div>
 
         <div class="stat-item">
-          <div class="stat-value">{{ stats.following || 0 }}</div>
-          <div class="stat-label">粉丝</div>
+          <div class="stat-value">{{ stats.followers || 0 }}</div>
+          <div class="stat-label">关注</div>
         </div>
       </div>
 
       <div class="follow-button">
         <el-button
-            :type="isFollowing ? 'default' : 'primary'"
+            :type="isFollowing  ? 'default' : 'primary'"
+            :disabled="Number(props.userId) === store.userInfo.userInfo.userId"
             size="small"
             @click="toggleFollow"
         >
@@ -34,6 +35,7 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import {addFollowAuthor, delFollowAuthor, isFollowingAuthor} from '@/api/follow.js'
+import {localStores} from "@/stores/localStores.js";
 
 const props = defineProps({
   stats: {
@@ -45,6 +47,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const store = localStores()
 
 const isFollowing = ref(false)
 
@@ -63,10 +67,10 @@ const toggleFollow = async () => {
   try {
     if (isFollowing.value) {
       await delFollowAuthor(props.userId)
-      props.stats.followers = Math.max(0, props.stats.followers - 1)
+      props.stats.following = Math.max(0, props.stats.following - 1)
     } else {
       await addFollowAuthor(props.userId)
-      props.stats.followers += 1
+      props.stats.following += 1
     }
     isFollowing.value = !isFollowing.value
   } catch (error) {

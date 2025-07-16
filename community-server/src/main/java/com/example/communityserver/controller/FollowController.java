@@ -1,5 +1,6 @@
 package com.example.communityserver.controller;
 
+import com.example.communityserver.entity.response.FollowVo;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.SpinnerUI;
+import java.util.List;
 
 /**
  * <p>
@@ -44,10 +45,23 @@ public class FollowController {
 
     @ApiOperation("是否关注")
     @GetMapping("isFollowing/{id}")
-    public Result<Boolean> isFollowing(@PathVariable Long id){
+    public Result<Boolean> isFollowing(@PathVariable Long id) {
         Boolean is = followService.isFollowing(id);
         return Result.success(is);
     }
 
+    @ApiOperation("获取关注列表")
+    @GetMapping("{userId}/following")
+    public Result<List<FollowVo>> getFollowingList(@PathVariable Long userId) {
+        List<FollowVo> followVos = followService.getFollowingList(userId);
+        return Result.success(followVos);
+    }
+
+    @ApiOperation("获取粉丝列表")
+    @GetMapping("{userId}/followers")
+    public Result<List<FollowVo>> getFollowerList(@PathVariable Long userId) {
+        List<FollowVo> followVos = followService.getFollowerList(userId);
+        return Result.success(followVos);
+    }
 
 }

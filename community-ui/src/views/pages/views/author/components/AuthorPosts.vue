@@ -1,21 +1,21 @@
 <template>
   <div class="user-posts">
-    <el-tabs v-model="activeTab">
+    <el-tabs v-model="activeTab" class="custom-tabs">
       <el-tab-pane label="帖子" name="posts">
-        <PostList :list="postLists" />
+        <PostList :list="postLists"/>
       </el-tab-pane>
 
       <el-tab-pane label="收藏" name="favorites">
-        <PostList :list="favoriteLists" />
+        <PostList :list="favoriteLists"/>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
-
+<!--todo 添加一个分页-->
 <script setup>
-import { ref, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
 import PostList from './PostList.vue'
-import { getUserPosts, getUserFavorites } from '@/api/author'
+import {getUserFavorites, getUserPosts} from '@/api/author'
 
 const props = defineProps({
   userId: {

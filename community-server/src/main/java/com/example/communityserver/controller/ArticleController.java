@@ -53,7 +53,7 @@ public class ArticleController {
         return tableDataInfo;
     }
 
-    @ApiOperation("文章详情(打开一篇文章)")
+    @ApiOperation("文章详情(打开一篇文章，阅读文章)")
     @GetMapping("/{id}")
     public Result<ArticleDtlVo> fetchPostsDetail(@PathVariable Long id) {
         ArticleDtlVo articleDtlVo = postsService.getArticleDtlVo(id);
@@ -121,6 +121,20 @@ public class ArticleController {
         List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
         List<ArticleCardVo> cardVo = ArticleMapping.INSTANCE.toCardVo(collect);
         return Result.success(cardVo);
+    }
+
+    @ApiOperation("获取用户创建的帖子列表")
+    @GetMapping("{userId}/posts")
+    public Result<List<UserPostVo>> getUserPosts(@PathVariable Long userId) {
+        List<UserPostVo> voList = postsService.getUserPosts(userId);
+        return voList != null ? Result.success(voList) : Result.error();
+    }
+
+    @ApiOperation("获取用户收藏的帖子列表")
+    @GetMapping("{userId}/favorites")
+    public Result<List<UserPostVo>> getUserFavorites(@PathVariable Long userId) {
+        List<UserPostVo> voList = postsService.getUserFavorites(userId);
+        return voList != null ? Result.success(voList) : Result.error();
     }
 
 }

@@ -2,12 +2,10 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.response.ArticleCardVo;
-import com.example.communityserver.entity.response.ArticleDtlVo;
-import com.example.communityserver.entity.response.ArticleListVo;
-import com.example.communityserver.entity.response.EditorArticlesVo;
+import com.example.communityserver.entity.response.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -33,7 +31,11 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     Page<ArticleCardVo> getPostsCardVoList(Page<ArticleCardVo> page, @Param("title") String title);
 
-    Page<ArticleListVo> getArticleList(Page<ArticleListVo> page, @Param("dto") GetArticleListDto dto,@Param("loginUserId") Long loginUserId);
+    Page<ArticleListVo> getArticleList(Page<ArticleListVo> page, @Param("dto") GetArticleListDto dto, @Param("loginUserId") Long loginUserId);
 
     Long countByUser(Long id);
+
+    List<UserPostVo> getUserPosts(Long userId);
+
+    List<UserPostVo> getUserFavorites(@Param("userId") Long userId, @Param("article") NotificationTypeEnum article);
 }

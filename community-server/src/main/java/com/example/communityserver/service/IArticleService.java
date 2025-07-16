@@ -29,7 +29,6 @@ public interface IArticleService extends IService<Article> {
 
     boolean addArticle(AddArticleDto dto);
 
-
     boolean delById(Long id);
 
     EditorArticlesVo getEditorArticleDtl(Long id);
@@ -43,4 +42,8 @@ public interface IArticleService extends IService<Article> {
     Long countByUser(Long id);
 
     IPage<AdminArticleListVo> getAdminArticleList(ArticleSearchParam param);
+
+    List<UserPostVo> getUserPosts(Long userId);
+
+    List<UserPostVo> getUserFavorites(Long userId);
 }

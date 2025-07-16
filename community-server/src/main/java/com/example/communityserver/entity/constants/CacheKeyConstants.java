@@ -18,6 +18,8 @@ public class CacheKeyConstants {
     public static final String USER_FOLLOWING_COUNT = "user:following:count:";
     public static final String USER_FOLLOWER_COUNT = "user:follow:count:";
     public static final String USER_ARTICLE_COUNT = "user:article:count:";
+    public static final String USER_ARTICLE_LIKE_COUNT = "user:article:like:count:";
+    public static final String USER_ARTICLE_FAVORITE_COUNT = "user:article:favorite:count:";
 
     public static final String LOGIN_USER_PERMISSIONS = "login:user:permissions:";
 

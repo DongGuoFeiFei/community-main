@@ -161,16 +161,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public UserCountStats getUserStats(Long userId) {
+
+        // 帖子数
         Long postCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_ARTICLE_COUNT + userId, Long.class);
         if (postCount == null) {
             postCount = articleMapper.countByUser(userId);
         }
         redisUtil.setCacheObject(CacheKeyConstants.USER_ARTICLE_COUNT + userId, postCount, 3, TimeUnit.DAYS);
+
+        // 关注数
         Long followerCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWER_COUNT + userId, Long.class);
         if (followerCount == null) {
             followerCount = followMapper.countFollowers(userId);
         }
         redisUtil.setCacheObject(CacheKeyConstants.USER_FOLLOWER_COUNT + userId, followerCount, 3, TimeUnit.DAYS);
+
+        // 粉丝数
         Long followingCount = redisUtil.getCacheObjectAsNumber(CacheKeyConstants.USER_FOLLOWING_COUNT + userId, Long.class);
         if (followingCount == null) {
             followingCount = followMapper.countFollowing(userId);
@@ -192,7 +198,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public UserDelVo getUserProfile(Long userId) {
         UserDelVo userProfile = userMapper.getUserProfile(userId);
-        userProfile.setAvatar(SystemConstants.BASIC_URL+userProfile.getAvatar());
+        userProfile.setAvatar(SystemConstants.BASIC_URL + userProfile.getAvatar());
         return userProfile;
     }
 

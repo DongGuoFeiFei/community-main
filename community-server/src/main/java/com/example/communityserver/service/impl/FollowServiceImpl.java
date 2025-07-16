@@ -3,9 +3,11 @@ package com.example.communityserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.example.communityserver.entity.model.Follow;
 import com.example.communityserver.entity.model.Notification;
+import com.example.communityserver.entity.response.FollowVo;
 import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.INotificationService;
@@ -14,6 +16,7 @@ import com.example.communityserver.utils.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -99,5 +102,23 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
                 .eq(Follow::getFollowingId, SecurityUtils.getLoginUserId());
         Follow follow = followMapper.selectOne(queryWrapper);
         return follow != null;
+    }
+
+    @Override
+    public List<FollowVo> getFollowingList(Long userId) {
+        List<FollowVo> followingList = followMapper.getFollowingList(userId, SecurityUtils.getLoginUserId());
+        followingList.forEach(followVo -> {
+            followVo.setAvatar(SystemConstants.BASIC_URL + followVo.getAvatar());
+        });
+        return followingList;
+    }
+
+    @Override
+    public List<FollowVo> getFollowerList(Long userId) {
+        List<FollowVo> followerList = followMapper.getFollowerList(userId, SecurityUtils.getLoginUserId());
+        followerList.forEach(followVo -> {
+            followVo.setAvatar(SystemConstants.BASIC_URL + followVo.getAvatar());
+        });
+        return followerList;
     }
 }
