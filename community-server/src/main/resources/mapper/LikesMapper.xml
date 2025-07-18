@@ -6,16 +6,15 @@
 <!-- todo 文章内容的点赞、收藏数、转发数，优化   -->
     <select id="getArticleLike" resultType="com.example.communityserver.entity.response.ArticleDtlVo">
         SELECT (SELECT COUNT(*)
-                FROM likes
-                WHERE target_id = #{articleId}
-                  AND type = 'article'
-                  and is_like = 1)                                                             AS likeCount,
+                FROM article_interaction
+                WHERE article_id = #{articleId}
+                  AND action_type = 'LIKE')                                                             AS likeCount,
                (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE target_id = #{articleId}) AS collectCount,
-               IFNULL((SELECT is_like
-                       FROM likes
-                       WHERE target_id = #{articleId}
+               IFNULL((SELECT count(*)
+                       FROM article_interaction
+                       WHERE article_id = #{articleId}
                          AND user_id = #{userId}
-                         AND type = 'article'), 0)                                             AS isLiked,
+                         AND action_type = 'LIKE'), 0)                                             AS isLiked,
                (SELECT COUNT(DISTINCT user_id) FROM user_favorites WHERE target_id = #{articleId} AND user_id = #{userId}) >
                0                                                                               AS isCollected
     </select>
