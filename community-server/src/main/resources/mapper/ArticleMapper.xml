@@ -7,7 +7,7 @@
         <result column="title" property="title"/>
         <result column="nickname" property="nickname"/>
         <result column="content" property="content"/>
-        <result column="image_url" property="imageUrl"/>
+        <result column="cover_url" property="coverUrl"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
@@ -18,7 +18,7 @@
         p.title,
         u.nickname,
         p.content,
-        f.access_url as image_url,
+        f.access_url as cover_url,
         DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
         DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at
         FROM
@@ -126,7 +126,8 @@
                p.content,
                f.access_url                                   as image_url,
                DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
-               DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at
+               DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at,
+               p.user_id
         FROM article p
                  JOIN
              user u ON p.user_id = u.user_id

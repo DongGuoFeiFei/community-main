@@ -69,4 +69,18 @@ public class ArticleInteraction {
      */
     @ApiModelProperty(value = "额外数据(JSON格式)")
     private String extraData;
+
+    /**
+     * @Description: 创建新互动需要数据
+     * @Param: [articleId, userId（非必须）, actionType, extraData（非必须）]
+     * @return:
+     * @Author: DongGuo
+     */
+
+    public ArticleInteraction(Long articleId, Long userId, ArticleInteractionTypeEnum actionType, String extraData) {
+        this.articleId = articleId;
+        this.userId = userId;
+        this.actionType = actionType;
+        this.extraData = extraData;
+    }
 }

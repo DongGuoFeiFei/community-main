@@ -10,7 +10,9 @@
           <div v-html="post.content"></div>
           <el-divider border-style="dashed"/>
           <div class="post-meta">
-            <span class="author">作者：{{ post.nickname }}</span>
+            <router-link :to="`/author/${post.userId}`" target="_blank">
+              <span class="author">作者：{{ post.nickname }}</span>
+            </router-link>
             <span class="date">发布时间：{{ formatDate(post.createdAt) }}</span>
             <span class="update-date" v-if="post.updatedAt !== post.createdAt">
               最后更新：{{ formatDate(post.updatedAt) }}
@@ -26,6 +28,7 @@
           :initial-is-collected="article.isCollected"
           @like="handleLike"
           @collect="handleCollect"
+          @collect-success="handleCollectSuccess"
       />
       <!--  todo 添加转发按钮，完善点赞和收藏    -->
       <!--      <ShareButton :post-id="article.id"/>-->
@@ -49,18 +52,12 @@
     />
   </div>
 
-  <CollectDialog
-      v-if="post"
-      v-model:visible="collectDialogVisible"
-      :articleId="post.articleId"
-      @success="handleCollectSuccess"
-  />
 </template>
 
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
+import {ElAlert, ElCard, ElIcon} from 'element-plus'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
@@ -69,7 +66,6 @@ import {localStores} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/components/LikeCollect.vue";
 import {addLike} from "@/api/likeApi.js";
 import {cancelCollect} from "@/api/collectApi.js";
-import CollectDialog from "@/views/pages/components/CollectDialog.vue";
 import dayjs from "dayjs";
 
 defineProps({
@@ -144,9 +140,8 @@ const fetchPostData = async (id) => {
     NProgress.start()
     loading.value = true
     error.value = null
-    emit("update:modelValue", id)
     const response = await fetchPostDetail(id)
-
+    emit("update:modelValue", id)
     // 正确获取数据
     const postData = response.data
     // 处理帖子数据
@@ -160,7 +155,8 @@ const fetchPostData = async (id) => {
     }
     document.title = post.value.title
   } catch (err) {
-    error.value = err.message || '获取帖子详情失败'
+    emit("update:modelValue", null)
+    error.value = err.message || '帖子已被下架，请移步其他文章'
     console.error('Error fetching post:', err)
   } finally {
     NProgress.done()
@@ -187,7 +183,6 @@ watch(
 )
 
 const handleLike = async (data) => {
-  // 调用API处理点赞/取消点赞
   const res = await addLike(data.itemId);
   if (post.value.isLiked === 0) {
     post.value.isLiked = 1
@@ -202,27 +197,23 @@ const handleLike = async (data) => {
 // 添加收藏相关状态
 const collectDialogVisible = ref(false)
 
+// 收藏处理
 const handleCollect = async ({itemId}) => {
-  // 如果已经收藏，则取消收藏
   if (post.value.isCollected) {
     try {
       await cancelCollect(itemId)
       post.value.isCollected = 0
       post.value.collectCount -= 1
-      ElMessage.success('已取消收藏')
     } catch (error) {
-      ElMessage.error('取消收藏失败')
+      throw new Error('取消收藏失败')
     }
-  } else {
-    // 显示收藏弹窗
-    collectDialogVisible.value = true
   }
 }
 
+// 收藏成功回调
 const handleCollectSuccess = () => {
   post.value.isCollected = 1
   post.value.collectCount += 1
-  ElMessage.success('收藏成功')
 }
 
 </script>

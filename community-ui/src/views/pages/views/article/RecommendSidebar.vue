@@ -18,15 +18,8 @@ const loading = ref(false);
 const fetchRecommendations = async () => {
   try {
     loading.value = true;
-    // 获取相关文章
-    // const postsResponse = await getRelatedPosts(props.articleId);
     const postsResponse = await getHotPosts();
     relatedPosts.value = postsResponse.data;
-    console.log(relatedPosts.value)
-
-    // 获取热门标签
-    // const tagsResponse = await getHotTags();
-    // hotTags.value = tagsResponse.data;
   } catch (error) {
     console.error('获取推荐内容失败:', error);
   } finally {
@@ -38,15 +31,8 @@ const navigateToPost = (postId) => {
   router.push(`/article/${postId}`);
 };
 
-const navigateToTag = (tagName) => {
-  router.push(`/tag/${tagName}`);
-};
-
 onMounted(() => {
-
-
   fetchRecommendations();
-
 });
 </script>
 
@@ -66,40 +52,28 @@ onMounted(() => {
             class="recommend-item"
             @click="navigateToPost(post.articleId)"
         >
-          <div class="post-title">{{ post.title }}</div>
-          <!--          <div class="post-meta">-->
-          <!--            <span class="post-views">-->
-          <!--              <el-icon><View/></el-icon> {{ post.viewCount }}-->
-          <!--            </span>-->
-          <!--            <span class="post-likes">-->
-          <!--              <el-icon><Star/></el-icon> {{ post.likeCount }}-->
-          <!--            </span>-->
-          <!--          </div>-->
+          <div class="post-container">
+            <div class="post-cover">
+              <el-image
+                  :src="post.coverUrl"
+                  fit="cover"
+                  class="cover-image"
+              />
+            </div>
+            <div class="post-content">
+              <div class="post-title">{{ post.title }}</div>
+              <div class="post-meta">
+                <span class="post-date">{{ post.createdAt }}</span>
+              </div>
+              <div class="post-summary" v-if="post.content">
+                {{ post.content.substring(0, 20) }}...
+              </div>
+            </div>
+          </div>
         </div>
         <el-empty v-if="!loading && relatedPosts.length === 0" description="暂无相关文章"/>
       </div>
     </el-card>
-    <!-- todo 添加标签推荐，再文章下面（通过标签搜索页面，参考知乎）文章粘贴标签，文章查询区分标签区 -->
-    <!--    &lt;!&ndash; 热门标签 &ndash;&gt;-->
-    <!--    <el-card class="recommend-card" shadow="hover">-->
-    <!--      <template #header>-->
-    <!--        <div class="card-header">-->
-    <!--          <span>热门标签</span>-->
-    <!--        </div>-->
-    <!--      </template>-->
-    <!--      <div v-loading="loading" class="tags-container">-->
-    <!--        <el-tag-->
-    <!--            v-for="tag in hotTags"-->
-    <!--            :key="tag.name"-->
-    <!--            class="tag-item"-->
-    <!--            effect="plain"-->
-    <!--            @click="navigateToTag(tag.name)"-->
-    <!--        >-->
-    <!--          {{ tag.name }} ({{ tag.count }})-->
-    <!--        </el-tag>-->
-    <!--        <el-empty v-if="!loading && hotTags.length === 0" description="暂无标签数据" />-->
-    <!--      </div>-->
-    <!--    </el-card>-->
   </div>
 </template>
 
@@ -120,55 +94,61 @@ onMounted(() => {
     }
 
     .recommend-item {
-      padding: 10px 0;
+      padding: 12px 0;
       cursor: pointer;
       transition: all 0.3s;
       border-bottom: 1px solid var(--el-border-color-light);
 
       &:hover {
         background-color: var(--el-color-primary-light-9);
-        transform: translateX(5px);
       }
 
-      .post-title {
-        font-size: 14px;
-        margin-bottom: 5px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      .post-meta {
+      .post-container {
         display: flex;
-        font-size: 12px;
-        color: var(--el-text-color-secondary);
+        gap: 12px;
+        align-items: center;
 
-        .post-views, .post-likes {
-          display: flex;
-          align-items: center;
-          margin-right: 10px;
+        .post-cover {
+          flex: 0 0 80px;
+          height: 60px;
+          border-radius: 4px;
+          overflow: hidden;
 
-          .el-icon {
-            margin-right: 3px;
+          .cover-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
           }
         }
-      }
-    }
 
-    .tags-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+        .post-content {
+          flex: 1;
+          min-width: 0;
 
-      .tag-item {
-        cursor: pointer;
-        transition: all 0.3s;
+          .post-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
 
-        &:hover {
-          background-color: var(--el-color-primary-light-9);
-          color: var(--el-color-primary);
-          transform: scale(1.05);
+          .post-meta {
+            font-size: 12px;
+            color: var(--el-text-color-secondary);
+            margin-bottom: 4px;
+          }
+
+          .post-summary {
+            font-size: 12px;
+            color: var(--el-text-color-regular);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
         }
       }
     }

@@ -44,7 +44,7 @@ const router = createRouter({
             name: 'index',
             component: Index,
             meta: {
-                requiresAuth: false
+                requiresAuth: true
             },
             children: [
                 {
@@ -144,7 +144,7 @@ const router = createRouter({
             component: () => import("@/views/pages/views/author/Index.vue"),
             meta: {
                 title: "作者主页",
-                requiresAuth: false
+                requiresAuth: true
             },
         },
         {

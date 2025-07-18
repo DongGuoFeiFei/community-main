@@ -87,7 +87,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleInteraction.setActionType(ArticleInteractionTypeEnum.VIEW);
             articleInteractionMapper.insert(articleInteraction);
             LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
-            updateWrapper.setSql("view_count = view_count + 1");
+            updateWrapper.eq(Article::getArticleId, id)
+                    .setSql("view_count = view_count + 1");
             articleMapper.update(null, updateWrapper);
         } else {
             // 处理已有记录的情况，更新阅读记录
@@ -135,15 +136,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleDtlVo articleDtlVo1 = articleMapper.getArticleDtlVo(id);
         // TODO: 2025/7/16 like的数据获取优化
         ArticleDtlVo articleDtlVo2 = likesMapper.getArticleLike(id, SecurityUtils.getLoginUserId());
-
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo1, articleDtlVo);
         ArticleMapping.INSTANCE.updateArticle(articleDtlVo2, articleDtlVo);
+        if (articleDtlVo1 == null) {
+            return null;
+        }
+        // TODO: 2025/7/17 目前未将未登录用户计算在浏览记录内，考虑IP
+        LambdaQueryWrapper<ArticleInteraction> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(ArticleInteraction::getActionType, ArticleInteractionTypeEnum.VIEW)
+                .eq(ArticleInteraction::getArticleId, articleDtlVo.getArticleId())
+                .eq(SecurityUtils.getLoginUserId() != null, ArticleInteraction::getUserId, SecurityUtils.getLoginUserId());
+        if (articleInteractionMapper.selectOne(queryWrapper) == null && SecurityUtils.getLoginUserId() != null) {
+            ArticleInteraction articleInteraction = new ArticleInteraction(articleDtlVo.getArticleId(), SecurityUtils.getLoginUserId(), ArticleInteractionTypeEnum.VIEW, null);
+            articleInteractionMapper.insert(articleInteraction);
+            LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Article::getArticleId, articleDtlVo.getArticleId())
+                    .setSql("view_count = view_count + 1");
+            articleMapper.update(null, updateWrapper);
+        }
+
         return articleDtlVo;
     }
 
     @Override
     public Page<ArticleCardVo> getPostsCardVoList(SearchNameParam param) {
-
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
         Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param.getTitle());
         voPage.getRecords().forEach(articleCardVo -> {

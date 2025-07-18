@@ -14,7 +14,7 @@ export const fetchPosts = (params) => {
                     author: item.nickname,
                     summary: item.content,
                     date: item.createdAt,
-                    cover: item.imageUrl
+                    coverUrl: item.coverUrl
                 })),
                 total: res.total
             }

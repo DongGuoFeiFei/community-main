@@ -17,8 +17,8 @@ import lombok.Data;
 
 @Data
 public class ArticleDtlVo {
-    @TableId(type = IdType.AUTO)
     private Long articleId;
+    private Long userId;
     private String title;
     private String nickname;
     @ApiModelProperty(value = "帖子正文内容", example = "这是一个帖子内容")

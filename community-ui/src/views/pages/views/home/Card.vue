@@ -38,8 +38,8 @@
           <div class="card-content">
             <!-- todo 降低图片质量-->
             <el-image
-                v-if="post.cover"
-                :src="post.cover"
+                v-if="post.coverUrl"
+                :src="post.coverUrl"
                 fit="cover"
                 class="cover"
                 loading="lazy"
@@ -49,9 +49,6 @@
               <h3>{{ post.title }}</h3>
               <p class="summary">{{ truncateSummary(post.summary) }}</p>
               <div class="meta">
-<!--                <router-link to="/author/{{post.userId}}" target="_blank">-->
-<!--                  <span>作者：{{ post.author }}</span>-->
-<!--                </router-link>-->
                 <span>作者：{{ post.author }}</span>
                 <span>{{ formatDate(post.date) }}</span>
               </div>
@@ -131,7 +128,7 @@ const loadPosts = async () => {
       author: item.author,
       summary: item.summary || "",
       date: item.date,
-      cover: item.cover ? lStore.baseURL + item.cover : null
+      coverUrl: item.coverUrl ? lStore.baseURL + item.coverUrl : null
     }))
     total.value = res.total
 

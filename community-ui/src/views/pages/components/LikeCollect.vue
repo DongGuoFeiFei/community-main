@@ -19,6 +19,14 @@
     >
       {{ collectedCount }}
     </el-button>
+
+    <!-- 收藏弹窗 -->
+    <CollectDialog
+        v-if="showCollectDialog"
+        v-model:visible="collectDialogVisible"
+        :articleId="itemId"
+        @success="handleCollectSuccess"
+    />
   </div>
 </template>
 
@@ -26,8 +34,8 @@
 import {ref, watch} from 'vue';
 import {ElMessage} from 'element-plus';
 import {localStores} from "@/stores/localStores.js";
+import CollectDialog from "@/views/pages/components/CollectDialog.vue";
 
-// 获取父组件数据
 const props = defineProps({
   itemId: {
     type: [Number, String],
@@ -52,8 +60,7 @@ const props = defineProps({
   }
 });
 
-// 向父组件传递数据
-const emit = defineEmits(['like', 'collect']);
+const emit = defineEmits(['like', 'collect', 'collect-success']);
 
 const lStore = localStores();
 
@@ -64,6 +71,9 @@ const isLiked = ref(props.initialIsLiked);
 const isCollected = ref(props.initialIsCollected);
 const likeLoading = ref(false);
 const collectLoading = ref(false);
+const collectDialogVisible = ref(false);
+const showCollectDialog = ref(false);
+
 // 监听 props 变化并更新本地状态
 watch(() => props.initialLikeCount, (newVal) => {
   likeCount.value = newVal;
@@ -83,7 +93,6 @@ watch(() => props.initialIsCollected, (newVal) => {
 
 // 点赞处理
 const handleLike = async () => {
-
   if (lStore.isTokenExpired) {
     ElMessage.warning('请先登录');
     return;
@@ -91,13 +100,7 @@ const handleLike = async () => {
 
   try {
     likeLoading.value = true;
-    if (isLiked.value) {
-      // 取消点赞
-      await emit('like', {itemId: props.itemId});
-    } else {
-      // 点赞
-      await emit('like', {itemId: props.itemId});
-    }
+    await emit('like', {itemId: props.itemId});
   } catch (error) {
     ElMessage.error(error.message || '操作失败');
   } finally {
@@ -117,9 +120,13 @@ const handleCollect = async () => {
     if (isCollected.value) {
       // 取消收藏
       await emit('collect', {itemId: props.itemId, action: 'uncollect'});
+      collectedCount.value--;
+      isCollected.value = 0;
+      ElMessage.success('已取消收藏');
     } else {
-      // 收藏
-      await emit('collect', {itemId: props.itemId, action: 'collect'});
+      // 显示收藏弹窗
+      showCollectDialog.value = true;
+      collectDialogVisible.value = true;
     }
   } catch (error) {
     ElMessage.error(error.message || '操作失败');
@@ -127,12 +134,21 @@ const handleCollect = async () => {
     collectLoading.value = false;
   }
 };
+
+// 收藏成功回调
+const handleCollectSuccess = () => {
+  collectedCount.value++;
+  isCollected.value = 1;
+  emit('collect-success');
+  ElMessage.success('收藏成功');
+};
 </script>
 
 <style scoped>
 .interaction-buttons {
   display: flex;
   gap: 10px;
+  position: relative;
 }
 
 .el-button {

@@ -1,7 +1,7 @@
 <template>
   <div class="user-posts">
     <el-tabs v-model="activeTab" class="custom-tabs">
-      <el-tab-pane label="帖子" name="posts">
+      <el-tab-pane label="投稿" name="posts">
         <PostList :list="postLists"/>
       </el-tab-pane>
 

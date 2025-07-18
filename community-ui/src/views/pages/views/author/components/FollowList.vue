@@ -75,8 +75,9 @@ const handleFollow = async (userId) => {
       flex-grow: 1;
 
       .username {
+        color: black;
         font-weight: bold;
-        color: var(--el-color-primary);
+        //color: var(--el-color-primary);
         text-decoration: none;
 
         &:hover {

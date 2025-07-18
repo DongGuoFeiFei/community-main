@@ -1,6 +1,8 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
@@ -56,6 +58,7 @@ public class ArticleController {
     @ApiOperation("文章详情(打开一篇文章，阅读文章)")
     @GetMapping("/{id}")
     public Result<ArticleDtlVo> fetchPostsDetail(@PathVariable Long id) {
+        // TODO: 2025/7/17 文章被删除时的文章展示 
         ArticleDtlVo articleDtlVo = postsService.getArticleDtlVo(id);
         return articleDtlVo != null ? Result.success(articleDtlVo) : Result.error();
     }
@@ -117,8 +120,15 @@ public class ArticleController {
     @ApiOperation("热门文章")
     @GetMapping("/hotPosts")
     public Result<List<ArticleCardVo>> getHotPosts() {
-        List<Article> list = postsService.list();
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(Article::getIsPublic,1)
+                .eq(Article::getIsDel,1);
+        List<Article> list = postsService.list(queryWrapper);
         List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
+        collect.forEach(article -> {
+            article.setCoverUrl(SystemConstants.BASIC_URL + article.getCoverUrl());
+        });
         List<ArticleCardVo> cardVo = ArticleMapping.INSTANCE.toCardVo(collect);
         return Result.success(cardVo);
     }

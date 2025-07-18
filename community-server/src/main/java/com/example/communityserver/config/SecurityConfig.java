@@ -59,10 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**",
                         "/swagger-resources",
                         "/swagger-resources/**",
-                        "/v2/**",
-                        "/posts"
+                        "/v2/**"
                 ).permitAll()
-                .requestMatchers(new RegexRequestMatcher("/posts/\\d+", "GET")).permitAll()
+//                .requestMatchers(new RegexRequestMatcher("/posts/\\d+", "GET")).permitAll()
                 .antMatchers("/posts/**").authenticated()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

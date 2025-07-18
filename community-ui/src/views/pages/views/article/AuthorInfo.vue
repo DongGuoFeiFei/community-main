@@ -29,6 +29,7 @@
           :type="authorInfo.isFollowing ? 'default' : 'primary'"
           size="small"
           @click="toggleFollow"
+          :disabled="Number(authorInfo.id) === store.userInfo.userInfo.userId"
       >
         {{ authorInfo.isFollowing ? '已关注' : '关注' }}
       </el-button>
@@ -77,6 +78,7 @@ const fetchAuthorInfo = async () => {
     if (props.articleId) {
       const res = await getUserInfo(props.articleId)
       authorInfo.value = res.data
+      console.log(authorInfo.value)
     }
   } catch (error) {
     console.error('获取作者信息失败:', error)

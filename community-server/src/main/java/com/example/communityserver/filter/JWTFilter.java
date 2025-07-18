@@ -2,8 +2,8 @@ package com.example.communityserver.filter;
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
-import com.example.communityserver.utils.security.JWTUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
+import com.example.communityserver.utils.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,9 +25,6 @@ import java.util.regex.PatternSyntaxException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private RedisUtil redisUtil;
-
     // 定义白名单路径
     private static final List<String> WHITE_LIST = Arrays.asList(
             "/auth/login",
@@ -35,13 +32,15 @@ public class JWTFilter extends OncePerRequestFilter {
             "/auth/registerCode",
             "/auth/send-email",
             "/auth/captcha",
-            "/uploads/**",
-            "/posts/\\d+",  // 匹配数字ID（如 /posts/123）
-            "/posts"        // 匹配 /posts
+            "/uploads/**"
+//            "/posts/\\d+",  // 匹配数字ID（如 /posts/123）
+//            "/posts"        // 匹配 /posts
     );
-
     // Ant风格路径匹配器（支持 ** 和 *）
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    @Autowired
+    private RedisUtil redisUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
             throws ServletException, IOException {
@@ -107,4 +106,5 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
         return false;
-    }}
+    }
+}
