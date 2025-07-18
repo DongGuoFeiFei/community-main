@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import {getUserInfo} from '@/api/user'
 import {ElAvatar, ElButton, ElTag} from 'element-plus'
 import {localStores} from "@/stores/localStores.js";
@@ -101,6 +101,14 @@ const toggleFollow = () => {
 onMounted(() => {
   fetchAuthorInfo()
 })
+
+// 监听路由参数变化
+watch(
+    () => props.articleId,
+    () => {
+        fetchAuthorInfo()
+    }
+)
 </script>
 
 <style scoped lang="scss">

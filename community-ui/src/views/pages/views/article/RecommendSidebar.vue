@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {getHotPosts, getHotTags} from '@/api/article';
 import {useRouter} from 'vue-router';
 
@@ -34,6 +34,13 @@ const navigateToPost = (postId) => {
 onMounted(() => {
   fetchRecommendations();
 });
+watch(
+    () => props.articleId,
+    () => {
+      fetchRecommendations();
+    }
+)
+
 </script>
 
 <template>

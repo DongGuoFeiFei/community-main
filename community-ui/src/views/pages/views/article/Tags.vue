@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {getPostTags} from '@/api/article'
 import {useRouter} from 'vue-router'
 
@@ -30,16 +30,18 @@ const fetchTags = async () => {
   }
 }
 
-// watch(tags, (newTags) => {
-//   activeTags.value = newTags.filter(tag => tag.status === 1)
-// }, {immediate: true, deep: true})
 const navigateToTag = (tagName) => {
   router.push({
     name: 'tag-search',
     query: {tag: tagName}
   })
 }
-
+watch(
+    () => props.postId,
+    () => {
+      fetchTags()
+    }
+)
 onMounted(() => {
   fetchTags()
 })

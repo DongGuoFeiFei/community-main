@@ -6,6 +6,7 @@
         :type="isLiked ? 'primary' : ''"
         @click="handleLike"
         :loading="likeLoading"
+        class="interaction-button"
     >
       {{ likeCount }}
     </el-button>
@@ -16,9 +17,19 @@
         :type="isCollected ? 'warning' : ''"
         @click="handleCollect"
         :loading="collectLoading"
+        class="interaction-button"
     >
       {{ collectedCount }}
     </el-button>
+
+    <!-- 分享按钮 -->
+    <ShareButton
+        :item-id="itemId"
+        :share-url="shareUrl"
+        :share-title="shareTitle"
+        @share="handleShare"
+        class="interaction-button"
+    />
 
     <!-- 收藏弹窗 -->
     <CollectDialog
@@ -35,6 +46,7 @@ import {ref, watch} from 'vue';
 import {ElMessage} from 'element-plus';
 import {localStores} from "@/stores/localStores.js";
 import CollectDialog from "@/views/pages/components/CollectDialog.vue";
+import ShareButton from "@/views/pages/components/ShareButton.vue";
 
 const props = defineProps({
   itemId: {
@@ -57,10 +69,18 @@ const props = defineProps({
   initialIsCollected: {
     type: Number,
     default: 0
+  },
+  shareUrl: {
+    type: String,
+    default: ''
+  },
+  shareTitle: {
+    type: String,
+    default: ''
   }
 });
 
-const emit = defineEmits(['like', 'collect', 'collect-success']);
+const emit = defineEmits(['like', 'collect', 'collect-success', 'share']);
 
 const lStore = localStores();
 
@@ -142,18 +162,46 @@ const handleCollectSuccess = () => {
   emit('collect-success');
   ElMessage.success('收藏成功');
 };
+
+// 处理分享事件
+const handleShare = (data) => {
+  console.log('分享到:', data.platform);
+  emit('share', data);
+};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .interaction-buttons {
   display: flex;
   gap: 10px;
   position: relative;
 }
 
-.el-button {
+.interaction-button {
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &.el-button--primary:hover {
+    background-color: var(--el-color-primary-light-3);
+    border-color: var(--el-color-primary-light-3);
+  }
+
+  &.el-button--warning:hover {
+    background-color: var(--el-color-warning-light-3);
+    border-color: var(--el-color-warning-light-3);
+  }
+
+  &:not(.el-button--primary):not(.el-button--warning):hover {
+    color: var(--el-color-primary);
+    border-color: var(--el-color-primary-light-5);
+    background-color: var(--el-color-primary-light-9);
+  }
 }
 </style>

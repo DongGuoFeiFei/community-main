@@ -27,8 +27,7 @@ export const fetchPosts = (params) => {
 export const fetchPostDetail = (id) => {
     return request.get(`/posts/${id}`).then(res => {
         if (res.code === 200) {
-            // 直接返回 res.data 而不是 res
-            return res  // 兼容两种返回格式
+            return res
         } else {
             throw new Error(res.msg || '获取详情失败')
         }

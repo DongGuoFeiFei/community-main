@@ -26,6 +26,8 @@
           :initial-collected-count="article.collectCount"
           :initial-is-liked="article.isLiked"
           :initial-is-collected="article.isCollected"
+          :share-title="article.title"
+          :share-url="article.url"
           @like="handleLike"
           @collect="handleCollect"
           @collect-success="handleCollectSuccess"
@@ -103,14 +105,15 @@ const SANITIZE_CONFIG = {
 }
 // 点赞组件的相关数据
 
-
 const article = computed(() => {
   if (!post.value) return {
     id: 0,
     likeCount: 0,
     isLiked: 0,
     collectCount: 0,
-    isCollected: 0
+    isCollected: 0,
+    title: "",
+    url: "",
   };
 
   return {
@@ -118,7 +121,9 @@ const article = computed(() => {
     likeCount: post.value.likeCount,
     isLiked: post.value.isLiked,
     collectCount: post.value.collectCount,
-    isCollected: post.value.isCollected
+    isCollected: post.value.isCollected,
+    title: post.value.title,
+    url: post.value.url,
   };
 });
 
@@ -144,6 +149,7 @@ const fetchPostData = async (id) => {
     emit("update:modelValue", id)
     // 正确获取数据
     const postData = response.data
+    console.log(postData)
     // 处理帖子数据
     post.value = {
       ...postData,
@@ -151,8 +157,12 @@ const fetchPostData = async (id) => {
       content: DOMPurify.sanitize(
           md.render(postData.content || ''),
           SANITIZE_CONFIG
-      )
+      ),
+      url: window.location.href
     }
+    console.log(post.value)
+    console.log(post.value.url)
+    console.log(post.value.title)
     document.title = post.value.title
   } catch (err) {
     emit("update:modelValue", null)
@@ -163,7 +173,6 @@ const fetchPostData = async (id) => {
     loading.value = false
   }
 }
-
 // 组件挂载时和路由参数变化时获取数据
 onMounted(() => {
   const postId = route.params.id
