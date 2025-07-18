@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import {defineEmits, defineProps, ref, watch} from 'vue'
+import {defineEmits, defineProps, onMounted, ref, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import {collectArticle, createFolder, fetchFolders} from '@/api/collectApi.js'
 
@@ -166,6 +166,10 @@ watch(() => props.visible, (val) => {
 
 watch(dialogVisible, (val) => {
   emit('update:visible', val)
+})
+
+onMounted(()=>{
+  fetchFolderList()
 })
 </script>
 

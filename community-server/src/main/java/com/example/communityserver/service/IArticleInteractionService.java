@@ -14,4 +14,7 @@ import com.example.communityserver.entity.model.ArticleInteraction;
 
 
 public interface IArticleInteractionService extends IService<ArticleInteraction> {
+    boolean addArticleLike(Long articleId);
+
+    boolean delArticleLike(Long articleId);
 }

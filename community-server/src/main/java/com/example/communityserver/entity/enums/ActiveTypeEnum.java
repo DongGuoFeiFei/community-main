@@ -14,10 +14,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum NotificationTypeEnum {
+public enum ActiveTypeEnum {
     LIKE("like", "点赞", "#FF4757"),         // 鲜艳红色
+    ARTICLE_LIKE("articleLike", "文章点赞", "#FF4757"),         // 鲜艳红色
+    COMMENT_LIKE("commentLike", "评论点赞", "#FF4757"),         // 鲜艳红色
     COMMENT("comment", "评论", "#2ED573"),    // 清新绿色
-    ARTICLE("article", "回复", "#1E90FF"),    // 明亮蓝色
+    COMMENT_REPLY("commentReply", "回复", "#1E90FF"),    // 明亮蓝色
     FOLLOW("follow", "关注", "#9C51B6"),      // 深紫色
     SYSTEM("system", "系统", "#FF7F50"),       // 珊瑚橙
     FAVORITE("favorite", "收藏", "#25CCF7"),  // 天蓝色

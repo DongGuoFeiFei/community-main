@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref, watch} from 'vue';
-import {getHotPosts, getHotTags} from '@/api/article';
+import {getHotPosts} from '@/api/article';
 import {useRouter} from 'vue-router';
 
 const props = defineProps({
@@ -25,10 +25,6 @@ const fetchRecommendations = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const navigateToPost = (postId) => {
-  router.push(`/article/${postId}`);
 };
 
 onMounted(() => {
@@ -57,26 +53,27 @@ watch(
             v-for="post in relatedPosts"
             :key="post.articleId"
             class="recommend-item"
-            @click="navigateToPost(post.articleId)"
         >
-          <div class="post-container">
-            <div class="post-cover">
-              <el-image
-                  :src="post.coverUrl"
-                  fit="cover"
-                  class="cover-image"
-              />
-            </div>
-            <div class="post-content">
-              <div class="post-title">{{ post.title }}</div>
-              <div class="post-meta">
-                <span class="post-date">{{ post.createdAt }}</span>
+          <router-link :to="`/article/${post.articleId}`" target="_blank">
+            <div class="post-container">
+              <div class="post-cover">
+                <el-image
+                    :src="post.coverUrl"
+                    fit="cover"
+                    class="cover-image"
+                />
               </div>
-              <div class="post-summary" v-if="post.content">
-                {{ post.content.substring(0, 20) }}...
+              <div class="post-content">
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-meta">
+                  <span class="post-date">{{ post.createdAt }}</span>
+                </div>
+                <div class="post-summary" v-if="post.content">
+                  {{ post.content.substring(0, 15) }}...
+                </div>
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
         <el-empty v-if="!loading && relatedPosts.length === 0" description="暂无相关文章"/>
       </div>
@@ -103,6 +100,7 @@ watch(
     .recommend-item {
       padding: 12px 0;
       cursor: pointer;
+
       transition: all 0.3s;
       border-bottom: 1px solid var(--el-border-color-light);
 
@@ -113,6 +111,7 @@ watch(
       .post-container {
         display: flex;
         gap: 12px;
+        color: black;
         align-items: center;
 
         .post-cover {

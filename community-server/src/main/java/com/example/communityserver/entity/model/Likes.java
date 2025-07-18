@@ -3,7 +3,7 @@ package com.example.communityserver.entity.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.LikeTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -43,7 +43,19 @@ public class Likes {
     private String createdAt;
 
     @ApiModelProperty(value = "点赞类型", example = "article", allowableValues = "comment,follow,article")
-    private NotificationTypeEnum type;
+    private LikeTypeEnum type;
 
-//    private Long notificationId;
+    /**
+     * @Description: 添加喜欢必须基础数据类型
+     * @Param: [targetId, userId, type]
+     * @return:
+     * @Author: DongGuo
+     */
+
+    public Likes(Long targetId, Long userId, LikeTypeEnum type) {
+        this.targetId = targetId;
+        this.userId = userId;
+        this.isLike = 1;
+        this.type = type;
+    }
 }

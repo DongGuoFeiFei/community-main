@@ -8,3 +8,10 @@ export const addLike = (data) => {
         }
     })
 }
+export const delLike = (data) => {
+    return request.delete(`/like/delLike/${data}`).then(res => {
+        if (res.code === 200) {
+            return res
+        }
+    })
+}

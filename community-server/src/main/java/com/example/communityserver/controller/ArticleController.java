@@ -11,6 +11,7 @@ import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
+import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.web.TableDataInfo;
 import io.swagger.annotations.Api;
@@ -128,6 +129,7 @@ public class ArticleController {
         List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
         collect.forEach(article -> {
             article.setCoverUrl(SystemConstants.BASIC_URL + article.getCoverUrl());
+            article.setContent(MarkDownUtils.toPlainText(article.getContent()));
         });
         List<ArticleCardVo> cardVo = ArticleMapping.INSTANCE.toCardVo(collect);
         return Result.success(cardVo);

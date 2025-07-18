@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.model.FileEntity;
@@ -217,7 +217,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public List<UserPostVo> getUserFavorites(Long userId) {
-        List<UserPostVo> userPosts = articleMapper.getUserFavorites(userId, NotificationTypeEnum.ARTICLE);
+        List<UserPostVo> userPosts = articleMapper.getUserFavorites(userId, ActiveTypeEnum.FAVORITE_ARTICLE);
         userPosts.forEach(userPostVo -> {
             userPostVo.setCoverUrl(SystemConstants.BASIC_URL + userPostVo.getCoverUrl());
         });

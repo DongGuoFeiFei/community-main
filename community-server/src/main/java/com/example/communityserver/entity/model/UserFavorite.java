@@ -3,7 +3,7 @@ package com.example.communityserver.entity.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,7 +41,7 @@ public class UserFavorite {
     @ApiModelProperty(value = "收藏夹ID", example = "1")
     private Long folderId;
     @ApiModelProperty(value = "收藏类型", example = "ARTICLE")
-    private NotificationTypeEnum type;
+    private ActiveTypeEnum type;
 
 //    private Long notificationId;
 }

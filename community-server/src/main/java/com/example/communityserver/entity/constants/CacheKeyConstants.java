@@ -24,10 +24,11 @@ public class CacheKeyConstants {
     public static final String LOGIN_USER_PERMISSIONS = "login:user:permissions:";
 
     // 文章相关缓存键
+    public static final String ARTICLE_COMMENT = "article:comment:data:";
     public static final String ARTICLE_VIEW_COUNT = "article:view:count:";
     public static final String ARTICLE_LIKE_COUNT = "article:like:count:";
+    public static final String ARTICLE_FAVORITE_COUNT = "article:favorite:count:";
     public static final String UNREAD_TYPE_VO_COUNT = "unread_count_by_type:";
-    public static final String ARTICLE_COMMENT = "article:comment:";
 
     // 验证码相关
     public static final String CAPTCHA_CODE = "captcha:code:";

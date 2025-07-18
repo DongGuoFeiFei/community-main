@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.request.GetNotificationsParam;
 import com.example.communityserver.entity.request.MarkAsReadParam;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,6 +68,14 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
         return voPage;
     }
+
+    /**
+    * @Description: 逻辑删除通知
+    * @Param: [param]
+    * @return: java.lang.Integer
+    *
+    * @Author: DongGuo
+    */
 
     @Transactional
     @Override
@@ -175,28 +182,34 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         return update;
     }
 
+    /**
+     * @Description: 通知物理删除
+     * @Param: [type, contentId]
+     * @return: java.lang.Integer
+     * @Author: DongGuo
+     */
+
     @Override
-    public Integer deleteNotification(NotificationTypeEnum type, Long sonSourceId) {
+    public Integer deleteNotification(ActiveTypeEnum type, Long contentId, Long receiverId) {
         if (type == null) {
             return -1;
         }
-        LambdaUpdateWrapper<Notification> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(Notification::getType, type)
-                .eq(sonSourceId != null, Notification::getSenderId, sonSourceId)
-                .setSql("is_del = 1 - is_del");
-        int update = notificationMapper.update(null, updateWrapper);
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
-        UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
+        queryWrapper.eq(Notification::getType, type)
+                .eq(Notification::getSenderId, SecurityUtils.getLoginUserId())
+                .eq( Notification::getContentId, contentId);
+        int update = notificationMapper.delete(queryWrapper);
+        UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + receiverId);
 
         if (vo == null) {
             return update;
         }
-
-        queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
+        queryWrapper.clear();
+        queryWrapper
+                .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
                 .eq(Notification::getType, type)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
-
 
         switch (type.getValue()) {
             case "like" -> {
@@ -225,7 +238,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
             }
             default -> throw new IllegalArgumentException("无效类型: " + type);
         }
-        redisUtil.setCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId(), vo, 3, TimeUnit.DAYS);
+        redisUtil.setCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + receiverId, vo, 3, TimeUnit.DAYS);
 
         return update;
 
@@ -242,56 +255,56 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         // like
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.LIKE)
+                .eq(Notification::getType, ActiveTypeEnum.LIKE)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long like = notificationMapper.selectCount(queryWrapper);
         // comment
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.COMMENT)
+                .eq(Notification::getType, ActiveTypeEnum.COMMENT)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long comment = notificationMapper.selectCount(queryWrapper);
         // follow
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.FOLLOW)
+                .eq(Notification::getType, ActiveTypeEnum.FOLLOW)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long follow = notificationMapper.selectCount(queryWrapper);
         // system
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.SYSTEM)
+                .eq(Notification::getType, ActiveTypeEnum.SYSTEM)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long system = notificationMapper.selectCount(queryWrapper);
         // favorite
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.FAVORITE)
+                .eq(Notification::getType, ActiveTypeEnum.FAVORITE)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long favorite = notificationMapper.selectCount(queryWrapper);
         // reply
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.REPLY)
+                .eq(Notification::getType, ActiveTypeEnum.REPLY)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long reply = notificationMapper.selectCount(queryWrapper);
         // favoriteArticle
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.FAVORITE_ARTICLE)
+                .eq(Notification::getType, ActiveTypeEnum.FAVORITE_ARTICLE)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long favoriteArticle = notificationMapper.selectCount(queryWrapper);
         // privateMessages
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, NotificationTypeEnum.PRIVATE_MESSAGES)
+                .eq(Notification::getType, ActiveTypeEnum.PRIVATE_MESSAGES)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long privateMessages = notificationMapper.selectCount(queryWrapper);

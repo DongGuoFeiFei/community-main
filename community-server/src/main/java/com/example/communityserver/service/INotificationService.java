@@ -2,7 +2,7 @@ package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.request.GetNotificationsParam;
 import com.example.communityserver.entity.request.MarkAsReadParam;
@@ -27,7 +27,7 @@ public interface INotificationService extends IService<Notification> {
 
     Integer deleteNotifications(MarkAsReadParam param);
 
-    Integer deleteNotification(NotificationTypeEnum type, Long sonSourceId);
+    Integer deleteNotification(ActiveTypeEnum type, Long contentId, Long receiverId);
 
     UnreadCountByTypeVo getUnreadCountByType();
 

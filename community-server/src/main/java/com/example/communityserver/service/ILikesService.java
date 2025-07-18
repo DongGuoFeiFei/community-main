@@ -14,5 +14,5 @@ import com.example.communityserver.entity.model.Likes;
 
 
 public interface ILikesService extends IService<Likes> {
-    boolean addLike(Long id);
+
 }

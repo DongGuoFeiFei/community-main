@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SystemConstants;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Follow;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.response.FollowVo;
@@ -68,7 +68,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         follow.setFollowingId(SecurityUtils.getLoginUserId());
         int insert = followMapper.insert(follow);
         if (insert > 0) {
-            Notification notification = new Notification(id, NotificationTypeEnum.FOLLOW, follow.getId(), SecurityUtils.getLoginUserId());
+            Notification notification = new Notification(id, ActiveTypeEnum.FOLLOW, follow.getId(), SecurityUtils.getLoginUserId());
             notificationService.save(notification);
         }
         redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + id);

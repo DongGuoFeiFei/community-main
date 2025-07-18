@@ -2,7 +2,7 @@
   <div class="interaction-buttons">
     <!-- 点赞按钮 -->
     <el-button
-        :icon="isLiked===0 ? 'CircleCheckFilled' : 'CircleCheck'"
+        :icon="isLiked ? 'CircleCheckFilled' : 'CircleCheck'"
         :type="isLiked ? 'primary' : ''"
         @click="handleLike"
         :loading="likeLoading"
@@ -13,7 +13,7 @@
 
     <!-- 收藏按钮 -->
     <el-button
-        :icon="isCollected===0 ? 'StarFilled' : 'Star'"
+        :icon="isCollected ? 'StarFilled' : 'Star'"
         :type="isCollected ? 'warning' : ''"
         @click="handleCollect"
         :loading="collectLoading"
@@ -42,9 +42,9 @@
 </template>
 
 <script setup>
-import {ref, watch} from 'vue';
-import {ElMessage} from 'element-plus';
-import {localStores} from "@/stores/localStores.js";
+import { ref, watch, computed } from 'vue';
+import { ElMessage } from 'element-plus';
+import { localStores } from "@/stores/localStores.js";
 import CollectDialog from "@/views/pages/components/CollectDialog.vue";
 import ShareButton from "@/views/pages/components/ShareButton.vue";
 
@@ -52,7 +52,6 @@ const props = defineProps({
   itemId: {
     type: [Number, String],
     required: true,
-    default: 0
   },
   initialLikeCount: {
     type: Number,
@@ -63,12 +62,14 @@ const props = defineProps({
     default: 0
   },
   initialIsLiked: {
-    type: Number,
-    default: 0
+    type: [Boolean, Number],  // 接受 Boolean 或 Number
+    default: 0,
+    validator: (value) => [0, 1, true, false].includes(value)
   },
   initialIsCollected: {
-    type: Number,
-    default: 0
+    type: [Boolean, Number],
+    default: 0,
+    validator: (value) => [0, 1, true, false].includes(value)
   },
   shareUrl: {
     type: String,
@@ -84,7 +85,8 @@ const emit = defineEmits(['like', 'collect', 'collect-success', 'share']);
 
 const lStore = localStores();
 
-// 状态
+
+// 使用计算属性确保响应式更新
 const likeCount = ref(props.initialLikeCount);
 const collectedCount = ref(props.initialCollectedCount);
 const isLiked = ref(props.initialIsLiked);
@@ -94,7 +96,7 @@ const collectLoading = ref(false);
 const collectDialogVisible = ref(false);
 const showCollectDialog = ref(false);
 
-// 监听 props 变化并更新本地状态
+// 监听 props 变化
 watch(() => props.initialLikeCount, (newVal) => {
   likeCount.value = newVal;
 });
@@ -120,9 +122,23 @@ const handleLike = async () => {
 
   try {
     likeLoading.value = true;
-    await emit('like', {itemId: props.itemId});
+    // 先更新本地状态，提供即时反馈
+    const newLikeStatus = !isLiked.value;
+    isLiked.value = newLikeStatus;
+    likeCount.value += newLikeStatus ? 1 : -1;
+
+    // 触发父组件事件
+    await emit('like', {
+      itemId: props.itemId,
+      isLiked: newLikeStatus
+    });
   } catch (error) {
-    ElMessage.error(error.message || '操作失败');
+    // 回滚状态
+    isLiked.value = !isLiked.value;
+    likeCount.value += isLiked.value ? 1 : -1;
+
+    ElMessage.error(error.message || '点赞操作失败');
+    console.error('点赞失败:', error);
   } finally {
     likeLoading.value = false;
   }
@@ -138,18 +154,26 @@ const handleCollect = async () => {
   try {
     collectLoading.value = true;
     if (isCollected.value) {
-      // 取消收藏
-      await emit('collect', {itemId: props.itemId, action: 'uncollect'});
-      collectedCount.value--;
-      isCollected.value = 0;
+      // 先更新本地状态
+      isCollected.value = false;
+      collectedCount.value -= 1;
+
+      await emit('collect', {
+        itemId: props.itemId,
+        action: 'uncollect'
+      });
       ElMessage.success('已取消收藏');
     } else {
-      // 显示收藏弹窗
       showCollectDialog.value = true;
       collectDialogVisible.value = true;
     }
   } catch (error) {
-    ElMessage.error(error.message || '操作失败');
+    // 回滚状态
+    isCollected.value = !isCollected.value;
+    collectedCount.value += isCollected.value ? 1 : -1;
+
+    ElMessage.error(error.message || '收藏操作失败');
+    console.error('收藏失败:', error);
   } finally {
     collectLoading.value = false;
   }
@@ -157,8 +181,8 @@ const handleCollect = async () => {
 
 // 收藏成功回调
 const handleCollectSuccess = () => {
-  collectedCount.value++;
-  isCollected.value = 1;
+  isCollected.value = true;
+  collectedCount.value += 1;
   emit('collect-success');
   ElMessage.success('收藏成功');
 };

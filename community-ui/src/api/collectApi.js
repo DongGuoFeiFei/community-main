@@ -21,6 +21,14 @@ export const cancelCollect = (articleId) => {
     return request.delete(`/favorite/${articleId}`)
 }
 
+// export const collectPost = (postId, collectionId) => {
+//     return request.post('/post/collect', { postId, collectionId });
+// };
+//
+// export const uncollectPost = (postId) => {
+//     return request.post('/post/uncollect', { postId });
+// };
+
 // 更新收藏夹名称
 export const updateFolder = (folderId, data) => {
     return request.put(`/favorite/folders/${folderId}`, data)

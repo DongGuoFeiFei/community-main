@@ -59,14 +59,14 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ElAlert, ElCard, ElIcon} from 'element-plus'
+import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import NProgress from "nprogress";
 import {localStores} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/components/LikeCollect.vue";
-import {addLike} from "@/api/likeApi.js";
+import {addLike, delLike} from "@/api/likeApi.js";
 import {cancelCollect} from "@/api/collectApi.js";
 import dayjs from "dayjs";
 
@@ -191,34 +191,38 @@ watch(
     }
 )
 
-const handleLike = async (data) => {
-  const res = await addLike(data.itemId);
-  if (post.value.isLiked === 0) {
-    post.value.isLiked = 1
-    post.value.likeCount++
-  } else {
-    post.value.isLiked = 0
-    post.value.likeCount--
+const handleLike = async ({ itemId, isLiked }) => {
+  try {
+    if (isLiked) {
+      await addLike(itemId);
+    } else {
+      await delLike(itemId);
+    }
+
+    // 更新本地状态
+    post.value.isLiked = isLiked;
+    post.value.likeCount += isLiked ? 1 : -1;
+  } catch (error) {
+    console.error('点赞操作失败:', error);
+    ElMessage.error(error.message || '点赞操作失败');
+    throw error;
   }
 };
 
-
-// 添加收藏相关状态
-const collectDialogVisible = ref(false)
-
 // 收藏处理
-const handleCollect = async ({itemId}) => {
-  if (post.value.isCollected) {
-    try {
-      await cancelCollect(itemId)
-      post.value.isCollected = 0
-      post.value.collectCount -= 1
-    } catch (error) {
-      throw new Error('取消收藏失败')
+const handleCollect = async ({ itemId, action }) => {
+  try {
+    if (action === 'uncollect') {
+      await cancelCollect(itemId);
+      post.value.isCollected = false;
+      post.value.collectCount -= 1;
     }
+  } catch (error) {
+    console.error('取消收藏失败:', error);
+    ElMessage.error(error.message || '取消收藏失败');
+    throw error;
   }
-}
-
+};
 // 收藏成功回调
 const handleCollectSuccess = () => {
   post.value.isCollected = 1

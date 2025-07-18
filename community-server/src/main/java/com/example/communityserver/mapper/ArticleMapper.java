@@ -2,7 +2,7 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.response.*;
@@ -37,5 +37,5 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     List<UserPostVo> getUserPosts(Long userId);
 
-    List<UserPostVo> getUserFavorites(@Param("userId") Long userId, @Param("article") NotificationTypeEnum article);
+    List<UserPostVo> getUserFavorites(@Param("userId") Long userId, @Param("article") ActiveTypeEnum article);
 }

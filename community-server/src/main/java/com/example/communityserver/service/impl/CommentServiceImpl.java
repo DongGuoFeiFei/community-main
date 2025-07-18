@@ -2,7 +2,7 @@ package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
+import com.example.communityserver.entity.enums.ActiveTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.Comment;
 import com.example.communityserver.entity.model.Notification;
@@ -83,12 +83,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         Notification notification = new Notification();
         if (comment.getParentId() != null) { // 回复
             Comment parentComment = commentMapper.selectById(comment.getParentId());
-            notification.setType(NotificationTypeEnum.REPLY);
+            notification.setType(ActiveTypeEnum.REPLY);
             notification.setUserId(parentComment.getUserId());
             notification.setContentId(comment.getCommentId());
         } else { // 评论
             Article article = articleMapper.selectById(comment.getArticleId());
-            notification.setType(NotificationTypeEnum.COMMENT);
+            notification.setType(ActiveTypeEnum.COMMENT);
             notification.setUserId(article.getUserId());
             notification.setContentId(article.getArticleId());
         }

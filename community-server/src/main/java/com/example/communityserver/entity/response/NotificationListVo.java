@@ -1,10 +1,6 @@
 package com.example.communityserver.entity.response;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.example.communityserver.entity.enums.NotificationTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**

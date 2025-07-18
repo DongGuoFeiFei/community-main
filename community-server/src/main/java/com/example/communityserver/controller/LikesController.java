@@ -1,14 +1,12 @@
 package com.example.communityserver.controller;
 
+import com.example.communityserver.service.IArticleInteractionService;
 import com.example.communityserver.service.ILikesService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -25,12 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikesController {
     @Autowired
     private ILikesService likesService;
+    @Autowired
+    private IArticleInteractionService articleInteractionService;
 
     @ApiOperation("添加或改变当前文章的喜欢")
-    @PutMapping("/addLike/{id}")
-    public Result<Void> addLike(@PathVariable Long id) {
-// TODO: 2025/7/7 改为互动表
-        return likesService.addLike(id) ? Result.success() : Result.error();
+    @PutMapping("/addLike/{articleId}")
+    public Result<Void> addArticleLike(@PathVariable Long articleId) {
+        return articleInteractionService.addArticleLike(articleId) ? Result.success() : Result.error();
+    }
+
+    @ApiOperation("删除喜欢")
+    @DeleteMapping("/delLike/{articleId}")
+    public Result<Void> delArticleLike(@PathVariable Long articleId) {
+        return articleInteractionService.delArticleLike(articleId) ? Result.success() : Result.error();
     }
 
 }
