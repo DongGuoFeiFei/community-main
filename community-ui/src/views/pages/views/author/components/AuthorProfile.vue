@@ -39,7 +39,9 @@ const fetchUserData = async () => {
     userData.value = response.data
     const count = await getUserStats(userId.value)
     console.log(count)
+    console.log("userData.value", userData.value)
     userStats.value = count.data
+    document.title = userData.value.nickname + "的主页"
   } catch (error) {
     console.error('获取用户数据失败:', error)
   }
