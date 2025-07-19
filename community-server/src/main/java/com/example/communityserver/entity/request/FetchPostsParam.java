@@ -12,8 +12,9 @@ import lombok.Data;
  **/
 
 @Data
-public class SearchNameParam {
+public class FetchPostsParam {
     private String title;
     private Integer pageSize;
     private Integer pageNum;
+    private String sortType;
 }

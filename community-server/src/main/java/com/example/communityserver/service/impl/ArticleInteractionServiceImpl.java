@@ -43,7 +43,7 @@ public class ArticleInteractionServiceImpl extends ServiceImpl<ArticleInteractio
     private RedisUtil redisUtil;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean addArticleLike(Long articleId) {
         LambdaQueryWrapper<ArticleInteraction> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
@@ -72,7 +72,7 @@ public class ArticleInteractionServiceImpl extends ServiceImpl<ArticleInteractio
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean delArticleLike(Long articleId) {
         LambdaQueryWrapper<ArticleInteraction> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper

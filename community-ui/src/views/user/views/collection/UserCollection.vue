@@ -86,7 +86,7 @@
 
           <el-table-column prop="title" label="标题" min-width="200">
             <template #default="{ row }">
-              <router-link :to="`/index/article/${row.id}`" class="article-title">
+              <router-link :to="`/article/${row.id}`" class="article-title">
                 {{ row.title }}
               </router-link>
             </template>
@@ -94,7 +94,7 @@
 
           <el-table-column prop="author" label="作者" width="120">
             <template #default="{ row }">
-              <router-link :to="`/user/${row.authorId}`" class="author-link">
+              <router-link :to="`/author/${row.authorId}`" target="_blank" class="author-link">
                 {{ row.author }}
               </router-link>
             </template>

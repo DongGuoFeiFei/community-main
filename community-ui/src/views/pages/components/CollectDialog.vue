@@ -8,20 +8,20 @@
     <div class="collect-dialog">
       <!-- 收藏夹列表 -->
       <div class="folder-list">
-        <el-checkbox-group v-model="selectedFolders">
+        <el-radio-group v-model="selectedFolder">
           <div
               v-for="folder in folders"
               :key="folder.id"
               class="folder-item"
           >
-            <el-checkbox :value="folder.id">
+            <el-radio :value="folder.id">
               <div class="folder-info">
                 <span class="folder-name">{{ folder.name }}</span>
                 <span class="folder-count">{{ folder.articleCount }}篇</span>
               </div>
-            </el-checkbox>
+            </el-radio>
           </div>
-        </el-checkbox-group>
+        </el-radio-group>
       </div>
 
       <!-- 新建收藏夹区域 -->
@@ -52,9 +52,9 @@
         <el-button
             type="primary"
             @click="handleConfirm"
-            :disabled="selectedFolders.length === 0"
+            :disabled="!selectedFolder"
         >
-          确定({{ selectedFolders.length }})
+          确定
         </el-button>
       </div>
     </div>
@@ -77,13 +77,11 @@ const props = defineProps({
   }
 })
 
-console.log("props", props)
-
 const emit = defineEmits(['update:visible', 'success'])
 
 const dialogVisible = ref(props.visible)
 const folders = ref([])
-const selectedFolders = ref([])
+const selectedFolder = ref(null)
 const newFolderName = ref('')
 const isLoading = ref(false)
 
@@ -108,13 +106,11 @@ const handleCreateFolder = async () => {
   try {
     isLoading.value = true
     const res = await createFolder({name: newFolderName.value})
-    console.log(res)
     folders.value.unshift({
       ...res.data,
       articleCount: 0
     })
-    console.log("folders.value", folders.value)
-    selectedFolders.value.push(res.data.id)
+    selectedFolder.value = res.data.id
     newFolderName.value = ''
     ElMessage.success('收藏夹创建成功')
   } catch (error) {
@@ -139,13 +135,10 @@ const handleCancel = () => {
 // 确认收藏
 const handleConfirm = async () => {
   try {
-    const promises = selectedFolders.value.map(folderId =>
-        collectArticle({
-          articleId: props.articleId,
-          folderId
-        })
-    )
-    await Promise.all(promises)
+    await collectArticle({
+      articleId: props.articleId,
+      folderId: selectedFolder.value
+    })
     emit('success')
     handleClose()
   } catch (error) {
@@ -159,7 +152,7 @@ watch(() => props.visible, (val) => {
   dialogVisible.value = val
   if (val) {
     fetchFolderList()
-    selectedFolders.value = []
+    selectedFolder.value = null
     newFolderName.value = ''
   }
 })

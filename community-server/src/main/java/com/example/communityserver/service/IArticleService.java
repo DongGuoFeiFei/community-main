@@ -7,7 +7,7 @@ import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.request.SearchNameParam;
+import com.example.communityserver.entity.request.FetchPostsParam;
 import com.example.communityserver.entity.response.*;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public interface IArticleService extends IService<Article> {
 
     ArticleDtlVo getArticleDtlVo(Long id);
 
-    Page<ArticleCardVo> getPostsCardVoList(SearchNameParam param);
+    Page<ArticleCardVo> getPostsCardVoList(FetchPostsParam param);
 
     Page<ArticleListVo> getArticleList(GetArticleListDto dto);
 

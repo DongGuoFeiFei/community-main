@@ -115,9 +115,8 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeFavorite(Long articleId) {
-        // TODO: 2025/7/18 目前删除收藏文章未传入文件夹id，就是说用户只能收藏一次，不能收藏在多个文件夹中
         LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(articleId != null, UserFavorite::getTargetId, articleId)
                 .eq(UserFavorite::getType,ActiveTypeEnum.FAVORITE_ARTICLE)

@@ -61,8 +61,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return voList;
     }
 
-    @Transactional
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ReplyVo addComment(AddCommentDto addCommentDto) {
 
         // 删除旧数据缓存

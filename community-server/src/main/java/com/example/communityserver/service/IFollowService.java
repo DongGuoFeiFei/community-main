@@ -30,4 +30,6 @@ public interface IFollowService extends IService<Follow> {
     List<FollowVo> getFollowingList(Long userId);
 
     List<FollowVo> getFollowerList(Long userId);
+
+    Boolean removeFan(Long fanId);
 }

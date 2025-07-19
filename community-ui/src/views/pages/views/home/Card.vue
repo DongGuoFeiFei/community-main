@@ -15,6 +15,18 @@
 
     <!-- 实际内容 -->
     <div v-else>
+
+      <!-- todo  综合排序 最新发布 最新发布  最热内容  最多浏览 最多点赞
+      <template>
+        <el-select v-model="sortType" @change="handleSortChange" placeholder="排序方式">
+          <el-option label="综合排序" value="default"></el-option>
+          <el-option label="最新发布" value="newest"></el-option>
+          <el-option label="最热内容" value="hottest"></el-option>
+          <el-option label="最多浏览" value="most_viewed"></el-option>
+          <el-option label="最多点赞" value="most_liked"></el-option>
+        </el-select>
+      </template>    -->
+
       <div class="toolbar">
         <el-input
             v-model="searchParam.title"
@@ -248,7 +260,8 @@ onMounted(() => {
     color: #999;
     display: flex;
     gap: 12px;
-    span{
+
+    span {
       color: black;
     }
   }

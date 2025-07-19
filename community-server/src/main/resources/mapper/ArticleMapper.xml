@@ -20,19 +20,46 @@
         p.content,
         f.access_url as cover_url,
         DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
-        DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at
+        DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at,
+        p.view_count,
+        p.like_count,
+        p.comment_count,
+        p.share_count,
+        p.hot_score
         FROM
         article p
         JOIN
         user u ON p.user_id = u.user_id
-        join
-        file f on p.file_id = f.file_id
+        LEFT JOIN
+        file f ON p.file_id = f.file_id
         WHERE
         p.is_del = '1'
-        and p.is_drafts = '0'
-        <if test="title != null and title != ''">
-            AND p.title LIKE CONCAT('%', #{title}, '%')
+        AND p.is_drafts = '0'
+        <if test="param.title != null and param.title != ''">
+            AND p.title LIKE CONCAT('%', #{param.title}, '%')
         </if>
+        ORDER BY
+        <choose>
+            <when test="param.sortType == 'newest' and param.sortType != ''">
+                p.created_at DESC
+            </when>
+            <when test="param.sortType == 'hottest' and param.sortType != ''">
+                p.hot_score DESC
+            </when>
+            <when test="param.sortType == 'most_viewed' and param.sortType != ''">
+                p.view_count DESC
+            </when>
+            <when test="param.sortType == 'most_liked' and param.sortType != ''">
+                p.like_count DESC
+            </when>
+            <otherwise>
+                (p.hot_score * 0.5 +
+                LOG10(p.view_count + 1) * 0.2 +
+                LOG10(p.like_count + 1) * 0.2 +
+                LOG10(p.comment_count + 1) * 0.1) DESC,
+                p.created_at DESC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getPostsCardVoById" resultMap="PostResultMap">

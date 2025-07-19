@@ -77,8 +77,9 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     * @Author: DongGuo
     */
 
-    @Transactional
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer markAsRead(MarkAsReadParam param) {
         LambdaUpdateWrapper<Notification> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.in(Notification::getNotificationId, param.getIds())

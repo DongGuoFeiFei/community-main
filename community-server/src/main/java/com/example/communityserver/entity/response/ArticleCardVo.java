@@ -17,7 +17,6 @@ import lombok.Data;
 
 @Data
 public class ArticleCardVo {
-    @TableId(type = IdType.AUTO)
     private Long articleId;
     private String title;
     private String nickname;

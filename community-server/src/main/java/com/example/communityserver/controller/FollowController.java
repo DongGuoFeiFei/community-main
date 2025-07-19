@@ -29,7 +29,7 @@ public class FollowController {
 
     @ApiOperation("添加关注")
     @PostMapping("addFollowAuthor/{id}")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> followAuthor(@PathVariable Long id) {
         Boolean is = followService.followAuthor(id);
         return is ? Result.success() : Result.error();
@@ -37,7 +37,7 @@ public class FollowController {
 
     @ApiOperation("取消关注")
     @DeleteMapping("delFollowAuthor/{id}")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> delFollowAuthor(@PathVariable Long id) {
         Boolean is = followService.delFollowAuthor(id);
         return is ? Result.success() : Result.error();
@@ -64,4 +64,11 @@ public class FollowController {
         return Result.success(followVos);
     }
 
+    @ApiOperation("移除粉丝")
+    @DeleteMapping("fan/{fanId}")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> removeFan(@PathVariable Long fanId) {
+        Boolean is = followService.removeFan(fanId);
+        return is ? Result.success() : Result.error();
+    }
 }

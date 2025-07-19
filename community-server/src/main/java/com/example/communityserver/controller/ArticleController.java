@@ -6,7 +6,7 @@ import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.request.SearchNameParam;
+import com.example.communityserver.entity.request.FetchPostsParam;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
@@ -48,7 +48,7 @@ public class ArticleController {
 
     @ApiOperation("搜索文章")
     @GetMapping
-    public TableDataInfo fetchPosts(SearchNameParam param) {
+    public TableDataInfo fetchPosts(FetchPostsParam param) {
         Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
         TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setCode(200);
@@ -80,7 +80,7 @@ public class ArticleController {
 
     @ApiOperation("更新文章")
     @PutMapping("/updateArticleDtl/{id}")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
         Article article = new Article();
         article.setIsDrafts(updateDto.getStatus());

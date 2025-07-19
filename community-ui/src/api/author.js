@@ -4,14 +4,6 @@ export const getUserProfile = (userId) => {
     return request.get(`/user/profile/${userId}`)
 }
 
-export const getFollowingList = (userId) => {
-    return request.get(`/follow/${userId}/following`)
-}
-
-export const getFollowerList = (userId) => {
-    return request.get(`/follow/${userId}/followers`)
-}
-
 export const getUserPosts = (userId) => {
     return request.get(`/posts/${userId}/posts`)
 }

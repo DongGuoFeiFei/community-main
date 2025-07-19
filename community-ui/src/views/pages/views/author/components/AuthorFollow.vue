@@ -15,7 +15,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import FollowList from './FollowList.vue'
-import { getFollowingList, getFollowerList } from '@/api/author'
+import { getFollowingList, getFollowerList } from '@/api/follow.js'
 
 const props = defineProps({
   userId: {

@@ -15,9 +15,7 @@
           text-color="#666"
           active-text-color="#ffd04b"
       >
-        <el-menu-item index="card">
-          发现
-        </el-menu-item>
+        <el-menu-item index="card">发现</el-menu-item>
         <el-menu-item index="messages">消息</el-menu-item>
         <el-menu-item index="game">游戏</el-menu-item>
         <el-menu-item index="anime">动漫</el-menu-item>
@@ -69,7 +67,11 @@ const handleMenuClick = (index) => {
   activeMenu.value = index
   if (index === 'card') {
     router.push('/index')
-  } else if (index === 'editor') {
+  }
+  else if (index === 'editor') {
+    router.push('/editor')
+  }
+  else if (index === 'editor') {
     router.push('/editor')
   } else if (index === 'messages') {
     router.push('/messages')

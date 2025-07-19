@@ -71,8 +71,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
             Notification notification = new Notification(id, ActiveTypeEnum.FOLLOW, follow.getId(), SecurityUtils.getLoginUserId());
             notificationService.save(notification);
         }
-        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + id);
-        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + SecurityUtils.getLoginUserId());
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + id);
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + SecurityUtils.getLoginUserId());
         return insert > 0;
     }
 
@@ -87,11 +87,14 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         }
         // 删除通知
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Notification::getContentId, follow.getId());
+        wrapper.eq(Notification::getContentId, follow.getId())
+                .eq(Notification::getType, ActiveTypeEnum.FOLLOW)
+                .eq(Notification::getSenderId, SecurityUtils.getLoginUserId());
+        ;
         notificationService.remove(wrapper);
         followMapper.deleteById(follow.getId());
-        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + id);
-        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + SecurityUtils.getLoginUserId());
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + id);
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + SecurityUtils.getLoginUserId());
         return true;
     }
 
@@ -120,5 +123,27 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
             followVo.setAvatar(SystemConstants.BASIC_URL + followVo.getAvatar());
         });
         return followerList;
+    }
+
+    @Override
+    public Boolean removeFan(Long fanId) {
+        LambdaQueryWrapper<Follow> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Follow::getFollowingId, fanId)
+                .eq(Follow::getFollowerId, SecurityUtils.getLoginUserId());
+        Follow follow = followMapper.selectOne(queryWrapper);
+        if (follow == null) {
+            return false;
+        }
+        // 删除通知
+        LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Notification::getContentId, follow.getId())
+                .eq(Notification::getType, ActiveTypeEnum.FOLLOW)
+                .eq(Notification::getSenderId, follow.getFollowingId());
+        notificationService.remove(wrapper);
+        followMapper.deleteById(follow.getId());
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWING_COUNT + SecurityUtils.getLoginUserId());
+        redisUtil.deleteObject(CacheKeyConstants.USER_FOLLOWER_COUNT + fanId);
+        return true;
+
     }
 }
