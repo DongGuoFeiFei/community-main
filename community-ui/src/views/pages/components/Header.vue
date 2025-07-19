@@ -21,6 +21,10 @@
         <el-menu-item index="messages">消息</el-menu-item>
         <el-menu-item index="game">游戏</el-menu-item>
         <el-menu-item index="anime">动漫</el-menu-item>
+        <el-menu-item index="anime">动漫</el-menu-item>
+        <el-menu-item index="anime">杂谈</el-menu-item>
+        <el-menu-item index="anime">galgame</el-menu-item>
+        <el-menu-item index="anime">动漫</el-menu-item>
       </el-menu>
 
       <NotificationBadge/>

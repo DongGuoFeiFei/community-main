@@ -64,7 +64,7 @@ const router = createRouter({
             component: () => import("@/views/pages/views/article/Index.vue"),
             meta: {
                 title: "",
-                requiresAuth: false
+                requiresAuth: true
             },
         },
         {

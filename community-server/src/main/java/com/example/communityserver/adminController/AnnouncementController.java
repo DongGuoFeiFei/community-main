@@ -94,15 +94,6 @@ public class AnnouncementController {
         return announcementService.update(updateWrapper) ? Result.success() : Result.error();
     }
 
-//    /**
-// * 获取公告详情
-// * @param {Number} id 公告ID
-// * @returns {Promise}
-// */
-//export const getAnnouncementDetail = (id) => {
-//    return request.get(`/system/announcement/${id}`);
-//};
-
     @ApiOperation("获取公告详情")
     @GetMapping("{id}")
     public Result<SysAnnouncement> getAnnouncementDetail(@PathVariable Long id) {
