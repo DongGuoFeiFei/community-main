@@ -57,7 +57,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
         if (tagIds == null || tagIds.isEmpty() || articleId == null) {
             return 0;
         }
-        // 给次数加一
+        // 次数加一
         LambdaUpdateWrapper<Tag> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.in(Tag::getId, tagIds)
                 .setSql("create_count = create_count + 1");
