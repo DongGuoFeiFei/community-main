@@ -27,6 +27,18 @@ public class StringUtil {
     }
 
     /**
+     * @Description: html转纯文本(前端代码块模块也会一并清除)
+     * @Param: [html]
+     * @return: java.lang.String
+     * @Author: DongGuo
+     */
+
+    public static String htmlToPlainText(String html) {
+        return html.replaceAll("<[^>]+>", "")
+                .replaceAll("&[a-z]+;", "");
+    }
+
+    /**
      * 检查字符串是否包含另一个字符串（不区分大小写）
      *
      * @param text       被检查的文本
@@ -185,8 +197,8 @@ public class StringUtil {
     /**
      * 比较两个字符串是否相同
      *
-     * @param str1 第一个字符串
-     * @param str2 第二个字符串
+     * @param str1       第一个字符串
+     * @param str2       第二个字符串
      * @param ignoreCase 是否忽略大小写
      * @return 如果相同返回true，否则返回false
      */

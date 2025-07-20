@@ -62,7 +62,6 @@ import {useRoute, useRouter} from 'vue-router'
 import {ElAlert, ElCard, ElIcon, ElMessage} from 'element-plus'
 import {fetchPostDetail} from '@/api/index.js'
 import MarkdownIt from 'markdown-it'
-import DOMPurify from 'dompurify'
 import NProgress from "nprogress";
 import {localStores} from "@/stores/localStores.js";
 import LikeCollect from "@/views/pages/components/LikeCollect.vue";
@@ -154,15 +153,13 @@ const fetchPostData = async (id) => {
     post.value = {
       ...postData,
       imageUrl: lStore.baseURL + postData.imageUrl,
-      content: DOMPurify.sanitize(
-          md.render(postData.content || ''),
-          SANITIZE_CONFIG
-      ),
+      // content: DOMPurify.sanitize(
+      //     md.render(postData.content || ''),
+      //     SANITIZE_CONFIG
+      // ),
+      content: postData.content || '',
       url: window.location.href
     }
-    console.log(post.value)
-    console.log(post.value.url)
-    console.log(post.value.title)
     document.title = post.value.title
   } catch (err) {
     emit("update:modelValue", null)
@@ -191,7 +188,7 @@ watch(
     }
 )
 
-const handleLike = async ({ itemId, isLiked }) => {
+const handleLike = async ({itemId, isLiked}) => {
   try {
     if (isLiked) {
       await addLike(itemId);
@@ -210,7 +207,7 @@ const handleLike = async ({ itemId, isLiked }) => {
 };
 
 // 收藏处理
-const handleCollect = async ({ itemId, action }) => {
+const handleCollect = async ({itemId, action}) => {
   try {
     if (action === 'uncollect') {
       await cancelCollect(itemId);

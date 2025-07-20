@@ -7,15 +7,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SystemConstants;
-import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.enums.ActiveTypeEnum;
+import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.ArticleSearchParam;
-import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.FetchPostsParam;
+import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapper.ArticleInteractionMapper;
 import com.example.communityserver.mapper.ArticleMapper;
@@ -164,8 +164,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
         Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param);
         voPage.getRecords().forEach(articleCardVo -> {
-            String content = MarkDownUtils.toPlainText(articleCardVo.getContent());
-            articleCardVo.setContent(StringUtil.truncate(content, 100));
+            String html = MarkDownUtils.toHtml(articleCardVo.getContent());
+            articleCardVo.setContent(StringUtil.truncate(StringUtil.htmlToPlainText(html), 100));
         });
         return voPage;
     }

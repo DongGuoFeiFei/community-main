@@ -11,6 +11,7 @@ import config from "@/utils/env.js";
 import {ElLoading} from "element-plus";
 import request from "@/utils/request.js";
 import {useDebounceFn} from '@vueuse/core';
+import env from "@/utils/env.js";
 
 // todo md增加颜色配置
 
@@ -61,7 +62,7 @@ const uploadFile = async (file) => {
     });
 
     if (res.code === 200) {
-      return `${props.baseUrl}${res.data.accessUrl}`;
+      return `${env.apiBaseUrl}${res.data.accessUrl}`;
     }
     throw new Error(res.msg || '文件上传失败');
   } catch (error) {

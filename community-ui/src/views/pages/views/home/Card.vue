@@ -59,7 +59,7 @@
             <div v-else class="no-cover">无封面</div>
             <div class="text-content">
               <h3>{{ post.title }}</h3>
-              <p class="summary">{{ truncateSummary(post.summary) }}</p>
+              <p class="summary">{{ post.summary }}</p>
               <div class="meta">
                 <span>作者：{{ post.author }}</span>
                 <span>{{ formatDate(post.date) }}</span>
@@ -116,12 +116,6 @@ const skeletonCount = computed(() => {
 const formatDate = (dateString) => {
   if (!dateString) return ''
   return dateString.split(' ')[0] // 只显示日期部分
-}
-
-// 截断摘要
-const truncateSummary = (summary) => {
-  if (!summary) return ''
-  return summary.length > 100 ? summary.substring(0, 100) + '...' : summary
 }
 
 // 跳转到详情

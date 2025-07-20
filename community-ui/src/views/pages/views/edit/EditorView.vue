@@ -9,8 +9,8 @@
     />
 
     <!-- 编辑器主体 -->
-    <MarkdownEditor v-model="content" ref="editorRef"/>
-
+    <!--    <MarkdownEditor v-model="content" ref="editorRef"/>-->
+    <tiptap-editor v-model:html="articleData.content"/>
     <!-- 标签选择器 -->
     <TagSelector
         v-model="tags"
@@ -37,12 +37,9 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElLoading, ElMessage, ElMessageBox} from 'element-plus'
-
-
-import MarkdownEditor from '@/views/pages/views/edit/MarkdownEditor.vue'
 import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from '@/api/index.js'
 import {localStores} from '@/stores/localStores.js'
 import {sessionStores} from '@/stores/sessionStores.js'
@@ -50,8 +47,9 @@ import CoverSection from "@/views/pages/views/edit/CoverSection.vue";
 import EditorHeader from "@/views/pages/views/edit/EditorHeader.vue";
 import TagSelector from "@/views/pages/views/edit/TagSelector.vue";
 import {getPostTags} from "@/api/article.js";
+import TiptapEditor from "@/views/pages/views/edit/components/TiptapEditor.vue";
 
-const content = ref('朋友，有趣的故事，你来分享🎉️！')
+
 const lStore = localStores()
 const baseUrl = lStore.baseURL
 const router = useRouter()
@@ -60,15 +58,26 @@ const sStore = sessionStores()
 const isEditMode = ref(sStore.isEditMode)
 const route = useRoute()
 
-const editorRef = ref(null);
+// const editorRef = ref(null);
 // 文章数据
 const articleData = reactive({
   title: '',
   fileId: null,
-  content: '朋友，有趣的故事，你来分享🎉️！',
+  content: '<div style="font-family: SimSun, 宋体, serif; font-size: 18px; text-align: center; margin-bottom: 10px;">\n' +
+      '  涉江<span style="color: #8b4513; font-weight: bold;">采芙蓉</span>，兰泽多<span style="color: #8b4513; font-weight: bold;">芳草</span>。\n' +
+      '</div>\n' +
+      '<div style="font-family: SimSun, 宋体, serif; font-size: 18px; text-align: center; margin-bottom: 10px;">\n' +
+      '  采之欲<span style="color: #8b4513; font-weight: bold;">遗谁</span>？所思在<span style="color: #8b4513; font-weight: bold;">远道</span>。\n' +
+      '</div>',
   status: 0, // 0: 发布, 1: 草稿
   tagIds: computed(() => tags.value.map(tag => tag.id))
 })
+
+// const content = computed(() => {
+//   console.log(articleData.content)
+//   return articleData.content
+// })
+const content = ref('')
 
 const tags = ref([])
 
@@ -149,7 +158,7 @@ const saveArticle = (status) => {
     return
   }
 
-  articleData.content = content.value
+  // articleData.content = content.value
   articleData.status = status
 
   if (!articleData.content.trim()) {
@@ -193,36 +202,51 @@ const saveArticle = (status) => {
 }
 
 // 设置是否是旧值
-const isEditor = () => {
+const isEditor = async () => {
   if (route.path === '/editor') {
     isEditMode.value = false
+    return
   }
+
   if (route.path === '/editor-edit') {
     isEditMode.value = true
   }
+
   if (isEditMode.value) {
-    getArticleById(sStore.editorArticleId).then(res => {
-      articleData.title = res.title
-      articleData.content = res.content
-      articleData.fileId = res.fileId
-      articleData.status = res.status
-      coverImageData.fileId = res.fileId
-      coverImageData.accessUrl = sStore.baseURL + res.coverUrl
-      content.value = articleData.content
-    })
-    getPostTags(sStore.editorArticleId).then(res => {
-      tags.value = res.data
-    })
+    try {
+      const [articleRes, tagsRes] = await Promise.all([
+        getArticleById(sStore.editorArticleId),
+        getPostTags(sStore.editorArticleId)
+      ])
+
+      // 一次性赋值，减少响应式更新次数
+      Object.assign(articleData, {
+        title: articleRes.title,
+        content: articleRes.content,
+        fileId: articleRes.fileId,
+        status: articleRes.status
+      })
+
+      // 直接设置 content 的值
+      // content.value = articleRes.content
+
+      coverImageData.fileId = articleRes.fileId
+      coverImageData.accessUrl = sStore.baseURL + articleRes.coverUrl
+      tags.value = tagsRes.data
+    } catch (error) {
+      console.error('获取文章数据失败:', error)
+      ElMessage.error('加载文章失败')
+    }
   }
 }
 
-const initEditor = () => {
-  editorRef.value.initEditor();
-};
+// const initEditor = () => {
+//   editorRef.value.initEditor();
+// };
 
 onMounted(() => {
   isEditor()
-  initEditor()
+  // initEditor()
 })
 
 // 返回上一页
@@ -239,6 +263,14 @@ const goBack = async () => {
     console.log('用户取消了返回操作')
   }
 }
+
+// watch(
+//     () => articleData.content,
+//     (newHtml) => {
+//       content.value = newHtml
+//     }
+// )
+
 </script>
 
 <style scoped>
