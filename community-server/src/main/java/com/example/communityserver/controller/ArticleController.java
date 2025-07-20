@@ -82,6 +82,7 @@ public class ArticleController {
     @PutMapping("/updateArticleDtl/{id}")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
+        System.out.println(updateDto);
         Article article = new Article();
         article.setIsDrafts(updateDto.getStatus());
         article.setArticleId(id);
@@ -89,10 +90,10 @@ public class ArticleController {
         article.setContent(updateDto.getContent());
         article.setTitle(updateDto.getTitle());
         boolean b = postsService.updateById(article);
+        System.out.println(updateDto.getTagIds());
         boolean delTagArticle = tagService.delTagArticle(updateDto.getTagIds());
         int i = tagService.batchInsert(updateDto.getTagIds(), article.getArticleId());
         return i > 0 ? Result.success() : Result.error("失败");
-
     }
 
     @ApiOperation("获取文章列表")

@@ -70,6 +70,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
         if (tagIds == null || tagIds.isEmpty()) {
             return false;
         }
+        System.out.println(tagIds);
         return tagMapper.delTagArticle(tagIds);
     }
 }

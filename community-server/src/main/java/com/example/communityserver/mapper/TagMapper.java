@@ -22,5 +22,5 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     int batchInsert(@Param("tagIds") List<Long> tagIds,@Param("articleId") Long articleId);
 
-    boolean delTagArticle(List<Long> tagIds);
+    boolean delTagArticle(@Param("tagIds") List<Long> tagIds);
 }

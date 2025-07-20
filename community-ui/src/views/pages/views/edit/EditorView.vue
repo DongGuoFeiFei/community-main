@@ -73,10 +73,6 @@ const articleData = reactive({
   tagIds: computed(() => tags.value.map(tag => tag.id))
 })
 
-// const content = computed(() => {
-//   console.log(articleData.content)
-//   return articleData.content
-// })
 const content = ref('')
 
 const tags = ref([])
@@ -170,32 +166,31 @@ const saveArticle = (status) => {
     lock: true,
     text: status === 0 ? '正在发布文章...' : '正在保存草稿...'
   })
-
+  console.log(articleData)
   if (sStore.isEditMode) {
-    articleData.tags =
         updateArticle(sStore.editorArticleId, articleData)
             .then(res => {
               ElMessage.success(status === 0 ? '文章重发布成功' : '草稿修改成功')
+              sStore.isEditMode = false
               router.back()
             })
             .catch(err => {
               ElMessage.warning('操作失败，稍后重试。')
             })
             .finally(() => {
-              sStore.isEditMode = false
               loading.close()
             })
   } else {
     addArticle(articleData)
         .then(res => {
           ElMessage.success(status === 0 ? '文章发布成功' : '草稿保存成功')
+          sStore.isEditMode = false
           router.back()
         })
         .catch(err => {
           ElMessage.warning('操作失败，稍后重试。')
         })
         .finally(() => {
-          sStore.isEditMode = false
           loading.close()
         })
   }
@@ -227,12 +222,10 @@ const isEditor = async () => {
         status: articleRes.status
       })
 
-      // 直接设置 content 的值
-      // content.value = articleRes.content
-
       coverImageData.fileId = articleRes.fileId
       coverImageData.accessUrl = sStore.baseURL + articleRes.coverUrl
       tags.value = tagsRes.data
+      console.log(articleData)
     } catch (error) {
       console.error('获取文章数据失败:', error)
       ElMessage.error('加载文章失败')
@@ -240,13 +233,9 @@ const isEditor = async () => {
   }
 }
 
-// const initEditor = () => {
-//   editorRef.value.initEditor();
-// };
 
 onMounted(() => {
   isEditor()
-  // initEditor()
 })
 
 // 返回上一页
@@ -263,13 +252,6 @@ const goBack = async () => {
     console.log('用户取消了返回操作')
   }
 }
-
-// watch(
-//     () => articleData.content,
-//     (newHtml) => {
-//       content.value = newHtml
-//     }
-// )
 
 </script>
 
