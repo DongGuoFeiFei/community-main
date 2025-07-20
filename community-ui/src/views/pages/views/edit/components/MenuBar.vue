@@ -15,6 +15,10 @@ const props = defineProps({
   editor: {
     type: Object,
     required: true
+  },
+  uploadImage: {
+    type: Function,
+    required: true
   }
 })
 
@@ -139,10 +143,23 @@ const items = reactive([
     icon: 'image-line',
     title: '插入图片',
     action: () => {
-      const url = window.prompt('URL')
-      if (url) {
-        props.editor.chain().focus().setImage({ src: url }).run()
-      }
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          try {
+            await props.uploadImage(file);
+          } catch (error) {
+            console.error('图片上传失败:', error);
+            // 可以在这里添加错误提示
+          }
+        }
+      };
+
+      input.click();
     }
   },
   {

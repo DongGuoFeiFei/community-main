@@ -1,6 +1,6 @@
 <template>
   <div class="editor" v-if="editor" :style="{ width }">
-    <MenuBar v-if="editor" class="editor-header" :editor="editor"/>
+    <MenuBar v-if="editor" class="editor-header" :editor="editor" :upload-image="handleImageUpload"/>
     <editor-content class="editor-content" :editor="editor"/>
   </div>
 </template>
@@ -16,6 +16,8 @@ import {Table} from '@tiptap/extension-table'
 import {TableRow} from '@tiptap/extension-table-row'
 import {TableCell} from '@tiptap/extension-table-cell'
 import {TableHeader} from '@tiptap/extension-table-header'
+import {uploadFile} from '@/api/files'
+import env from "@/utils/env.js";
 
 const props = defineProps({
   html: {
@@ -54,7 +56,9 @@ const editor = useEditor({
   content: props.html,
   extensions: [
     StarterKit,
-    Image,
+    Image.configure({
+      allowBase64: false,
+    }),
     Highlight.configure({multicolor: true}),
     Table.configure({
       resizable: true
@@ -64,9 +68,20 @@ const editor = useEditor({
     CustomTableCell
   ],
   onUpdate: () => {
+    console.log(editor.value.getHTML())
     emit('update:html', editor.value.getHTML())
   }
 })
+
+const handleImageUpload = async (file) => {
+  try {
+    const url = await uploadFile(file);
+    editor.value.chain().focus().setImage({src: env.apiBaseUrl + url}).run();
+  } catch (error) {
+    console.error('图片上传失败:', error);
+    // 可以在这里添加错误提示
+  }
+}
 
 watch(() => props.html,
     (newValue) => {
