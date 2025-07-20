@@ -176,6 +176,7 @@ const items = reactive([
     action: () => props.editor.chain().focus().redo().run()
   }
 ])
+
 </script>
 <style lang="scss">
 .divider {

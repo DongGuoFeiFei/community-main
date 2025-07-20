@@ -1,23 +1,25 @@
 <template>
-  <div class="editor" v-if="editor" :style="{ width }">
-    <MenuBar v-if="editor" class="editor-header" :editor="editor" :upload-image="handleImageUpload"/>
-    <editor-content class="editor-content" :editor="editor"/>
+  <div class="editor-container" :style="{ width }">
+    <div class="editor" v-if="editor">
+      <MenuBar v-if="editor" class="editor-header" :editor="editor" :upload-image="handleImageUpload"/>
+      <editor-content class="editor-content" :editor="editor" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import {EditorContent, useEditor} from '@tiptap/vue-3'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import {onBeforeUnmount, watch} from 'vue'
+import { onBeforeUnmount, watch, onMounted } from 'vue'
 import MenuBar from './MenuBar.vue'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
-import {Table} from '@tiptap/extension-table'
-import {TableRow} from '@tiptap/extension-table-row'
-import {TableCell} from '@tiptap/extension-table-cell'
-import {TableHeader} from '@tiptap/extension-table-header'
-import {uploadFile} from '@/api/files'
-import env from "@/utils/env.js";
+import { Table } from '@tiptap/extension-table'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TableCell } from '@tiptap/extension-table-cell'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { uploadFile } from '@/api/files'
+import env from "@/utils/env.js"
 
 const props = defineProps({
   html: {
@@ -28,9 +30,9 @@ const props = defineProps({
     type: String,
     default: '100%'
   },
-  height: {
+  minHeight: {
     type: String,
-    default: '300px'
+    default: '100px'
   }
 })
 
@@ -59,7 +61,7 @@ const editor = useEditor({
     Image.configure({
       allowBase64: false,
     }),
-    Highlight.configure({multicolor: true}),
+    Highlight.configure({ multicolor: true }),
     Table.configure({
       resizable: true
     }),
@@ -68,46 +70,81 @@ const editor = useEditor({
     CustomTableCell
   ],
   onUpdate: () => {
-    console.log(editor.value.getHTML())
     emit('update:html', editor.value.getHTML())
+    adjustEditorHeight()
   }
 })
 
+const adjustEditorHeight = () => {
+  const editorElement = document.querySelector('.editor-content')
+  if (!editorElement) return
+
+  // 重置高度为auto以获取实际内容高度
+  editorElement.style.height = 'auto'
+
+  // 获取内容实际高度
+  const contentHeight = editorElement.scrollHeight
+
+  // 设置新的高度，确保不小于最小高度
+  editorElement.style.height = `${Math.max(contentHeight, parseInt(props.minHeight))}px`
+}
+
 const handleImageUpload = async (file) => {
   try {
-    const url = await uploadFile(file);
-    editor.value.chain().focus().setImage({src: env.apiBaseUrl + url}).run();
+    const url = await uploadFile(file)
+    editor.value.chain().focus().setImage({ src: env.apiBaseUrl + url }).run()
+    // 图片加载完成后调整高度
+    setTimeout(adjustEditorHeight, 300)
   } catch (error) {
-    console.error('图片上传失败:', error);
-    // 可以在这里添加错误提示
+    console.error('图片上传失败:', error)
   }
 }
 
-watch(() => props.html,
-    (newValue) => {
-      if (editor.value && newValue !== editor.value.getHTML()) {
-        editor.value.commands.setContent(newValue, false)
-      }
-    },
-    {immediate: true}
-)
-
-onBeforeUnmount(() => {
-  if (editor.value) {
-    editor.value.destroy()
+watch(() => props.html, (newValue) => {
+  if (editor.value && newValue !== editor.value.getHTML()) {
+    editor.value.commands.setContent(newValue, false)
+    // 内容更新后调整高度
+    setTimeout(adjustEditorHeight, 100)
   }
+}, { immediate: true })
+
+onMounted(() => {
+  // 初始高度调整
+  setTimeout(adjustEditorHeight, 300)
+
+  // 添加resize观察器
+  const resizeObserver = new ResizeObserver(() => {
+    adjustEditorHeight()
+  })
+
+  const editorContent = document.querySelector('.editor-content')
+  if (editorContent) {
+    resizeObserver.observe(editorContent)
+  }
+
+  onBeforeUnmount(() => {
+    resizeObserver.disconnect()
+    if (editor.value) {
+      editor.value.destroy()
+    }
+  })
 })
 </script>
 
 <style lang="scss">
+.editor-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .editor {
   display: flex;
   flex-direction: column;
-  max-height: 26rem;
   color: #0d0d0d;
   background-color: #fff;
   border: 3px solid #0d0d0d;
   border-radius: .75rem;
+  min-height: v-bind('props.minHeight');
 
   &-header {
     display: flex;
@@ -122,14 +159,15 @@ onBeforeUnmount(() => {
     padding: .7rem .5rem;
     flex: 1 1 auto;
     overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: hidden; // 禁用滚动条
+    transition: height 0.15s ease-out;
   }
 }
 
 /* 基本编辑器样式 */
 .ProseMirror {
-  height: 100%;
+  outline: none;
+  min-height: calc(v-bind('props.minHeight') - 1.4rem); // 减去padding
 
   &:focus {
     outline: none;

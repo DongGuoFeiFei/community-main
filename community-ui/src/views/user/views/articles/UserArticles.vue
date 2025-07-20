@@ -48,7 +48,6 @@
                 :src="baseUrl + row.coverUrl"
                 fit="cover"
                 style="width: 80px; height: 60px; border-radius: 4px"
-                :preview-src-list="[baseUrl + row.coverUrl]"
                 hide-on-click-modal
             />
             <div v-else class="no-cover">无封面</div>
@@ -57,7 +56,7 @@
 
         <el-table-column prop="title" label="标题" min-width="200">
           <template #default="{ row }">
-            <router-link :to="`/article/${row.id}`" class="article-title">
+            <router-link :to="`/article/${row.id}`" target="_blank" class="article-title">
               {{ row.title }}
             </router-link>
             <el-tag
