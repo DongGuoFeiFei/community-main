@@ -250,6 +250,7 @@ const handleSearch = () => {
 
 const resetSearch = () => {
   searchForm.name = '';
+  searchForm.status=null;
   handleSearch();
 };
 

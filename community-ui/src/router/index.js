@@ -50,7 +50,7 @@ const router = createRouter({
                 {
                     path: 'index',
                     name: 'card',
-                    component: () => import("@/views/pages/views/home/Card.vue"),
+                    component: () => import("@/views/pages/views/home/components/Card.vue"),
                     meta: {
                         title: "采芙蓉"
                     },
