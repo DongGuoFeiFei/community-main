@@ -11,14 +11,13 @@
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
-
     <select id="getPostsCardVoList" resultMap="PostResultMap">
         SELECT
         p.article_id,
         p.title,
         u.nickname,
         p.content,
-        f.access_url as cover_url,
+        p.cover_url,
         DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') as created_at,
         DATE_FORMAT(p.updated_at, '%Y-%m-%d %H:%i:%s') as updated_at,
         p.view_count,
@@ -30,13 +29,20 @@
         article p
         JOIN
         user u ON p.user_id = u.user_id
-        LEFT JOIN
-        file f ON p.file_id = f.file_id
+        <if test="categoryIds != null  and categoryIds.size() > 0">
+            JOIN article_category_relation acr ON p.article_id = acr.article_id
+        </if>
         WHERE
         p.is_del = '1'
         AND p.is_drafts = '0'
         <if test="param.title != null and param.title != ''">
             AND p.title LIKE CONCAT('%', #{param.title}, '%')
+        </if>
+        <if test="categoryIds != null and categoryIds.size() > 0">
+            AND acr.category_id IN
+            <foreach collection="categoryIds" item="categoryId" open="(" separator="," close=")">
+                #{categoryId}
+            </foreach>
         </if>
         ORDER BY
         <choose>

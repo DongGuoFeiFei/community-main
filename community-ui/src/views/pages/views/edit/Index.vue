@@ -233,12 +233,12 @@ const goBack = async () => {
   }
 }
 
-watch(() => articleData.categoryIds,
-    (newDate) => {
-      console.log(newDate)
-      console.log(articleData)
-    }
-)
+// watch(() => articleData.categoryIds,
+//     (newDate) => {
+//       console.log(newDate)
+//       console.log(articleData)
+//     }
+// )
 
 </script>
 

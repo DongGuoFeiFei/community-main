@@ -23,5 +23,5 @@ public interface ITagService extends IService<Tag> {
 
     int batchInsert(List<Long> tagIds, Long articleId);
 
-    boolean delTagArticle(List<Long> tagIds);
+    boolean delTagArticle(List<Long> tagIds, Long articleId);
 }

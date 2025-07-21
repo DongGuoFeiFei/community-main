@@ -20,4 +20,5 @@ public class AddArticleDto {
     private String content;
     private Integer status;
     private List<Long> tagIds;
+    private List<Long> categoryIds;
 }

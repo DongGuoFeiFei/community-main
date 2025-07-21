@@ -9,6 +9,7 @@ import com.example.communityserver.entity.request.FetchPostsParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
+import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
@@ -43,10 +44,13 @@ public class ArticleController {
     @Autowired
     private ITagService tagService;
 
+    @Autowired
+    private IArticleCategoryRelationService articleCategoryRelationService;
+
     // TODO: 2025/6/28 游客能够直接使用查看文章功能 
     // TODO: 2025/6/28 权限使用
 
-    @ApiOperation("搜索文章")
+    @ApiOperation("搜索文章（首页列表）")
     @GetMapping
     public TableDataInfo fetchPosts(FetchPostsParam param) {
         Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
@@ -93,12 +97,14 @@ public class ArticleController {
         article.setTitle(updateDto.getTitle());
         boolean b = postsService.updateById(article);
         System.out.println(updateDto.getTagIds());
-        boolean delTagArticle = tagService.delTagArticle(updateDto.getTagIds());
-        int i = tagService.batchInsert(updateDto.getTagIds(), article.getArticleId());
+        boolean delTagArticle = tagService.delTagArticle(updateDto.getTagIds(), article.getArticleId());
+        tagService.batchInsert(updateDto.getTagIds(), article.getArticleId());
+        boolean delACRelation = articleCategoryRelationService.delACRelation(updateDto.getCategoryIds(), article.getArticleId());
+        int i = articleCategoryRelationService.batchInsert(updateDto.getCategoryIds(),article.getArticleId());
         return i > 0 ? Result.success() : Result.error("失败");
     }
 
-    @ApiOperation("获取文章列表")
+    @ApiOperation("获取文章列表（用户管理）")
     @GetMapping("/getArticleList")
     public TableDataInfo getArticleList(GetArticleListDto dto) {
         Page<ArticleListVo> page = postsService.getArticleList(dto);
@@ -138,14 +144,14 @@ public class ArticleController {
         return Result.success(cardVo);
     }
 
-    @ApiOperation("获取用户创建的帖子列表")
+    @ApiOperation("获取用户创建的帖子列表（作者页面数据）")
     @GetMapping("{userId}/posts")
     public Result<List<UserPostVo>> getUserPosts(@PathVariable Long userId) {
         List<UserPostVo> voList = postsService.getUserPosts(userId);
         return voList != null ? Result.success(voList) : Result.error();
     }
 
-    @ApiOperation("获取用户收藏的帖子列表")
+    @ApiOperation("获取用户收藏的帖子列表（作者页面数据）")
     @GetMapping("{userId}/favorites")
     public Result<List<UserPostVo>> getUserFavorites(@PathVariable Long userId) {
         List<UserPostVo> voList = postsService.getUserFavorites(userId);

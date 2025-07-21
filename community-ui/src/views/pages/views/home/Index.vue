@@ -1,5 +1,4 @@
 <script setup lang="js">
-import Header from "@/views/pages/components/Header.vue";
 import Footer from "@/views/pages/components/Footer.vue";
 import Announcement from "@/components/Announcement.vue";
 import {onMounted, reactive, ref} from "vue";
@@ -8,6 +7,7 @@ import PostList from "@/views/pages/views/home/components/PostList.vue";
 import PostPagination from "@/views/pages/views/home/components/PostPagination.vue";
 import {fetchPosts} from "@/api/index.js";
 import {localStores} from "@/stores/localStores.js";
+import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 
 
 // 共享状态
@@ -56,7 +56,7 @@ onMounted(() => {
     <div class="common-layout">
       <el-container>
         <el-header>
-          <Header/>
+          <HomeHeader/>
         </el-header>
         <el-container>
           <el-aside width="200px">

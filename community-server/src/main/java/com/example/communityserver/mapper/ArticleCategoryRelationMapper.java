@@ -2,6 +2,9 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.communityserver.entity.model.ArticleCategoryRelation;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +17,7 @@ import com.example.communityserver.entity.model.ArticleCategoryRelation;
 
 
 public interface ArticleCategoryRelationMapper extends BaseMapper<ArticleCategoryRelation> {
+    int batchInsert(@Param("categoryIds") List<Long> categoryIds,@Param("articleId") Long articleId);
+
+    boolean delACRelation(@Param("categoryIds") List<Long> categoryIds,@Param("articleId") Long articleId);
 }

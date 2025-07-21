@@ -17,4 +17,9 @@ import java.util.List;
 
 public interface IArticleCategoryRelationService extends IService<ArticleCategoryRelation> {
     List<ArticleCategoryRelation> getArticleCategoriesByArticleId(Long articleId);
+
+
+    int batchInsert(List<Long> categoryIds, Long articleId);
+
+    boolean delACRelation(List<Long> categoryIds, Long articleId);
 }

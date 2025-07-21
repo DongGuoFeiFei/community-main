@@ -66,11 +66,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
     }
 
     @Override
-    public boolean delTagArticle(List<Long> tagIds) {
+    public boolean delTagArticle(List<Long> tagIds, Long articleId) {
         if (tagIds == null || tagIds.isEmpty()) {
             return false;
         }
         System.out.println(tagIds);
-        return tagMapper.delTagArticle(tagIds);
+        return tagMapper.delTagArticle(tagIds,articleId);
     }
 }
