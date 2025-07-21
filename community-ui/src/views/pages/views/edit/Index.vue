@@ -1,7 +1,7 @@
 <script setup>
 
 import Header from "@/views/pages/components/Header.vue";
-import {computed, onMounted, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElLoading, ElMessage, ElMessageBox} from 'element-plus'
 import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from '@/api/index.js'
@@ -12,6 +12,8 @@ import EditorHeader from "@/views/pages/views/edit/EditorHeader.vue";
 import TagSelector from "@/views/pages/views/edit/TagSelector.vue";
 import {getPostTags} from "@/api/article.js";
 import TiptapEditor from "@/views/pages/views/edit/components/TiptapEditor.vue";
+import {getArticleCategories} from "@/api/category.js";
+import CategorySelector from "@/views/pages/views/edit/CategorySelector.vue";
 
 const lStore = localStores()
 const baseUrl = lStore.baseURL
@@ -32,7 +34,8 @@ const articleData = reactive({
       '  采之欲<span style="color: #8b4513; font-weight: bold;">遗谁</span>？所思在<span style="color: #8b4513; font-weight: bold;">远道</span>。\n' +
       '</div>',
   status: 0, // 0: 发布, 1: 草稿
-  tagIds: computed(() => tags.value.map(tag => tag.id))
+  tagIds: computed(() => tags.value.map(tag => tag.id)),
+  categoryIds: []
 })
 
 const content = ref('')
@@ -109,20 +112,33 @@ const removeCover = () => {
   })
 }
 
-// 保存文章
+/**
+ *  保存文章
+ *  status：保存还是更新
+ * @param status
+ */
 const saveArticle = (status) => {
   if (!articleData.title.trim()) {
     ElMessage.warning('请输入文章标题')
     return
   }
-
-  // articleData.content = content.value
-  articleData.status = status
-
+  if (articleData.fileId === null) {
+    ElMessage.warning('请添加封面')
+    return
+  }
   if (!articleData.content.trim()) {
     ElMessage.warning('文章内容不能为空')
     return
   }
+  if (articleData.tagIds === []) {
+    ElMessage.warning('请添加标签')
+    return
+  }
+  if (articleData.categoryIds === []) {
+    ElMessage.warning('请添加分类')
+    return
+  }
+  articleData.status = status
 
   const loading = ElLoading.service({
     lock: true,
@@ -171,9 +187,10 @@ const isEditor = async () => {
 
   if (isEditMode.value) {
     try {
-      const [articleRes, tagsRes] = await Promise.all([
+      const [articleRes, tagsRes, categoriesRes] = await Promise.all([
         getArticleById(sStore.editorArticleId),
-        getPostTags(sStore.editorArticleId)
+        getPostTags(sStore.editorArticleId),
+        getArticleCategories(sStore.editorArticleId)
       ])
 
       // 一次性赋值，减少响应式更新次数
@@ -187,6 +204,7 @@ const isEditor = async () => {
       coverImageData.fileId = articleRes.fileId
       coverImageData.accessUrl = sStore.baseURL + articleRes.coverUrl
       tags.value = tagsRes.data
+      articleData.categoryIds = categoriesRes.data.map(category => category.categoryId)
       console.log(articleData)
     } catch (error) {
       console.error('获取文章数据失败:', error)
@@ -215,6 +233,13 @@ const goBack = async () => {
   }
 }
 
+watch(() => articleData.categoryIds,
+    (newDate) => {
+      console.log(newDate)
+      console.log(articleData)
+    }
+)
+
 </script>
 
 <template>
@@ -233,8 +258,12 @@ const goBack = async () => {
         />
 
         <!-- 编辑器主体 -->
-        <!--    <MarkdownEditor v-model="content" ref="editorRef"/>-->
         <tiptap-editor v-model:html="articleData.content"/>
+        <!--类别选择器-->
+        <CategorySelector
+            v-model:selected="articleData.categoryIds"
+            class="category-selector-container"
+        />
         <!-- 标签选择器 -->
         <TagSelector
             v-model="tags"
@@ -269,6 +298,10 @@ const goBack = async () => {
   padding: 20px;
 
   .tag-selector-container {
+    margin-bottom: 20px;
+  }
+
+  .category-selector-container {
     margin-bottom: 20px;
   }
 }

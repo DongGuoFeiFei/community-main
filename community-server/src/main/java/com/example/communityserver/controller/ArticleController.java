@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
-import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.FetchPostsParam;
+import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
 import com.example.communityserver.service.IArticleService;
@@ -72,6 +72,8 @@ public class ArticleController {
         return articlesVo != null ? Result.success(articlesVo) : Result.error("稍后重试");
     }
 
+
+    // TODO: 2025/7/21 添加文章he更新文章  增加分类数据--->文章查询时，也要增加分类
     @ApiOperation("添加文章")
     @PostMapping("/addArticle")
     public Result<Void> addArticle(@RequestBody AddArticleDto dto) {
@@ -124,8 +126,8 @@ public class ArticleController {
     public Result<List<ArticleCardVo>> getHotPosts() {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
-                .eq(Article::getIsPublic,1)
-                .eq(Article::getIsDel,1);
+                .eq(Article::getIsPublic, 1)
+                .eq(Article::getIsDel, 1);
         List<Article> list = postsService.list(queryWrapper);
         List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
         collect.forEach(article -> {

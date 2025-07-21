@@ -23,7 +23,7 @@ import java.util.Date;
 @TableName("article_category_relation")
 public class ArticleCategoryRelation {
     @TableId(value = "relation_id", type = IdType.AUTO)
-    private Long relationId;
+    private Long id;
 
     private Long articleId;
     private Long categoryId;

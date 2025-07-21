@@ -27,7 +27,7 @@ import java.util.Date;
 @TableName("content_category")
 public class ContentCategory {
     @TableId(value = "category_id", type = IdType.AUTO)
-    private Long categoryId;
+    private Long id;
 
     private Long parentId;
     private String categoryName;

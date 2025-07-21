@@ -11,7 +11,7 @@
     </el-tabs>
   </div>
 </template>
-<!--todo 添加一个分页-->
+
 <script setup>
 import {onMounted, ref} from 'vue'
 import PostList from './PostList.vue'
