@@ -3,13 +3,14 @@
 import AuthorProfile from "@/views/pages/views/author/components/AuthorProfile.vue";
 import Header from "@/views/pages/components/Header.vue";
 import Footer from "@/views/pages/components/Footer.vue";
+import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 </script>
 
 <template>
 
   <el-container>
     <el-header>
-      <Header/>
+      <HomeHeader/>
     </el-header>
     <el-main>
       <AuthorProfile/>

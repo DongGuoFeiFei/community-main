@@ -9,6 +9,7 @@ import {fetchPosts} from "@/api/index.js";
 import {localStores} from "@/stores/localStores.js";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 import {useRoute} from "vue-router";
+import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
 
 
 // 共享状态
@@ -60,6 +61,7 @@ const loadPosts = async () => {
 onMounted(() => {
   if (route.params.id) {
     searchParam.categoryId = route.params.id
+    console.log(route.params.id)
   }
   loadPosts()
 })
@@ -83,6 +85,10 @@ watch(() => route.params.id, (newId) => {
         </el-header>
         <el-container>
           <el-aside width="200px">
+            <Live2DViewer
+                :scale="0.15"
+                :position="{ x: 50, y: 350 }"
+            />
           </el-aside>
           <el-main>
             <Announcement/>
@@ -110,7 +116,9 @@ watch(() => route.params.id, (newId) => {
               />
             </div>
           </el-main>
-          <el-aside width="200px"></el-aside>
+          <el-aside width="200px">
+
+          </el-aside>
         </el-container>
         <el-footer>
           <Footer/>

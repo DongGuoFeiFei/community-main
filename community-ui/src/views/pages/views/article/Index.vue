@@ -1,12 +1,13 @@
 <script setup>
-import Header from "@/views/pages/components/Header.vue";
-import PostDetail from "@/views/pages/views/article/PostDetail.vue";
+import PostDetail from "@/views/pages/views/article/components/PostDetail.vue";
 import Footer from "@/views/pages/components/Footer.vue";
-import AuthorInfo from "@/views/pages/views/article/AuthorInfo.vue";
-import RecommendSidebar from "@/views/pages/views/article/RecommendSidebar.vue";
+import AuthorInfo from "@/views/pages/views/article/components/AuthorInfo.vue";
+import RecommendSidebar from "@/views/pages/views/article/components/RecommendSidebar.vue";
 import {ref} from "vue";
-import CommentSection from "@/views/pages/views/article/CommentSection.vue";
-import Tags from "@/views/pages/views/article/Tags.vue";
+import CommentSection from "@/views/pages/views/article/components/CommentSection.vue";
+import Tags from "@/views/pages/views/article/components/Tags.vue";
+import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
 
 const articleId = ref(null)
 </script>
@@ -16,12 +17,16 @@ const articleId = ref(null)
     <div class="common-layout">
       <el-container>
         <el-header>
-          <Header/>
+          <HomeHeader/>
         </el-header>
         <el-container>
           <el-aside width="400px">
             <AuthorInfo v-if="articleId" :articleId="Number(articleId)"/>
             <RecommendSidebar :articleId="Number(articleId)"/>
+            <Live2DViewer
+                :scale="0.15"
+                :position="{ x: 50, y: 350 }"
+            />
           </el-aside>
           <el-main>
             <post-detail v-model="articleId"/>

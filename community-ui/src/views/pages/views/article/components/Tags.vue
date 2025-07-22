@@ -1,6 +1,6 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
-import {getPostTags} from '@/api/article'
+import {getPostTags} from '@/api/article.js'
 import {useRouter} from 'vue-router'
 
 const props = defineProps({

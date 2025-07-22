@@ -1,7 +1,6 @@
 <script setup>
 
-import Header from "@/views/pages/components/Header.vue";
-import {computed, onMounted, reactive, ref, watch} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElLoading, ElMessage, ElMessageBox} from 'element-plus'
 import {addArticle, delFileById, getArticleById, updateArticle, uploadFile} from '@/api/index.js'
@@ -14,6 +13,7 @@ import {getPostTags} from "@/api/article.js";
 import TiptapEditor from "@/views/pages/views/edit/components/TiptapEditor.vue";
 import {getArticleCategories} from "@/api/category.js";
 import CategorySelector from "@/views/pages/views/edit/CategorySelector.vue";
+import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 
 const lStore = localStores()
 const baseUrl = lStore.baseURL
@@ -245,7 +245,7 @@ const goBack = async () => {
 <template>
   <el-container>
     <el-header>
-      <Header/>
+      <HomeHeader/>
     </el-header>
     <el-main>
       <div class="editor-container">

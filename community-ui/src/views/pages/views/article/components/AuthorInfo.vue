@@ -45,7 +45,7 @@
 
 <script setup>
 import {onMounted, ref, watch} from 'vue'
-import {getUserInfo} from '@/api/user'
+import {getUserInfo} from '@/api/user.js'
 import {ElAvatar, ElButton, ElTag} from 'element-plus'
 import {localStores} from "@/stores/localStores.js";
 import {addFollowAuthor, delFollowAuthor} from "@/api/follow.js";

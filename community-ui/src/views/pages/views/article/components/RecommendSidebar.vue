@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref, watch} from 'vue';
-import {getHotPosts} from '@/api/article';
+import {getHotPosts} from '@/api/article.js';
 import {useRouter} from 'vue-router';
 
 const props = defineProps({

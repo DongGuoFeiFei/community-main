@@ -1,9 +1,9 @@
 <template>
   <div class="header-wrapper">
     <div class="header-content">
-      <div class="logo">
+      <div class="logo" @click="handleMenuClick('home')">
         <el-image src="/芙蓉花.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
-        <router-link to="/" class="text">采芙蓉</router-link>
+        <div class="text">采芙蓉</div>
       </div>
 
       <el-menu
@@ -12,8 +12,6 @@
           @select="handleMenuClick"
           class="nav-menu"
           background-color="transparent"
-          text-color="#666"
-          active-text-color="#ffd04b"
       >
         <el-menu-item index="home">首页</el-menu-item>
         <el-sub-menu
@@ -96,7 +94,7 @@ const activeMenu = computed(() => {
         ? `subcategory-${route.params.id}`
         : `category-${route.params.id}`
   }
-  return 'home' // 默认值
+  return 'home'
 })
 
 // 计算当前激活的分类ID
@@ -132,6 +130,7 @@ const handleMenuClick = (index) => {
       emit('category-change', categoryId)
       router.push({path: `/${categoryId}`})
     } else if (index === 'home') {
+      emit('category-change', null)
       router.push({path: '/'})
     }
   } catch (error) {
@@ -224,11 +223,21 @@ onMounted(() => {
   font-size: 16px;
   color: #000000;
 
+  // 去除所有状态下的阴影
+  :deep(.el-menu--horizontal) {
+    .el-menu-item,
+    .el-sub-menu__title {
+      box-shadow: none !important;
+    }
+  }
+
+  // 去除选中状态的下划线
   :deep(.el-sub-menu) {
     &.is-active {
       .el-sub-menu__title {
         color: var(--el-color-primary) !important;
-        border-bottom: 2px solid var(--el-color-primary);
+        border-bottom: none !important;
+        box-shadow: none !important;
       }
     }
 
@@ -242,10 +251,23 @@ onMounted(() => {
     }
   }
 
+  // 去除菜单项选中状态的下划线
   :deep(.el-menu-item) {
     &.is-active {
       color: var(--el-color-primary) !important;
-      border-bottom: 2px solid var(--el-color-primary);
+      border-bottom: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  // 去除所有交互状态的阴影和背景变化
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu__title) {
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: transparent !important;
+      box-shadow: none !important;
     }
   }
 
@@ -253,6 +275,16 @@ onMounted(() => {
   :deep(.el-menu-item) {
     height: 64px;
     line-height: 64px;
+  }
+
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu__title) {
+    span {
+      &.active-menu-item {
+        color: var(--el-color-primary);
+        font-weight: bold;
+      }
+    }
   }
 }
 
