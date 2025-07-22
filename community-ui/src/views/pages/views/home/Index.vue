@@ -85,10 +85,7 @@ watch(() => route.params.id, (newId) => {
         </el-header>
         <el-container>
           <el-aside width="200px">
-            <Live2DViewer
-                :scale="0.15"
-                :position="{ x: 50, y: 350 }"
-            />
+            <Live2DViewer/>
           </el-aside>
           <el-main>
             <Announcement/>
