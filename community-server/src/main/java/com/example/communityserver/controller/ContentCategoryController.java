@@ -2,6 +2,7 @@ package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.model.ArticleCategoryRelation;
 import com.example.communityserver.entity.model.ContentCategory;
+import com.example.communityserver.entity.response.ContentCategoryTree;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IContentCategoryService;
 import com.example.communityserver.utils.web.Result;
@@ -33,12 +34,6 @@ public class ContentCategoryController {
     @Autowired
     private IArticleCategoryRelationService articleCategoryRelationService;
 
-///**
-// * 获取所有分类
-// */
-//export const getCategories = () => {
-//  return request.get('/category/list')
-//}
 
     @ApiOperation("获取所有分类")
     @GetMapping("/list")
@@ -47,17 +42,18 @@ public class ContentCategoryController {
         return Result.success(list);
     }
 
-    //    /**
-//     * 获取文章的分类
-//     * @param {number} articleId
-//     */
-//    export const getArticleCategories = (articleId) => {
-//        return request.get(`/article/${articleId}/categories`)
-//    }
+
     @ApiOperation("获取文章的分类")
     @GetMapping("/{articleId}/categories")
     public Result<List<ArticleCategoryRelation>> getArticleCategories(@PathVariable Long articleId) {
         List<ArticleCategoryRelation> list = articleCategoryRelationService.getArticleCategoriesByArticleId(articleId);
+        return Result.success(list);
+    }
+
+    @ApiOperation("获取所有分类树")
+    @GetMapping("/listTree")
+    public Result<List<ContentCategoryTree>> getCategoryTrees() {
+        List<ContentCategoryTree> list = contentCategoryService.getCategoryTrees();
         return Result.success(list);
     }
 }

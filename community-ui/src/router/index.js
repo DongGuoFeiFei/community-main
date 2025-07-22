@@ -1,17 +1,12 @@
 // router/sessionStores.js
 
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '@/views/pages/views/home/Index.vue'
 import NProgress from "@/utils/progress.js";
 import dayjs from 'dayjs'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        {
-            path: '/',
-            redirect: '/index',
-        },
         {
             path: '/register',
             name: 'Register',
@@ -42,21 +37,20 @@ const router = createRouter({
         {
             path: '/',
             name: 'index',
-            component: Index,
+            component: () => import("@/views/pages/views/home/Index.vue"),
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: "采芙蓉"
+            }
+        },
+        {
+            path: '/:id',
+            name: 'routeCategoryId',
+            component: () => import("@/views/pages/views/home/Index.vue"),
+            meta: {
+                requiresAuth: true,
+                title: "采芙蓉"
             },
-            children: [
-                {
-                    path: 'index',
-                    name: 'card',
-                    component: () => import("@/views/pages/views/home/components/Card.txt"),
-                    meta: {
-                        title: "采芙蓉"
-                    },
-                },
-
-            ]
         },
         {
             path: '/article/:id',

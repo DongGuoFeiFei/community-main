@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="logo">
         <el-image src="/芙蓉花.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
-        <router-link to="/index" class="text">采芙蓉</router-link>
+        <router-link to="/" class="text">采芙蓉</router-link>
       </div>
 
       <el-menu
@@ -15,14 +15,30 @@
           text-color="#666"
           active-text-color="#ffd04b"
       >
-        <el-menu-item index="card">发现</el-menu-item>
-        <el-menu-item index="messages">消息</el-menu-item>
-        <el-menu-item index="game">游戏</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
-        <el-menu-item index="anime">杂谈</el-menu-item>
-        <el-menu-item index="anime">galgame</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
+        <el-menu-item index="home">首页</el-menu-item>
+        <el-sub-menu
+            v-for="category in categories"
+            :key="category.id"
+            :index="`category-${category.id}`"
+        >
+          <template #title>
+            <span
+                @click.stop="handleCategoryClick(category.id)"
+                :class="{
+                'active-category': category.id.toString() === activeCategoryId
+              }"
+            >
+              {{ category.categoryName }}
+            </span>
+          </template>
+          <el-menu-item
+              v-for="subCategory in category.categoryList"
+              :key="subCategory.id"
+              :index="`subcategory-${subCategory.id}`"
+          >
+            {{ subCategory.categoryName }}
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
 
       <NotificationBadge/>
@@ -45,56 +61,110 @@
           </template>
         </el-dropdown>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup lang="js">
-import {ref} from 'vue'
-import {useRouter} from 'vue-router'
+import {computed, onMounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import {localStores} from "@/stores/localStores.js";
 import {sessionStores} from "@/stores/sessionStores.js";
 import {logout} from "@/api/auth.js";
+import {getCategoryTrees} from "@/api/category.js";
 import NotificationBadge from "@/components/NotificationBadge.vue";
 
 const router = useRouter()
-const activeMenu = ref('home')
+const route = useRoute()
 const lStore = localStores()
 const sStore = sessionStores()
-const avatarUrl = ref(lStore.baseURL + lStore.userInfo.avatarUrl)
+const avatarUrl = ref(lStore.baseURL + (lStore.userInfo?.avatarUrl || ''))
+const categories = ref([])
+
+const emit = defineEmits(['category-change'])
+
+// 动态计算activeMenu
+const activeMenu = computed(() => {
+  if (route.path === '/') {
+    return 'home'
+  } else if (route.params.id) {
+    // 检查是否是子分类
+    const allSubCategories = categories.value.flatMap(c => c.categoryList)
+    const isSubCategory = allSubCategories.some(sub => sub.id.toString() === route.params.id)
+
+    return isSubCategory
+        ? `subcategory-${route.params.id}`
+        : `category-${route.params.id}`
+  }
+  return 'home' // 默认值
+})
+
+// 计算当前激活的分类ID
+const activeCategoryId = computed(() => route.params.id)
+
+// 判断分类是否激活
+const isCategoryActive = (category) => {
+  return category.id.toString() === activeCategoryId.value ||
+      category.categoryList.some(sub => sub.id.toString() === activeCategoryId.value)
+}
+
+const loadCategories = async () => {
+  try {
+    const res = await getCategoryTrees()
+    categories.value = res.data || []
+  } catch (error) {
+    console.error('加载分类失败:', error)
+    categories.value = []
+  }
+}
+
+// 处理父分类点击
+const handleCategoryClick = (categoryId) => {
+  emit('category-change', categoryId)
+  router.push({path: `/${categoryId}`})
+}
+
+// 处理菜单点击
 const handleMenuClick = (index) => {
-  activeMenu.value = index
-  if (index === 'card') {
-    router.push('/index')
-  } else if (index === 'editor') {
-    router.push('/editor')
-  } else if (index === 'editor') {
-    router.push('/editor')
-  } else if (index === 'messages') {
-    router.push('/messages')
+  try {
+    if (index.startsWith('subcategory-')) {
+      const categoryId = index.replace('subcategory-', '')
+      emit('category-change', categoryId)
+      router.push({path: `/${categoryId}`})
+    } else if (index === 'home') {
+      router.push({path: '/'})
+    }
+  } catch (error) {
+    console.error('处理菜单点击时出错:', error)
   }
 }
 
 const handleDropdownClick = (command) => {
-  switch (command) {
-    case 'myself':
-      router.push('/myself'); // 跳转到个人中心
-      break;
-    case 'settings':
-      router.push('/settings'); // 跳转到设置
-      break;
-    case 'logout':
-      lStore.clearStorage();
-      sStore.clearStorage();
-      logout();
-      router.push("/login"); //
-      break;
-    default:
-      break;
+  try {
+    switch (command) {
+      case 'myself':
+        router.push('/myself')
+        break
+      case 'settings':
+        router.push('/settings')
+        break
+      case 'logout':
+        lStore.clearStorage()
+        sStore.clearStorage()
+        logout()
+        router.push("/login")
+        break
+      default:
+        console.warn('未知的下拉菜单命令:', command)
+    }
+  } catch (error) {
+    console.error('处理下拉菜单点击时出错:', error)
   }
-};
+}
 
+onMounted(() => {
+  loadCategories()
+})
 </script>
 
 <style scoped lang="less">
@@ -122,7 +192,7 @@ const handleDropdownClick = (command) => {
 
 .logo {
   display: flex;
-  align-items: center; // 垂直居中
+  align-items: center;
   font-size: 22px;
   font-weight: 600;
   background: #000000;
@@ -137,9 +207,8 @@ const handleDropdownClick = (command) => {
   }
 
   .text {
-    color: inherit; // 继承父元素颜色
+    color: inherit;
 
-    // 如果需要，可以同时覆盖激活状态
     &.router-link-active,
     &.router-link-exact-active {
       color: inherit;
@@ -154,6 +223,37 @@ const handleDropdownClick = (command) => {
   border-bottom: none;
   font-size: 16px;
   color: #000000;
+
+  :deep(.el-sub-menu) {
+    &.is-active {
+      .el-sub-menu__title {
+        color: var(--el-color-primary) !important;
+        border-bottom: 2px solid var(--el-color-primary);
+      }
+    }
+
+    .el-sub-menu__title {
+      span {
+        &.active-category {
+          color: var(--el-color-primary);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  :deep(.el-menu-item) {
+    &.is-active {
+      color: var(--el-color-primary) !important;
+      border-bottom: 2px solid var(--el-color-primary);
+    }
+  }
+
+  :deep(.el-sub-menu__title),
+  :deep(.el-menu-item) {
+    height: 64px;
+    line-height: 64px;
+  }
 }
 
 .user-section {
@@ -188,7 +288,6 @@ const handleDropdownClick = (command) => {
   }
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
   .header-content {
     padding: 0 16px;

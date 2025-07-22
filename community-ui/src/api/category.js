@@ -7,6 +7,14 @@ export const getCategories = () => {
     return request.get('/category/list')
 }
 
+
+/**
+ * 获取所有分类树
+ */
+export const getCategoryTrees = () => {
+    return request.get('/category/listTree')
+}
+
 /**
  * 获取文章的分类
  * @param {number} articleId
@@ -23,3 +31,4 @@ export const getArticleCategories = (articleId) => {
 export const setArticleCategories = (articleId, categoryIds) => {
     return request.post(`/category/${articleId}/categories`, { categoryIds })
 }
+

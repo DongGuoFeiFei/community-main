@@ -2,6 +2,9 @@ package com.example.communityserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.communityserver.entity.model.ContentCategory;
+import com.example.communityserver.entity.response.ContentCategoryTree;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +17,5 @@ import com.example.communityserver.entity.model.ContentCategory;
 
 
 public interface ContentCategoryMapper extends BaseMapper<ContentCategory> {
+    List<ContentCategoryTree> getCategoryTrees();
 }

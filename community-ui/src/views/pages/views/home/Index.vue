@@ -1,26 +1,38 @@
 <script setup lang="js">
 import Footer from "@/views/pages/components/Footer.vue";
 import Announcement from "@/components/Announcement.vue";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import PostSearch from "@/views/pages/views/home/components/PostSearch.vue";
 import PostList from "@/views/pages/views/home/components/PostList.vue";
 import PostPagination from "@/views/pages/views/home/components/PostPagination.vue";
 import {fetchPosts} from "@/api/index.js";
 import {localStores} from "@/stores/localStores.js";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import {useRoute} from "vue-router";
 
 
 // 共享状态
 const posts = ref([])
 const total = ref(0)
 const loading = ref(true)
+const route = useRoute()
+const routeCategoryId = ref(route.params.id)
 
 // 搜索参数
 const searchParam = reactive({
   title: '',
   pageSize: 8,
   pageNum: 1,
+  sortType: '',
+  categoryId: null
 })
+
+const handleCategoryChange = (categoryId) => {
+  searchParam.categoryId = categoryId
+  searchParam.pageNum = 1
+  console.log('Selected category ID:', searchParam.categoryId)
+  loadPosts()
+}
 
 const lStore = localStores()
 // 加载文章方法
@@ -46,7 +58,18 @@ const loadPosts = async () => {
 
 // 初始化加载
 onMounted(() => {
+  if (route.params.id) {
+    searchParam.categoryId = route.params.id
+  }
   loadPosts()
+})
+// 监听路由变化
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    console.log(newId)
+    searchParam.categoryId = newId
+    loadPosts()
+  }
 })
 
 </script>
@@ -56,7 +79,7 @@ onMounted(() => {
     <div class="common-layout">
       <el-container>
         <el-header>
-          <HomeHeader/>
+          <HomeHeader @category-change="handleCategoryChange"/>
         </el-header>
         <el-container>
           <el-aside width="200px">
