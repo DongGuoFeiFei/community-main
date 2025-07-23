@@ -75,3 +75,10 @@ file:
 #      max-file-size: 10MB
 #      max-history: 30
 #      total-size-cap: 300MB
+
+#大模型接口配置
+deepseek:
+  api:
+    key: sk-8c14d3bc281c4be4abb49bdf02a82f6b
+    url: https://api.deepseek.com/v1/chat/completions
+

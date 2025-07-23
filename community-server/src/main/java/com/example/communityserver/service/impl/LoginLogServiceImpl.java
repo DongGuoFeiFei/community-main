@@ -5,7 +5,6 @@ import com.example.communityserver.entity.model.LoginLog;
 import com.example.communityserver.mapper.LoginLogMapper;
 import com.example.communityserver.service.ILoginLogService;
 import com.example.communityserver.utils.common.IpUtil;
-import com.example.communityserver.utils.common.JacksonParserUtil;
 import com.example.communityserver.utils.security.HttpRequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,6 @@ public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> i
     private LoginLogMapper loginLogMapper;
 
     @Autowired
-    private JacksonParserUtil jacksonParserUtil;
-
-    @Autowired
     private IpUtil ipUtil;
 
     @Override
@@ -45,7 +41,7 @@ public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> i
         loginLog.setLoginIp(ip);
         loginLog.setUserId(userId);
         String json = ipUtil.getIpLocation(ip);
-        JacksonParserUtil.IpLocation ipLocation = jacksonParserUtil.parseWithJackson(json);
+        IpUtil.IpLocation ipLocation = ipUtil.parseWithJackson(json);
         loginLog.setLoginLocation(ipLocation.getIpAdd());
         loginLog.setDeviceInfo(deviceInfo.toString());
         return loginLogMapper.insert(loginLog) > 0 ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) : "";
