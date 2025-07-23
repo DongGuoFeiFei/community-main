@@ -1,5 +1,6 @@
 package com.example.communityserver.controller;
 
+import com.example.communityserver.entity.request.DeepseekPromptParam;
 import com.example.communityserver.service.impl.DeepSeekService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -27,7 +28,7 @@ public class DeepSeekController {
 
     // 分用户等级使用api限制
     @PostMapping("/generate")
-    public Result<String> generateText(@RequestBody String prompt) {
-        return Result.success(deepSeekService.parseChatContent(deepSeekService.generateText(prompt)));
+    public Result<String> generateText(@RequestBody DeepseekPromptParam param) {
+        return Result.success(deepSeekService.parseChatContent(deepSeekService.generateText(param.getPrompt())));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.communityserver.service.impl;
 
+import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.request.DeepSeekRequest;
 import com.example.communityserver.entity.response.DeepSeekResponse;
 import com.example.communityserver.handler.InsufficientBalanceException;
@@ -46,10 +47,9 @@ public class DeepSeekService implements IDeepSeekService {
 
             DeepSeekRequest request = new DeepSeekRequest();
             request.setModel("deepseek-chat");
-            request.setMessages(List.of(new DeepSeekRequest.Message("user", prompt)));
+            request.setMessages(List.of(new DeepSeekRequest.Message("user", SystemConstants.DEEPSEEK_PROMPT + prompt)));
             request.setMax_tokens(2048);
             request.setTemperature(0.7);
-
             HttpEntity<DeepSeekRequest> requestEntity = new HttpEntity<>(request, headers);
 
             // 发送请求

@@ -16,7 +16,9 @@ import java.util.Map;
 
 
 public interface IDeepSeekService {
-    public DeepSeekResponse generateText(String prompt);
+    DeepSeekResponse generateText(String prompt);
 
-    public String generateTextWithHistory(List<Map<String, String>> messages);
+    String generateTextWithHistory(List<Map<String, String>> messages);
+
+    String parseChatContent(DeepSeekResponse response);
 }
