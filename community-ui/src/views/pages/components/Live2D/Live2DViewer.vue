@@ -53,8 +53,8 @@ const initLive2D = async () => {
 
     // 将模型居中放置在画布中(在画布的大小进行设置)
     model.position.set(
-        canvasWidth / 5 - model.width * props.scale / 2,
-        canvasHeight / 2 - model.height * props.scale * 3.5
+        canvasWidth / 5 - model.width * props.scale,
+        canvasHeight / 2 - model.height * props.scale * 3.2
     )
 
     // 启用交互
@@ -135,7 +135,6 @@ onBeforeUnmount(() => {
   z-index: 9999;
 
   .live2d-canvas {
-    //background-color: blue;
     width: 100%;
     height: 100%;
     pointer-events: auto; // 启用点击事件
