@@ -93,6 +93,13 @@ public class DeepSeekService implements IDeepSeekService {
         return response.getBody();
     }
 
+    /**
+     * @Description: 解析deepseek返回数据类型，解析出返回第一条内容
+     * @Param: [response]
+     * @return: java.lang.String
+     * @Author: DongGuo
+     */
+
     public String parseChatContent(DeepSeekResponse response) {
         if (response.getChoices() == null || response.getChoices().isEmpty()) {
             return null;
