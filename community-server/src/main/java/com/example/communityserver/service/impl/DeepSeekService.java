@@ -48,7 +48,7 @@ public class DeepSeekService implements IDeepSeekService {
             DeepSeekRequest request = new DeepSeekRequest();
             request.setModel("deepseek-chat");
             request.setMessages(List.of(new DeepSeekRequest.Message("user", SystemConstants.DEEPSEEK_PROMPT + prompt)));
-            request.setMax_tokens(2048);
+            request.setMax_tokens(1024);
             request.setTemperature(0.7);
             HttpEntity<DeepSeekRequest> requestEntity = new HttpEntity<>(request, headers);
 
