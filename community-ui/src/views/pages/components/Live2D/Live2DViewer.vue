@@ -1,13 +1,21 @@
 <template>
-  <div class="live2d-wrapper">
-    <canvas ref="liveCanvas" class="live2d-canvas"></canvas>
+  <div>
+    <Live2DControlPanel v-model="isVisible"/>
+    <div class="live2d-wrapper" v-show="isVisible">
+      <div v-if="showText" class="live2d-text-bubble">
+        {{ currentText }}
+      </div>
+      <canvas ref="liveCanvas" class="live2d-canvas"></canvas>
+    </div>
   </div>
+
 </template>
 
 <script setup>
-import {onBeforeUnmount, onMounted, ref} from 'vue'
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import * as PIXI from 'pixi.js'
 import {Live2DModel} from 'pixi-live2d-display/cubism4'
+import Live2DControlPanel from "@/views/pages/components/Live2D/Live2DControlPanel.vue";
 
 const props = defineProps({
   modelPath: {
@@ -18,21 +26,25 @@ const props = defineProps({
     type: Number,
     default: 0.13,
     validator: (v) => v > 0 && v <= 1
-  }
+  },
 })
 
 const liveCanvas = ref(null)
+
+const showText = ref(false)
+const currentText = ref('')
 let app = null
 let model = null
 let textTimeout = null
 
+const isVisible = ref(true)
 // 初始化Live2D
 const initLive2D = async () => {
   window.PIXI = PIXI
 
   // 设置画布大小略大于模型
-  const canvasWidth = 250
-  const canvasHeight = 450
+  const canvasWidth = 200
+  const canvasHeight = 390
 
   app = new PIXI.Application({
     view: liveCanvas.value,
@@ -53,8 +65,8 @@ const initLive2D = async () => {
 
     // 将模型居中放置在画布中(在画布的大小进行设置)
     model.position.set(
-        canvasWidth / 5 - model.width * props.scale,
-        canvasHeight / 2 - model.height * props.scale * 3.2
+        canvasWidth - model.width * props.scale * 8,
+        canvasHeight - model.height * props.scale * 7.7
     )
 
     // 启用交互
@@ -105,6 +117,14 @@ const triggerRandomMotion = (motionGroup) => {
   if (motions && motions.length > 0) {
     const randomIndex = Math.floor(Math.random() * motions.length)
     model.motion(motionGroup, randomIndex)
+    // 显示文本（如果有）
+    if (motions[randomIndex].Text) {
+      currentText.value = motions[randomIndex].Text
+      showText.value = true
+      textTimeout = setTimeout(() => {
+        showText.value = false
+      }, 4000)
+    }
   }
 }
 
@@ -114,6 +134,16 @@ const destroyLive2D = () => {
   model?.destroy()
   app?.destroy()
 }
+
+watch(
+    () => isVisible.value,
+    (newData) => {
+      if (newData) {
+        console.log(newData)
+        initLive2D()
+      }
+    }
+)
 
 // 生命周期钩子
 onMounted(() => {
@@ -128,16 +158,41 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .live2d-wrapper {
   position: fixed;
-  left: 0;
+  right: 0;
   bottom: 0;
-  width: 250px;
-  height: 450px;
-  z-index: 9999;
+  width: 200px;
+  height: 390px;
+  z-index: 999;
+
+  .live2d-text-bubble {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 200px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    animation: fadeIn 0.3s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 56px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;
+    }
+  }
 
   .live2d-canvas {
     width: 100%;
     height: 100%;
-    pointer-events: auto; // 启用点击事件
   }
 }
+
 </style>
