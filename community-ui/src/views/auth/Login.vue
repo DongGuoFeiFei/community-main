@@ -22,7 +22,7 @@
                 style="width: 150px; margin-right: 10px;"
             />
             <div class="captcha-image" @click="refreshCaptcha">
-              <img :src="captchaImage" v-if="captchaImage" alt="验证码" />
+              <img :src="captchaImage" v-if="captchaImage" alt="验证码"/>
               <span v-else>点击刷新验证码</span>
             </div>
           </div>
@@ -38,10 +38,10 @@
 </template>
 
 <script setup lang="js">
-import {ref, onMounted} from 'vue';
+import {onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
-import {login, getCaptcha} from '@/api/auth.js';
+import {getCaptcha, login} from '@/api/auth.js';
 import {localStores} from "@/stores/localStores.js";
 
 const lStore = localStores()
@@ -97,7 +97,7 @@ const handleLogin = () => {
         lStore.tokenInfo.expiresIn = res.expiresIn
         localStorage.setItem('token', res.token);
         ElMessage.success('登录成功');
-        router.push('/index');
+        router.push('/');
       } else {
         ElMessage.error(res?.msg || '登录失败');
         // 登录失败刷新验证码

@@ -1,9 +1,6 @@
 <template>
-  <div className="live2d-container">
-    <canvas ref="liveCanvas" className="live2d"></canvas>
-    <div v-if="showText" className="live2d-text-bubble">
-      {{ currentText }}
-    </div>
+  <div class="live2d-wrapper">
+    <canvas ref="liveCanvas" class="live2d-canvas"></canvas>
   </div>
 </template>
 
@@ -25,8 +22,6 @@ const props = defineProps({
 })
 
 const liveCanvas = ref(null)
-const showText = ref(false)
-const currentText = ref('')
 let app = null
 let model = null
 let textTimeout = null
@@ -35,24 +30,40 @@ let textTimeout = null
 const initLive2D = async () => {
   window.PIXI = PIXI
 
+  // 设置画布大小略大于模型
+  const canvasWidth = 250
+  const canvasHeight = 450
+
   app = new PIXI.Application({
     view: liveCanvas.value,
-    autoStart: true,
+    width: canvasWidth,
+    height: canvasHeight,
     backgroundAlpha: 0,
-    resizeTo: window
+    antialias: true,
+    autoDensity: true,
+    resolution: window.devicePixelRatio || 1,
   })
 
   try {
     model = await Live2DModel.from(props.modelPath)
     app.stage.addChild(model)
 
-    // 设置初始大小和位置
-    model.position.set(app.screen.width / 35, app.screen.height - app.screen.height / 2)
+    // 设置模型位置和大小
     model.scale.set(props.scale)
+
+    // 将模型居中放置在画布中(在画布的大小进行设置)
+    model.position.set(
+        canvasWidth / 5 - model.width * props.scale / 2,
+        canvasHeight / 2 - model.height * props.scale * 3.5
+    )
+
+    // 启用交互
+    model.interactive = true
+    model.buttonMode = true
 
     // 点击事件处理
     model.on('hit', (hitAreas) => {
-      handleHitArea(hitAreas[0]) // 取第一个点击区域
+      handleHitArea(hitAreas[0])
     })
 
     // 初始空闲动画
@@ -67,7 +78,6 @@ const initLive2D = async () => {
 const handleHitArea = (hitArea) => {
   clearTimeout(textTimeout)
 
-  // 根据点击区域触发不同的动作
   switch (hitArea) {
     case 'face':
       triggerRandomMotion('Tapface')
@@ -94,25 +104,7 @@ const triggerRandomMotion = (motionGroup) => {
   const motions = model.internalModel.motionManager.definitions[motionGroup]
   if (motions && motions.length > 0) {
     const randomIndex = Math.floor(Math.random() * motions.length)
-    const motion = motions[randomIndex]
-
-    // 播放动作
     model.motion(motionGroup, randomIndex)
-
-    // 显示文本（如果有）
-    if (motion.Text) {
-      currentText.value = motion.Text
-      showText.value = true
-      textTimeout = setTimeout(() => {
-        showText.value = false
-      }, 3000) // 3秒后隐藏文本
-    }
-
-    // 播放声音（如果有）
-    if (motion.Sound) {
-      const audio = new Audio(motion.Sound)
-      audio.play().catch(e => console.error('音频播放失败:', e))
-    }
   }
 }
 
@@ -134,56 +126,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.live2d-container {
+.live2d-wrapper {
   position: fixed;
-  right: 0;
+  left: 0;
   bottom: 0;
-  z-index: 1000;
-  pointer-events: auto; // 允许点击
+  width: 250px;
+  height: 450px;
+  z-index: 9999;
 
-  .live2d {
-    cursor: pointer;
-    transition: transform 0.2s;
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-
-  .live2d-text-bubble {
-    position: absolute;
-    bottom: 100%;
-    right: 0;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 8px 12px;
-    border-radius: 12px;
-    max-width: 200px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
-    animation: fadeIn 0.3s ease;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      right: 20px;
-      border-width: 6px;
-      border-style: solid;
-      border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;
-    }
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .live2d-canvas {
+    //background-color: blue;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto; // 启用点击事件
   }
 }
 </style>

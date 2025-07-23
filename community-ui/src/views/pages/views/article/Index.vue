@@ -23,6 +23,7 @@ const articleId = ref(null)
           <el-aside width="400px">
             <AuthorInfo v-if="articleId" :articleId="Number(articleId)"/>
             <RecommendSidebar :articleId="Number(articleId)"/>
+<!--            <Live2DViewer/>-->
           </el-aside>
           <el-main>
             <post-detail v-model="articleId"/>
