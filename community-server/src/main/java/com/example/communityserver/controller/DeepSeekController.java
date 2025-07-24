@@ -29,6 +29,7 @@ public class DeepSeekController {
     // 分用户等级使用api限制
     @PostMapping("/generate")
     public Result<String> generateText(@RequestBody DeepseekPromptParam param) {
+        System.out.println(param);
         return Result.success(deepSeekService.parseChatContent(deepSeekService.generateText(param.getPrompt())));
     }
 }

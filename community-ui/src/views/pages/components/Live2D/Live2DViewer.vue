@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Live2DControlPanel v-model="isVisible"/>
+    <Live2DControlPanel
+        v-model="isVisible"
+        @update:text="showAiText"
+    />
     <div class="live2d-wrapper" v-show="isVisible">
       <div v-if="showText" class="live2d-text-bubble">
         {{ currentText }}
@@ -8,7 +11,6 @@
       <canvas ref="liveCanvas" class="live2d-canvas"></canvas>
     </div>
   </div>
-
 </template>
 
 <script setup>
@@ -38,6 +40,16 @@ let model = null
 let textTimeout = null
 
 const isVisible = ref(true)
+
+
+const showAiText = (text) => {
+  currentText.value = text;
+  showText.value = true;
+  clearTimeout(textTimeout);
+  textTimeout = setTimeout(() => {
+    showText.value = false;
+  }, 10000); // AI回复显示时间更长
+};
 // 初始化Live2D
 const initLive2D = async () => {
   window.PIXI = PIXI
