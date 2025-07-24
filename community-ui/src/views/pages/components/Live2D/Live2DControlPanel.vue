@@ -2,7 +2,7 @@
   <div class="live2d-control-panel">
     <!-- 仅在显示状态时展示的其他控制按钮 -->
     <div v-if="isVisible">
-      <el-tooltip effect="dark" content="与看板娘对话" placement="left">
+      <el-tooltip effect="dark" content="与丛雨对话" placement="left">
         <div>
           <el-popover
               placement="left"
@@ -19,7 +19,7 @@
             <div class="compact-chat-input">
               <el-input
                   v-model="inputMessage"
-                  placeholder="和看板娘聊天..."
+                  placeholder="和丛雨对话..."
                   @keyup.enter="sendMessage"
                   clearable
                   class="chat-input-field"
@@ -40,7 +40,7 @@
 
     <!-- 始终显示的主控制按钮 -->
     <div>
-      <el-tooltip effect="dark" :content="isVisible?`隐藏看板娘`:`显示看板娘`" placement="left">
+      <el-tooltip effect="dark" :content="isVisible?`隐藏丛雨`:`显示丛雨`" placement="left">
         <el-button
             class="control-btn main-control"
             :icon="isVisible ? 'Hide' : 'View'"
