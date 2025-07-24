@@ -1,52 +1,54 @@
 <template>
   <div class="live2d-control-panel">
-
     <!-- 仅在显示状态时展示的其他控制按钮 -->
-    <template v-if="isVisible">
+    <div v-if="isVisible">
       <el-tooltip effect="dark" content="与看板娘对话" placement="left">
-        <el-popover
-            placement="left"
-            :width="260"
-            trigger="click"
-        >
-          <template #reference>
-            <el-button
-                class="control-btn"
-                icon="ChatRound"
-                circle
-            />
-          </template>
-          <div class="compact-chat-input">
-            <el-input
-                v-model="inputMessage"
-                placeholder="和看板娘聊天..."
-                @keyup.enter="sendMessage"
-                clearable
-                class="chat-input-field"
-            />
-            <el-button
-                type="primary"
-                @click="sendMessage"
-                :loading="isLoading"
-                class="chat-send-btn"
-            >
-              <el-icon><Promotion /></el-icon>
-            </el-button>
-          </div>
-        </el-popover>
+        <div>
+          <el-popover
+              placement="left"
+              :width="260"
+              trigger="click"
+          >
+            <template #reference>
+              <el-button
+                  class="control-btn"
+                  icon="ChatRound"
+                  circle
+              />
+            </template>
+            <div class="compact-chat-input">
+              <el-input
+                  v-model="inputMessage"
+                  placeholder="和看板娘聊天..."
+                  @keyup.enter="sendMessage"
+                  clearable
+                  class="chat-input-field"
+              />
+              <el-button
+                  type="primary"
+                  @click="sendMessage"
+                  :loading="isLoading"
+                  class="chat-send-btn"
+              >
+                <el-icon><Promotion /></el-icon>
+              </el-button>
+            </div>
+          </el-popover>
+        </div>
       </el-tooltip>
-    </template>
+    </div>
 
     <!-- 始终显示的主控制按钮 -->
-    <el-tooltip effect="dark" :content="isVisible?`隐藏看板娘`:`显示看板娘`" placement="left">
-      <el-button
-          class="control-btn main-control"
-          :icon="isVisible ? 'Hide' : 'View'"
-          circle
-          @click="toggleVisibility"
-      />
-    </el-tooltip>
-
+    <div>
+      <el-tooltip effect="dark" :content="isVisible?`隐藏看板娘`:`显示看板娘`" placement="left">
+        <el-button
+            class="control-btn main-control"
+            :icon="isVisible ? 'Hide' : 'View'"
+            circle
+            @click="toggleVisibility"
+        />
+      </el-tooltip>
+    </div>
   </div>
 </template>
 

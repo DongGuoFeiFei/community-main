@@ -41,20 +41,20 @@ let textTimeout = null
 
 const isVisible = ref(true)
 
-
 const showAiText = (text) => {
   currentText.value = text;
   showText.value = true;
   clearTimeout(textTimeout);
   textTimeout = setTimeout(() => {
     showText.value = false;
-  }, 10000); // AI回复显示时间更长
+  }, text.length * 100);
 };
+
 // 初始化Live2D
 const initLive2D = async () => {
   window.PIXI = PIXI
 
-  // 设置画布大小略大于模型
+  // 设置画布大小
   const canvasWidth = 200
   const canvasHeight = 390
 
@@ -129,13 +129,20 @@ const triggerRandomMotion = (motionGroup) => {
   if (motions && motions.length > 0) {
     const randomIndex = Math.floor(Math.random() * motions.length)
     model.motion(motionGroup, randomIndex)
-    // 显示文本（如果有）
+
+    // 显示文本
     if (motions[randomIndex].Text) {
       currentText.value = motions[randomIndex].Text
       showText.value = true
       textTimeout = setTimeout(() => {
-        showText.value = false
-      }, 4000)
+        showText.value = false;
+      }, motions[randomIndex].Text.length * 200 + 2000);
+    }
+
+    // 播放声音(语言报错，对应的文本也不显示)
+    if (motions[randomIndex].Sound) {
+      const audio = new Audio(motions[randomIndex].Sound)
+      audio.play().catch(e => console.error('音频播放失败:', e))
     }
   }
 }
@@ -151,19 +158,17 @@ watch(
     () => isVisible.value,
     (newData) => {
       if (newData) {
-        console.log(newData)
         initLive2D()
       }
     }
 )
 
-// 生命周期钩子
 onMounted(() => {
-  initLive2D()
+  initLive2D();
 })
 
 onBeforeUnmount(() => {
-  destroyLive2D()
+  destroyLive2D();
 })
 </script>
 
@@ -207,4 +212,14 @@ onBeforeUnmount(() => {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
