@@ -7,7 +7,7 @@ import {ref} from "vue";
 import CommentSection from "@/views/pages/views/article/components/CommentSection.vue";
 import Tags from "@/views/pages/views/article/components/Tags.vue";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
-import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
+import Advertising from "@/components/Advertising.vue";
 
 const articleId = ref(null)
 </script>
@@ -23,7 +23,7 @@ const articleId = ref(null)
           <el-aside width="400px">
             <AuthorInfo v-if="articleId" :articleId="Number(articleId)"/>
             <RecommendSidebar :articleId="Number(articleId)"/>
-<!--            <Live2DViewer/>-->
+            <Advertising/>
           </el-aside>
           <el-main>
             <post-detail v-model="articleId"/>

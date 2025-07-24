@@ -2,49 +2,59 @@
   <div class="live2d-control-panel">
     <!-- 仅在显示状态时展示的其他控制按钮 -->
     <div v-if="isVisible">
-      <el-tooltip effect="dark" content="与丛雨对话" placement="left">
-        <div>
-          <el-popover
-              placement="left"
-              :width="260"
-              trigger="click"
-          >
-            <template #reference>
-              <el-button
-                  class="control-btn"
-                  icon="ChatRound"
-                  circle
-              />
-            </template>
-            <div class="compact-chat-input">
-              <el-input
-                  v-model="inputMessage"
-                  placeholder="和丛雨对话..."
-                  @keyup.enter="sendMessage"
-                  clearable
-                  class="chat-input-field"
-              />
-              <el-button
-                  type="primary"
-                  @click="sendMessage"
-                  :loading="isLoading"
-                  class="chat-send-btn"
-              >
-                <el-icon><Promotion /></el-icon>
-              </el-button>
-            </div>
-          </el-popover>
-        </div>
-      </el-tooltip>
+
+      <div>
+        <el-popover
+            placement="left"
+            :width="260"
+            trigger="click"
+        >
+          <template #reference>
+            <el-button
+                class="control-btn"
+                icon="ChatRound"
+                circle
+                @mouseenter="showTooltipText('要与丛雨对话嘛？')"
+                @mouseleave="hideTooltipText"
+            />
+          </template>
+          <div class="compact-chat-input">
+            <el-input
+                v-model="inputMessage"
+                placeholder="和丛雨对话..."
+                @keyup.enter="sendMessage"
+                clearable
+                class="chat-input-field"
+            />
+            <el-button
+                type="primary"
+                @click="sendMessage"
+                :loading="isLoading"
+                class="chat-send-btn"
+            >
+              <el-icon>
+                <Promotion/>
+              </el-icon>
+            </el-button>
+          </div>
+        </el-popover>
+      </div>
     </div>
 
     <!-- 始终显示的主控制按钮 -->
     <div>
-      <el-tooltip effect="dark" :content="isVisible?`隐藏丛雨`:`显示丛雨`" placement="left">
+      <el-tooltip
+          effect="dark"
+          :content="isVisible ? '' : `显示丛雨`"
+          :disabled="isVisible"
+          placement="left"
+      >
         <el-button
             class="control-btn main-control"
             :icon="isVisible ? 'Hide' : 'View'"
             circle
+            @mouseenter="showTooltipText('要和丛雨说再见了嘛？')"
+            @mouseleave="hideTooltipText"
             @click="toggleVisibility"
         />
       </el-tooltip>
@@ -53,10 +63,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { generateText } from '@/api/deepseek';
-import { ElMessage } from 'element-plus';
-import { Promotion } from '@element-plus/icons-vue';
+import {ref} from 'vue';
+import {generateText} from '@/api/deepseek';
+import {ElMessage} from 'element-plus';
+import {Promotion} from '@element-plus/icons-vue';
 
 const props = defineProps({
   modelValue: {
@@ -65,7 +75,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'update:text']);
+const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip']);
 
 const isVisible = ref(props.modelValue);
 const inputMessage = ref('');
@@ -74,6 +84,14 @@ const isLoading = ref(false);
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
   emit('update:modelValue', isVisible.value);
+};
+
+const showTooltipText = (text) => {
+  emit('show-tooltip', text);
+};
+
+const hideTooltipText = () => {
+  emit('hide-tooltip');
 };
 
 const sendMessage = async () => {
@@ -93,7 +111,6 @@ const sendMessage = async () => {
   }
 };
 </script>
-
 <style scoped lang="scss">
 .live2d-control-panel {
   position: fixed;

@@ -1,6 +1,6 @@
 <script setup lang="js">
 import { ref, onMounted } from 'vue';
-import { getLatestAnnouncement } from '@/api/system/announcement.js';
+import { getLatestAnnouncement } from '@/api/announcement.js';
 import { ElIcon } from 'element-plus';
 import {Close, InfoFilled} from '@element-plus/icons-vue';
 

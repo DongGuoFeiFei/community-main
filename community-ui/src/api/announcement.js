@@ -1,5 +1,5 @@
 // /api/system/announcement.js
-import request from '@/utils/request';
+import request from '@/utils/request.js';
 
 /**
  * 获取当前有效的公告列表

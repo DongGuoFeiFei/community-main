@@ -3,6 +3,8 @@
     <Live2DControlPanel
         v-model="isVisible"
         @update:text="showAiText"
+        @show-tooltip="showTooltipText"
+        @hide-tooltip="hideTooltipText"
     />
     <div class="live2d-wrapper" v-show="isVisible">
       <div v-if="showText" class="live2d-text-bubble">
@@ -48,6 +50,16 @@ const showAiText = (text) => {
   textTimeout = setTimeout(() => {
     showText.value = false;
   }, text.length * 100);
+};
+
+const showTooltipText = (text) => {
+  currentText.value = text;
+  showText.value = true;
+};
+
+const hideTooltipText = () => {
+  clearTimeout(textTimeout);
+  showText.value = false;
 };
 
 // 初始化Live2D
