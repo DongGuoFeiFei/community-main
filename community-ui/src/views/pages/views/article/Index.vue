@@ -8,7 +8,7 @@ import CommentSection from "@/views/pages/views/article/components/CommentSectio
 import Tags from "@/views/pages/views/article/components/Tags.vue";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 import Advertising from "@/components/Advertising.vue";
-import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
+import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 
 const articleId = ref(null)
 </script>

@@ -9,7 +9,7 @@ import {fetchPosts} from "@/api/index.js";
 import {localStores} from "@/stores/localStores.js";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 import {useRoute} from "vue-router";
-import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
+import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 import env from "@/utils/env.js";
 
 

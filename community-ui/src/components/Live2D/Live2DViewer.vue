@@ -19,7 +19,7 @@
 import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import * as PIXI from 'pixi.js'
 import {Live2DModel} from 'pixi-live2d-display/cubism4'
-import Live2DControlPanel from "@/views/pages/components/Live2D/Live2DControlPanel.vue";
+import Live2DControlPanel from "@/components/Live2D/Live2DControlPanel.vue";
 import {localStores} from "@/stores/localStores.js";
 
 const store = localStores()

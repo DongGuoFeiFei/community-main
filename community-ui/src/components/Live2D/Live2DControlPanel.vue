@@ -64,7 +64,7 @@
 
 <script setup>
 import {ref} from 'vue';
-import {generateText} from '@/api/deepseek';
+import {generateText} from '@/api/deepseek.js';
 import {ElMessage} from 'element-plus';
 import {Promotion} from '@element-plus/icons-vue';
 
