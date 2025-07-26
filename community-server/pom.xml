@@ -164,7 +164,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.communityserver.CommunityServerApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

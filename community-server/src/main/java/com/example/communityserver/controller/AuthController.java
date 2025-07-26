@@ -26,6 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -155,7 +156,7 @@ public class AuthController {
         return Result.success();
     }
 
-    @ApiOperation("发送验证码")
+    @ApiOperation("发送注册验证码到注册邮箱")
     @PostMapping("/registerCode")
     public Result<Void> registerCode(@RequestBody GetValidateCodeDto dto) {
         if (!StringUtil.isValidEmail(dto.getEmail())) {
@@ -179,6 +180,7 @@ public class AuthController {
 
     @ApiOperation("注册")
     @PostMapping("/register")
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> register(@RequestBody RegisterDto dto) {
         if (!StringUtil.isValidEmail(dto.getEmail())) {
             return Result.error("邮箱不符合要求");
@@ -193,6 +195,7 @@ public class AuthController {
         if (codeEnum == MessageCodeEnum.USERNAME_EXIST) {
             return Result.error(codeEnum.getValue());
         }
+        // todo 注册失败
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getNickname());
 
         // TODO: 2025/7/15 完善数据库相关表格数据的插入 ，用户详情表

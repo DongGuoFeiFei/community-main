@@ -1,12 +1,12 @@
 <template>
   <div>
     <Live2DControlPanel
-        v-model="isVisible"
+        v-model="store.isVisibleLive2D"
         @update:text="showAiText"
         @show-tooltip="showTooltipText"
         @hide-tooltip="hideTooltipText"
     />
-    <div class="live2d-wrapper" v-show="isVisible">
+    <div class="live2d-wrapper" v-show="store.isVisibleLive2D">
       <div v-if="showText" class="live2d-text-bubble">
         {{ currentText }}
       </div>
@@ -20,7 +20,9 @@ import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import * as PIXI from 'pixi.js'
 import {Live2DModel} from 'pixi-live2d-display/cubism4'
 import Live2DControlPanel from "@/views/pages/components/Live2D/Live2DControlPanel.vue";
+import {localStores} from "@/stores/localStores.js";
 
+const store = localStores()
 const props = defineProps({
   modelPath: {
     type: String,
@@ -41,7 +43,17 @@ let app = null
 let model = null
 let textTimeout = null
 
-const isVisible = ref(true)
+// const isVisible = ref(true)
+// 显示招呼语
+const showGreeting = () => {
+  const greeting = "再重逢，伊人笑靥如初，似青石巷口新摘的蜜桃，甜得能掐出水来";
+  currentText.value = greeting;
+  showText.value = true;
+  clearTimeout(textTimeout);
+  textTimeout = setTimeout(() => {
+    showText.value = false;
+  }, greeting.length * 150 + 3000);
+};
 
 const showAiText = (text) => {
   currentText.value = text;
@@ -105,6 +117,9 @@ const initLive2D = async () => {
     // 初始空闲动画
     model.motion('Idle')
 
+    // 模型加载完成后显示招呼语
+    showGreeting();
+
   } catch (error) {
     console.error('Live2D加载失败:', error)
   }
@@ -167,7 +182,7 @@ const destroyLive2D = () => {
 }
 
 watch(
-    () => isVisible.value,
+    () => store.isVisibleLive2D,
     (newData) => {
       if (newData) {
         initLive2D()
@@ -175,8 +190,14 @@ watch(
     }
 )
 
+const isInitLive2D = () => {
+  if (store.isVisibleLive2D) {
+    initLive2D();
+  }
+}
+
 onMounted(() => {
-  initLive2D();
+  isInitLive2D();
 })
 
 onBeforeUnmount(() => {

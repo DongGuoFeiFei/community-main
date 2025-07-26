@@ -14,6 +14,7 @@ import TiptapEditor from "@/views/pages/views/edit/components/TiptapEditor.vue";
 import {getArticleCategories} from "@/api/category.js";
 import CategorySelector from "@/views/pages/views/edit/CategorySelector.vue";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
 
 const lStore = localStores()
 const baseUrl = lStore.baseURL
@@ -243,6 +244,7 @@ const goBack = async () => {
 </script>
 
 <template>
+  <Live2DViewer/>
   <el-container>
     <el-header>
       <HomeHeader/>

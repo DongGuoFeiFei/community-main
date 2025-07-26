@@ -70,6 +70,7 @@ export const localStores = defineStore('localStores', () => {
     const setHasReadLatestAnnouncement = (isRead) => {
         hasReadLatestAnnouncement.value = isRead
     }
+    const isVisibleLive2D = ref(true)
 
     return {
         getAnnouncementClosedState,
@@ -80,7 +81,8 @@ export const localStores = defineStore('localStores', () => {
         tokenInfo,
         clearStorage,
         hasReadLatestAnnouncement,
-        setHasReadLatestAnnouncement
+        setHasReadLatestAnnouncement,
+        isVisibleLive2D
     }
 }, {
     persist: {

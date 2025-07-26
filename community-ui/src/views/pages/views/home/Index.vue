@@ -10,6 +10,7 @@ import {localStores} from "@/stores/localStores.js";
 import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
 import {useRoute} from "vue-router";
 import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
+import env from "@/utils/env.js";
 
 
 // 共享状态
@@ -49,6 +50,8 @@ const loadPosts = async () => {
       date: item.date,
       coverUrl: item.coverUrl ? lStore.baseURL + item.coverUrl : null
     }))
+    console.log(lStore.baseURL)
+    console.log(env.apiBaseUrl)
     total.value = res.total
   } catch (error) {
     console.error('加载文章失败:', error)
@@ -77,6 +80,7 @@ watch(() => route.params.id, (newId) => {
 </script>
 
 <template>
+  <Live2DViewer/>
   <div class="main-container">
     <div class="common-layout">
       <el-container>

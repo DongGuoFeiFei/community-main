@@ -53,7 +53,7 @@
             class="control-btn main-control"
             :icon="isVisible ? 'Hide' : 'View'"
             circle
-            @mouseenter="showTooltipText('要和丛雨说再见了嘛？')"
+            @mouseenter="showTooltipText('要和丛雨说再见嘛？')"
             @mouseleave="hideTooltipText"
             @click="toggleVisibility"
         />

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import {ElMessage, ElMessageBox} from "element-plus";
-import router from "@/router/index.js";
+import {ElMessage} from "element-plus";
 import config from "@/utils/env.js";
 
 const request = axios.create({
     baseURL: config.apiBaseUrl,
-    timeout: 5000,
+    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
     },

@@ -1,6 +1,6 @@
 # 服务器路径
 server:
-  port: 8080
+  port: 8081
   servlet:
     context-path: /
 # 配置数据源
@@ -16,6 +16,9 @@ spring:
     url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+#    url: jdbc:mysql://123.207.189.85:3306/db_community?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+#    username: root
+#    password: 20021118
   # MVC的URL路径匹配策略
   mvc:
     path match:
@@ -61,20 +64,20 @@ file:
   upload:
     path: ./path/to/upload/directory
 #日志
-#logging:
-#  level:
-#    root: info
-#    org.springframework.web: info
-#    com.example: debug
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    com.example: debug
 #    com.baomidou.mybatisplus: debug #开发
-#  #    com.baomidou.mybatisplus: warn #生产
-#  file:
-#    name: ./logs/application.log
-#  logback:
-#    rollingpolicy:
-#      max-file-size: 10MB
-#      max-history: 30
-#      total-size-cap: 300MB
+    com.baomidou.mybatisplus: warn #生产
+  file:
+    name: ./logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 300MB
 
 #大模型接口配置
 deepseek:

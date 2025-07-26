@@ -2,9 +2,11 @@
 import UserHeader from "@/views/user/components/UserHeader.vue";
 import UserFooter from "@/views/user/components/UserFooter.vue";
 import WelcomePage from "@/views/user/components/WelcomePage.vue";
+import Live2DViewer from "@/views/pages/components/Live2D/Live2DViewer.vue";
 </script>
 
 <template>
+  <Live2DViewer/>
   <div class="main-container">
     <div class="common-layout">
       <el-container class="layout-container">
