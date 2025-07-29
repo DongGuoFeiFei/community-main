@@ -56,9 +56,6 @@ public class AuthController {
     @Autowired
     private IUserService userService;
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
     // TODO: 2025/5/21 @PreAuthorize("@vip.myAuthority('superAdmin')")权限划分失败
     // TODO: 2025/6/2 后续需要处理，如果用户没有登录就默认是游客登录
     // TODO: 2025/6/24 限制登录次数，登录5次限制登录
@@ -82,7 +79,7 @@ public class AuthController {
         String captchaKey = UUID.randomUUID().toString();
 
         // 存储验证码到Redis，有效期5分钟
-        redisTemplate.opsForValue().set(
+        redisUtil.setCacheObject(
                 CacheKeyConstants.CAPTCHA_CODE + captchaKey,
                 captcha.getCode(),
                 5,
@@ -94,7 +91,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    private Result<LoginResponse> login(HttpServletRequest request) throws IOException {
+    public Result<LoginResponse> login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
         LoginRequest loginRequest = new LoginRequest(
@@ -107,7 +104,7 @@ public class AuthController {
 
         // 验证验证码是否正确
         String redisKey = CacheKeyConstants.CAPTCHA_CODE + loginRequest.getCaptchaKey();
-        String correctCode = redisTemplate.opsForValue().get(redisKey);
+        String correctCode = redisUtil.getCacheObject(redisKey);
         if (correctCode == null) {
             return Result.error("验证码已过期");
         }
@@ -115,7 +112,7 @@ public class AuthController {
             return Result.error("验证码错误");
         }
         // 验证码验证通过后删除
-        redisTemplate.delete(redisKey);
+        redisUtil.deleteObject(redisKey);
 
         // 此次获取的token
         String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());

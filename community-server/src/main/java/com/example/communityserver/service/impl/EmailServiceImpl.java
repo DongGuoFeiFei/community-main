@@ -3,11 +3,11 @@ package com.example.communityserver.service.impl;
 import com.example.communityserver.entity.constants.EmailTemplates;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.utils.common.VerificationCodeUtils;
+import com.example.communityserver.utils.redis.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +15,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
@@ -38,14 +37,15 @@ public class EmailServiceImpl implements IEmailService {
     // Redis键前缀
     private static final String REDIS_VERIFY_CODE_PREFIX = "verify:email:";
     // 验证码有效期（分钟）
-    private static final long VERIFY_CODE_EXPIRE_MINUTES = 5;
+    private static final int VERIFY_CODE_EXPIRE_MINUTES = 5;
     private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
     @Autowired
     private JavaMailSender mailSender;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
     @Value("${spring.mail.username}")
     private String fromEmail;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 发送验证码邮件
@@ -63,7 +63,7 @@ public class EmailServiceImpl implements IEmailService {
             log.info("生成验证码: email={}, code={}", toEmail, code);
 
             // 2. 存储到Redis（5分钟过期）
-            redisTemplate.opsForValue().set(
+            redisUtil.setCacheObject(
                     REDIS_VERIFY_CODE_PREFIX + toEmail,
                     code,
                     VERIFY_CODE_EXPIRE_MINUTES,
@@ -112,12 +112,12 @@ public class EmailServiceImpl implements IEmailService {
             return false;
         }
 
-        String storedCode = redisTemplate.opsForValue().get(REDIS_VERIFY_CODE_PREFIX + email);
+        String storedCode = redisUtil.getCacheObject(REDIS_VERIFY_CODE_PREFIX + email);
         boolean isValid = code.equals(storedCode);
 
         if (isValid) {
             // 验证通过后删除Redis中的验证码（防止重复使用）
-            redisTemplate.delete(REDIS_VERIFY_CODE_PREFIX + email);
+            redisUtil.deleteObject(REDIS_VERIFY_CODE_PREFIX + email);
             log.info("验证码校验成功: email={}", email);
         } else {
             log.warn("验证码校验失败: email={}", email);
