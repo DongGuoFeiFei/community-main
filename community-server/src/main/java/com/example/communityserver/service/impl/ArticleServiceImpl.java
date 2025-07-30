@@ -157,7 +157,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             updateWrapper.eq(Article::getArticleId, articleDtlVo.getArticleId()).setSql("view_count = view_count + 1");
             articleMapper.update(null, updateWrapper);
         }
-
         return articleDtlVo;
     }
 
@@ -168,12 +167,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<Long> categoryIds = new ArrayList<>();
         if (StringUtil.isBlank(param.getTitle()) && param.getCategoryId() != null) {
             //没有名称搜索且不是null，此时判断词条id下面是否有着子集
+            ContentCategory contentCategory = contentCategoryMapper.selectById(param.getCategoryId());
             LambdaQueryWrapper<ContentCategory> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(ContentCategory::getParentId, param.getCategoryId());
-            List<ContentCategory> categories = contentCategoryMapper.selectList(queryWrapper);
+            List<ContentCategory> categories = new ArrayList<>();
+            if (contentCategory.getParentId() == null) {
+                // 添加子集
+                queryWrapper.eq(ContentCategory::getParentId, param.getCategoryId());
+                categories = contentCategoryMapper.selectList(queryWrapper);
+            } else {
+                // 添加父级
+                queryWrapper.eq(ContentCategory::getId, contentCategory.getParentId());
+                categories = contentCategoryMapper.selectList(queryWrapper);
+            }
             categoryIds = categories.stream().map(ContentCategory::getId).collect(Collectors.toList());
             categoryIds.add(param.getCategoryId());
-            // todo 如果没有子类，将父分类加到其中
         }
         log.info("{}", categoryIds);
         Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param, categoryIds);

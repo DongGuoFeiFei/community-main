@@ -83,29 +83,27 @@ const emit = defineEmits(['category-change'])
 
 // 动态计算activeMenu
 const activeMenu = computed(() => {
-  if (route.path === '/') {
+  if (route.path === '/' || route.path === '') {
     return 'home'
-  } else if (route.params.id) {
-    // 检查是否是子分类
+  } else if (/^\/\d+$/.test(route.path)) {
+    const id = route.path.substring(1)
     const allSubCategories = categories.value.flatMap(c => c.categoryList)
-    const isSubCategory = allSubCategories.some(sub => sub.id.toString() === route.params.id)
+    const isSubCategory = allSubCategories.some(sub => sub.id.toString() === id)
 
     return isSubCategory
-        ? `subcategory-${route.params.id}`
-        : `category-${route.params.id}`
+        ? `subcategory-${id}`
+        : `category-${id}`
   }
-  return 'home'
+  return ''
 })
 
 // 计算当前激活的分类ID
-const activeCategoryId = computed(() => route.params.id)
-
-// 判断分类是否激活
-const isCategoryActive = (category) => {
-  return category.id.toString() === activeCategoryId.value ||
-      category.categoryList.some(sub => sub.id.toString() === activeCategoryId.value)
-}
-
+const activeCategoryId = computed(() => {
+  if (/^\/\d+$/.test(route.path)) {
+    return route.path.substring(1)
+  }
+  return null
+})
 const loadCategories = async () => {
   try {
     const res = await getCategoryTrees()
@@ -172,7 +170,7 @@ onMounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 50;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

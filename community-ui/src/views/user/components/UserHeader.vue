@@ -123,7 +123,7 @@ const handleDropdownClick = async (command) => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 50;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

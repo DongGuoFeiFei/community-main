@@ -3,6 +3,7 @@
     <!-- 仅在显示状态时展示的其他控制按钮 -->
     <div v-if="isVisible">
 
+      <!--  聊天按钮    -->
       <div>
         <el-popover
             placement="left"
@@ -18,26 +19,26 @@
                 @mouseleave="hideTooltipText"
             />
           </template>
-          <div class="compact-chat-input">
-            <el-input
-                v-model="inputMessage"
-                placeholder="和丛雨对话..."
-                @keyup.enter="sendMessage"
-                clearable
-                class="chat-input-field"
-            />
-            <el-button
-                type="primary"
-                @click="sendMessage"
-                :loading="isLoading"
-                class="chat-send-btn"
-            >
-              <el-icon>
-                <Promotion/>
-              </el-icon>
-            </el-button>
-          </div>
+          <Live2DChatDialog @update:text="emit('update:text', $event)"/>
         </el-popover>
+      </div>
+
+      <!-- 举报按钮 -->
+      <div v-if="isArticle">
+        <el-tooltip
+            effect="dark"
+            disabled
+            placement="left"
+        >
+          <el-button
+              class="control-btn"
+              icon="Warning"
+              circle
+              @mouseenter="showTooltipText('发现违规内容，找我快速出警!')"
+              @mouseleave="hideTooltipText"
+              @click="openReportDialog"
+          />
+        </el-tooltip>
       </div>
     </div>
 
@@ -59,14 +60,16 @@
         />
       </el-tooltip>
     </div>
+
+    <Live2DReportDialog ref="reportDialog"/>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import {generateText} from '@/api/deepseek.js';
-import {ElMessage} from 'element-plus';
-import {Promotion} from '@element-plus/icons-vue';
+import {computed, ref} from 'vue';
+import Live2DReportDialog from "@/components/Live2D/components/Live2DReportDialog.vue";
+import Live2DChatDialog from "@/components/Live2D/components/Live2DChatDialog.vue";
+import {useRoute} from "vue-router";
 
 const props = defineProps({
   modelValue: {
@@ -78,8 +81,13 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip']);
 
 const isVisible = ref(props.modelValue);
-const inputMessage = ref('');
 const isLoading = ref(false);
+const reportDialog = ref(null);
+const route = useRoute()
+const isArticle = computed(() => {
+  const articleRegex = /^\/article\/\d+$/;
+  return articleRegex.test(route.path);
+})
 
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
@@ -94,22 +102,10 @@ const hideTooltipText = () => {
   emit('hide-tooltip');
 };
 
-const sendMessage = async () => {
-  if (!inputMessage.value.trim() || isLoading.value) return;
-
-  isLoading.value = true;
-
-  try {
-    const response = await generateText(inputMessage.value);
-    emit('update:text', response.data);
-  } catch (error) {
-    ElMessage.error('对话请求失败');
-    emit('update:text', '抱歉，我暂时无法回答这个问题...');
-  } finally {
-    isLoading.value = false;
-    inputMessage.value = '';
-  }
+const openReportDialog = () => {
+  reportDialog.value.open();
 };
+
 </script>
 <style scoped lang="scss">
 .live2d-control-panel {
@@ -137,37 +133,6 @@ const sendMessage = async () => {
   .main-control {
     // 主控制按钮可以有不同的样式
     z-index: 1001; // 确保总是在最上层
-  }
-}
-
-.compact-chat-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-
-  .chat-input-field {
-    flex: 1;
-
-    :deep(.el-input__wrapper) {
-      border-radius: 18px;
-      padding: 0 15px;
-      height: 36px;
-    }
-  }
-
-  .chat-send-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      transform: scale(1.05);
-    }
   }
 }
 </style>
