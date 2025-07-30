@@ -140,18 +140,9 @@ onMounted(async () => {
 // 加载所有标签
 const loadAllTags = async () => {
   try {
-    // 这里替换为实际的API调用
     const response = await getAllTags()
     allTags.value = response.data
 
-    // 模拟数据
-    // allTags.value = [
-    //   {id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章'},
-    //   {id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章'},
-    //   {id: 3, name: '前端', slug: 'frontend', color: '#E6A23C', description: '前端开发相关'},
-    //   {id: 4, name: '后端', slug: 'backend', color: '#F56C6C', description: '后端开发相关'},
-    //   {id: 5, name: '数据库', slug: 'database', color: '#909399', description: '数据库相关'}
-    // ]
   } catch (error) {
     ElMessage.error('加载标签失败')
     console.error('加载标签失败:', error)
@@ -161,16 +152,8 @@ const loadAllTags = async () => {
 // 加载热门标签
 const loadPopularTags = async () => {
   try {
-    // 这里替换为实际的API调用
     const response = await getPopularTags()
     popularTags.value = response.data
-
-    // 模拟数据
-    // popularTags.value = [
-    //   {id: 1, name: '技术', slug: 'tech', color: '#409EFF', description: '技术相关文章'},
-    //   {id: 2, name: '编程', slug: 'programming', color: '#67C23A', description: '编程相关文章'},
-    //   {id: 3, name: 'Vue', slug: 'vue', color: '#42b983', description: 'Vue.js相关'}
-    // ]
   } catch (error) {
     ElMessage.error('加载热门标签失败')
     console.error('加载热门标签失败:', error)
@@ -206,7 +189,6 @@ const createNewTag = async () => {
 
   isCreatingTag.value = true
   try {
-    // 这里替换为实际的API调用
     const response = await createTag({
       name: searchQuery.value,
       slug: generateSlug(searchQuery.value),
@@ -214,14 +196,6 @@ const createNewTag = async () => {
     })
     const newTag = response.data
 
-    // 模拟创建新标签
-    // const newTag = {
-    //   id: Date.now(), // 临时ID
-    //   name: searchQuery.value,
-    //   slug: generateSlug(searchQuery.value),
-    //   color: getRandomColor(),
-    //   description: ''
-    // }
 
     allTags.value.push(newTag)
     toggleTag(newTag)

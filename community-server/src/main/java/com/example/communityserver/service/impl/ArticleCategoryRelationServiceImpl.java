@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.model.ArticleCategoryRelation;
 import com.example.communityserver.entity.model.ContentCategory;
-import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.mapper.ArticleCategoryRelationMapper;
 import com.example.communityserver.mapper.ContentCategoryMapper;
 import com.example.communityserver.service.IArticleCategoryRelationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ import java.util.List;
  * @create: 2025-07-21
  **/
 
+@Slf4j
 @Service
 public class ArticleCategoryRelationServiceImpl extends ServiceImpl<ArticleCategoryRelationMapper, ArticleCategoryRelation> implements IArticleCategoryRelationService {
     @Autowired
@@ -55,12 +56,9 @@ public class ArticleCategoryRelationServiceImpl extends ServiceImpl<ArticleCateg
     }
 
     @Override
-    public boolean delACRelation(List<Long> categoryIds, Long articleId) {
-        if (categoryIds == null || categoryIds.isEmpty()) {
-            return false;
-        }
-        System.out.println(categoryIds);
-        return articleCategoryRelationMapper.delACRelation(categoryIds,articleId);
-
+    public boolean delACRelation(Long articleId) {
+        LambdaQueryWrapper<ArticleCategoryRelation> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleCategoryRelation::getArticleId, articleId);
+        return articleCategoryRelationMapper.delete(queryWrapper) > 0;
     }
 }

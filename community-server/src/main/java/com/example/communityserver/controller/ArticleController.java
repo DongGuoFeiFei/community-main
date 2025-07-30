@@ -17,6 +17,7 @@ import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.web.TableDataInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * @author: DongGuo
  * @create: 2025-04-23
  **/
-
+@Slf4j
 @Api(tags = "帖子内容")
 @RestController
 @RequestMapping("/posts")
@@ -53,6 +54,7 @@ public class ArticleController {
     @ApiOperation("搜索文章（首页列表）")
     @GetMapping
     public TableDataInfo fetchPosts(FetchPostsParam param) {
+        log.info("{}", param);
         Page<ArticleCardVo> page = postsService.getPostsCardVoList(param);
         TableDataInfo tableDataInfo = new TableDataInfo(page.getRecords(), (int) page.getTotal());
         tableDataInfo.setCode(200);
@@ -88,7 +90,8 @@ public class ArticleController {
     @PutMapping("/updateArticleDtl/{id}")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> updateArticleDtl(@PathVariable Long id, @RequestBody @Valid AddArticleDto updateDto) {
-        System.out.println(updateDto);
+        log.info("updateDto:{}", updateDto);
+        log.info("{}", id);
         Article article = new Article();
         article.setIsDrafts(updateDto.getStatus());
         article.setArticleId(id);
@@ -99,8 +102,9 @@ public class ArticleController {
         System.out.println(updateDto.getTagIds());
         boolean delTagArticle = tagService.delTagArticle(updateDto.getTagIds(), article.getArticleId());
         tagService.batchInsert(updateDto.getTagIds(), article.getArticleId());
-        boolean delACRelation = articleCategoryRelationService.delACRelation(updateDto.getCategoryIds(), article.getArticleId());
-        int i = articleCategoryRelationService.batchInsert(updateDto.getCategoryIds(),article.getArticleId());
+        boolean delACRelation = articleCategoryRelationService.delACRelation(article.getArticleId());
+        log.info("delACRelation:{}", delACRelation);
+        int i = articleCategoryRelationService.batchInsert(updateDto.getCategoryIds(), article.getArticleId());
         return i > 0 ? Result.success() : Result.error("失败");
     }
 
@@ -131,9 +135,7 @@ public class ArticleController {
     @GetMapping("/hotPosts")
     public Result<List<ArticleCardVo>> getHotPosts() {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
-                .eq(Article::getIsPublic, 1)
-                .eq(Article::getIsDel, 1);
+        queryWrapper.eq(Article::getIsPublic, 1).eq(Article::getIsDel, 1);
         List<Article> list = postsService.list(queryWrapper);
         List<Article> collect = list.stream().limit(5).collect(Collectors.toList());
         collect.forEach(article -> {

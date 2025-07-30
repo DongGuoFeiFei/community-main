@@ -112,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public MessageCodeEnum register(RegisterDto dto) {
         MessageCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername(), null);
-        if (codeEnum != null) {
+        if (codeEnum != MessageCodeEnum.USER_NOT_EXIST) {
             return codeEnum;
         }
         //注册
@@ -122,6 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setEmail(dto.getEmail());
         user.setPassword(SecurityUtils.encryptPassword(dto.getPassword()));
 
+        // TODO: 2025/7/29 使用email本身的url仍存在问题 
         String emailGravatarUrl = emailService.getEmailGravatarUrl(dto.getEmail());
         user.setAvatar(emailGravatarUrl);
         int insert = userMapper.insert(user);

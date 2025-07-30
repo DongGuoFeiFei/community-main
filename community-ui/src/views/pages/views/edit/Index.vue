@@ -206,6 +206,7 @@ const isEditor = async () => {
       coverImageData.accessUrl = sStore.baseURL + articleRes.coverUrl
       tags.value = tagsRes.data
       articleData.categoryIds = categoriesRes.data.map(category => category.categoryId)
+      console.log("articleData.categoryIds", articleData.categoryIds)
       console.log(articleData)
     } catch (error) {
       console.error('获取文章数据失败:', error)
@@ -265,6 +266,7 @@ const goBack = async () => {
         <CategorySelector
             v-model:selected="articleData.categoryIds"
             class="category-selector-container"
+            :initial-selected="articleData.categoryIds"
         />
         <!-- 标签选择器 -->
         <TagSelector

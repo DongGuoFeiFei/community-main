@@ -10,7 +10,9 @@
           @input="handleSearch"
       >
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <el-icon>
+            <Search/>
+          </el-icon>
         </template>
       </el-input>
     </div>
@@ -62,14 +64,6 @@
             >
               {{ data.articleCount }}
             </el-tag>
-<!--            <el-tag-->
-<!--                v-if="isSelected(data.id)"-->
-<!--                size="small"-->
-<!--                type="success"-->
-<!--                effect="plain"-->
-<!--            >-->
-<!--              已选-->
-<!--            </el-tag>-->
           </div>
         </template>
       </el-tree>
@@ -78,11 +72,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { Search } from '@element-plus/icons-vue'
-import { getCategories } from '@/api/category'
-import { localStores } from '@/stores/localStores'
-import { ElMessage } from "element-plus"
+import {computed, onMounted, ref, watch} from 'vue'
+import {Search} from '@element-plus/icons-vue'
+import {getCategories} from '@/api/category'
+import {localStores} from '@/stores/localStores'
+import {ElMessage} from "element-plus"
 
 const lStore = localStores()
 const baseUrl = lStore.baseURL
@@ -98,6 +92,14 @@ const categories = ref([])
 const searchQuery = ref('')
 const treeRef = ref(null)
 const selectedCategories = ref([])
+
+// 接收props
+const props = defineProps({
+  initialSelected: {
+    type: Array,
+    default: () => []
+  }
+})
 
 // 检查是否已选中
 const isSelected = (id) => {
@@ -115,6 +117,8 @@ const fetchCategories = async () => {
   try {
     const res = await getCategories()
     categories.value = buildTree(res.data)
+    // 初始化选中的分类
+    initSelectedCategories()
   } catch (error) {
     console.error('获取分类失败:', error)
     ElMessage.error('获取分类失败')
@@ -131,6 +135,31 @@ const buildTree = (items, parentId = null) => {
       }))
 }
 
+// 初始化选中的分类
+const initSelectedCategories = () => {
+  if (props.initialSelected && props.initialSelected.length > 0) {
+    // 扁平化树结构以便查找
+    const flatCategories = flattenTree(categories.value)
+    selectedCategories.value = props.initialSelected
+        .map(id => {
+          const category = flatCategories.find(c => c.id === id)
+          return category ? {id: category.id, categoryName: category.categoryName} : null
+        })
+        .filter(Boolean)
+  }
+}
+
+// 扁平化树结构
+const flattenTree = (tree) => {
+  return tree.reduce((acc, node) => {
+    acc.push(node)
+    if (node.children && node.children.length > 0) {
+      acc.push(...flattenTree(node.children))
+    }
+    return acc
+  }, [])
+}
+
 // 过滤树节点
 const filterNode = (value, data) => {
   if (!value) return true
@@ -140,7 +169,7 @@ const filterNode = (value, data) => {
 // 过滤整棵树
 const filterTree = (tree, query) => {
   return tree
-      .map(node => ({ ...node }))
+      .map(node => ({...node}))
       .filter(node => {
         const matches = filterNode(query, node)
         if (node.children) {
@@ -194,6 +223,13 @@ const handleNodeClick = (data) => {
   emit('select', data.id)
   emit('update:selected', selectedCategories.value.map(c => c.id))
 }
+
+// 监听初始选中的变化
+watch(() => props.initialSelected, (newVal) => {
+  if (categories.value.length > 0) {
+    initSelectedCategories()
+  }
+}, {deep: true})
 
 onMounted(() => {
   fetchCategories()

@@ -27,6 +27,7 @@ import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
  **/
 
 @Service
+@Slf4j
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
 
     @Autowired
@@ -164,13 +166,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 首页搜索内容
         Page<ArticleCardVo> page = new Page<>(param.getPageNum(), param.getPageSize());
         List<Long> categoryIds = new ArrayList<>();
-        if (StringUtil.isBlank(param.getTitle()) && param.getCategoryId() != null) { //没有名称搜索且不是null，此时判断词条id下面是否有着子集
+        if (StringUtil.isBlank(param.getTitle()) && param.getCategoryId() != null) {
+            //没有名称搜索且不是null，此时判断词条id下面是否有着子集
             LambdaQueryWrapper<ContentCategory> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(ContentCategory::getParentId, param.getCategoryId());
             List<ContentCategory> categories = contentCategoryMapper.selectList(queryWrapper);
             categoryIds = categories.stream().map(ContentCategory::getId).collect(Collectors.toList());
             categoryIds.add(param.getCategoryId());
+            // todo 如果没有子类，将父分类加到其中
         }
+        log.info("{}", categoryIds);
         Page<ArticleCardVo> voPage = articleMapper.getPostsCardVoList(page, param, categoryIds);
         voPage.getRecords().forEach(articleCardVo -> {
             String html = MarkDownUtils.toHtml(articleCardVo.getContent());
