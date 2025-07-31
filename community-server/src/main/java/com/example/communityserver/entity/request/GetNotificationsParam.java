@@ -21,7 +21,6 @@ public class GetNotificationsParam {
     @NotNull(message = "每页大小不能为空")
     private Integer size;
 
-    @Pattern(regexp = "^(like|comment|follow|system|reply)?$")
     private String type;
 
     private Boolean isRead;

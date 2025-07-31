@@ -42,6 +42,7 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
     private Integer isDel;
+    private String extraData;
 
     /**
      * @Description: 新建一个通知数据，必须内容

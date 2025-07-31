@@ -3,7 +3,6 @@ package com.example.communityserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.enums.ActiveTypeEnum;
@@ -13,10 +12,11 @@ import com.example.communityserver.entity.request.MarkAsReadParam;
 import com.example.communityserver.entity.response.NotificationListVo;
 import com.example.communityserver.entity.response.UnreadCountByTypeVo;
 import com.example.communityserver.mapper.NotificationMapper;
+import com.example.communityserver.service.ICommentService;
+import com.example.communityserver.service.ILikesService;
 import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.security.SecurityUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,52 +36,43 @@ import java.util.concurrent.TimeUnit;
 public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Notification> implements INotificationService {
     @Autowired
     private NotificationMapper notificationMapper;
-
+    @Autowired
+    private ILikesService likesService;
+    @Autowired
+    private ICommentService commentService;
     @Autowired
     private RedisUtil redisUtil;
 
     @Override
     public IPage<NotificationListVo> getNotifications(GetNotificationsParam param) {
-        Page<Notification> page = new Page<>(param.getPage(), param.getSize());
-        LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         if (param.getType() != null) {
             param.setType(param.getType().toUpperCase());
         }
-        queryWrapper
-                .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(param.getType() != null, Notification::getType, param.getType())
-                .eq(param.getIsRead() != null, Notification::getIsRead, Boolean.TRUE.equals(param.getIsRead()) ? 1 : 0)
-                .eq(Notification::getIsDel, 0)
-                .orderByAsc(Notification::getIsRead)
-                .orderByDesc(Notification::getCreatedAt);
-
-        Page<Notification> entityPage = notificationMapper.selectPage(page, queryWrapper);
-        IPage<NotificationListVo> voPage;
-        voPage = entityPage.convert(entity -> {
-            NotificationListVo vo = new NotificationListVo();
-            BeanUtils.copyProperties(entity, vo);
-            vo.setType(entity.getType().getLabel());
-            vo.setColor(entity.getType().getColor());
-            vo.setIsRead(entity.getIsRead() != null && entity.getIsRead() == 1);
-            return vo;
-        });
-
-        return voPage;
+        assert param.getType() != null;
+        if (param.getType().equals("LIKE")) {
+            param.setType("ARTICLE_LIKE");
+            return likesService.getArticleLikeNotificationsVo(param);
+        } else if (param.getType().equals("COMMENT")) {
+            return commentService.getCommentNotificationsVo(param);
+        }
+        return null;
     }
 
     /**
-    * @Description: 逻辑删除通知
-    * @Param: [param]
-    * @return: java.lang.Integer
-    *
-    * @Author: DongGuo
-    */
+     * @Description: 逻辑删除通知
+     * @Param: [param]
+     * @return: java.lang.Integer
+     * @Author: DongGuo
+     */
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer markAsRead(MarkAsReadParam param) {
         LambdaUpdateWrapper<Notification> updateWrapper = new LambdaUpdateWrapper<>();
+        if (param.getType().equals("like")) {
+            param.setType("ARTICLE_LIKE");
+        }
         updateWrapper.in(Notification::getNotificationId, param.getIds())
                 .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
                 .eq(Notification::getIsRead, 0)
@@ -100,7 +91,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         switch (param.getType()) {
-            case "like" -> {
+            case "ARTICLE_LIKE" -> {
                 vo.setLike(notificationMapper.selectCount(queryWrapper));
             }
             case "comment" -> {
@@ -198,7 +189,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         LambdaQueryWrapper<Notification> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Notification::getType, type)
                 .eq(Notification::getSenderId, SecurityUtils.getLoginUserId())
-                .eq( Notification::getContentId, contentId);
+                .eq(Notification::getContentId, contentId);
         int update = notificationMapper.delete(queryWrapper);
         UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + receiverId);
 
@@ -247,6 +238,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     @Override
     public UnreadCountByTypeVo getUnreadCountByType() {
+        // TODO: 2025/7/31 将类型拆分开 ，将redis存储时间提取出来
         UnreadCountByTypeVo vo = redisUtil.getCacheObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId());
         if (vo != null) {
             redisUtil.expire(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + SecurityUtils.getLoginUserId(), 3, TimeUnit.DAYS);
@@ -256,7 +248,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         // like
         queryWrapper.clear();
         queryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, ActiveTypeEnum.LIKE)
+                .eq(Notification::getType, ActiveTypeEnum.ARTICLE_LIKE)
                 .eq(Notification::getIsRead, 0)
                 .eq(Notification::getIsDel, 0);
         Long like = notificationMapper.selectCount(queryWrapper);

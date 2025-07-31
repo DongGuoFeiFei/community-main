@@ -1,23 +1,26 @@
 <template>
-  <div class="notification-item like-notification" :class="{ unread: !notification.is_read }">
+  <div class="like-notification" :class="{ unread: !notification.isRead }">
     <div class="notification-avatar">
-      <el-avatar :src="notification.fromUser?.avatar" />
+      <el-avatar :src="notification.senderAvatar"/>
     </div>
 
-    <div class="notification-content">
-      <div class="content-text">
-        <span class="username">{{ notification.fromUser?.username }}</span>
-        点赞了你的
+    <div class="notification-main">
+      <div class="notification-content">
+        <span class="username">{{ notification.senderName }}</span>
+        <span class="action-text">点赞了你的文章</span>
         <router-link
-            :to="`/article/${notification.parentSourceId}`"
-            class="content-link"
+            :to="`/article/${notification.sourceId}`"
+            target="_blank"
+            class="article-title"
         >
-          {{ notification.contentType }}
+          《{{ notification.sourceTitle }}》
         </router-link>
       </div>
 
-      <div class="content-time">
-        {{ formatTime(notification.createdAt) }}
+      <div class="notification-meta">
+        <span class="time">{{ formatTime(notification.createdAt) }}</span>
+        <span class="divider">·</span>
+        <span class="from">来自{{ notification.extraData?.from || '社区' }}</span>
       </div>
     </div>
 
@@ -26,14 +29,14 @@
           v-if="!notification.isRead"
           link
           size="small"
-          @click.stop="$emit('read')"
+          @click.stop="handleRead"
       >
         标记已读
       </el-button>
       <el-button
           link
           size="small"
-          @click.stop="$emit('delete')"
+          @click.stop="handleDelete"
       >
         删除
       </el-button>
@@ -42,33 +45,44 @@
 </template>
 
 <script setup>
-import { formatTime } from '@/utils/date';
+import {formatTime} from '@/utils/date';
 
-defineProps({
+const props = defineProps({
   notification: {
     type: Object,
     required: true
   }
 });
 
-defineEmits(['read', 'delete']);
+const emit = defineEmits(['read', 'delete']);
+
+const handleRead = () => {
+  emit('read', props.notification.notificationId);
+};
+
+const handleDelete = () => {
+  emit('delete', props.notification.notificationId);
+};
 </script>
 
 <style lang="scss" scoped>
 .like-notification {
   display: flex;
-  padding: 12px 16px;
+  padding: 16px;
   background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
 
   &.unread {
-    background-color: #f6ffed;
+    background-color: #fffaf6;
+    border-left: 3px solid #ff7d47;
   }
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
 
   .notification-avatar {
@@ -77,35 +91,52 @@ defineEmits(['read', 'delete']);
     .el-avatar {
       width: 40px;
       height: 40px;
+      background-color: #f8f8f8;
     }
   }
 
+  .notification-main {
+    flex: 1;
+    min-width: 0;
+  }
+
   .notification-content {
-    flex-grow: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 4px;
 
-    .content-text {
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 4px;
-
-      .username {
-        font-weight: 500;
-        color: #1890ff;
-      }
-
-      .content-link {
-        color: #1890ff;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+    .username {
+      font-weight: 600;
+      color: #ff7d47;
     }
 
-    .content-time {
-      font-size: 12px;
-      color: #999;
+    .action-text {
+      color: #666;
+      margin: 0 4px;
+    }
+
+    .article-title {
+      color: #333;
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: #ff7d47;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .notification-meta {
+    font-size: 12px;
+    color: #999;
+
+    .divider {
+      margin: 0 4px;
+    }
+
+    .from {
+      color: #666;
     }
   }
 
@@ -115,10 +146,11 @@ defineEmits(['read', 'delete']);
 
     .el-button {
       padding: 0 8px;
-      color: #666;
+      color: #999;
+      font-size: 12px;
 
       &:hover {
-        color: #1890ff;
+        color: #ff7d47;
       }
     }
   }

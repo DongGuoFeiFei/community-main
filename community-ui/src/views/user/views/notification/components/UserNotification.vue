@@ -14,11 +14,11 @@
     </div>
 
     <div v-if="loading" class="loading-container">
-      <el-skeleton :rows="5" animated />
+      <el-skeleton :rows="5" animated/>
     </div>
 
     <div v-else-if="notifications.length === 0" class="empty-container">
-      <el-empty description="暂无通知" />
+      <el-empty description="暂无通知"/>
     </div>
 
     <div v-else class="notification-list">
@@ -45,16 +45,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { getNotifications } from '@/api/notification.js';
+import {computed, ref, watch} from 'vue';
+import {getNotifications} from '@/api/notification.js';
 import LikeNotification from './types/LikeNotification.vue';
 import CommentNotification from './types/CommentNotification.vue';
-// import ArticleNotification from './components/types/ArticleNotification.vue';
-// import FollowNotification from './components/types/FollowNotification.vue';
-// import SystemNotification from './components/types/SystemNotification.vue';
-// import FavoriteNotification from './components/types/FavoriteNotification.vue';
-// import ReplyNotification from './components/types/ReplyNotification.vue';
-// import FavoriteArticleNotification from './components/types/FavoriteArticleNotification.vue';
 
 const props = defineProps({
   type: {
@@ -93,14 +87,14 @@ const hasUnread = computed(() => {
 });
 
 const notificationTypes = [
-  { value: 'like', label: '点赞' },
-  { value: 'comment', label: '评论' },
-  { value: 'article', label: '文章回复' },
-  { value: 'follow', label: '关注' },
-  { value: 'system', label: '系统' },
-  { value: 'favorite', label: '收藏' },
-  { value: 'reply', label: '回复' },
-  { value: 'favoriteArticle', label: '收藏文章' }
+  {value: 'like', label: '点赞'},
+  {value: 'comment', label: '评论'},
+  {value: 'article', label: '文章回复'},
+  {value: 'follow', label: '关注'},
+  {value: 'system', label: '系统'},
+  {value: 'favorite', label: '收藏'},
+  {value: 'reply', label: '回复'},
+  {value: 'favoriteArticle', label: '收藏文章'}
 ];
 
 const getNotificationComponent = (type) => {
@@ -108,6 +102,7 @@ const getNotificationComponent = (type) => {
 };
 
 const fetchNotifications = async () => {
+  notifications.value = []
   try {
     loading.value = true;
     const params = {
@@ -118,6 +113,7 @@ const fetchNotifications = async () => {
 
     const response = await getNotifications(params);
     notifications.value = response.data.rows;
+    console.log(notifications.value)
     total.value = response.data.total;
   } catch (error) {
     console.error('获取通知列表失败:', error);
@@ -138,7 +134,7 @@ const markAllCurrentAsRead = () => {
 watch(currentType, () => {
   currentPage.value = 1;
   fetchNotifications();
-}, { immediate: true });
+}, {immediate: true});
 
 
 defineExpose({

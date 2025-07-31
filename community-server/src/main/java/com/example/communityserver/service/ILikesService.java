@@ -1,7 +1,10 @@
 package com.example.communityserver.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.model.Likes;
+import com.example.communityserver.entity.request.GetNotificationsParam;
+import com.example.communityserver.entity.response.NotificationListVo;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ import com.example.communityserver.entity.model.Likes;
 
 public interface ILikesService extends IService<Likes> {
 
+    IPage<NotificationListVo> getArticleLikeNotificationsVo(GetNotificationsParam param);
 }

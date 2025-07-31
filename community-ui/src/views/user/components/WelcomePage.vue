@@ -34,7 +34,7 @@
         <el-card
             shadow="hover"
             class="action-card"
-            @click="navigateTo('create-post')"
+            @click="navigateTo('/editor')"
         >
           <el-icon :size="36">
             <Edit/>
@@ -44,7 +44,7 @@
         <el-card
             shadow="hover"
             class="action-card"
-            @click="navigateTo('messages')"
+            @click="navigateTo('/myself/notifications')"
         >
           <el-icon :size="36">
             <Message/>
@@ -54,7 +54,7 @@
         <el-card
             shadow="hover"
             class="action-card"
-            @click="navigateTo('settings')"
+            @click="navigateTo('/myself/profile')"
         >
           <el-icon :size="36">
             <Setting/>
@@ -64,7 +64,7 @@
         <el-card
             shadow="hover"
             class="action-card"
-            @click="navigateTo('bookmarks')"
+            @click="navigateTo('/myself/collections')"
         >
           <el-icon :size="36">
             <Star/>
@@ -119,7 +119,7 @@ const router = useRouter()
 
 // 导航方法
 const navigateTo = (path) => {
-  router.push({name: path})
+  router.push(path)
 }
 
 // 加载用户数据

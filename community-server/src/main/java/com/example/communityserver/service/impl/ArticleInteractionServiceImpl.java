@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
-import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.enums.ActiveTypeEnum;
+import com.example.communityserver.entity.enums.ArticleInteractionTypeEnum;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.model.Notification;
@@ -67,7 +67,7 @@ public class ArticleInteractionServiceImpl extends ServiceImpl<ArticleInteractio
                 .setSql("like_count = like_count + 1");
         articleMapper.update(null, updateWrapper);
         notificationMapper.insert(notification);
-        redisUtil.deleteObject(CacheKeyConstants.ARTICLE_LIKE_COUNT + articleId);
+        redisUtil.deleteObject(CacheKeyConstants.ARTICLE_LIKE_COUNT + article.getUserId());
         return true;
     }
 
@@ -88,13 +88,14 @@ public class ArticleInteractionServiceImpl extends ServiceImpl<ArticleInteractio
         updateWrapper.eq(Article::getArticleId, articleId)
                 .setSql("like_count = like_count - 1");
         articleMapper.update(null, updateWrapper);
+        Article article = articleMapper.selectById(articleId);
         LambdaQueryWrapper<Notification> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1
                 .eq(Notification::getType, ActiveTypeEnum.ARTICLE_LIKE)
                 .eq(Notification::getSenderId, SecurityUtils.getLoginUserId())
                 .eq(Notification::getContentId, interaction.getArticleId());
         notificationMapper.delete(queryWrapper1);
-        redisUtil.deleteObject(CacheKeyConstants.ARTICLE_LIKE_COUNT + articleId);
+        redisUtil.deleteObject(CacheKeyConstants.ARTICLE_LIKE_COUNT + article.getUserId());
         return true;
 
     }
