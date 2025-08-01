@@ -17,7 +17,6 @@ import lombok.Getter;
 public enum ArticleInteractionTypeEnum {
     VIEW(1, "浏览"),
     LIKE(2, "点赞"),
-    COMMENT(3, "评论"),
     SHARE(4, "分享");
 
     private final Integer code;

@@ -39,5 +39,6 @@
             at.article_id = #{postId}
           AND
             t.is_del = 0
+          and t.status != 2
     </select>
 </mapper>

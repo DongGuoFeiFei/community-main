@@ -1,17 +1,15 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.CreateTagParam;
 import com.example.communityserver.entity.response.TagVo;
 import com.example.communityserver.mapping.TagMapping;
 import com.example.communityserver.service.ITagService;
-import com.example.communityserver.utils.common.StringUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,7 +34,11 @@ public class TagController {
     @ApiOperation("所有标签")
     @GetMapping("/getAllTags")
     public Result<List<TagVo>> getAllTags() {
-        List<Tag> list = tagService.list();
+        LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .ne(Tag::getStatus, 2)
+                .orderByDesc(Tag::getCreateCount);
+        List<Tag> list = tagService.list(queryWrapper);
         ArrayList<TagVo> tagVos = new ArrayList<>();
         TagMapping.INSTANCE.toListTagVo(list, tagVos);
         return list != null ? Result.success(tagVos) : Result.error();
@@ -54,18 +56,7 @@ public class TagController {
     @PostMapping("/createTag")
     public Result<TagVo> createTag(@RequestBody CreateTagParam param) {
         // TODO: 2025/7/5 添加敏感词检测 标签
-        Tag tag = new Tag();
-        tag.setCreatorId(SecurityUtils.getLoginUserId());
-        tag.setName(param.getName());
-        tag.setColor(param.getColor());
-        if (StringUtil.isBlank(param.getSlug())){
-            param.setSlug(param.getName());
-        }
-        tag.setSlug(param.getSlug());
-        tag.setCreateCount(1L);
-        boolean b = tagService.save(tag);
-        TagVo tagVo = new TagVo();
-        TagMapping.INSTANCE.toTagVo(tag, tagVo);
+        TagVo tagVo = tagService.createTag(param);
         return Result.success(tagVo);
     }
 

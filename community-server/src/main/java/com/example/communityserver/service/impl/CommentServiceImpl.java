@@ -119,7 +119,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         LambdaQueryWrapper<Notification> notificationQueryWrapper = new LambdaQueryWrapper<>();
         notificationQueryWrapper
                 .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getIsRead, Boolean.TRUE.equals(param.getIsRead()) ? 1 : 0)
                 .eq(Notification::getType, param.getType())
                 .eq(Notification::getIsDel, 0)
                 .orderByAsc(Notification::getIsRead)
