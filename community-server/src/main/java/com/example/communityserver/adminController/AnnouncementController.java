@@ -35,6 +35,7 @@ public class AnnouncementController {
     @GetMapping("/list")
     @ApiOperation("获取公告列表")
     public Result<Result.PageData<SysAnnouncement>> list(GetAnnouncementsParam param) {
+        // TODO: 2025/8/2 菲菲发布的数据即id-13数据的开始时间在后端传至前端时数据不对
         IPage<SysAnnouncement> page = announcementService.GetAnnouncementsList(param);
         return Result.pageSuccess(page.getTotal(), page.getRecords());
     }

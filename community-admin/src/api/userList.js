@@ -51,5 +51,5 @@ export const batchDeleteUsers = (userIds) => {
 };
 
 export const activeChange = (data) => {
-    return request.post('/admin/users/active-change', {data});
+    return request.post('/admin/users/active-change', data);
 };

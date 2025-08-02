@@ -104,51 +104,6 @@ export const submitCommentToPost = async (postId, {content, parentId, firstId}) 
     }
 }
 
-export const updateUserProfile = (formData) => {
-    return request.post('/user/updateUserProfile', formData).then((res) => {
-        if (res.code === 200) {
-            console.log(res)
-            return true
-        } else {
-            throw new Error(res.message)
-        }
-    })
-}
-
-export const updateUserCoverId = (data) => {
-    return request.post("/user/updateUserCoverId", data).then(res => {
-        if (res.code === 200) {
-            return true
-        } else {
-            throw new Error(res.message)
-        }
-    })
-}
-
-// 获取我的文章列表
-export const getMyArticles = (params) => {
-    return request.get('/posts/getArticleList', {params}).then(res => {
-        if (res.code === 200) {
-            // 直接返回 res.data 而不是 res
-            return res  // 兼容两种返回格式
-        } else {
-            throw new Error(res.msg || '获取我的文章列表')
-        }
-    })
-}
-
-// 删除文章
-export const deleteArticle = (id) => {
-    return request.delete(`/posts/del/${id}`).then(res => {
-        if (res.code === 200) {
-            // 直接返回 res.data 而不是 res
-            return res  // 兼容两种返回格式
-        } else {
-            throw new Error(res.msg || '删除文章失败')
-        }
-    })
-}
-
 // 获取文章详情
 export const getArticleById = (id) => {
     return request.get(`/posts/getArticleDtl/${id}`).then(res => {

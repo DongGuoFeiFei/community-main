@@ -16,6 +16,7 @@ import com.example.communityserver.utils.security.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
  * @author: DongGuo
  * @create: 2025-07-04
  **/
-
+@Slf4j
 @Api(tags = "管理员用户管理")
 @RestController
 @RequestMapping("admin/users")
@@ -65,8 +66,10 @@ public class AdminUserController {
     @ApiOperation("改变激活用户状态")
     @PostMapping("/active-change")
     public Result<Void> activeChange(@RequestBody IdStatusParam param) {
+        log.info("{}", param);
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(User::getUserId, param.getId()).set(User::getIsActive, param.getStatus());
+        updateWrapper.eq(User::getUserId, param.getId())
+                .set(User::getIsActive, param.getStatus());
         return userService.update(updateWrapper) ? Result.success() : Result.error();
     }
 

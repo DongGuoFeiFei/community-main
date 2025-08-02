@@ -102,7 +102,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             Article article = articleMapper.selectById(comment.getArticleId());
             notification.setType(ActiveTypeEnum.COMMENT);
             notification.setUserId(article.getUserId());
-            notification.setContentId(article.getArticleId());
+            notification.setContentId(comment.getCommentId());
         }
         notification.setSenderId(SecurityUtils.getLoginUserId());
         notificationMapper.insert(notification);
@@ -138,14 +138,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<NotificationListVo> listVos = notificationIPage
                 .getRecords()
                 .stream()
-                .map(record -> {
+                .map(notification -> {
                     NotificationListVo vo = new NotificationListVo();
-                    vo.setNotificationId(record.getNotificationId());
-                    vo.setType(record.getType());
-                    vo.setIsRead(record.getIsRead() == 1);
+                    vo.setNotificationId(notification.getNotificationId());
+                    vo.setType(notification.getType());
+                    vo.setIsRead(notification.getIsRead() == 1);
                     // 设置发送者信息
                     senders.stream()
-                            .filter(sender -> sender.getUserId().equals(record.getSenderId()))
+                            .filter(sender -> sender.getUserId().equals(notification.getSenderId()))
                             .findFirst()
                             .ifPresent(sender -> {
                                 vo.setSenderId(sender.getUserId());
@@ -155,7 +155,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                     // 设置文章信息
                     comments
                             .stream()
-                            .filter(comment -> comment.getCommentId().equals(record.getContentId()))
+                            .filter(comment -> comment.getCommentId().equals(notification.getContentId()))
                             .findFirst()
                             .ifPresent(comment -> {
                                 articles.stream()
@@ -168,8 +168,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                                             vo.setRelatedContent(comment.getContent());
                                         });
                             });
-                    vo.setCreatedAt(record.getCreatedAt());
-                    vo.setExtraData(record.getExtraData());
+                    vo.setCreatedAt(notification.getCreatedAt());
+                    vo.setExtraData(notification.getExtraData());
                     return vo;
                 })
                 .collect(Collectors.toList());

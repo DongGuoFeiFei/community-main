@@ -9,7 +9,7 @@
                CASE WHEN c.is_del = 1 THEN null ELSE c.user_id END                AS user_id,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
                c.parent_id,
-               c.first_id,
+               c.root_id as firstId,
                c.created_at,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
                CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
@@ -31,7 +31,7 @@
                CASE WHEN c.is_del = 1 THEN '0' ELSE c.user_id END                 AS user_id,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
                c.parent_id,
-               c.first_id,
+               c.root_id as firstId,
                c.created_at,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
                CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
@@ -113,7 +113,7 @@
                CASE WHEN c.is_del = 1 THEN '0' ELSE c.user_id END                 AS user_id,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
                c.parent_id,
-               c.first_id,
+               c.root_id as firstId,
                c.created_at,
                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
                CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
@@ -125,7 +125,5 @@
                  LEFT JOIN user pu ON pc.user_id = pu.user_id AND c.is_del = 0
         WHERE c.comment_id = #{commentId}
     </select>
-
-
 </mapper>
 

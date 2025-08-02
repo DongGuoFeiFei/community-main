@@ -40,7 +40,7 @@ public class Comment {
     @ApiModelProperty(value = "父评论ID（用于回复功能，NULL表示一级评论）", example = "1002")
     private Long parentId;
     @ApiModelProperty(value = "第一层评论的ID（用于回复功能，NULL表示一级评论）", example = "1002")
-    private Long firstId;
+    private Long rootId;
     @ApiModelProperty(value = "是否删除", example = "1")
     private Integer isDel;
     @ApiModelProperty(value = "评论时间", example = "2023-10-01 12:00:00")

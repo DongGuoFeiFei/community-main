@@ -99,7 +99,7 @@ const submit = async () => {
     await formRef.value.validate();
     isSubmitting.value = true;
 
-    await submitReport(form.value);
+    // await submitReport(form.value);
     ElMessage.success('举报已提交，我们会尽快处理');
     emit('submitted');
     close();

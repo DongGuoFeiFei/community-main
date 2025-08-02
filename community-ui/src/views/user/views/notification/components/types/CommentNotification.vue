@@ -1,7 +1,7 @@
 <template>
   <div class="comment-notification" :class="{ unread: !notification.isRead }">
     <div class="notification-avatar">
-      <el-avatar :src="notification.senderAvatar" />
+      <el-avatar :src="notification.senderAvatar"/>
     </div>
 
     <div class="notification-main">
@@ -73,9 +73,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { formatTime } from '@/utils/date';
-import { ElMessage } from 'element-plus';
+import {ref} from 'vue';
+import {formatTime} from '@/utils/date';
+import {ElMessage} from 'element-plus';
+import {submitCommentToPost} from "@/api/index.js";
 
 const props = defineProps({
   notification: {
@@ -127,13 +128,19 @@ const handleReply = async () => {
 
   isSubmitting.value = true;
   try {
-    await emit('reply', {
-      notificationId: props.notification.notificationId,
-      articleId: props.notification.sourceId,
-      commentId: props.notification.relatedId || props.notification.sourceId,
-      content: replyContent.value,
-      replyTo: props.notification.senderId
-    });
+    // await emit('reply', {
+    //   notificationId: props.notification.notificationId,
+    //   articleId: props.notification.sourceId,
+    //   parentId: props.notification.relatedId,
+    //   content: replyContent.value
+    // });
+    const parentId = props.notification.relatedId
+    await submitCommentToPost(props.notification.sourceId, {
+      replyContent,
+      parentId,
+      parentId
+    })
+
 
     ElMessage.success('回复成功');
     showReply.value = false;
