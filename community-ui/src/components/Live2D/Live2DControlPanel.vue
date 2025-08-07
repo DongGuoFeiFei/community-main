@@ -85,7 +85,7 @@ const isLoading = ref(false);
 const reportDialog = ref(null);
 const route = useRoute()
 const isArticle = computed(() => {
-  const articleRegex = /^\/article\/\d+$/;
+  const articleRegex = /^\/(article|author)\/\d+$/;
   return articleRegex.test(route.path);
 })
 

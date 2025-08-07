@@ -26,10 +26,12 @@ const store = localStores()
 const props = defineProps({
   modelPath: {
     type: String,
+    // default: '/live2d/NeneAyachi/Live2DViewerEX.model3.json'
     default: '/live2d/Murasame/Murasame.model3.json'
   },
   scale: {
     type: Number,
+    // default: 0.111,
     default: 0.13,
     validator: (v) => v > 0 && v <= 1
   },
@@ -213,6 +215,7 @@ onBeforeUnmount(() => {
   width: 200px;
   height: 390px;
   z-index: 999;
+  background-color: #c43737;
 
   .live2d-text-bubble {
     position: absolute;

@@ -19,6 +19,6 @@ export const STATUS_MAP = {
     2: '拒绝'
 };
 export const STATUS_ACTIVE = {
-    0: '激活',
-    1: '封禁'
+    1: '激活',
+    0: '封禁'
 };

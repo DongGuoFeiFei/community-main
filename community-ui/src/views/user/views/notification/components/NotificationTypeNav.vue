@@ -60,12 +60,12 @@ const emit = defineEmits(['type-change', 'mark-all-read']);
 const notificationTypes = [
   {value: 'like', label: '点赞', color: '#FF4757'},
   {value: 'comment', label: '评论', color: '#2ED573'},
-  {value: 'article', label: '文章回复', color: '#1E90FF'},
-  {value: 'follow', label: '关注', color: '#9C51B6'},
-  {value: 'system', label: '系统', color: '#FF7F50'},
-  {value: 'favorite', label: '收藏', color: '#25CCF7'},
   {value: 'reply', label: '回复', color: '#FFD700'},
-  {value: 'favoriteArticle', label: '收藏文章', color: '#58B19F'}
+  {value: 'follow', label: '关注', color: '#9C51B6'},
+  // {value: 'system', label: '系统', color: '#FF7F50'},
+  // {value: 'favorite', label: '收藏', color: '#25CCF7'},
+  // {value: 'favorite', label: '私信', color: '#25CCF7'},
+  {value: 'favoriteArticle', label: '文章收藏', color: '#58B19F'}
 ];
 </script>
 

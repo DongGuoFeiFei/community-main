@@ -1,9 +1,11 @@
 package com.example.communityserver.entity.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.communityserver.entity.enums.ActiveTypeEnum;
+import com.example.communityserver.handler.JsonMapTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,7 +45,7 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
     private Integer isDel;
-    private String extraData;
+    private Map<String, Object> extraData;
 
     /**
      * @Description: 新建一个通知数据，必须内容

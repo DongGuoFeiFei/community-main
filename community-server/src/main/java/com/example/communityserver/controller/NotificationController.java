@@ -15,6 +15,7 @@ import com.example.communityserver.utils.security.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ import javax.validation.Valid;
  * @author: DongGuo
  * @create: 2025-06-26
  **/
-
+@Slf4j
 @Api(tags = "通知管理")
 @RestController
 @RequestMapping("/notifications")
@@ -44,6 +45,7 @@ public class NotificationController {
     @GetMapping
     public Result<Result.PageData<NotificationListVo>> getNotifications(@Valid GetNotificationsParam param) {
         IPage<NotificationListVo> page = notificationEntityService.getNotifications(param);
+        log.info("{}", page.getRecords());
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
 

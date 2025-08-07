@@ -98,7 +98,7 @@ const handleMenuClick = (index) => {
 const handleDropdownClick = async (command) => {
   switch (command) {
     case 'home':
-      router.push('/index')
+      router.push('/')
       break
     case 'settings':
       router.push('/settings')

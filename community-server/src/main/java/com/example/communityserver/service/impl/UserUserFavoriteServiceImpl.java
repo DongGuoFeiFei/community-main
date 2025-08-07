@@ -74,6 +74,8 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
             notification.setContentId(userFavorite.getFavoriteId());
             notification.setSenderId(SecurityUtils.getLoginUserId());
             notificationEntityService.save(notification);
+            // 获取通知
+            redisUtil.deleteObject(CacheKeyConstants.UNREAD_TYPE_VO_COUNT + notification.getUserId());
 
         } else {
             favArticleVo = null;
@@ -119,12 +121,12 @@ public class UserUserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper,
     public boolean removeFavorite(Long articleId) {
         LambdaQueryWrapper<UserFavorite> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(articleId != null, UserFavorite::getTargetId, articleId)
-                .eq(UserFavorite::getType,ActiveTypeEnum.FAVORITE_ARTICLE)
+                .eq(UserFavorite::getType, ActiveTypeEnum.FAVORITE_ARTICLE)
                 .eq(SecurityUtils.getLoginUserId() != null, UserFavorite::getUserId, SecurityUtils.getLoginUserId());
         UserFavorite userFavorite = userFavoriteMapper.selectOne(queryWrapper);
         userFavoriteMapper.deleteById(userFavorite.getFavoriteId());
         Article article = articleMapper.selectById(articleId);
-        Integer integer = notificationEntityService.deleteNotification(userFavorite.getType(), userFavorite.getFavoriteId(),article.getUserId());
+        Integer integer = notificationEntityService.deleteNotification(userFavorite.getType(), userFavorite.getFavoriteId(), article.getUserId());
         redisUtil.deleteObject(CacheKeyConstants.ARTICLE_FAVORITE_COUNT + articleId);
         return integer > 0;
     }

@@ -107,7 +107,7 @@ const handleDelete = async (ids) => {
 // 辅助函数：获取类型对应的中文标签
 const getTypeLabel = (type) => {
   const typeMap = {
-    like: '点赞',
+    LIKE: '点赞',
     comment: '评论',
     follow: '关注',
     system: '系统',

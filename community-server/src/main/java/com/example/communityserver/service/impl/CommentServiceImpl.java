@@ -29,7 +29,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -84,9 +86,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 获取通知者id
         // 添加用户评论
         Long loginUserId = SecurityUtils.getLoginUserId();
+
         // 添加用户评论
-        // TODO: 2025/5/5 研究使用MapStruct处理嵌套数据 
+        // TODO: 2025/5/5 研究使用MapStruct处理嵌套数据
         Comment comment = new Comment();
+        Comment parentComment = new Comment();
+        if (addCommentDto.getParentId() != null) {
+            parentComment = commentMapper.selectById(addCommentDto.getParentId());
+        }
         BeanUtils.copyProperties(addCommentDto, comment);
         comment.setUserId(loginUserId);
         commentMapper.insert(comment);
@@ -94,15 +101,25 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // parentId是否存在（评论or回复）  添加通知
         Notification notification = new Notification();
         if (comment.getParentId() != null) { // 回复
-            Comment parentComment = commentMapper.selectById(comment.getParentId());
             notification.setType(ActiveTypeEnum.REPLY);
             notification.setUserId(parentComment.getUserId());
             notification.setContentId(comment.getCommentId());
+            Map<String, Object> extraData = new HashMap<>();
+            extraData.put("from", null);
+            extraData.put("originalContent", parentComment.getContent());
+            extraData.put("parentCommentId", parentComment.getCommentId());
+            notification.setExtraData(extraData);
+
         } else { // 评论
             Article article = articleMapper.selectById(comment.getArticleId());
             notification.setType(ActiveTypeEnum.COMMENT);
             notification.setUserId(article.getUserId());
             notification.setContentId(comment.getCommentId());
+            Map<String, Object> extraData = new HashMap<>();
+            extraData.put("from", null);
+            extraData.put("originalContent", parentComment.getContent());
+            extraData.put("parentCommentId", parentComment.getCommentId());
+            notification.setExtraData(extraData);
         }
         notification.setSenderId(SecurityUtils.getLoginUserId());
         notificationMapper.insert(notification);
@@ -119,7 +136,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         LambdaQueryWrapper<Notification> notificationQueryWrapper = new LambdaQueryWrapper<>();
         notificationQueryWrapper
                 .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, param.getType())
+                .eq(Notification::getType, param.getType().toUpperCase())
                 .eq(Notification::getIsDel, 0)
                 .orderByAsc(Notification::getIsRead)
                 .orderByDesc(Notification::getCreatedAt);

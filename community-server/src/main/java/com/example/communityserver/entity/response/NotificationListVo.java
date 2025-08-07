@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * <p>
- * TODO
+ * 通知通用返回实体
  * <p>
  *
  * @author: DongGuo
@@ -64,5 +65,5 @@ public class NotificationListVo {
     /**
      * 额外数据（JSON格式，用于存储特殊字段）
      */
-    private String extraData;
+    private Map<String, Object> extraData;
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="like-notification" :class="{ unread: !notification.isRead }">
     <div class="notification-avatar">
-      <el-avatar :src="notification.senderAvatar"/>
+      <el-avatar :src="store.baseURL + notification.senderAvatar"/>
     </div>
 
     <div class="notification-main">
@@ -46,6 +46,7 @@
 
 <script setup>
 import {formatTime} from '@/utils/date';
+import {localStores} from "@/stores/localStores.js";
 
 const props = defineProps({
   notification: {
@@ -54,6 +55,7 @@ const props = defineProps({
   }
 });
 
+const store = localStores()
 const emit = defineEmits(['read', 'delete']);
 
 const handleRead = () => {

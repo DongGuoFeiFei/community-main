@@ -1,7 +1,7 @@
 <template>
   <div class="comment-notification" :class="{ unread: !notification.isRead }">
     <div class="notification-avatar">
-      <el-avatar :src="notification.senderAvatar"/>
+      <el-avatar :src="store.baseURL+ notification.senderAvatar"/>
     </div>
 
     <div class="notification-main">
@@ -77,7 +77,9 @@ import {ref} from 'vue';
 import {formatTime} from '@/utils/date';
 import {ElMessage} from 'element-plus';
 import {submitCommentToPost} from "@/api/index.js";
+import {localStores} from "@/stores/localStores.js";
 
+const store = localStores()
 const props = defineProps({
   notification: {
     type: Object,
@@ -128,16 +130,11 @@ const handleReply = async () => {
 
   isSubmitting.value = true;
   try {
-    // await emit('reply', {
-    //   notificationId: props.notification.notificationId,
-    //   articleId: props.notification.sourceId,
-    //   parentId: props.notification.relatedId,
-    //   content: replyContent.value
-    // });
+    const content= replyContent.value
     const parentId = props.notification.relatedId
+    console.log(replyContent.value)
     await submitCommentToPost(props.notification.sourceId, {
-      replyContent,
-      parentId,
+      content,
       parentId
     })
 

@@ -49,11 +49,17 @@ import {computed, ref, watch} from 'vue';
 import {getNotifications} from '@/api/notification.js';
 import LikeNotification from './types/LikeNotification.vue';
 import CommentNotification from './types/CommentNotification.vue';
+import FavoriteArticleNotification from './types/FavoriteArticleNotification.vue';
+import {ElMessage} from "element-plus";
+import FollowNotification from "@/views/user/views/notification/components/types/FollowNotification.vue";
+import ReplyNotification from "@/views/user/views/notification/components/types/ReplyNotification.vue";
+import SystemNotification from "@/views/user/views/notification/components/types/SystemNotification.vue";
 
 const props = defineProps({
   type: {
     type: String,
-    required: true
+    required: true,
+    default: "like"
   }
 });
 
@@ -69,11 +75,11 @@ const notificationComponents = {
   like: LikeNotification,
   comment: CommentNotification,
   // article: ArticleNotification,
-  // follow: FollowNotification,
-  // system: SystemNotification,
+  follow: FollowNotification,
+  system: SystemNotification,
   // favorite: FavoriteNotification,
-  // reply: ReplyNotification,
-  // favoriteArticle: FavoriteArticleNotification
+  reply: ReplyNotification,
+  favoriteArticle: FavoriteArticleNotification
 };
 
 const currentType = computed(() => props.type);
@@ -110,13 +116,19 @@ const fetchNotifications = async () => {
       size: pageSize.value,
       type: currentType.value
     };
+    // todo 当前currentType.value没有默认值，刷新页面，激活的是like，设置为刷新页面激活是当前选项
+    console.log(params)
+    if (params.type === '') {
+      params.type = 'like'
+    }
 
     const response = await getNotifications(params);
+    console.log(response)
     notifications.value = response.data.rows;
     console.log(notifications.value)
     total.value = response.data.total;
   } catch (error) {
-    console.error('获取通知列表失败:', error);
+    ElMessage.error(error.message || '获取通知列表失败:请求失败');
   } finally {
     loading.value = false;
   }
