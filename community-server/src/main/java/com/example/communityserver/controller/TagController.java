@@ -35,9 +35,7 @@ public class TagController {
     @GetMapping("/getAllTags")
     public Result<List<TagVo>> getAllTags() {
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
-                .ne(Tag::getStatus, 2)
-                .orderByDesc(Tag::getCreateCount);
+        queryWrapper.ne(Tag::getStatus, 2).orderByDesc(Tag::getCreateCount);
         List<Tag> list = tagService.list(queryWrapper);
         ArrayList<TagVo> tagVos = new ArrayList<>();
         TagMapping.INSTANCE.toListTagVo(list, tagVos);
@@ -57,7 +55,7 @@ public class TagController {
     public Result<TagVo> createTag(@RequestBody CreateTagParam param) {
         // TODO: 2025/7/5 添加敏感词检测 标签
         TagVo tagVo = tagService.createTag(param);
-        return Result.success(tagVo);
+        return tagVo != null ? Result.success(tagVo) : Result.error("创建失败，该标签已经存在或名称不当。");
     }
 
 }

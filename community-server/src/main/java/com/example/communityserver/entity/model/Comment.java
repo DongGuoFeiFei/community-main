@@ -47,5 +47,6 @@ public class Comment {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
 
+    private Integer state;
 //    private Long notificationId;
 }

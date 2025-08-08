@@ -69,8 +69,8 @@ logging:
     root: info
     org.springframework.web: info
     com.example: debug
-    com.baomidou.mybatisplus: debug #开发
-#    com.baomidou.mybatisplus: warn #生产
+#    com.baomidou.mybatisplus: debug #开发
+    com.baomidou.mybatisplus: warn #生产
   file:
     name: ./logs/application.log
   logback:

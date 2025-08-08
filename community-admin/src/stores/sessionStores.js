@@ -2,7 +2,7 @@
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia'
 import {getUnreadCount} from "@/api/notification.js";
-import config from "@/config.js";
+import config from "@/env.js";
 
 export const sessionStores = defineStore("sessionStores", () => {
     const token = ref(localStorage.getItem('token') || null)

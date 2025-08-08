@@ -89,7 +89,7 @@ watch(() => route.params.id, (newId) => {
         </el-header>
         <el-container>
           <el-aside width="200px">
-<!--            <Live2DViewer/>-->
+            <!--            <Live2DViewer/>-->
           </el-aside>
           <el-main>
             <Announcement/>

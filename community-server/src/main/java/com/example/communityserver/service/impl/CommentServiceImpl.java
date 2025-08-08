@@ -11,7 +11,9 @@ import com.example.communityserver.entity.model.Comment;
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.AddCommentDto;
+import com.example.communityserver.entity.request.CommentQuery;
 import com.example.communityserver.entity.request.GetNotificationsParam;
+import com.example.communityserver.entity.response.CommentListVo;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.NotificationListVo;
 import com.example.communityserver.entity.response.ReplyVo;
@@ -197,5 +199,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         page.setCurrent(notificationIPage.getCurrent());
         page.setSize(notificationIPage.getSize());
         return page;
+    }
+
+    @Override
+    public IPage<CommentListVo> getCommentList(CommentQuery query) {
+        Page<CommentListVo> commentListVoPage = new Page<>(query.getPage(), query.getSize());
+        return commentMapper.getCommentList(commentListVoPage,query);
     }
 }

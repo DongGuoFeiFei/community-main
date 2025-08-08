@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
   width: 200px;
   height: 390px;
   z-index: 999;
-  background-color: #c43737;
+  //background-color: #c43737;
 
   .live2d-text-bubble {
     position: absolute;

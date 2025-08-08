@@ -1,6 +1,9 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.request.AddCommentDto;
+import com.example.communityserver.entity.request.CommentQuery;
+import com.example.communityserver.entity.response.CommentListVo;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.ReplyVo;
 import com.example.communityserver.service.ICommentService;
@@ -50,4 +53,13 @@ public class CommentController {
         ReplyVo replyVo = commentService.addComment(addCommentDto);
         return replyVo != null ? Result.success(replyVo) : Result.error("评论失败，请稍后重试");
     }
+
+    @ApiOperation("获取评论管理列表")
+    @GetMapping("/admin")
+    public Result<Result.PageData<CommentListVo>> getCommentList(CommentQuery query) {
+        IPage<CommentListVo> page = commentService.getCommentList(query);
+        return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error("获取失败");
+    }
+
+
 }

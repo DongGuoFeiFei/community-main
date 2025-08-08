@@ -15,7 +15,19 @@
           <el-option label="待审核" value="0" />
           <el-option label="已通过" value="1" />
           <el-option label="已拒绝" value="2" />
+          <el-option label="已删除" value="3" />
         </el-select>
+      </el-form-item>
+      <el-form-item label="评论时间">
+        <el-date-picker
+          v-model="form.timeRange"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="YYYY-MM-DD"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSearch">搜索</el-button>
@@ -27,18 +39,27 @@
 
 <script setup>
 import { ref } from 'vue';
+import dayjs from 'dayjs';
 
 const form = ref({
   content: '',
   articleTitle: '',
   username: '',
-  status: ''
+  status: '',
+  timeRange: []
 });
 
 const emit = defineEmits(['search']);
 
 const handleSearch = () => {
-  emit('search', form.value);
+  const params = {
+    ...form.value,
+    startTime: form.value.timeRange?.[0] ? dayjs(form.value.timeRange[0]).startOf('day').format('YYYY-MM-DD HH:mm:ss') : undefined,
+    endTime: form.value.timeRange?.[1] ? dayjs(form.value.timeRange[1]).endOf('day').format('YYYY-MM-DD HH:mm:ss') : undefined
+  };
+  // 移除timeRange字段，避免传给后端
+  delete params.timeRange;
+  emit('search', params);
 };
 
 const handleReset = () => {
@@ -46,9 +67,10 @@ const handleReset = () => {
     content: '',
     articleTitle: '',
     username: '',
-    status: ''
+    status: '',
+    timeRange: []
   };
-  emit('search', form.value);
+  emit('search', {});
 };
 </script>
 
@@ -64,6 +86,15 @@ const handleReset = () => {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+
+    :deep(.el-form-item) {
+      margin-right: 20px;
+      margin-bottom: 0;
+
+      .el-date-editor {
+        width: 240px;
+      }
+    }
   }
 }
 </style>

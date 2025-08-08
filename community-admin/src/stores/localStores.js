@@ -1,7 +1,7 @@
 import {computed, ref} from 'vue'
 import {defineStore} from 'pinia'
 import dayjs from "dayjs";
-import config from "@/config.js";
+import config from "@/env.js";
 
 export const localStores = defineStore('localStores', () => {
     const userInfo = ref({

@@ -46,7 +46,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
         // 后续添加用户喜好
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
-                .ne(Tag::getStatus,2)
+                .ne(Tag::getStatus, 2)
                 .orderByDesc(Tag::getCreateCount);
         List<Tag> tags = tagMapper.selectList(queryWrapper);
         List<Tag> tagList = tags.stream().limit(5).collect(Collectors.toList());
@@ -90,7 +90,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
         }
         tag.setSlug(param.getSlug());
         tag.setCreateCount(1L);
-        // 检测是否存在此tag，此tag是都被禁止创建
+        // 检测是否存在此tag，此tag是都被禁止创建,通过名称判断
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Tag::getName, param.getName());
         Tag tag1 = tagMapper.selectOne(queryWrapper);

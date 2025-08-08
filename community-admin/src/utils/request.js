@@ -2,7 +2,7 @@
 import axios from 'axios';
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
-import config from "@/config.js";
+import config from "@/env.js";
 
 
 const request = axios.create({

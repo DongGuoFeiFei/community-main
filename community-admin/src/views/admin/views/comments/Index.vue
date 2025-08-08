@@ -8,6 +8,7 @@
         @approve="handleApprove"
         @reply="handleReply"
         @batch-delete="handleBatchDelete"
+        @batch-approve="handleBatchApprove"
     />
     <CommentPagination
         :total="total"
@@ -51,7 +52,7 @@ const fetchComments = async () => {
       ...searchParams.value
     };
     const res = await getCommentList(params);
-    commentList.value = res.data.list;
+    commentList.value = res.data.rows;
     total.value = res.data.total;
   } catch (error) {
     ElMessage.error(error.message || '获取评论列表失败');
@@ -106,6 +107,15 @@ const handleBatchDelete = async (ids) => {
   }
 };
 
+const handleBatchApprove = async (ids) => {
+  try {
+    await approveComment(ids);
+    ElMessage.success(`成功通过${ids.length}条评论`);
+    fetchComments();
+  } catch (error) {
+    ElMessage.error(error.message);
+  }
+};
 // 审核评论
 const handleApprove = async (id) => {
   try {

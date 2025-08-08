@@ -1,93 +1,91 @@
 package com.example.communityserver.config;
 
-
 import com.example.communityserver.filter.JWTFilter;
 import com.example.communityserver.handler.AccessDeniedHandlerImpl;
 import com.example.communityserver.handler.AuthenticationEntryPointImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
-/**
- * SpringSecurity的配置类要求继承WebSecurityConfigurerAdapter
- */
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
-    @Autowired
-    private JWTFilter jwtFilter;
-    @Autowired
-    private AccessDeniedHandlerImpl accessDeniedHandler;
-    @Autowired
-    private AuthenticationEntryPointImpl authenticationEntryPoint;
+    private final JWTFilter jwtFilter;
+    private final AccessDeniedHandlerImpl accessDeniedHandler;
+    private final AuthenticationEntryPointImpl authenticationEntryPoint;
+
+    public SecurityConfig(JWTFilter jwtFilter,
+                          AccessDeniedHandlerImpl accessDeniedHandler,
+                          AuthenticationEntryPointImpl authenticationEntryPoint) {
+        this.jwtFilter = jwtFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
-    // 放行，权限控制，还能进行权限控制
-    // TODO: 2025/6/29 学习配置放行设置 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                //关闭csrf
-                .csrf().disable()
-                //不通过Session获取SecurityContext
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                // 对于登录接口 允许匿名访问
-                .antMatchers(
-                        "/auth/login",
-                        "/auth/register",
-                        "/auth/send-email",
-                        "/auth/captcha",
-                        "/auth/registerCode",
-                        "/uploads/**",
-                        "/swagger-ui.html",
-                        "/doc.html",
-                        "/webjars/**",
-                        "/swagger-resources",
-                        "/swagger-resources/**",
-                        "/v2/**"
-                ).permitAll()
-//                .requestMatchers(new RegexRequestMatcher("/posts/\\d+", "GET")).permitAll()
-                .antMatchers("/posts/**").authenticated()
-                // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
-
-        http// 将自己定义的过滤器加到UsernamePasswordAuthenticationFilter之前
-
+                // 关闭CSRF
+                .csrf(csrf -> csrf.disable())
+                // 不通过Session获取SecurityContext
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                // 授权配置
+                .authorizeHttpRequests(auth -> auth
+                        // 允许匿名访问的接口
+                        .antMatchers(
+                                "/auth/login",
+                                "/auth/register",
+                                "/auth/send-email",
+                                "/auth/captcha",
+                                "/auth/registerCode",
+                                "/uploads/**",
+                                "/swagger-ui.html",
+                                "/doc.html",
+                                "/webjars/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/v2/**"
+                        ).permitAll()
+                        // 显式声明重要接口请求需要认证
+                        .antMatchers(
+                                "/posts/**"
+                        ).authenticated()
+                        // 其他所有请求需要认证
+                        .anyRequest().authenticated()
+                )
+                // 添加JWT过滤器
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                // 异常处理
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+                // 允许跨域
+                .cors(cors -> cors.configure(http));
 
-        // 配置异常处理器
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler);
-
-        //允许跨域，保证跨域配置不被阻止
-        http.cors();
+        return http.build();
     }
 
-
-    /*
-    将AuthenticationManager放入容器中
-     */
-    @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }
