@@ -1,4 +1,4 @@
-package com.example.communityserver.adminController;
+package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

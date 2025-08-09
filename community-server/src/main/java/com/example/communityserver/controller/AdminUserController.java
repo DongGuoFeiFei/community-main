@@ -1,4 +1,4 @@
-package com.example.communityserver.adminController;
+package com.example.communityserver.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,7 +12,7 @@ import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.UserDelVo;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IUserService;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

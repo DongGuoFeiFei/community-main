@@ -1,4 +1,4 @@
-package com.example.communityserver.adminController;
+package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.response.DashboardDataVo;
 import com.example.communityserver.service.IDashboardService;
