@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * <p>
- *
+ * 文章映射
  * <p>
  *
  * @author: DongGuo

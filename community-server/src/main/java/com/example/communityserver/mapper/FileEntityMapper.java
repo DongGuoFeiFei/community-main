@@ -5,7 +5,7 @@ import com.example.communityserver.entity.model.FileEntity;
 
 /**
  * <p>
- *
+ * Mapper 接口
  * <p>
  *
  * @author: DongGuo

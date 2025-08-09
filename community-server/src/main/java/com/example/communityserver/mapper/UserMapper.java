@@ -11,6 +11,16 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Mapper 接口
+ * <p>
+ *
+ * @author: DongGuo
+ * @create: 2025-06-16
+ **/
+
+
 public interface UserMapper extends BaseMapper<User> {
 
     List<String> queryPermissionByUserId(Long userId);

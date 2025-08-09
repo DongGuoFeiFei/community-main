@@ -26,7 +26,7 @@ const store = localStores()
 const props = defineProps({
   modelPath: {
     type: String,
-    // default: '/live2d/NeneAyachi/Live2DViewerEX.model3.json'
+    // default: '/live2d/Ayachi/Live2DViewerEX.model3.json'
     default: '/live2d/Murasame/Murasame.model3.json'
   },
   scale: {

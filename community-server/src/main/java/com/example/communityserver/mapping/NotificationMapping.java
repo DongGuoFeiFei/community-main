@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * TODO
+ * 映射
  * <p>
  *
  * @author: DongGuo

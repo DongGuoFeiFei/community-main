@@ -12,13 +12,12 @@
         FROM follows f
         WHERE f.follower_id = #{id}
     </select>
-<!-- todo 优化，查询作者页面时，作者被注销后，需要隐藏数据  已注销用户  -->
     <select id="getFollowingList" resultType="com.example.communityserver.entity.response.FollowVo">
         SELECT
             u.user_id AS id,
-            CASE WHEN u.is_del = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
-            CASE WHEN u.is_del = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
-            CASE WHEN u.is_del = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
             CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
         FROM
             follows fl
@@ -30,15 +29,14 @@
             follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
         WHERE
             fl.following_id = #{userId}
-          AND u.is_active = '1'
         ORDER BY
             fl.created_at DESC
     </select>
     <select id="getFollowerList" resultType="com.example.communityserver.entity.response.FollowVo">
         SELECT u.user_id                                        AS id,
-               CASE WHEN u.is_del = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
-               CASE WHEN u.is_del = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
-               CASE WHEN u.is_del = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
                CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
         FROM follows fl
                  JOIN
@@ -48,7 +46,6 @@
                  LEFT JOIN
              follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
         WHERE fl.follower_id = #{userId}
-          AND u.is_active = '1'
         ORDER BY fl.created_at DESC
     </select>
 </mapper>

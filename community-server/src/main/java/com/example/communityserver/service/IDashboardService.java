@@ -4,7 +4,7 @@ import com.example.communityserver.entity.response.DashboardDataVo;
 
 /**
  * <p>
- * TODO
+ * 仪表盘服务接口
  * <p>
  *
  * @author: DongGuo

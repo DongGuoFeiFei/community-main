@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * <p>
- * TODO
+ * 全局异常处理器
  * <p>
  *
  * @author: DongGuo
