@@ -10,7 +10,7 @@ import com.example.communityserver.entity.response.UserDelVo;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

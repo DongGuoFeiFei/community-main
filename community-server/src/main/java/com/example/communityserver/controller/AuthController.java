@@ -18,14 +18,14 @@ import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.common.CaptchaUtil;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.JWTUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -128,7 +128,7 @@ public class AuthController {
 
         loginResponse.setUserInfo(loginUser.getUser());
 
-        // TODO: 2025/7/6 头像取消连接文件表 
+        // TODO: 2025/7/6 头像取消连接文件表
         FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());
         loginResponse.setAvatarUrl(fileEntity.getAccessUrl());
 

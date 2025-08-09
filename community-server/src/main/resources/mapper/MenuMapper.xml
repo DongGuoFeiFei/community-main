@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.communityserver.mapper.MenuMapper">
+
+    <select id="selectUserMenus" resultType="com.example.communityserver.entity.model.Menu">
+        SELECT m.menu_id,
+               m.menu_name,
+               m.parent_id,
+               m.order_num,
+               m.path,
+               m.component,
+               m.menu_type,
+               m.visible,
+               m.perms,
+               m.icon
+        FROM menu m
+                 JOIN role_menu rm ON m.menu_id = rm.menu_id
+                 JOIN role r ON rm.role_id = r.role_id
+                 JOIN user_role ur ON r.role_id = ur.role_id
+                 JOIN user u ON ur.user_id = u.user_id
+        WHERE u.user_id = #{userId}
+          AND m.status = 1
+          AND r.status = 1
+        ORDER BY m.parent_id, m.order_num
+
+    </select>
+</mapper>

@@ -91,8 +91,8 @@ import {localStores} from '@/stores/localStores.js'
 import {Camera} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
-import {updateUserCoverId, updateUserProfile, uploadFile} from "../../../../../../community-admin/src/api/index.js";
-
+import { uploadFile} from "@/api/index.js";
+import {updateUserCoverId, updateUserProfile} from "@/api/user.js";
 const lStore = localStores()
 const loading = ref(false)
 

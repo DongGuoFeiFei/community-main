@@ -3,7 +3,7 @@ package com.example.communityserver.filter;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.JWTUtil;
+import com.example.communityserver.security.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

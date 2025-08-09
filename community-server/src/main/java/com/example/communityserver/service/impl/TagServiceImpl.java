@@ -10,7 +10,7 @@ import com.example.communityserver.mapper.TagMapper;
 import com.example.communityserver.mapping.TagMapping;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.common.StringUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

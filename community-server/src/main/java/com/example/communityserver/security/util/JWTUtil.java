@@ -1,4 +1,4 @@
-package com.example.communityserver.utils.security;
+package com.example.communityserver.security.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -1,4 +1,4 @@
-package com.example.communityserver.config;
+package com.example.communityserver.security.config;
 
 import com.example.communityserver.filter.JWTFilter;
 import com.example.communityserver.handler.AccessDeniedHandlerImpl;
@@ -38,6 +38,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // TODO: 2025/8/9 添加权限配置,添加接口的统一认证
+//    @Bean
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .antMatchers("/admin/**").access("@perms.hasPerm('system:admin')")
+//                .antMatchers("/user/add").access("@perms.hasPerm('system:user:add')")
+//                .anyRequest().authenticated();
+//    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -71,6 +79,7 @@ public class SecurityConfig {
                         // 其他所有请求需要认证
                         .anyRequest().authenticated()
                 )
+
                 // 添加JWT过滤器
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 // 异常处理

@@ -1,19 +1,9 @@
 package com.example.communityserver;
 
-import com.example.communityserver.entity.model.LoginUser;
-import com.example.communityserver.service.ICommentService;
-import com.example.communityserver.service.IEmailService;
-import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.JWTUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-
-import static com.example.communityserver.utils.security.SecurityUtils.getLoginUser;
 
 @SpringBootTest
 class CommunityServerApplicationTests2 {

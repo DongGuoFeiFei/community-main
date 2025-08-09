@@ -12,7 +12,7 @@ import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -22,8 +22,8 @@ import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.JWTUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -122,7 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setEmail(dto.getEmail());
         user.setPassword(SecurityUtils.encryptPassword(dto.getPassword()));
 
-        // TODO: 2025/7/29 使用email本身的url仍存在问题 
+        // TODO: 2025/7/29 使用email本身的url仍存在问题
         String emailGravatarUrl = emailService.getEmailGravatarUrl(dto.getEmail());
         user.setAvatar(emailGravatarUrl);
         int insert = userMapper.insert(user);

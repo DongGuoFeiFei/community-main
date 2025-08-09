@@ -1,7 +1,7 @@
 package com.example.communityserver.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 

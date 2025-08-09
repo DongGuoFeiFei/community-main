@@ -26,7 +26,7 @@ import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

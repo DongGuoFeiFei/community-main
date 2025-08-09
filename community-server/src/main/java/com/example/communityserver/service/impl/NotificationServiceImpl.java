@@ -18,7 +18,7 @@ import com.example.communityserver.service.ILikesService;
 import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.utils.common.DateUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.utils.security.SecurityUtils;
+import com.example.communityserver.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

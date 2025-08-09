@@ -1,7 +1,4 @@
 // api/index.js
-
-
-
 import request from "@/utils/request.js";
 
 export const fetchPosts = (params) => {
