@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 文章交互类型枚举类
  * <p>
- * TODO
+ *  该枚举定义了用户与文章交互的不同类型，包括浏览、点赞和分享等行为。
+ * 每种交互类型都对应一个唯一的编码和描述值。
  * <p>
- *
+ * @author: DongGuo
  * @author: DongGuo
  * @create: 2025-07-07
  **/

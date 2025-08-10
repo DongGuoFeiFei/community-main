@@ -3,7 +3,7 @@ package com.example.communityserver.controller;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.constants.SecurityConstants;
-import com.example.communityserver.entity.enums.MessageCodeEnum;
+import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.request.IdsListParam;
@@ -93,8 +93,8 @@ public class AdminUserController {
     @PutMapping("/addUser")
     public Result<Void> addUser(@RequestBody ModifyUserParam param) {
         User user = new User();
-        MessageCodeEnum existUser = userService.isExistUser(null, param.getUsername(), null);
-        if (existUser != MessageCodeEnum.USER_NOT_EXIST) {
+        ResponseCodeEnum existUser = userService.isExistUser(null, param.getUsername(), null);
+        if (existUser != ResponseCodeEnum.USER_NOT_EXIST) {
             return Result.error(existUser.getValue());
         }
         user.setNickname(param.getNickname());

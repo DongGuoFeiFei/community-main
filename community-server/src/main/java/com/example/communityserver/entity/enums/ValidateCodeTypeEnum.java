@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 验证码类型枚举类
  * <p>
- * TODO
+ * 该枚举类用于定义系统中不同类型的验证码
  * <p>
  *
  * @author: DongGuo

@@ -26,6 +26,11 @@ public class PermissionExpression {
      * @param permission 需要检查的权限字符串
      * @return 如果用户拥有指定权限返回true，否则返回false
      */
+
+    // TODO: 2025/8/10 使用@PreAuthorize不能像 @RequiresPermission("system:user:view")自定义抛出异常
+    //    @RequiresPermission("system:user:view")
+    //    @PreAuthorize("@perms.hasPerm('system:user:view')")
+    //
     public boolean hasPerm(String permission) {
         // 从安全上下文中获取当前认证信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,7 +48,6 @@ public class PermissionExpression {
             // 检查用户权限集合中是否包含指定权限
             return loginUser.getPermissions().contains(permission);
         }
-
         // 如果主体不是LoginUser类型，返回false
         return false;
     }

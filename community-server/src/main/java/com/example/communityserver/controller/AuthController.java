@@ -3,7 +3,7 @@ package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SecurityConstants;
-import com.example.communityserver.entity.enums.MessageCodeEnum;
+import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.enums.ValidateCodeTypeEnum;
 import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.LoginUser;
@@ -154,8 +154,8 @@ public class AuthController {
         }
 
         // 验证库中邮箱和用户名是否重复
-        MessageCodeEnum codeEnum = userService.isExistUser(dto.getEmail(), dto.getUsername(), null);
-        if (codeEnum != MessageCodeEnum.USER_NOT_EXIST) {
+        ResponseCodeEnum codeEnum = userService.isExistUser(dto.getEmail(), dto.getUsername(), null);
+        if (codeEnum != ResponseCodeEnum.USER_NOT_EXIST) {
             return Result.error(codeEnum.getValue());
         }
         emailService.sendVerificationCode(dto.getEmail(), dto.getNickname());
@@ -175,8 +175,8 @@ public class AuthController {
         if (!emailService.verifyCode(dto.getEmail(), dto.getCode())) {
             return Result.error("验证码错误");
         }
-        MessageCodeEnum codeEnum = userService.register(dto);
-        if (codeEnum == MessageCodeEnum.USERNAME_EXIST) {
+        ResponseCodeEnum codeEnum = userService.register(dto);
+        if (codeEnum == ResponseCodeEnum.USERNAME_EXIST) {
             return Result.error(codeEnum.getValue());
         }
         // todo 注册失败

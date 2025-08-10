@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
+ * 深度搜索控制器类
+ * 提供与深度搜索大模型交互的RESTful API接口
+ *
  * <p>
- * TODO
+ * 该控制器类负责处理与深度搜索大模型相关的HTTP请求
  * <p>
  *
  * @author: DongGuo

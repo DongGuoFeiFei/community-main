@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.SystemConstants;
-import com.example.communityserver.entity.enums.MessageCodeEnum;
+import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.RegisterDto;
@@ -85,34 +85,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
 
     @Override
-    public MessageCodeEnum isExistUser(String email, String username, String phone) {
+    public ResponseCodeEnum isExistUser(String email, String username, String phone) {
         // 验证邮箱、用户名、用户名和邮箱
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         User user;
         queryWrapper.eq(email != null, User::getEmail, email);
         user = userMapper.selectOne(queryWrapper);
         if (user != null) {
-            return MessageCodeEnum.EMAIL_EXIST;
+            return ResponseCodeEnum.EMAIL_EXIST;
         }
         queryWrapper.eq(username != null, User::getUsername, username);
         user = userMapper.selectOne(queryWrapper);
         if (user != null) {
-            return MessageCodeEnum.USERNAME_EXIST;
+            return ResponseCodeEnum.USERNAME_EXIST;
         }
         queryWrapper.eq(phone != null, User::getPhone, phone);
         user = userMapper.selectOne(queryWrapper);
         if (user != null) {
-            return MessageCodeEnum.PHONE_EXIST;
+            return ResponseCodeEnum.PHONE_EXIST;
         }
 
-        return MessageCodeEnum.USER_NOT_EXIST;
+        return ResponseCodeEnum.USER_NOT_EXIST;
     }
 
 
     @Override
-    public MessageCodeEnum register(RegisterDto dto) {
-        MessageCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername(), null);
-        if (codeEnum != MessageCodeEnum.USER_NOT_EXIST) {
+    public ResponseCodeEnum register(RegisterDto dto) {
+        ResponseCodeEnum codeEnum = isExistUser(dto.getEmail(), dto.getUsername(), null);
+        if (codeEnum != ResponseCodeEnum.USER_NOT_EXIST) {
             return codeEnum;
         }
         //注册
@@ -127,9 +127,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setAvatar(emailGravatarUrl);
         int insert = userMapper.insert(user);
         if (insert > 0) {
-            return MessageCodeEnum.REGISTER_SUCCESS;
+            return ResponseCodeEnum.REGISTER_SUCCESS;
         } else {
-            return MessageCodeEnum.REGISTER_ERROR;
+            return ResponseCodeEnum.REGISTER_ERROR;
         }
     }
 

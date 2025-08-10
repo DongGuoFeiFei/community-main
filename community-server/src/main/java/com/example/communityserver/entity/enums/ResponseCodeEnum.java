@@ -5,16 +5,24 @@ import lombok.Getter;
 
 /**
  * <p>
- * TODO
+ * 返回相应数据
  * <p>
  *
  * @author: DongGuo
- * @create: 2025-06-24
+ * @create: 2025-06-23
  **/
 
 @Getter
 @AllArgsConstructor
 public enum ResponseCodeEnum {
+
+    // 其他
+    USERNAME_EXIST(200, "用户名已经存在"),
+    EMAIL_EXIST(200, "邮箱已经存在"),
+    PHONE_EXIST(200, "手机号已经存在"),
+    REGISTER_SUCCESS(200, "注册成功"),
+    REGISTER_ERROR(500, "注册失败"),
+
     // 成功
     SUCCESS(200, "成功"),
 
@@ -36,6 +44,6 @@ public enum ResponseCodeEnum {
     USER_LOCKED(1004, "用户被锁定"),
     DUPLICATE_DATA(1005, "数据重复");
 
-    private final int code;
-    private final String message;
+    private final Integer code;
+    private final String value;
 }

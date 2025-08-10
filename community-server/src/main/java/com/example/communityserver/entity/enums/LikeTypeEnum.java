@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 点赞类型枚举类
  * <p>
- * TODO
+ *  该枚举定义了系统中不同的点赞类型，包括评论点赞和文章点赞
+ * 每种类型都关联了一个值、标签和对应的颜色代码
  * <p>
  *
  * @author: DongGuo
