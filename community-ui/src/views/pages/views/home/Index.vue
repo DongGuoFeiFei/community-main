@@ -81,6 +81,7 @@ watch(() => route.params.id, (newId) => {
 
 <template>
   <Live2DViewer/>
+
   <div class="main-container">
     <div class="common-layout">
       <el-container>
@@ -89,7 +90,6 @@ watch(() => route.params.id, (newId) => {
         </el-header>
         <el-container>
           <el-aside width="200px">
-            <!--            <Live2DViewer/>-->
           </el-aside>
           <el-main>
             <Announcement/>
@@ -118,7 +118,6 @@ watch(() => route.params.id, (newId) => {
             </div>
           </el-main>
           <el-aside width="200px">
-
           </el-aside>
         </el-container>
         <el-footer>

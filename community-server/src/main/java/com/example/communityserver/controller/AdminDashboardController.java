@@ -25,9 +25,9 @@ public class AdminDashboardController {
     private IDashboardService dashboardService;
 
     @GetMapping("data")
-    public Result<DashboardDataVo> getDashboardData(){
+    public Result<DashboardDataVo> getDashboardData() {
         DashboardDataVo vo = dashboardService.getDashboardData();
-        return vo!=null?Result.success(vo):Result.error();
+        return vo != null ? Result.success(vo) : Result.error();
 
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * 工具类仅编写，尚未验证正确性，需后期测试得知
  * <p>
  *
- *
  * @author: DongGuo
  * @create: 2025-04-29
  **/
@@ -30,6 +29,7 @@ public class SecurityUtils {
     public static Authentication getCurrentAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
     /**
      * 获取当前登录用户完整信息
      *
@@ -40,9 +40,7 @@ public class SecurityUtils {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        return authentication.getPrincipal() instanceof LoginUser
-                ? (LoginUser) authentication.getPrincipal()
-                : null;
+        return authentication.getPrincipal() instanceof LoginUser ? (LoginUser) authentication.getPrincipal() : null;
     }
 
     /**
@@ -77,37 +75,6 @@ public class SecurityUtils {
     }
 
     /**
-     * 检查当前用户是否拥有指定权限
-     *
-     * @param authority 权限标识符(如："user:create")
-     * @return 拥有该权限返回true，否则返回false
-     * @see LoginUser#getPermissions()
-     */
-    public static boolean hasAuthority(String authority) {
-        LoginUser loginUser = getLoginUser();
-        return loginUser != null && loginUser.getPermissions().contains(authority);
-    }
-
-    /**
-     * 检查当前用户是否拥有任意指定权限
-     *
-     * @param authorities 权限标识符数组(如：{"user:read", "user:write"})
-     * @return 拥有任一权限返回true，否则返回false
-     */
-    public static boolean hasAnyAuthority(String... authorities) {
-        LoginUser loginUser = getLoginUser();
-        if (loginUser == null) {
-            return false;
-        }
-        for (String authority : authorities) {
-            if (loginUser.getPermissions().contains(authority)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 对明文密码进行加密处理
      *
      * @param rawPassword 明文密码
@@ -124,7 +91,7 @@ public class SecurityUtils {
     /**
      * 验证明文密码与加密密码是否匹配
      *
-     * @param rawPassword 待验证的明文密码
+     * @param rawPassword     待验证的明文密码
      * @param encodedPassword 存储的加密密码
      * @return 匹配返回true，否则返回false
      * @throws IllegalArgumentException 如果任一参数为空

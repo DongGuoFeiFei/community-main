@@ -97,7 +97,7 @@ const handleLogin = () => {
         lStore.tokenInfo.expiresIn = res.expiresIn
         localStorage.setItem('token', res.token);
         ElMessage.success('登录成功');
-        router.push('/index');
+        router.push('/admin');
       } else {
         ElMessage.error(res?.msg || '登录失败');
         // 登录失败刷新验证码

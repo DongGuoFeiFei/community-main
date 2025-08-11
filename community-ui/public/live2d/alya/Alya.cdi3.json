@@ -1,0 +1,470 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "ParamAngleX",
+			"GroupId": "",
+			"Name": "角度 X"
+		},
+		{
+			"Id": "ParamAngleY",
+			"GroupId": "",
+			"Name": "角度 Y"
+		},
+		{
+			"Id": "ParamAngleZ",
+			"GroupId": "",
+			"Name": "角度 Z"
+		},
+		{
+			"Id": "ParamEyeLOpen",
+			"GroupId": "",
+			"Name": "左眼　开闭"
+		},
+		{
+			"Id": "Param_M_X",
+			"GroupId": "ParamGroup",
+			"Name": "鼠标左右X"
+		},
+		{
+			"Id": "Param_M_Y",
+			"GroupId": "ParamGroup",
+			"Name": "鼠标上下Y"
+		},
+		{
+			"Id": "Param_tab",
+			"GroupId": "ParamGroup",
+			"Name": "切换"
+		},
+		{
+			"Id": "Param_1",
+			"GroupId": "ParamGroup",
+			"Name": "脚"
+		},
+		{
+			"Id": "ParamS",
+			"GroupId": "ParamGroup",
+			"Name": "手Y"
+		},
+		{
+			"Id": "ParamW",
+			"GroupId": "ParamGroup",
+			"Name": "手X"
+		},
+		{
+			"Id": "Param_W",
+			"GroupId": "ParamGroup",
+			"Name": "W"
+		},
+		{
+			"Id": "Param_A",
+			"GroupId": "ParamGroup",
+			"Name": "A"
+		},
+		{
+			"Id": "Param_S",
+			"GroupId": "ParamGroup",
+			"Name": "S"
+		},
+		{
+			"Id": "Param_D",
+			"GroupId": "ParamGroup",
+			"Name": "D"
+		},
+		{
+			"Id": "ParamEyeLSmile",
+			"GroupId": "",
+			"Name": "左眼　微笑"
+		},
+		{
+			"Id": "ParamEyeROpen",
+			"GroupId": "",
+			"Name": "右眼　开闭"
+		},
+		{
+			"Id": "ParamEyeRSmile",
+			"GroupId": "",
+			"Name": "右眼　微笑"
+		},
+		{
+			"Id": "ParamEyeBallX",
+			"GroupId": "",
+			"Name": "眼珠 X"
+		},
+		{
+			"Id": "ParamEyeBallY",
+			"GroupId": "",
+			"Name": "眼珠 Y"
+		},
+		{
+			"Id": "ParamBrowLY",
+			"GroupId": "",
+			"Name": "左眉上下"
+		},
+		{
+			"Id": "ParamBrowRY",
+			"GroupId": "",
+			"Name": "右眉　上下"
+		},
+		{
+			"Id": "ParamBrowLX",
+			"GroupId": "",
+			"Name": "左眉　左右"
+		},
+		{
+			"Id": "ParamBrowRX",
+			"GroupId": "",
+			"Name": "右眉　左右"
+		},
+		{
+			"Id": "ParamBrowLAngle",
+			"GroupId": "",
+			"Name": "左眉　角度"
+		},
+		{
+			"Id": "ParamBrowRAngle",
+			"GroupId": "",
+			"Name": "右眉　角度"
+		},
+		{
+			"Id": "ParamBrowLForm",
+			"GroupId": "",
+			"Name": "左眉　変形"
+		},
+		{
+			"Id": "ParamBrowRForm",
+			"GroupId": "",
+			"Name": "右眉　変形"
+		},
+		{
+			"Id": "ParamMouthForm",
+			"GroupId": "",
+			"Name": "嘴　变形"
+		},
+		{
+			"Id": "ParamMouthOpenY",
+			"GroupId": "",
+			"Name": "嘴　张开和闭合"
+		},
+		{
+			"Id": "ParamCheek",
+			"GroupId": "",
+			"Name": "脸颊泛红"
+		},
+		{
+			"Id": "ParamBodyAngleX",
+			"GroupId": "",
+			"Name": "身体旋转　X"
+		},
+		{
+			"Id": "ParamBodyAngleY",
+			"GroupId": "",
+			"Name": "身体旋转　Y"
+		},
+		{
+			"Id": "ParamBodyAngleZ",
+			"GroupId": "",
+			"Name": "身体旋转　Z"
+		},
+		{
+			"Id": "ParamBreath",
+			"GroupId": "",
+			"Name": "呼吸"
+		},
+		{
+			"Id": "ParamHairFront",
+			"GroupId": "",
+			"Name": "摇动 前发"
+		},
+		{
+			"Id": "ParamHairSide",
+			"GroupId": "",
+			"Name": "摇动 侧发"
+		},
+		{
+			"Id": "ParamHairBack",
+			"GroupId": "",
+			"Name": "摇动 后发"
+		},
+		{
+			"Id": "ParamEyeBallForm",
+			"GroupId": "ParamGroupEyeballs",
+			"Name": "眼睛大小物理 Eyeballs_Shrink"
+		},
+		{
+			"Id": "ParamHairSideR",
+			"GroupId": "ParamGroupSway",
+			"Name": "侧发物理Hair Sway_Side R"
+		},
+		{
+			"Id": "ParamHairFrontFuwa",
+			"GroupId": "ParamGroupSway",
+			"Name": "刘海物理大小Front Hair_Fluff"
+		},
+		{
+			"Id": "ParamHairSideFuwa",
+			"GroupId": "ParamGroupSway",
+			"Name": "侧发物理加强Side Hair_Fluff"
+		},
+		{
+			"Id": "ParamHairBackFuwa",
+			"GroupId": "ParamGroupSway",
+			"Name": "后发物理加强Back Hair_Fluff"
+		},
+		{
+			"Id": "ParamHairSideL",
+			"GroupId": "ParamGroupSway",
+			"Name": "侧发物理Hair Sway_Side L"
+		},
+		{
+			"Id": "ParamLeftShoulderUp",
+			"GroupId": "ParamGroupBody",
+			"Name": "Shoulder L_Y"
+		},
+		{
+			"Id": "ParamRightShoulderUp",
+			"GroupId": "ParamGroupBody",
+			"Name": "Shoulder R_Y"
+		},
+		{
+			"Id": "ParamAllX",
+			"GroupId": "ParamGroupOverall",
+			"Name": "Overall Movement_X"
+		},
+		{
+			"Id": "ParamAllY",
+			"GroupId": "ParamGroupOverall",
+			"Name": "Overall Movement_Y"
+		},
+		{
+			"Id": "ParamAllRotate",
+			"GroupId": "ParamGroupOverall",
+			"Name": "Overall Rotation"
+		},
+		{
+			"Id": "ParamR3",
+			"GroupId": "",
+			"Name": "R3"
+		},
+		{
+			"Id": "ParamR2",
+			"GroupId": "",
+			"Name": "R2"
+		},
+		{
+			"Id": "ParamR1",
+			"GroupId": "",
+			"Name": "R1"
+		},
+		{
+			"Id": "Param6",
+			"GroupId": "",
+			"Name": "L3"
+		},
+		{
+			"Id": "Param5",
+			"GroupId": "",
+			"Name": "L2"
+		},
+		{
+			"Id": "Param4",
+			"GroupId": "",
+			"Name": "L1"
+		}
+	],
+	"ParameterGroups": [
+		{
+			"Id": "ParamGroup",
+			"GroupId": "",
+			"Name": "鼠标"
+		},
+		{
+			"Id": "ParamGroupEyeballs",
+			"GroupId": "",
+			"Name": "Eyeballs"
+		},
+		{
+			"Id": "ParamGroupSway",
+			"GroupId": "",
+			"Name": "Sway"
+		},
+		{
+			"Id": "ParamGroupBody",
+			"GroupId": "",
+			"Name": "Body"
+		},
+		{
+			"Id": "ParamGroupOverall",
+			"GroupId": "",
+			"Name": "Overall"
+		}
+	],
+	"Parts": [
+		{
+			"Id": "Part25",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part24",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part23",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part22",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part18",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part15",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part14",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part13",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part7",
+			"Name": "Alya.psd(未找到对应图层)"
+		},
+		{
+			"Id": "PartHoodie",
+			"Name": "Hoodie"
+		},
+		{
+			"Id": "PartNeck",
+			"Name": "Neck"
+		},
+		{
+			"Id": "PartEar",
+			"Name": "Ears"
+		},
+		{
+			"Id": "PartFace",
+			"Name": "Face"
+		},
+		{
+			"Id": "PartMouth",
+			"Name": "Mouth"
+		},
+		{
+			"Id": "PartEye",
+			"Name": "Eyes"
+		},
+		{
+			"Id": "PartBrow",
+			"Name": "Eyebrows"
+		},
+		{
+			"Id": "PartHairBack",
+			"Name": "Back Hair"
+		},
+		{
+			"Id": "PartHairFront",
+			"Name": "Front Hair"
+		},
+		{
+			"Id": "PartHairSide",
+			"Name": "Side Hair"
+		},
+		{
+			"Id": "PartHat",
+			"Name": "Hat"
+		},
+		{
+			"Id": "PartCore",
+			"Name": "Core"
+		},
+		{
+			"Id": "Part",
+			"Name": "组 2"
+		},
+		{
+			"Id": "Part2",
+			"Name": "组 3"
+		},
+		{
+			"Id": "Part3",
+			"Name": "组 1"
+		},
+		{
+			"Id": "PartCore2",
+			"Name": "Core"
+		},
+		{
+			"Id": "PartBody",
+			"Name": "身体"
+		},
+		{
+			"Id": "Part5",
+			"Name": "右眼"
+		},
+		{
+			"Id": "Part6",
+			"Name": "左眼"
+		},
+		{
+			"Id": "Part8",
+			"Name": "右眼"
+		},
+		{
+			"Id": "Part9",
+			"Name": "左眼"
+		},
+		{
+			"Id": "Part12",
+			"Name": "0403.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part16",
+			"Name": "0403.psd(未找到对应图层)"
+		},
+		{
+			"Id": "Part01Body",
+			"Name": "体"
+		},
+		{
+			"Id": "Part10",
+			"Name": "组 1"
+		},
+		{
+			"Id": "Part11",
+			"Name": "组 3"
+		},
+		{
+			"Id": "Part4",
+			"Name": "组 2"
+		},
+		{
+			"Id": "PartEyeBall",
+			"Name": "Eyeballs"
+		}
+	],
+	"CombinedParameters": [
+		[
+			"ParamAngleX",
+			"ParamAngleY"
+		],
+		[
+			"Param_M_X",
+			"Param_M_Y"
+		],
+		[
+			"ParamS",
+			"ParamW"
+		],
+		[
+			"ParamAllX",
+			"ParamAllY"
+		]
+	]
+}

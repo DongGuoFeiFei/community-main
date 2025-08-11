@@ -1,0 +1,25 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "Alya.moc3",
+		"Textures": [
+			"Alya.4096/texture_00.png",
+			"Alya.4096/texture_01.png",
+			"Alya.4096/texture_02.png"
+		],
+		"Physics": "Alya.physics3.json",
+		"DisplayInfo": "Alya.cdi3.json"
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		}
+	]
+}

@@ -1,0 +1,293 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "PARAM_ANGLE_X",
+			"GroupId": "",
+			"Name": "角度 X"
+		},
+		{
+			"Id": "PARAM_ANGLE_Y",
+			"GroupId": "",
+			"Name": "角度 Y"
+		},
+		{
+			"Id": "PARAM_ANGLE_Z",
+			"GroupId": "",
+			"Name": "角度 Z"
+		},
+		{
+			"Id": "PARAM_EYE_L_OPEN",
+			"GroupId": "",
+			"Name": "左眼 開闔"
+		},
+		{
+			"Id": "PARAM_EYE_L_SMILE",
+			"GroupId": "",
+			"Name": "左眼 笑容"
+		},
+		{
+			"Id": "PARAM_EYE_R_OPEN",
+			"GroupId": "",
+			"Name": "右眼 開闔"
+		},
+		{
+			"Id": "PARAM_EYE_R_SMILE",
+			"GroupId": "",
+			"Name": "右眼 笑容"
+		},
+		{
+			"Id": "PARAM_EYE_BALLFORM",
+			"GroupId": "",
+			"Name": "EYE_BALLFORM"
+		},
+		{
+			"Id": "PARAM_EYE_BALL_X",
+			"GroupId": "",
+			"Name": "眼珠 X"
+		},
+		{
+			"Id": "PARAM_EYE_BALL_Y",
+			"GroupId": "",
+			"Name": "眼珠 Y"
+		},
+		{
+			"Id": "PARAM_BROW_L_Y",
+			"GroupId": "",
+			"Name": "左眉 上下"
+		},
+		{
+			"Id": "PARAM_BROW_R_Y",
+			"GroupId": "",
+			"Name": "右眉 上下"
+		},
+		{
+			"Id": "PARAM_BROW_L_X",
+			"GroupId": "",
+			"Name": "左眉 左右"
+		},
+		{
+			"Id": "PARAM_BROW_R_X",
+			"GroupId": "",
+			"Name": "右眉 左右"
+		},
+		{
+			"Id": "PARAM_BROW_L_ANGLE",
+			"GroupId": "",
+			"Name": "左眉 角度"
+		},
+		{
+			"Id": "PARAM_BROW_R_ANGLE",
+			"GroupId": "",
+			"Name": "右眉 角度"
+		},
+		{
+			"Id": "PARAM_BROW_L_FORM",
+			"GroupId": "",
+			"Name": "左眉 變形"
+		},
+		{
+			"Id": "PARAM_BROW_R_FORM",
+			"GroupId": "",
+			"Name": "右眉 變形"
+		},
+		{
+			"Id": "PARAM_MOUTH_FORM",
+			"GroupId": "",
+			"Name": "嘴巴 變形"
+		},
+		{
+			"Id": "PARAM_MOUTH_OPEN_Y",
+			"GroupId": "",
+			"Name": "嘴巴 開闔"
+		},
+		{
+			"Id": "PARAM_ARM",
+			"GroupId": "",
+			"Name": "ARM"
+		},
+		{
+			"Id": "PARAM_SHOULDER",
+			"GroupId": "",
+			"Name": "SHOULDER"
+		},
+		{
+			"Id": "PARAM_HIP",
+			"GroupId": "",
+			"Name": "HIP"
+		},
+		{
+			"Id": "PARAM_LEG_L",
+			"GroupId": "",
+			"Name": "LEG_L"
+		},
+		{
+			"Id": "PARAM_LEG_R",
+			"GroupId": "",
+			"Name": "LEG_R"
+		},
+		{
+			"Id": "PARAM_BODY_ANGLE_Y",
+			"GroupId": "",
+			"Name": "身體的旋轉 Y"
+		},
+		{
+			"Id": "PARAM_BODY_ANGLE_Z",
+			"GroupId": "",
+			"Name": "身體的旋轉 Z"
+		},
+		{
+			"Id": "PARAM_BREATH",
+			"GroupId": "",
+			"Name": "呼吸"
+		},
+		{
+			"Id": "PARAM_HAIR_FRONT",
+			"GroupId": "",
+			"Name": "頭髮搖動 前方"
+		},
+		{
+			"Id": "PARAM_HAIR_SIDE",
+			"GroupId": "",
+			"Name": "頭髮搖動 側面"
+		},
+		{
+			"Id": "PARAM_HAIR_BACK",
+			"GroupId": "",
+			"Name": "頭髮搖動 後方"
+		},
+		{
+			"Id": "PARAM_BUST_Y",
+			"GroupId": "",
+			"Name": "BUST_Y"
+		},
+		{
+			"Id": "PARAM_RIBBON",
+			"GroupId": "",
+			"Name": "Streamer"
+		},
+		{
+			"Id": "PARAM_CHEEK",
+			"GroupId": "",
+			"Name": "害羞"
+		},
+		{
+			"Id": "PARAM_HAIRORNAMENT_SWITCH",
+			"GroupId": "",
+			"Name": "HAIRORNAMENT_S"
+		},
+		{
+			"Id": "PARAM_HAIR_SWITCH",
+			"GroupId": "",
+			"Name": "HAIR_S"
+		},
+		{
+			"Id": "PARAM_ARM_SWITCH",
+			"GroupId": "",
+			"Name": "ARM_SWITCH"
+		},
+		{
+			"Id": "PARAM_BACKGROUND",
+			"GroupId": "",
+			"Name": "背景"
+		},
+		{
+			"Id": "PARAM_PHONE_SWITCH",
+			"GroupId": "",
+			"Name": "PHONE_SWITCH"
+		},
+		{
+			"Id": "PARAM_CLOTH_SWITCH",
+			"GroupId": "",
+			"Name": "CLOTH_SWITCH"
+		},
+		{
+			"Id": "PARAM_LEG_SWITCH",
+			"GroupId": "",
+			"Name": "LEG_SWITCH"
+		}
+	],
+	"ParameterGroups": [],
+	"Parts": [
+		{
+			"Id": "PARTS_01_BACKGROUND_001",
+			"Name": "背景"
+		},
+		{
+			"Id": "PARTS_01_CLOTHES",
+			"Name": "CLOTHES"
+		},
+		{
+			"Id": "PARTS_01_BODY_002",
+			"Name": "BODY_BASE"
+		},
+		{
+			"Id": "PARTS_01_CROWN",
+			"Name": "冠"
+		},
+		{
+			"Id": "PARTS_01_BACKGROUND",
+			"Name": "背景"
+		},
+		{
+			"Id": "PARTS_01_BODY",
+			"Name": "身體"
+		},
+		{
+			"Id": "PARTS_01_NECK",
+			"Name": "脖子"
+		},
+		{
+			"Id": "PARTS_01_HAIR_BACK_001",
+			"Name": "後髮"
+		},
+		{
+			"Id": "PARTS_01_HAIR_SIDE_001",
+			"Name": "側髮"
+		},
+		{
+			"Id": "PARTS_01_HAIR_FRONT_001",
+			"Name": "瀏海"
+		},
+		{
+			"Id": "PARTS_01_EAR_001",
+			"Name": "耳朵"
+		},
+		{
+			"Id": "PARTS_01_NOSE_001",
+			"Name": "鼻子"
+		},
+		{
+			"Id": "PARTS_01_MOUTH_001",
+			"Name": "嘴巴"
+		},
+		{
+			"Id": "PARTS_01_BROW_001",
+			"Name": "眉毛"
+		},
+		{
+			"Id": "PARTS_01_EYE_BALL_001",
+			"Name": "眼珠"
+		},
+		{
+			"Id": "PARTS_01_EYE_001",
+			"Name": "眼睛"
+		},
+		{
+			"Id": "PARTS_01_FACE_001",
+			"Name": "臉"
+		},
+		{
+			"Id": "PARTS_01_CHEEK_001",
+			"Name": "CHEEK"
+		},
+		{
+			"Id": "ROUGH",
+			"Name": "草圖"
+		},
+		{
+			"Id": "PARTS_01_CORE",
+			"Name": "CORE"
+		}
+	]
+}

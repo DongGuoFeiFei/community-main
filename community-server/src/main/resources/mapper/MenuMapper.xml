@@ -24,4 +24,18 @@
         ORDER BY m.parent_id, m.order_num
 
     </select>
+    <select id="selectMenuKeysByUserId" resultType="java.lang.String">
+        SELECT DISTINCT m.perms
+        FROM menu m
+                 JOIN role_menu rm ON m.menu_id = rm.menu_id
+                 JOIN role r ON rm.role_id = r.role_id
+                 JOIN user_role ur ON r.role_id = ur.role_id
+                 JOIN user u ON ur.user_id = u.user_id
+        WHERE u.user_id = #{userId}
+          AND m.status = 1
+          AND m.perms IS NOT NULL
+          AND m.perms != ''
+    AND r.status = 1
+        ORDER BY m.perms
+    </select>
 </mapper>

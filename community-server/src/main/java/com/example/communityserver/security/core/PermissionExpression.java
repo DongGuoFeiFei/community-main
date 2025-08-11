@@ -31,6 +31,7 @@ public class PermissionExpression {
     //    @RequiresPermission("system:user:view")
     //    @PreAuthorize("@perms.hasPerm('system:user:view')")
     //
+    // TODO: 2025/8/11 接口验证时先进行身份验证，后进行接口验证
     public boolean hasPerm(String permission) {
         // 从安全上下文中获取当前认证信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,7 +47,7 @@ public class PermissionExpression {
             // 类型转换，获取LoginUser对象
             LoginUser loginUser = (LoginUser) principal;
             // 检查用户权限集合中是否包含指定权限
-            return loginUser.getPermissions().contains(permission);
+            return loginUser.getApis().contains(permission);
         }
         // 如果主体不是LoginUser类型，返回false
         return false;
@@ -78,7 +79,7 @@ public class PermissionExpression {
             LoginUser loginUser = (LoginUser) principal;
             // 使用Stream API检查用户权限列表中是否包含任意一个指定的权限
             return Arrays.stream(permissions)
-                    .anyMatch(loginUser.getPermissions()::contains);
+                    .anyMatch(loginUser.getApis()::contains);
         }
 
         // 如果用户主体不是LoginUser类型，返回false
@@ -111,7 +112,7 @@ public class PermissionExpression {
             LoginUser loginUser = (LoginUser) principal;
             // 使用Stream API检查所有权限是否都包含在用户的权限集合中
             return Arrays.stream(permissions)
-                    .allMatch(loginUser.getPermissions()::contains);
+                    .allMatch(loginUser.getApis()::contains);
         }
 
         // 如果主体不是LoginUser类型，返回false

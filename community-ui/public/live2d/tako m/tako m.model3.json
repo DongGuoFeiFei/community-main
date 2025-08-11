@@ -1,0 +1,173 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "tako m.moc3",
+		"Textures": [
+			"tako m.2048/texture_00.png"
+		],
+		"Physics": "tako m.physics3.json",
+		"DisplayInfo": "tako m.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "angry1",
+				"File": "angry1.exp3.json"
+			},
+			{
+				"Name": "angry2",
+				"File": "angry2.exp3.json"
+			},
+			{
+				"Name": "angry3",
+				"File": "angry3.exp3.json"
+			},
+			{
+				"Name": "ear",
+				"File": "ear.exp3.json"
+			},
+			{
+				"Name": "eraser",
+				"File": "eraser.exp3.json"
+			},
+			{
+				"Name": "eye1",
+				"File": "eye1.exp3.json"
+			},
+			{
+				"Name": "eye2",
+				"File": "eye2.exp3.json"
+			},
+			{
+				"Name": "eye3",
+				"File": "eye3.exp3.json"
+			},
+			{
+				"Name": "eye4",
+				"File": "eye4.exp3.json"
+			},
+			{
+				"Name": "hl1",
+				"File": "hl1.exp3.json"
+			},
+			{
+				"Name": "hl2",
+				"File": "hl2.exp3.json"
+			},
+			{
+				"Name": "hl3",
+				"File": "hl3.exp3.json"
+			},
+			{
+				"Name": "hotkey A",
+				"File": "hotkey A.exp3.json"
+			},
+			{
+				"Name": "hotkey C",
+				"File": "hotkey C.exp3.json"
+			},
+			{
+				"Name": "hotkey T",
+				"File": "hotkey T.exp3.json"
+			},
+			{
+				"Name": "hotkey V",
+				"File": "hotkey V.exp3.json"
+			},
+			{
+				"Name": "hotkey Y",
+				"File": "hotkey Y.exp3.json"
+			},
+			{
+				"Name": "hotkey Z",
+				"File": "hotkey Z.exp3.json"
+			},
+			{
+				"Name": "light stick",
+				"File": "light stick.exp3.json"
+			},
+			{
+				"Name": "mark angry",
+				"File": "mark angry.exp3.json"
+			},
+			{
+				"Name": "mark blow",
+				"File": "mark blow.exp3.json"
+			},
+			{
+				"Name": "mark doubt",
+				"File": "mark doubt.exp3.json"
+			},
+			{
+				"Name": "mark shock",
+				"File": "mark shock.exp3.json"
+			},
+			{
+				"Name": "mouth1",
+				"File": "mouth1.exp3.json"
+			},
+			{
+				"Name": "mouth2",
+				"File": "mouth2.exp3.json"
+			},
+			{
+				"Name": "mouth3",
+				"File": "mouth3.exp3.json"
+			},
+			{
+				"Name": "mouth4",
+				"File": "mouth4.exp3.json"
+			},
+			{
+				"Name": "panter",
+				"File": "panter.exp3.json"
+			},
+			{
+				"Name": "shy1",
+				"File": "shy1.exp3.json"
+			},
+			{
+				"Name": "shy2",
+				"File": "shy2.exp3.json"
+			},
+			{
+				"Name": "shy3",
+				"File": "shy3.exp3.json"
+			},
+			{
+				"Name": "sweat",
+				"File": "sweat.exp3.json"
+			},
+			{
+				"Name": "tail",
+				"File": "tail.exp3.json"
+			},
+			{
+				"Name": "tako",
+				"File": "tako.exp3.json"
+			},
+			{
+				"Name": "tear",
+				"File": "tear.exp3.json"
+			},
+			{
+				"Name": "reset",
+				"File": "reset.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"PARAM_EYE_L_OPEN",
+				"PARAM_EYE_R_OPEN"
+			]
+		}
+	],
+	"HitAreas": []
+}

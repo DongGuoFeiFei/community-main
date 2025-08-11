@@ -1,0 +1,535 @@
+{
+  "Version": 3,
+  "Type": 0,
+  "FileReferences": {
+    "Moc": "Castorice_V2.moc3",
+    "Textures": [
+      "Castorice_V2.4096/texture_00.png",
+      "Castorice_V2.4096/texture_01.png"
+    ],
+    "Physics": "Castorice_V2.physics3.json",
+    "PhysicsV2": {
+      "File": "Castorice_V2.physics3.json"
+    },
+    "Motions": {
+      "Idle": [
+        {
+          "File": "motions/IDLING_2.motion3.json"
+        },
+        {
+          "File": "motions/IDLING_2_2.motion3.json"
+        },
+        {
+          "File": "motions/IDLING_1.motion3.json"
+        },
+        {
+          "File": "motions/IDLING_1_2.motion3.json"
+        }
+      ],
+      "TapBody": [
+        {
+          "File": "motions/M11_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M14_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M23.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M24.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M29.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M4.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/touch_s.motion3.json",
+          "Interruptable": true
+        }
+      ],
+      "TapHead": [
+        {
+          "File": "motions/M13_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M13_3.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M15.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M17.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M18_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M18_3.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M24.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M25_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M27.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M5.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M8_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M9_2.motion3.json",
+          "Interruptable": true
+        }
+      ],
+      "TapBust": [
+        {
+          "File": "motions/M10_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M12_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M15.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M16_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M19.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M20_3.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M21.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M22.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M23.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M28.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M6.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/touch_s.motion3.json",
+          "Interruptable": true
+        }
+      ],
+      "TapLeg": [
+        {
+          "File": "motions/M10_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M11_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M12_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M13_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M14_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M16_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M18_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M20_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M20_2.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M25_1.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M26.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/M7.motion3.json",
+          "Interruptable": true
+        },
+        {
+          "File": "motions/touch_w.motion3.json",
+          "Interruptable": true
+        }
+      ],
+      "TapArm": [
+        {
+          "Name": "No_gloves",
+          "Expression": "去手套等.exp3",
+          "OverrideFaceParams": true
+        },
+        {
+          "Name": "Gloves",
+          "Expression": "手套等",
+          "OverrideFaceParams": true
+        },
+        {
+          "Name": "No_Phone",
+          "Expression": "无手机.exp3",
+          "OverrideFaceParams": true
+        },
+        {
+          "Name": "Phone",
+          "Expression": "拿手机",
+          "OverrideFaceParams": true
+        }
+      ]
+    },
+    "Expressions": [
+      {
+        "Name": "Angry.exp3",
+        "File": "expressions/Angry.exp3.json"
+      },
+      {
+        "Name": "Background01.exp3",
+        "File": "expressions/Background01.exp3.json"
+      },
+      {
+        "Name": "Background02.exp3",
+        "File": "expressions/Background02.exp3.json"
+      },
+      {
+        "Name": "Blushing.exp3",
+        "File": "expressions/Blushing.exp3.json"
+      },
+      {
+        "Name": "f01.exp3",
+        "File": "expressions/f01.exp3.json"
+      },
+      {
+        "Name": "f02.exp3",
+        "File": "expressions/f02.exp3.json"
+      },
+      {
+        "Name": "Gloves.exp3",
+        "File": "expressions/Gloves.exp3.json"
+      },
+      {
+        "Name": "HairOrn00.exp3",
+        "File": "expressions/HairOrn00.exp3.json"
+      },
+      {
+        "Name": "HairOrn01.exp3",
+        "File": "expressions/HairOrn01.exp3.json"
+      },
+      {
+        "Name": "HairOrn02.exp3",
+        "File": "expressions/HairOrn02.exp3.json"
+      },
+      {
+        "Name": "HairOrn03.exp3",
+        "File": "expressions/HairOrn03.exp3.json"
+      },
+      {
+        "Name": "HairOrn04.exp3",
+        "File": "expressions/HairOrn04.exp3.json"
+      },
+      {
+        "Name": "HairOrn05.exp3",
+        "File": "expressions/HairOrn05.exp3.json"
+      },
+      {
+        "Name": "LongHair.exp3",
+        "File": "expressions/LongHair.exp3.json"
+      },
+      {
+        "Name": "NoGloves.exp3",
+        "File": "expressions/NoGloves.exp3.json"
+      },
+      {
+        "Name": "NoPhone.exp3",
+        "File": "expressions/NoPhone.exp3.json"
+      },
+      {
+        "Name": "Normal.exp3",
+        "File": "expressions/Normal.exp3.json"
+      },
+      {
+        "Name": "Phone.exp3",
+        "File": "expressions/Phone.exp3.json"
+      },
+      {
+        "Name": "Sad.exp3",
+        "File": "expressions/Sad.exp3.json"
+      },
+      {
+        "Name": "ShortHair.exp3",
+        "File": "expressions/ShortHair.exp3.json"
+      },
+      {
+        "Name": "Shy01.exp3",
+        "File": "expressions/Shy01.exp3.json"
+      },
+      {
+        "Name": "Shy02.exp3",
+        "File": "expressions/Shy02.exp3.json"
+      },
+      {
+        "Name": "Smile.exp3",
+        "File": "expressions/Smile.exp3.json"
+      },
+      {
+        "Name": "Surprised.exp3",
+        "File": "expressions/Surprised.exp3.json"
+      }
+    ]
+  },
+  "Controllers": {
+    "ParamHit": {},
+    "ParamLoop": {},
+    "KeyTrigger": {},
+    "ParamTrigger": {},
+    "AreaTrigger": {
+      "Enabled": true
+    },
+    "HandTrigger": {},
+    "EyeBlink": {
+      "MinInterval": 500,
+      "MaxInterval": 6000,
+      "Enabled": true
+    },
+    "LipSync": {
+      "Gain": 5.0,
+      "Enabled": true
+    },
+    "MouseTracking": {
+      "SmoothTime": 0.15,
+      "Enabled": true
+    },
+    "AutoBreath": {
+      "Enabled": true
+    },
+    "ExtraMotion": {
+      "Enabled": true
+    },
+    "Accelerometer": {
+      "Enabled": true
+    },
+    "Microphone": {},
+    "Transform": {},
+    "FaceTracking": {
+      "Enabled": true
+    },
+    "HandTracking": {},
+    "ParamValue": {
+      "Items": [
+        {
+          "Name": "手机切换",
+          "Ids": [
+            "PARAM_PHONE_SWITCH"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            }
+          ]
+        },
+        {
+          "Name": "头饰切换",
+          "Ids": [
+            "PARAM_HAIRORNAMENT_SWITCH"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            },
+            {
+              "Key": "2",
+              "Value": 2.0
+            },
+            {
+              "Key": "3",
+              "Value": 3.0
+            },
+            {
+              "Key": "4",
+              "Value": 4.0
+            },
+            {
+              "Key": "5",
+              "Value": 5.0
+            }
+          ]
+        },
+        {
+          "Name": "长短发切换",
+          "Ids": [
+            "PARAM_HAIR_SWITCH"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            }
+          ]
+        },
+        {
+          "Name": "服装切换",
+          "Ids": [
+            "PARAM_CLOTH_SWITCH"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            }
+          ]
+        },
+        {
+          "Name": "丝袜切换",
+          "Ids": [
+            "PARAM_LEG_SWITCH"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            },
+            {
+              "Key": "2",
+              "Value": 2.0
+            }
+          ]
+        },
+        {
+          "Name": "背景切换",
+          "Ids": [
+            "PARAM_BACKGROUND"
+          ],
+          "KeyValues": [
+            {
+              "Key": "0",
+              "Value": 0.0
+            },
+            {
+              "Key": "1",
+              "Value": 1.0
+            },
+            {
+              "Key": "2",
+              "Value": 2.0
+            }
+          ]
+        }
+      ],
+      "Enabled": true
+    },
+    "PartOpacity": {},
+    "ArtmeshOpacity": {},
+    "ArtmeshColor": {},
+    "ArtmeshCulling": {
+      "DefaultMode": 0
+    },
+    "IntimacySystem": {}
+  },
+  "HitAreas": [
+    {
+      "Name": "Body",
+      "Id": "D_REF_PT_BODY",
+      "Motion": "TapBody"
+    },
+    {
+      "Name": "Head",
+      "Id": "D_REF_PT_HEAD",
+      "Motion": "TapHead"
+    },
+    {
+      "Name": "Bust",
+      "Id": "D_REF_PT_BUST",
+      "Motion": "TapBust"
+    },
+    {
+      "Name": "Leg",
+      "Id": "D_REF_PT_LEG",
+      "Motion": "TapLeg"
+    },
+    {
+      "Name": "Arm",
+      "Id": "D_REF_PT_ARM",
+      "Motion": "TapArm"
+    }
+  ],
+  "Options": {
+    "TexType": 0
+  }
+}

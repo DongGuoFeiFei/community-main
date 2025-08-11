@@ -26,12 +26,16 @@ const store = localStores()
 const props = defineProps({
   modelPath: {
     type: String,
-    // default: '/live2d/Ayachi/Live2DViewerEX.model3.json'
     default: '/live2d/Murasame/Murasame.model3.json'
+    // default: '/live2d/Hu Tao/Hu Tao.model3.json'
+    // default: '/live2d/草神/草神.model3.json'
+    // default: '/live2d/alya/Alya.model3.json'
+    // default: '/live2d/Castorice_V2/Castorice_V2.model3.json'
+    // default: '/live2d/tako m/tako m.model3.json'
   },
   scale: {
     type: Number,
-    // default: 0.111,
+    // default: 0.08,
     default: 0.13,
     validator: (v) => v > 0 && v <= 1
   },
@@ -106,6 +110,7 @@ const initLive2D = async () => {
         canvasWidth - model.width * props.scale * 8,
         canvasHeight - model.height * props.scale * 7.7
     )
+
 
     // 启用交互
     model.interactive = true
@@ -212,8 +217,8 @@ onBeforeUnmount(() => {
   position: fixed;
   right: 0;
   bottom: 0;
-  width: 200px;
-  height: 390px;
+  //width: 200px;
+  //height: 390px;
   z-index: 999;
   //background-color: #c43737;
 

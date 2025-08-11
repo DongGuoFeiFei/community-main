@@ -19,27 +19,33 @@ public class LoginUser implements UserDetails {
 
     private User user;
 
+    // TODO: 2025/8/11 后续添加用户单独关联api（禁止【例如用户发布文章等】或允许）和菜单 
     // 权限集合
-    private List<String> permissions = new ArrayList<>();
-
-    private List<String> roles; // 新增角色信息
-    // security需要的权限集合类型
+    private List<String> apis;  // 角色关联api
+    private List<String> roles; // 角色身份
+    private List<String> menus; // 角色关联菜单
+    // security需要的权限集合类型    标记@JsonIgnore避免序列化到Redis
     @JsonIgnore
     private List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
     // 构造方法
-    public LoginUser(User user, List<String> permissions, List<String> roles) {
+    public LoginUser(User user, List<String> apis, List<String> roles, List<String> menus) {
         this.user = user;
-        this.permissions = permissions != null ? permissions : Collections.emptyList();
+        this.apis = apis != null ? apis : Collections.emptyList();
         this.roles = roles != null ? roles : Collections.emptyList();
+        this.menus = menus != null ? menus : Collections.emptyList();
     }
 
-    public List<String> getPermissions() {
-        return permissions;
+    public List<String> getApis() {
+        return apis;
     }
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    public List<String> getMenus() {
+        return menus;
     }
 
     public User getUser() {
@@ -54,19 +60,21 @@ public class LoginUser implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (!grantedAuthorities.isEmpty()) {
+            return grantedAuthorities;
+        }
+
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
         // 添加权限
-        permissions.stream()
-                .filter(perm -> perm != null && !perm.trim().isEmpty())
-                .forEach(perm -> authorities.add(new SimpleGrantedAuthority(perm)));
+        apis.stream().filter(api -> api != null && !api.trim().isEmpty()).forEach(api -> authorities.add(new SimpleGrantedAuthority(api)));
 
-        // 添加角色（可选，格式为 ROLE_角色名）
-        roles.stream()
-                .filter(role -> role != null && !role.trim().isEmpty())
-                .forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        roles.stream().filter(role -> role != null && !role.trim().isEmpty()).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
-        return authorities;
+        menus.stream().filter(menu -> menu != null && !menu.trim().isEmpty()).forEach(menu -> authorities.add(new SimpleGrantedAuthority(menu)));
+
+        grantedAuthorities.addAll(authorities);
+        return grantedAuthorities;
     }
 
     @Override

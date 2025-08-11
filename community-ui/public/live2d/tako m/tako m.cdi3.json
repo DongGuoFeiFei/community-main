@@ -1,0 +1,330 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "Param9",
+			"GroupId": "ParamGroup2",
+			"Name": "shy"
+		},
+		{
+			"Id": "Param4",
+			"GroupId": "ParamGroup2",
+			"Name": "eye hl"
+		},
+		{
+			"Id": "Param5",
+			"GroupId": "ParamGroup2",
+			"Name": "eye> <"
+		},
+		{
+			"Id": "Param6",
+			"GroupId": "ParamGroup2",
+			"Name": "eye- -"
+		},
+		{
+			"Id": "Param11",
+			"GroupId": "ParamGroup2",
+			"Name": "sweat"
+		},
+		{
+			"Id": "Param12",
+			"GroupId": "ParamGroup2",
+			"Name": "tear"
+		},
+		{
+			"Id": "Param10",
+			"GroupId": "ParamGroup2",
+			"Name": "angry"
+		},
+		{
+			"Id": "Param7",
+			"GroupId": "ParamGroup2",
+			"Name": "mouth"
+		},
+		{
+			"Id": "Param8",
+			"GroupId": "ParamGroup2",
+			"Name": "mouth"
+		},
+		{
+			"Id": "Param20",
+			"GroupId": "ParamGroup2",
+			"Name": "mark angry"
+		},
+		{
+			"Id": "Param22",
+			"GroupId": "ParamGroup2",
+			"Name": "mark blow"
+		},
+		{
+			"Id": "Param21",
+			"GroupId": "ParamGroup2",
+			"Name": "mark doubt"
+		},
+		{
+			"Id": "Param25",
+			"GroupId": "ParamGroup2",
+			"Name": "mark shock"
+		},
+		{
+			"Id": "Param15",
+			"GroupId": "ParamGroup2",
+			"Name": "ear"
+		},
+		{
+			"Id": "Param17",
+			"GroupId": "ParamGroup2",
+			"Name": "tail"
+		},
+		{
+			"Id": "Param31",
+			"GroupId": "ParamGroup2",
+			"Name": "tako"
+		},
+		{
+			"Id": "Param30",
+			"GroupId": "ParamGroup2",
+			"Name": "light stick"
+		},
+		{
+			"Id": "Param18",
+			"GroupId": "ParamGroup2",
+			"Name": "panter"
+		},
+		{
+			"Id": "Param29",
+			"GroupId": "ParamGroup2",
+			"Name": "hotkey"
+		},
+		{
+			"Id": "Param27",
+			"GroupId": "ParamGroup2",
+			"Name": "pen x"
+		},
+		{
+			"Id": "Param28",
+			"GroupId": "ParamGroup2",
+			"Name": "pen y"
+		},
+		{
+			"Id": "Param32",
+			"GroupId": "ParamGroup2",
+			"Name": "eraser"
+		},
+		{
+			"Id": "PARAM_ANGLE_X",
+			"GroupId": "",
+			"Name": "角度 X"
+		},
+		{
+			"Id": "PARAM_ANGLE_Y",
+			"GroupId": "",
+			"Name": "角度 Y"
+		},
+		{
+			"Id": "PARAM_ANGLE_Z",
+			"GroupId": "",
+			"Name": "角度 Z"
+		},
+		{
+			"Id": "PARAM_EYE_L_OPEN",
+			"GroupId": "",
+			"Name": "左眼　開閉"
+		},
+		{
+			"Id": "PARAM_EYE_L_SMILE",
+			"GroupId": "",
+			"Name": "左眼　笑顔"
+		},
+		{
+			"Id": "PARAM_EYE_R_OPEN",
+			"GroupId": "",
+			"Name": "右眼　開閉"
+		},
+		{
+			"Id": "PARAM_EYE_R_SMILE",
+			"GroupId": "",
+			"Name": "右眼　笑顔"
+		},
+		{
+			"Id": "PARAM_EYE_BALL_X",
+			"GroupId": "",
+			"Name": "目玉 X"
+		},
+		{
+			"Id": "PARAM_EYE_BALL_Y",
+			"GroupId": "",
+			"Name": "目玉 Y"
+		},
+		{
+			"Id": "PARAM_BROW_L_Y",
+			"GroupId": "",
+			"Name": "左眉　上下"
+		},
+		{
+			"Id": "PARAM_BROW_R_Y",
+			"GroupId": "",
+			"Name": "右眉　上下"
+		},
+		{
+			"Id": "PARAM_MOUTH_FORM",
+			"GroupId": "",
+			"Name": "口　変形"
+		},
+		{
+			"Id": "PARAM_MOUTH_OPEN_Y",
+			"GroupId": "",
+			"Name": "口　開閉"
+		},
+		{
+			"Id": "PARAM_BODY_ANGLE_X",
+			"GroupId": "",
+			"Name": "体の回転　X"
+		},
+		{
+			"Id": "PARAM_BODY_ANGLE_Y",
+			"GroupId": "",
+			"Name": "体の回転　Y"
+		},
+		{
+			"Id": "PARAM_BODY_ANGLE_Z",
+			"GroupId": "",
+			"Name": "体の回転　Z"
+		},
+		{
+			"Id": "PARAM_BREATH",
+			"GroupId": "",
+			"Name": "呼吸"
+		},
+		{
+			"Id": "Param13",
+			"GroupId": "ParamGroup",
+			"Name": "ear"
+		},
+		{
+			"Id": "Param19",
+			"GroupId": "ParamGroup",
+			"Name": "panter"
+		},
+		{
+			"Id": "Param23",
+			"GroupId": "ParamGroup",
+			"Name": "mark angry"
+		},
+		{
+			"Id": "Param24",
+			"GroupId": "ParamGroup",
+			"Name": "mark doubt"
+		},
+		{
+			"Id": "Param26",
+			"GroupId": "ParamGroup",
+			"Name": "tentacle"
+		},
+		{
+			"Id": "Param16",
+			"GroupId": "ParamGroup",
+			"Name": "tail"
+		},
+		{
+			"Id": "Param14",
+			"GroupId": "ParamGroup",
+			"Name": "ear2"
+		},
+		{
+			"Id": "Param",
+			"GroupId": "ParamGroup",
+			"Name": "eyeball"
+		},
+		{
+			"Id": "Param3",
+			"GroupId": "ParamGroup",
+			"Name": "hl2"
+		},
+		{
+			"Id": "Param2",
+			"GroupId": "ParamGroup",
+			"Name": "hl"
+		}
+	],
+	"ParameterGroups": [
+		{
+			"Id": "ParamGroup2",
+			"GroupId": "",
+			"Name": "motion"
+		},
+		{
+			"Id": "ParamGroup",
+			"GroupId": "",
+			"Name": "physic"
+		}
+	],
+	"Parts": [
+		{
+			"Id": "PARTS_01_BODY",
+			"Name": "体"
+		},
+		{
+			"Id": "PARTS_01_NECK",
+			"Name": "首"
+		},
+		{
+			"Id": "PARTS_01_HAIR_BACK_001",
+			"Name": "後ろ髪"
+		},
+		{
+			"Id": "PARTS_01_HAIR_SIDE_001",
+			"Name": "横髪"
+		},
+		{
+			"Id": "PARTS_01_HAIR_FRONT_001",
+			"Name": "前髪"
+		},
+		{
+			"Id": "PARTS_01_EAR_001",
+			"Name": "耳"
+		},
+		{
+			"Id": "PARTS_01_NOSE_001",
+			"Name": "鼻"
+		},
+		{
+			"Id": "PARTS_01_MOUTH_001",
+			"Name": "口"
+		},
+		{
+			"Id": "PARTS_01_BROW_001",
+			"Name": "まゆ毛"
+		},
+		{
+			"Id": "PARTS_01_EYE_BALL_001",
+			"Name": "目玉"
+		},
+		{
+			"Id": "PARTS_01_EYE_001",
+			"Name": "目"
+		},
+		{
+			"Id": "PARTS_01_FACE_001",
+			"Name": "顔"
+		},
+		{
+			"Id": "PARTS_01_FROZEN",
+			"Name": "対応無し"
+		},
+		{
+			"Id": "PartSketch0",
+			"Name": "[ 参考图 ]"
+		}
+	],
+	"CombinedParameters": [
+		[
+			"Param5",
+			"Param6"
+		],
+		[
+			"Param7",
+			"Param8"
+		]
+	]
+}

@@ -24,4 +24,3 @@ public @interface RequiresPermission {
 
     Logical logical() default Logical.AND; // AND表示需要所有权限，OR表示任一权限
 }
-
