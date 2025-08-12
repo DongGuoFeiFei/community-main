@@ -22,7 +22,6 @@
           AND m.status = 1
           AND r.status = 1
         ORDER BY m.parent_id, m.order_num
-
     </select>
     <select id="selectMenuKeysByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.perms

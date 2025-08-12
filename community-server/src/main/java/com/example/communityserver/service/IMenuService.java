@@ -1,8 +1,10 @@
 package com.example.communityserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.Menu;
+import com.example.communityserver.entity.response.UserMenuTree;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +17,5 @@ import com.example.communityserver.entity.model.Menu;
 
 
 public interface IMenuService extends IService<Menu> {
+    List<UserMenuTree> getUserMenuTree(Long userId);
 }

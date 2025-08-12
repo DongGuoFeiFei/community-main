@@ -1,16 +1,29 @@
 import request from '@/utils/request';
 
-// 获取后台菜单配置
-export const getAdminMenu = () => {
-    return request.get('/admin/menu');
+/**
+ * 获取菜单树
+ */
+export const getMenuTree = () => {
+  return request.get('/menu/tree');
 };
 
-// 更新菜单配置
-export const updateMenuConfig = (data) => {
-    return request.put('/admin/menu', data);
+/**
+ * 获取用户菜单树
+ */
+export const getUserMenuTree = () => {
+  return request.get('/menu/getUserMenuTree')
 };
 
-// 获取菜单权限配置
-export const getMenuPermissions = () => {
-    return request.get('/admin/menu/permissions');
+/**
+ * 获取角色菜单权限
+ */
+export const getRoleMenus = (roleId) => {
+  return request.get(`/role/menus/${roleId}`);
+};
+
+/**
+ * 更新角色菜单权限
+ */
+export const updateRoleMenus = (roleId, menuIds) => {
+  return request.put(`/role/menus/${roleId}`, {menuIds});
 };

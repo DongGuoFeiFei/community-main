@@ -22,6 +22,7 @@ public class CacheKeyConstants {
     public static final String USER_ARTICLE_FAVORITE_COUNT = "user:article:favorite:count:";
 
     public static final String LOGIN_USER_PERMISSIONS = "login:user:permissions:";
+    public static final String LOGIN_USER_MANAGE_MENUS = "user:manage:menus:";
 
     // 文章相关缓存键
     public static final String ARTICLE_COMMENT = "article:comment:data:";

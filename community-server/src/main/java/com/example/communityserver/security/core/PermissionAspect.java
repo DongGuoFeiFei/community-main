@@ -21,7 +21,6 @@ import java.util.List;
  * @create: 2025-08-09
  **/
 
-
 @Aspect
 @Component
 public class PermissionAspect {
@@ -46,18 +45,18 @@ public class PermissionAspect {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         // 获取用户拥有的权限列表
-        List<String> userPermissions = loginUser.getApis();
+        List<String> userRoles = loginUser.getRoles();
 
         // 根据逻辑关系(AND/OR)判断用户是否具有所需权限
         boolean hasPermission;
         if (logical == Logical.AND) {
             // AND逻辑：用户必须拥有所有权限
             hasPermission = Arrays.stream(permissions)
-                    .allMatch(userPermissions::contains);
+                    .allMatch(userRoles::contains);
         } else {
             // OR逻辑：用户只需拥有任一权限
             hasPermission = Arrays.stream(permissions)
-                    .anyMatch(userPermissions::contains);
+                    .anyMatch(userRoles::contains);
         }
 
         // 如果没有权限，抛出权限不足异常
