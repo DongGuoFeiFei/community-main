@@ -53,8 +53,6 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:role-name']);
-
 const menuTree = ref([]);
 const treeRef = ref(null);
 const filterText = ref('');
@@ -88,9 +86,6 @@ const fetchMenuTree = async () => {
   try {
     const res = await getMenuTree();
     menuTree.value = res.data;
-    if (res.data.roleName) {
-      emit('update:role-name', res.data.roleName);
-    }
   } catch (error) {
     console.error('获取菜单树失败:', error);
     ElMessage.error('获取菜单树失败');
@@ -140,6 +135,7 @@ onMounted(() => {
   fetchMenuTree();
   fetchRoleMenus();
 });
+
 </script>
 
 <style scoped lang="scss">

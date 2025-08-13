@@ -15,8 +15,12 @@ import java.util.List;
 
 @Data
 public class UserMenuTree {
+    private Long menuId;
+    private String menuName;
     private String path;
+    private String menuType;
     private String component;
+    private String icon;
     private Meta meta;
     private List<UserMenuTree> children;
 

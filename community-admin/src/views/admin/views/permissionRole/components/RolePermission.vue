@@ -10,19 +10,16 @@
       <el-tab-pane label="菜单权限" name="menu">
         <menu-permission
           :role-id="roleId"
-          @update:role-name="handleRoleNameUpdate"
         />
       </el-tab-pane>
       <el-tab-pane label="数据权限" name="dataScope">
         <data-scope-permission
           :role-id="roleId"
-          @update:role-name="handleRoleNameUpdate"
         />
       </el-tab-pane>
       <el-tab-pane label="接口权限" name="api">
         <api-permission
           :role-id="roleId"
-          @update:role-name="handleRoleNameUpdate"
         />
       </el-tab-pane>
     </el-tabs>
@@ -30,10 +27,12 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import {computed, ref, watch} from 'vue';
 import MenuPermission from './MenuPermission.vue';
 import DataScopePermission from './DataScopePermission.vue';
 import ApiPermission from './ApiPermission.vue';
+import {getRoleDetail} from "@/api/role.js";
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   modelValue: {
@@ -56,12 +55,29 @@ const visible = computed({
 const activeTab = ref('menu');
 const roleName = ref('');
 
-const handleRoleNameUpdate = (name) => {
-  roleName.value = name;
-};
-
 const handleClosed = () => {
   roleName.value = '';
   activeTab.value = 'menu';
 };
+
+const fetchRoleDetail = async () => {
+  try {
+    const res = await getRoleDetail(props.roleId);
+    roleName.value = res.data.roleName;
+  } catch (error) {
+    console.error('获取角色名称:', error);
+    ElMessage.error('获取角色名称失败');
+  }
+};
+
+watch(
+  () => props.modelValue,
+  (visible) => {
+    if (visible && props.roleId) {
+      fetchRoleDetail();
+    }
+  },
+  {immediate: true}
+);
+
 </script>

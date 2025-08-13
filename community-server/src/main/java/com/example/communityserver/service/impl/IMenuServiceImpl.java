@@ -45,6 +45,31 @@ public class IMenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements I
         return menuTrees;
     }
 
+    @Override
+    public List<UserMenuTree> getMenuTree() {
+        List<UserMenuTree> menuTrees = redisUtil.getCacheList(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + "menu");
+        if (menuTrees.isEmpty()) {
+            List<Menu> menus = list();
+            menuTrees = buildMenuTree(menus);
+            redisUtil.setCacheList(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + "menu", menuTrees);
+        }
+        redisUtil.expire(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + "menu", 1, TimeUnit.DAYS);
+        return menuTrees;
+
+    }
+
+    @Override
+    public List<UserMenuTree> getRoleMenus(Long roleId) {
+        List<UserMenuTree> menuTrees = redisUtil.getCacheList(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + roleId);
+        if (menuTrees.isEmpty()) {
+            List<Menu> menus = menuMapper.selectUserMenus(roleId);
+            menuTrees = buildMenuTree(menus);
+            redisUtil.setCacheList(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + roleId, menuTrees);
+        }
+        redisUtil.expire(CacheKeyConstants.LOGIN_USER_MANAGE_MENUS + roleId, 1, TimeUnit.DAYS);
+        return menuTrees;
+    }
+
     private List<UserMenuTree> buildMenuTree(List<Menu> menus) {
         // 1. 先找出所有顶级菜单(parentId=0或null)
         List<Menu> topMenus = menus.stream()
@@ -62,6 +87,10 @@ public class IMenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements I
         UserMenuTree tree = new UserMenuTree();
         tree.setPath(menu.getPath());
         tree.setComponent(menu.getComponent());
+        tree.setMenuId(menu.getMenuId());
+        tree.setMenuType(menu.getMenuType());
+        tree.setMenuName(menu.getMenuName());
+        tree.setIcon(menu.getIcon());
 
         // 设置meta信息
         UserMenuTree.Meta meta = new UserMenuTree.Meta();

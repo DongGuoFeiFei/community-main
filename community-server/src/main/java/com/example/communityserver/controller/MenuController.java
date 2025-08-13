@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,5 +39,28 @@ public class MenuController {
         List<UserMenuTree> listVo = menuService.getUserMenuTree(SecurityUtils.getLoginUserId());
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
     }
+
+    @ApiOperation("获取角色管理菜单")
+    @GetMapping("tree")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<List<UserMenuTree>> getMenuTree() {
+        List<UserMenuTree> listVo = menuService.getMenuTree();
+        return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
+    }
+
+    @ApiOperation("获取角色菜单权限")
+    @GetMapping("menu/{roleId}")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<List<UserMenuTree>> getRoleMenus(@PathVariable Long roleId) {
+        List<UserMenuTree> listVo = menuService.getRoleMenus(roleId);
+        return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
+    }
+
+///**
+// * 更新角色菜单权限
+// */
+//    export const updateRoleMenus = (roleId, menuIds) => {
+//        return request.put('/role/menu', { roleId, menuIds });
+//    };
 
 }

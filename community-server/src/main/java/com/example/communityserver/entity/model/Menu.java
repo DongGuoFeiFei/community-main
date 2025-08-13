@@ -99,5 +99,5 @@ public class Menu {
      * 删除标志（0-存在，1-删除）
      */
     @TableLogic
-    private Integer delFlag;
+    private Integer isDel;
 }
