@@ -7,8 +7,9 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
       :row-key="row => row.commentId"
+      :fit="true"
     >
-      <el-table-column type="selection" width="55"/>
+<!--      <el-table-column type="selection" width="55"/>-->
       <el-table-column prop="commentId" label="ID" width="80"/>
       <el-table-column prop="content" label="评论内容" min-width="200">
         <template #default="{ row }">

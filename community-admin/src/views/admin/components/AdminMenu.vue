@@ -72,6 +72,7 @@ import {
   Warning
 } from "@element-plus/icons-vue";
 import {getUserMenuTree} from "@/api/menu.js";
+import {sessionStores} from "@/stores/sessionStores.js";
 
 const props = defineProps({
   isCollapse: {
@@ -103,6 +104,8 @@ const iconComponents = {
 const menuData = ref([]);
 const route = useRoute();
 
+const store = sessionStores()
+
 const transformMenuData = (menuItems) => {
   return menuItems.map(item => {
     // 处理children为null的情况
@@ -119,6 +122,10 @@ const transformMenuData = (menuItems) => {
 };
 
 const loadMenuData = async () => {
+  if (store.menuData.length > 0) {
+    menuData.value = store.menuData
+    return
+  }
   try {
     const res = await getUserMenuTree();
     if (res.code === 200) {

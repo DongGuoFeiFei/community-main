@@ -3,20 +3,56 @@
     <el-card shadow="never">
       <template #header>
         <div class="card-header">
-          <span>角色列表</span>
-          <el-button type="primary" @click="handleCreate" icon="Plus">新增角色</el-button>
+          <span class="header-title">角色管理</span>
+          <div>
+            <el-button type="primary" @click="handleCreate">
+              <el-icon>
+                <plus/>
+              </el-icon>
+              新增角色
+            </el-button>
+          </div>
         </div>
       </template>
 
+      <!-- 搜索表单 -->
+      <el-form :inline="true" :model="searchForm" class="search-form">
+        <el-form-item label="角色名称">
+          <el-input
+            v-model="searchForm.roleName"
+            placeholder="请输入角色名称"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="角色标识">
+          <el-input
+            v-model="searchForm.roleKey"
+            placeholder="请输入角色标识"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="searchForm.status" placeholder="请选择状态" clearable>
+            <el-option label="启用" :value="1"/>
+            <el-option label="禁用" :value="0"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
+
       <el-table
-        :data="roleList"
         v-loading="loading"
-        row-key="roleId"
+        :data="roleList"
         border
-        style="width: 100%"
+        row-key="roleId"
+        @selection-change="handleSelectionChange"
+        :fit="true"
       >
-        <el-table-column prop="roleName" label="角色名称" width="180"/>
-        <el-table-column prop="roleKey" label="角色标识" width="180"/>
+        <el-table-column prop="roleName" label="角色名称" :min-width="120"/>
+        <el-table-column prop="roleKey" label="角色标识" :min-width="120"/>
         <el-table-column prop="roleSort" label="排序" width="80"/>
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
@@ -28,17 +64,37 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="180"/>
-        <el-table-column prop="remark" label="备注"/>
-        <el-table-column label="操作" width="220" fixed="right">
+        <el-table-column prop="isSystem" label="系统内置" width="100">
           <template #default="{ row }">
-            <el-button size="small" @click="handleEdit(row)">编辑</el-button>
-            <el-button size="small" @click="handlePermission(row)">权限</el-button>
+            <el-tag :type="row.isSystem ? 'success' : 'info'">
+              {{ row.isSystem ? '是' : '否' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="remark" label="备注" :min-width="120"/>
+        <el-table-column prop="createTime" label="创建时间" width="180"/>
+        <el-table-column label="操作" width="260" fixed="right">
+          <template #default="{ row }">
+            <el-button
+              size="small"
+              type="success"
+              @click="handlePermission(row)"
+            >
+              权限
+            </el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="handleEdit(row)"
+              v-if="!row.isSystem"
+            >
+              编辑
+            </el-button>
             <el-button
               size="small"
               type="danger"
               @click="handleDelete(row)"
-              :disabled="row.isSystem === 1"
+              v-if="!row.isSystem"
             >
               删除
             </el-button>
@@ -46,11 +102,13 @@
         </el-table-column>
       </el-table>
 
+      <!-- 分页 -->
       <div class="pagination-container">
         <el-pagination
-          v-model:current-page="queryParams.pageNum"
-          v-model:page-size="queryParams.pageSize"
-          :total="total"
+          v-model:current-page="pagination.current"
+          v-model:page-size="pagination.size"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -58,136 +116,157 @@
       </div>
     </el-card>
 
-    <RoleForm
-      ref="roleFormRef"
+    <!-- 角色表单对话框 -->
+    <role-form
       v-model="formVisible"
-      :form-data="formData"
-      @close="handleFormClose"
+      :role-id="currentRoleId"
       @success="handleFormSuccess"
     />
 
-    <RolePermission
-      ref="rolePermissionRef"
+    <role-permission
       v-model="permissionVisible"
       :role-id="currentRoleId"
-      @close="permissionVisible = false"
     />
-
   </div>
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from 'vue';
+import {onMounted, ref} from 'vue';
+import {Plus} from '@element-plus/icons-vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import {changeRoleStatus, deleteRole, getRoleList} from '@/api/role';
 import RoleForm from './RoleForm.vue';
 import RolePermission from './RolePermission.vue';
 
-const roleList = ref([]);
-const loading = ref(false);
-const total = ref(0);
-const formVisible = ref(false);
-const permissionVisible = ref(false);
-const currentRoleId = ref(null);
-const roleFormRef = ref(null);
-const rolePermissionRef = ref(null);
 
-const queryParams = reactive({
-  pageNum: 1,
-  pageSize: 10,
-  roleName: '',
-  status: undefined
-});
-
-const formData = reactive({
-  roleId: undefined,
+// 搜索表单
+const searchForm = ref({
   roleName: '',
   roleKey: '',
-  roleSort: 0,
-  status: 1,
-  remark: ''
+  status: null,
 });
+
+// 分页
+const pagination = ref({
+  current: 1,
+  size: 10,
+  total: 0,
+});
+
+// 表格数据
+const loading = ref(false);
+const roleList = ref([]);
+const selectedRows = ref([]);
+
+// 表单对话框
+const formVisible = ref(false);
+const currentRoleId = ref(null);
 
 // 获取角色列表
 const fetchRoleList = async () => {
   try {
     loading.value = true;
-    const res = await getRoleList(queryParams);
+    const params = {
+      ...searchForm.value,
+      pageNum: pagination.value.current,
+      pageSize: pagination.value.size,
+    };
+    const res = await getRoleList(params);
     roleList.value = res.data.rows;
-    total.value = res.data.total;
+    pagination.value.total = res.data.total;
+  } catch (error) {
+    console.error('获取角色列表失败:', error);
   } finally {
     loading.value = false;
   }
 };
 
-// 处理分页
-const handleSizeChange = (val) => {
-  queryParams.pageSize = val;
+// 搜索
+const handleSearch = () => {
+  pagination.value.current = 1;
   fetchRoleList();
 };
 
-const handleCurrentChange = (val) => {
-  queryParams.pageNum = val;
+// 重置搜索
+const resetSearch = () => {
+  searchForm.value = {
+    roleName: '',
+    roleKey: '',
+    status: null,
+  };
+  handleSearch();
+};
+
+// 分页变化
+const handleSizeChange = (size) => {
+  pagination.value.size = size;
   fetchRoleList();
 };
 
-// 处理状态变更
+const handleCurrentChange = (current) => {
+  pagination.value.current = current;
+  fetchRoleList();
+};
+
+// 表格选择
+const handleSelectionChange = (selection) => {
+  selectedRows.value = selection;
+};
+
+// 状态变更
 const handleStatusChange = async (row) => {
   try {
     await changeRoleStatus(row.roleId, row.status);
     ElMessage.success('状态修改成功');
   } catch (error) {
     row.status = row.status === 1 ? 0 : 1;
+    ElMessage.error('状态修改失败');
   }
 };
 
-// 处理创建角色
+// 创建角色
 const handleCreate = () => {
-  Object.assign(formData, {
-    roleId: undefined,
-    roleName: '',
-    roleKey: '',
-    roleSort: 0,
-    status: 1,
-    remark: ''
-  });
+  currentRoleId.value = null;
   formVisible.value = true;
 };
 
-// 处理编辑角色
+// 编辑角色
 const handleEdit = (row) => {
-  Object.assign(formData, row);
+  currentRoleId.value = row.roleId;
   formVisible.value = true;
 };
 
-// 处理权限分配
+// 权限管理
+const permissionVisible = ref(false);
+
+// 权限管理
 const handlePermission = (row) => {
   currentRoleId.value = row.roleId;
   permissionVisible.value = true;
 };
 
-// 处理删除角色
+// 删除角色
 const handleDelete = (row) => {
-  ElMessageBox.confirm(`确认删除角色 "${row.roleName}"?`, '提示', {
+  ElMessageBox.confirm(`确认删除角色 "${row.roleName}" 吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
-  }).then(async () => {
-    await deleteRole(row.roleId);
-    ElMessage.success('删除成功');
-    fetchRoleList();
-  }).catch(() => {
-  });
+    type: 'warning',
+  })
+    .then(async () => {
+      try {
+        await deleteRole([row.roleId]);
+        ElMessage.success('删除成功');
+        fetchRoleList();
+      } catch (error) {
+        ElMessage.error('删除失败');
+      }
+    })
+    .catch(() => {
+    });
 };
 
-// 处理表单关闭
-const handleFormClose = () => {
-  formVisible.value = false;
-};
-
-// 处理表单提交成功
+// 表单提交成功
 const handleFormSuccess = () => {
-  formVisible.value = false;
   fetchRoleList();
 };
 
@@ -204,6 +283,15 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .header-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+
+  .search-form {
+    margin-bottom: 20px;
   }
 
   .pagination-container {

@@ -75,5 +75,20 @@ public class Role {
      * 删除标志（0-存在，1-删除）
      */
     @TableLogic
-    private Integer delFlag;
+    private Integer isDel;
+
+    /**
+     * @Description: 创建角色最基础数据
+     * @Param: [roleName, roleKey, roleSort, status, remark]
+     * @return:
+     * @Author: DongGuo
+     */
+
+    public Role(String roleName, String roleKey, Integer roleSort, Integer status, String remark) {
+        this.roleName = roleName;
+        this.roleKey = roleKey;
+        this.roleSort = roleSort;
+        this.status = status;
+        this.remark = remark;
+    }
 }

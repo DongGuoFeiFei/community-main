@@ -25,7 +25,8 @@ public enum ResponseCodeEnum {
 
     // 成功
     SUCCESS(200, "成功"),
-
+    // 失败
+    FAILED(500, "操作失败"),
     // 客户端错误
     BAD_REQUEST(400, "请求错误"),
     UNAUTHORIZED(401, "未授权"),

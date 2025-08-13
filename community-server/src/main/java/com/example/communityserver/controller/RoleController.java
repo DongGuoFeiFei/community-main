@@ -1,10 +1,21 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.communityserver.entity.enums.ResponseCodeEnum;
+import com.example.communityserver.entity.model.Role;
+import com.example.communityserver.entity.request.AddRoleParam;
+import com.example.communityserver.entity.request.IdStatusParam;
+import com.example.communityserver.entity.request.IdsListParam;
+import com.example.communityserver.entity.request.RoleSearchFormParam;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IRoleService;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -17,17 +28,59 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "角色管理")
 @RestController
-@RequestMapping("menu")
+@RequestMapping("role")
 public class RoleController {
 
     @Autowired
     private IRoleService roleService;
 
-///**
-// * 获取角色列表
-// */
-//    export const getRoleList = (params) => {
-//        return request.get('/role/list', { params });
-//    };
+    @ApiOperation("获取角色列表")
+    @GetMapping("list")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Result.PageData<Role>> getRoleList(RoleSearchFormParam param) {
+        IPage<Role> page = roleService.getRoleList(param);
+        return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
+    }
+
+    @ApiOperation("删除角色")
+    @DeleteMapping()
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> deleteRole(@RequestBody @Validated IdsListParam param) {
+        ResponseCodeEnum codeEnum = roleService.deleteRole(param);
+        return codeEnum == ResponseCodeEnum.SUCCESS ? Result.success() : Result.error(codeEnum.getCode(), codeEnum.getValue());
+
+    }
+
+    @ApiOperation("修改角色状态")
+    @PutMapping("status")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> changeRoleStatus(@RequestBody IdStatusParam param) {
+        ResponseCodeEnum codeEnum = roleService.changeRoleStatus(param);
+        return codeEnum == ResponseCodeEnum.SUCCESS ? Result.success() : Result.error(codeEnum.getCode(), codeEnum.getValue());
+    }
+
+    @ApiOperation("获取角色详情")
+    @GetMapping("{roleId}")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Role> getRoleDetail(@PathVariable Long roleId) {
+        Role role = roleService.getRoleDetail(roleId);
+        return role != null ? Result.success(role) : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
+    }
+
+    @ApiOperation("创建角色")
+    @PostMapping()
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> createRole(@RequestBody AddRoleParam param) {
+        Integer is = roleService.createRole(param);
+        return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
+    }
+
+    @ApiOperation("更新角色")
+    @PutMapping()
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> updateRole(@RequestBody AddRoleParam param) {
+        Integer is = roleService.updateRole(param);
+        return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
+    }
 
 }

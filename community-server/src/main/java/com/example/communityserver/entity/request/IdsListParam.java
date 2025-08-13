@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdsListParam {
-    @NotNull
+    @NotNull(message = "ID列表不能为空")
+    @Size(min = 1, message = "至少需要提供一个ID")
     private List<Long> ids;
 }

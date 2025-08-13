@@ -1,0 +1,173 @@
+<template>
+  <div class="api-permission-container">
+    <div class="permission-header">
+      <el-input
+        v-model="filterText"
+        placeholder="输入关键字过滤接口"
+        clearable
+        class="filter-input"
+      />
+      <el-button type="primary" @click="handleSave" :loading="submitting">
+        保存
+      </el-button>
+    </div>
+
+    <el-tree
+      ref="treeRef"
+      :data="apiTree"
+      :props="treeProps"
+      node-key="apiId"
+      show-checkbox
+      default-expand-all
+      highlight-current
+      :filter-node-method="filterNode"
+    >
+      <template #default="{ node, data }">
+        <span class="custom-tree-node">
+          <span>{{ node.label }}</span>
+          <span class="api-method-tag">
+            <el-tag :type="getMethodTagType(data.method)" size="small">
+              {{ data.method }}
+            </el-tag>
+          </span>
+          <span class="api-path">{{ data.path }}</span>
+        </span>
+      </template>
+    </el-tree>
+  </div>
+</template>
+
+<script setup>
+import {onMounted, ref, watch} from 'vue';
+import {ElMessage} from 'element-plus';
+import {getApiTree, getRoleApis, updateRoleApis} from '@/api/api';
+
+const props = defineProps({
+  roleId: {
+    type: Number,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['update:role-name']);
+
+const treeRef = ref(null);
+const apiTree = ref([]);
+const filterText = ref('');
+const submitting = ref(false);
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+};
+
+// 过滤接口
+const filterNode = (value, data) => {
+  if (!value) return true;
+  return (
+    data.name.includes(value) ||
+    data.path.includes(value) ||
+    data.method.includes(value)
+  );
+};
+
+// 获取方法标签类型
+const getMethodTagType = (method) => {
+  const methodMap = {
+    GET: 'success',
+    POST: 'warning',
+    PUT: 'primary',
+    DELETE: 'danger',
+    PATCH: 'info',
+  };
+  return methodMap[method] || 'info';
+};
+
+// 获取API树
+const fetchApiTree = async () => {
+  try {
+    const res = await getApiTree();
+    apiTree.value = res.data;
+  } catch (error) {
+    console.error('获取API树失败:', error);
+    ElMessage.error('获取API树失败');
+  }
+};
+
+// 获取角色API权限
+const fetchRoleApis = async () => {
+  try {
+    const res = await getRoleApis(props.roleId);
+    const checkedKeys = res.data.apiIds || [];
+
+    if (res.data.roleName) {
+      emit('update:role-name', res.data.roleName);
+    }
+
+    treeRef.value?.setCheckedKeys(checkedKeys);
+  } catch (error) {
+    console.error('获取角色API权限失败:', error);
+    ElMessage.error('获取角色API权限失败');
+  }
+};
+
+// 保存权限
+const handleSave = async () => {
+  try {
+    submitting.value = true;
+    const checkedKeys = treeRef.value?.getCheckedKeys() || [];
+
+    await updateRoleApis(props.roleId, checkedKeys);
+    ElMessage.success('接口权限保存成功');
+  } catch (error) {
+    console.error('保存接口权限失败:', error);
+    ElMessage.error('保存接口权限失败');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+// 监听过滤文本变化
+watch(filterText, (val) => {
+  treeRef.value?.filter(val);
+});
+
+onMounted(() => {
+  fetchApiTree();
+  fetchRoleApis();
+});
+</script>
+
+<style scoped lang="scss">
+.api-permission-container {
+  .permission-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    .filter-input {
+      width: 300px;
+    }
+  }
+
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding-right: 8px;
+
+    .api-method-tag {
+      margin-left: 10px;
+      width: 60px;
+      text-align: center;
+    }
+
+    .api-path {
+      margin-left: 10px;
+      color: #666;
+      font-family: monospace;
+    }
+  }
+}
+</style>

@@ -5,52 +5,56 @@ import {getUnreadCount} from "@/api/notification.js";
 import config from "@/env.js";
 
 export const sessionStores = defineStore("sessionStores", () => {
-    const token = ref(localStorage.getItem('token') || null)
-    const baseURL = ref(config.apiBaseUrl)
+  const token = ref(localStorage.getItem('token') || null)
+  const baseURL = ref(config.apiBaseUrl)
 
-    const isAuthenticated = computed(() => !!token.value)
+  const isAuthenticated = computed(() => !!token.value)
 
-    const isEditMode = ref(false)
-    const editorArticleId = ref(0)
-    // 通知相关状态
-    const unreadCount = ref(0);
-    const lastNotificationCheck = ref(null);
+  const isEditMode = ref(false)
+  const editorArticleId = ref(0)
+  // 通知相关状态
+  const unreadCount = ref(0);
+  const lastNotificationCheck = ref(null);
 
-    // 更新未读数量
-    const updateUnreadCount = async () => {
-        try {
-            const res = await getUnreadCount();
-            if (res.code === 200) {
-                unreadCount.value = res.data;
-                lastNotificationCheck.value = new Date();
-            }
-        } catch (error) {
-            console.error('获取未读通知数量失败:', error);
-        }
-    };
+  // 菜单
+  const menuData = ref([]);
 
-    function changeEditStatus() {
-        isEditMode.value = !isEditMode.value
+  // 更新未读数量
+  const updateUnreadCount = async () => {
+    try {
+      const res = await getUnreadCount();
+      if (res.code === 200) {
+        unreadCount.value = res.data;
+        lastNotificationCheck.value = new Date();
+      }
+    } catch (error) {
+      console.error('获取未读通知数量失败:', error);
     }
+  };
 
-    function clearStorage() {
-        localStorage.removeItem('my-sessionStore')
-    }
+  function changeEditStatus() {
+    isEditMode.value = !isEditMode.value
+  }
 
-    return {
-        isAuthenticated,
-        baseURL,
-        isEditMode,
-        unreadCount,
-        lastNotificationCheck,
-        updateUnreadCount,
-        changeEditStatus,
-        editorArticleId,
-        clearStorage
-    }
+  function clearStorage() {
+    localStorage.removeItem('my-sessionStore')
+  }
+
+  return {
+    isAuthenticated,
+    baseURL,
+    isEditMode,
+    unreadCount,
+    lastNotificationCheck,
+    updateUnreadCount,
+    changeEditStatus,
+    editorArticleId,
+    clearStorage,
+    menuData
+  }
 }, {
-    persist: {
-        key: 'my-sessionStore',
-        storage: sessionStorage,
-    }
+  persist: {
+    key: 'my-sessionStore',
+    storage: sessionStorage,
+  }
 })
