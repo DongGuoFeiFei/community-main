@@ -133,9 +133,14 @@ watch(filterText, (val) => {
 });
 
 onMounted(() => {
-  fetchApiTree();
-  fetchRoleApis();
+  // fetchApiTree();
 });
+
+watch(() => props.roleId, (newVal) => {
+  if (newVal) {
+    // fetchRoleApis();
+  }
+}, {immediate: true});
 </script>
 
 <style scoped lang="scss">

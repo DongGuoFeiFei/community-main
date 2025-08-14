@@ -5,6 +5,7 @@
     width="900px"
     :close-on-click-modal="false"
     @closed="handleClosed"
+    @open="handleOpen"
   >
     <el-tabs v-model="activeTab">
       <el-tab-pane label="菜单权限" name="menu">
@@ -60,6 +61,12 @@ const handleClosed = () => {
   activeTab.value = 'menu';
 };
 
+const handleOpen = () => {
+  if (props.roleId) {
+    fetchRoleDetail();
+  }
+};
+
 const fetchRoleDetail = async () => {
   try {
     const res = await getRoleDetail(props.roleId);
@@ -69,15 +76,5 @@ const fetchRoleDetail = async () => {
     ElMessage.error('获取角色名称失败');
   }
 };
-
-watch(
-  () => props.modelValue,
-  (visible) => {
-    if (visible && props.roleId) {
-      fetchRoleDetail();
-    }
-  },
-  {immediate: true}
-);
 
 </script>

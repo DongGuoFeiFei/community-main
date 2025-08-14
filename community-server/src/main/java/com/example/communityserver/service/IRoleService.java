@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.Role;
 import com.example.communityserver.entity.model.Tag;
-import com.example.communityserver.entity.request.AddRoleParam;
-import com.example.communityserver.entity.request.IdStatusParam;
-import com.example.communityserver.entity.request.IdsListParam;
-import com.example.communityserver.entity.request.RoleSearchFormParam;
+import com.example.communityserver.entity.request.*;
 
 /**
  * <p>
@@ -32,4 +29,6 @@ public interface IRoleService extends IService<Role> {
     Integer createRole(AddRoleParam param);
 
     Integer updateRole(AddRoleParam param);
+
+    Integer updateRoleMenus(IdIdsParam param);
 }

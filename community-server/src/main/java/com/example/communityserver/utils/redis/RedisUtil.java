@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * spring redis 工具类
@@ -69,7 +70,6 @@ public class RedisUtil {
             if (targetType == Long.class) {
                 return targetType.cast(((Number) value).longValue());
             }
-            // 其他数字类型处理...
         }
         throw new IllegalArgumentException("Unsupported number type conversion");
     }
@@ -136,6 +136,25 @@ public class RedisUtil {
      */
     public <T> List<T> getCacheList(final String key) {
         return redisTemplate.opsForList().range(key, 0, -1);
+    }
+
+    /**
+     * 获得缓存的list对象，并指定元素类型
+     *
+     * @param key 缓存的键值
+     * @param elementType 列表元素的类型
+     * @return 缓存键值对应的数据
+     */
+    public <T> List<T> getCacheList(final String key, Class<T> elementType) {
+        List<Object> rawList = redisTemplate.opsForList().range(key, 0, -1);
+        if (rawList == null) {
+            return null;
+        }
+
+        return rawList.stream()
+                .filter(elementType::isInstance)
+                .map(elementType::cast)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -78,7 +78,7 @@ const filterNode = (value, data) => {
 
 // 监听过滤文本变化
 watch(filterText, (val) => {
-  treeRef.value.filter(val);
+  treeRef.value?.filter(val);
 });
 
 // 获取菜单树
@@ -95,12 +95,14 @@ const fetchMenuTree = async () => {
 // 获取角色菜单权限
 const fetchRoleMenus = async () => {
   try {
+    if (!props.roleId) return;
+
     const res = await getRoleMenus(props.roleId);
     const checkedKeys = res.data;
 
     // 设置选中节点
     checkStrictly.value = true;
-    treeRef.value.setCheckedKeys(checkedKeys);
+    treeRef.value?.setCheckedKeys(checkedKeys);
     checkStrictly.value = false;
   } catch (error) {
     console.error('获取角色菜单权限失败:', error);
@@ -131,11 +133,17 @@ const handleSave = async () => {
   }
 };
 
+// 初始化获取菜单树
 onMounted(() => {
   fetchMenuTree();
-  fetchRoleMenus();
 });
 
+// 监听roleId变化，重新获取权限数据
+watch(() => props.roleId, (newVal) => {
+  if (newVal) {
+    fetchRoleMenus();
+  }
+}, {immediate: true});
 </script>
 
 <style scoped lang="scss">

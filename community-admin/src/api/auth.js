@@ -3,7 +3,7 @@ import request from '@/utils/request.js';
 
 
 export const login = (data) => {
-    return request.post('/auth/login', data).then(res => {
+    return request.post('/auth/admin/login', data).then(res => {
         if (res.code === 200) {
             return res.data;
         } else {

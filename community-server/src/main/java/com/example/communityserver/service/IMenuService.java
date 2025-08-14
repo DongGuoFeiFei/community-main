@@ -17,9 +17,9 @@ import java.util.List;
 
 
 public interface IMenuService extends IService<Menu> {
-    List<UserMenuTree> getUserMenuTree(Long userId);
+    List<UserMenuTree> getUserMenuTree();
 
     List<UserMenuTree> getMenuTree();
 
-    List<UserMenuTree> getRoleMenus(Long roleId);
+    List<Long> getRoleMenuIds(Long roleId);
 }

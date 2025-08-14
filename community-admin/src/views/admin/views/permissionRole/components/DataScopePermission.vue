@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import {ElMessage} from 'element-plus';
 import {getDeptTree} from '@/api/dept';
 import {getRoleDataScope, updateRoleDataScope} from '@/api/dataScope';
@@ -154,9 +154,15 @@ const handleSubmit = async () => {
 };
 
 onMounted(() => {
-  fetchDeptTree();
-  fetchRoleDataScope();
+  // fetchDeptTree();
+
 });
+
+watch(() => props.roleId, (newVal) => {
+  if (newVal) {
+    // fetchRoleDataScope();
+  }
+}, { immediate: true });
 </script>
 
 <style scoped lang="scss">

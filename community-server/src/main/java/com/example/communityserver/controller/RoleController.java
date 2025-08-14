@@ -3,10 +3,7 @@ package com.example.communityserver.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.Role;
-import com.example.communityserver.entity.request.AddRoleParam;
-import com.example.communityserver.entity.request.IdStatusParam;
-import com.example.communityserver.entity.request.IdsListParam;
-import com.example.communityserver.entity.request.RoleSearchFormParam;
+import com.example.communityserver.entity.request.*;
 import com.example.communityserver.security.core.Logical;
 import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IRoleService;
@@ -14,6 +11,7 @@ import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +46,6 @@ public class RoleController {
     public Result<Void> deleteRole(@RequestBody @Validated IdsListParam param) {
         ResponseCodeEnum codeEnum = roleService.deleteRole(param);
         return codeEnum == ResponseCodeEnum.SUCCESS ? Result.success() : Result.error(codeEnum.getCode(), codeEnum.getValue());
-
     }
 
     @ApiOperation("修改角色状态")
@@ -80,6 +77,16 @@ public class RoleController {
     @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateRole(@RequestBody AddRoleParam param) {
         Integer is = roleService.updateRole(param);
+        return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
+    }
+
+
+    @ApiOperation("更新角色菜单权限")
+    @PutMapping("menu")
+    @Transactional(rollbackFor = Exception.class)
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> updateRoleMenus(@RequestBody IdIdsParam param) {
+        Integer is = roleService.updateRoleMenus(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
     }
 

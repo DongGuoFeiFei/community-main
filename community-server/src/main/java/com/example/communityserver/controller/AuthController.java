@@ -11,6 +11,8 @@ import com.example.communityserver.entity.request.GetValidateCodeDto;
 import com.example.communityserver.entity.request.LoginRequest;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.response.LoginResponse;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.security.util.JWTUtil;
 import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IEmailService;
@@ -66,12 +68,7 @@ public class AuthController {
         String captchaKey = UUID.randomUUID().toString();
 
         // 存储验证码到Redis，有效期5分钟
-        redisUtil.setCacheObject(
-                CacheKeyConstants.CAPTCHA_CODE + captchaKey,
-                captcha.getCode(),
-                5,
-                TimeUnit.MINUTES
-        );
+        redisUtil.setCacheObject(CacheKeyConstants.CAPTCHA_CODE + captchaKey, captcha.getCode(), 5, TimeUnit.MINUTES);
 
         // 返回验证码图片和key
         return Result.success(new CaptchaUtil.Captcha(captchaKey, captcha.getImage()));
@@ -81,12 +78,52 @@ public class AuthController {
     public Result<LoginResponse> login(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
-        LoginRequest loginRequest = new LoginRequest(
-                requestBody.get("username"),
-                requestBody.get("password"),
-                requestBody.get("captchaCode"),
-                requestBody.get("captchaKey")
-        );
+        LoginRequest loginRequest = new LoginRequest(requestBody.get("username"), requestBody.get("password"), requestBody.get("captchaCode"), requestBody.get("captchaKey"));
+        LoginResponse loginResponse = new LoginResponse();
+
+        // 验证验证码是否正确
+        String redisKey = CacheKeyConstants.CAPTCHA_CODE + loginRequest.getCaptchaKey();
+        String correctCode = redisUtil.getCacheObject(redisKey);
+        if (correctCode == null) {
+            return Result.error("验证码已过期");
+        }
+        if (!correctCode.equalsIgnoreCase(loginRequest.getCaptchaCode())) { // 忽视大小写
+            return Result.error("验证码错误");
+        }
+        // 验证码验证通过后删除
+        redisUtil.deleteObject(redisKey);
+
+        // 此次获取的token
+        String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+
+        // 此时，token还未传入security中
+        loginResponse.setToken(token);
+        Long userId = JWTUtil.getUserId(loginResponse.getToken());
+        // 根据userId从redis中拿到loginUser数据
+        LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
+        loginUser.getUser().setPassword("");
+        loginResponse.setTokenType("Bearer");
+        loginResponse.setExpiresIn((int) SecurityConstants.TOKEN_EXPIRATION);
+
+        loginResponse.setUserInfo(loginUser.getUser());
+
+        // TODO: 2025/7/6 头像取消连接文件表
+        FileEntity fileEntity = fileEntityService.getById(loginUser.getUser().getFileId());
+        loginResponse.setAvatarUrl(fileEntity.getAccessUrl());
+
+        // 添加登录日志
+        String lastTime = loginLogService.addLoginLog(request, userId);
+        loginResponse.getUserInfo().setLastLogin(lastTime);
+
+        return Result.success(200, "登录成功", loginResponse);
+    }
+
+    @PostMapping("/admin/login")
+    @RequiresPermission(value = {"super_admin", "system_admin"}, logical = Logical.OR)
+    public Result<LoginResponse> loginAdmin(HttpServletRequest request) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
+        LoginRequest loginRequest = new LoginRequest(requestBody.get("username"), requestBody.get("password"), requestBody.get("captchaCode"), requestBody.get("captchaKey"));
         LoginResponse loginResponse = new LoginResponse();
 
         // 验证验证码是否正确
@@ -131,7 +168,6 @@ public class AuthController {
     public Result<String> refreshToken() {
         return Result.success(JWTUtil.createToken(SecurityUtils.getLoginUserId()));
     }
-
 
     @ApiOperation("退出登录")
     @PostMapping("/logout")

@@ -19,7 +19,8 @@ public class LoginUser implements UserDetails {
 
     private User user;
 
-    // TODO: 2025/8/11 后续添加用户单独关联api（禁止【例如用户发布文章等】或允许）和菜单 
+    // TODO: 2025/8/11 后续添加用户单独关联api（禁止【例如用户发布文章等】或允许）和菜单
+    // TODO: 2025/8/14 后续用户的身份角色等权限单独缓存redis，方便后面不影响登录使用 改变用户权限
     // 权限集合
     private List<String> apis;  // 角色关联api
     private List<String> roles; // 角色身份

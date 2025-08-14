@@ -3,7 +3,6 @@ package com.example.communityserver.controller;
 import com.example.communityserver.entity.response.UserMenuTree;
 import com.example.communityserver.security.core.Logical;
 import com.example.communityserver.security.core.RequiresPermission;
-import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IMenuService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -36,7 +35,7 @@ public class MenuController {
     @GetMapping("getUserMenuTree")
     @RequiresPermission(value = {"super_admin", "system_admin"}, logical = Logical.OR)
     public Result<List<UserMenuTree>> getUserMenuTree() {
-        List<UserMenuTree> listVo = menuService.getUserMenuTree(SecurityUtils.getLoginUserId());
+        List<UserMenuTree> listVo = menuService.getUserMenuTree();
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
     }
 
@@ -48,19 +47,12 @@ public class MenuController {
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
     }
 
-    @ApiOperation("获取角色菜单权限")
-    @GetMapping("menu/{roleId}")
+    @ApiOperation("获取角色菜单权限id")
+    @GetMapping("{roleId}")
     @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
-    public Result<List<UserMenuTree>> getRoleMenus(@PathVariable Long roleId) {
-        List<UserMenuTree> listVo = menuService.getRoleMenus(roleId);
+    public Result<List<Long>> getRoleMenus(@PathVariable Long roleId) {
+        List<Long> listVo = menuService.getRoleMenuIds(roleId);
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
     }
-
-///**
-// * 更新角色菜单权限
-// */
-//    export const updateRoleMenus = (roleId, menuIds) => {
-//        return request.put('/role/menu', { roleId, menuIds });
-//    };
 
 }

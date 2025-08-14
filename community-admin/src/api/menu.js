@@ -18,12 +18,12 @@ export const getUserMenuTree = () => {
  * 获取角色菜单权限
  */
 export const getRoleMenus = (roleId) => {
-  return request.get(`/role/menu/${roleId}`);
+  return request.get(`/menu/${roleId}`);
 };
 
 /**
  * 更新角色菜单权限
  */
 export const updateRoleMenus = (roleId, menuIds) => {
-  return request.put('/role/menu', { roleId, menuIds });
+  return request.put('/role/menu', {id: roleId, ids: menuIds});
 };

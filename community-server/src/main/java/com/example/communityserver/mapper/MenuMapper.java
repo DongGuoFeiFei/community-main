@@ -19,4 +19,6 @@ public interface MenuMapper extends BaseMapper<Menu> {
     List<Menu> selectUserMenus(Long userId);
 
     List<String> selectMenuKeysByUserId(Long userId);
+
+    List<Menu> selectRoleMenus(Long roleId);
 }

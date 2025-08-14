@@ -95,6 +95,10 @@ public class Menu {
      */
     private String remark;
 
+    private Integer isExternal;
+
+    private String target;
+
     /**
      * 删除标志（0-存在，1-删除）
      */
