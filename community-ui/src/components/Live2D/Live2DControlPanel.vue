@@ -23,6 +23,26 @@
         </el-popover>
       </div>
 
+      <!-- 模型切换按钮 -->
+      <div>
+        <el-popover
+            placement="left"
+            :width="200"
+            trigger="click"
+        >
+          <template #reference>
+            <el-button
+                class="control-btn"
+                icon="Refresh"
+                circle
+                @mouseenter="showTooltipText('要找其他姐姐玩耍了嘛？')"
+                @mouseleave="hideTooltipText"
+                @click="switchModel"
+            />
+          </template>
+        </el-popover>
+      </div>
+
       <!-- 举报按钮 -->
       <div v-if="isArticle">
         <el-tooltip
@@ -46,15 +66,14 @@
     <div>
       <el-tooltip
           effect="dark"
-          :content="isVisible ? '' : `显示丛雨`"
-          :disabled="isVisible"
+          disabled
           placement="left"
       >
         <el-button
             class="control-btn main-control"
             :icon="isVisible ? 'Hide' : 'View'"
             circle
-            @mouseenter="showTooltipText('要和丛雨说再见嘛？')"
+            @mouseenter="showTooltipText(null)"
             @mouseleave="hideTooltipText"
             @click="toggleVisibility"
         />
@@ -78,16 +97,22 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip']);
+const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip', 'switch-model']);
 
 const isVisible = ref(props.modelValue);
-const isLoading = ref(false);
 const reportDialog = ref(null);
-const route = useRoute()
+const route = useRoute();
 const isArticle = computed(() => {
   const articleRegex = /^\/(article|author)\/\d+$/;
   return articleRegex.test(route.path);
-})
+});
+
+// 可用模型列表
+const availableModels = ref([
+  {id: 'model1', name: '丛雨'},
+  {id: 'model2', name: '初音'},
+  {id: 'model3', name: '黑猫'}
+]);
 
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
@@ -95,7 +120,9 @@ const toggleVisibility = () => {
 };
 
 const showTooltipText = (text) => {
-  emit('show-tooltip', text);
+  if (isVisible) {
+    emit('show-tooltip', text);
+  }
 };
 
 const hideTooltipText = () => {
@@ -106,7 +133,12 @@ const openReportDialog = () => {
   reportDialog.value.open();
 };
 
+// 切换模型
+const switchModel = () => {
+  emit('switch-model');
+};
 </script>
+
 <style scoped lang="scss">
 .live2d-control-panel {
   position: fixed;
@@ -131,8 +163,25 @@ const openReportDialog = () => {
   }
 
   .main-control {
-    // 主控制按钮可以有不同的样式
-    z-index: 1001; // 确保总是在最上层
+    z-index: 1001;
+  }
+
+  .model-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+
+    .model-option {
+      width: 100%;
+      padding: 8px;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #f5f7fa;
+        transform: translateX(2px);
+      }
+    }
   }
 }
 </style>

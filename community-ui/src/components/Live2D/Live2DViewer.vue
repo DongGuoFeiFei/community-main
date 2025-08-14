@@ -5,6 +5,7 @@
         @update:text="showAiText"
         @show-tooltip="showTooltipText"
         @hide-tooltip="hideTooltipText"
+        @switch-model="switchModel"
     />
     <div class="live2d-wrapper" v-show="store.isVisibleLive2D">
       <div v-if="showText" class="live2d-text-bubble">
@@ -49,7 +50,6 @@ let app = null
 let model = null
 let textTimeout = null
 
-// const isVisible = ref(true)
 // 显示招呼语
 const showGreeting = () => {
   const greeting = "再重逢，伊人笑靥如初，似青石巷口新摘的蜜桃，甜得能掐出水来";
@@ -71,6 +71,9 @@ const showAiText = (text) => {
 };
 
 const showTooltipText = (text) => {
+  if (text === null) {
+    return
+  }
   currentText.value = text;
   showText.value = true;
 };
@@ -201,6 +204,11 @@ const isInitLive2D = () => {
   if (store.isVisibleLive2D) {
     initLive2D();
   }
+}
+
+// 切换live2D模型
+const switchModel = ()=>{
+
 }
 
 onMounted(() => {

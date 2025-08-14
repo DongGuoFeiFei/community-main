@@ -3,7 +3,18 @@
     <!-- 用户欢迎卡片 -->
     <el-card class="welcome-card">
       <div class="welcome-header">
-        <el-avatar :size="80" :src="store.baseURL + userInfo.userInfo.avatar || defaultAvatar"/>
+        <el-avatar
+            @click="openViewer"
+            class="avatar-clickable"
+            :size="80"
+            :src="store.baseURL + userInfo.userInfo.avatar || defaultAvatar"/>
+        <!-- 图片查看器 -->
+        <el-image-viewer
+            v-if="showViewer"
+            :url-list="[store.baseURL + userInfo.userInfo.avatar || defaultAvatar]"
+            :initial-index="0"
+            @close="closeViewer"
+        />
         <div class="welcome-text">
           <h2 class="welcome-title">欢迎回来, {{ userInfo.userInfo.nickname }}!</h2>
           <p class="welcome-subtitle">今天是 {{ currentDate }}，祝您度过愉快的一天</p>
@@ -122,6 +133,19 @@ const navigateTo = (path) => {
   router.push(path)
 }
 
+const showViewer = ref(false);
+
+
+const openViewer = () => {
+  if (store.baseURL + userInfo.value.userInfo.avatar) {
+    showViewer.value = true;
+  }
+};
+
+const closeViewer = () => {
+  showViewer.value = false;
+};
+
 // 加载用户数据
 onMounted(async () => {
   try {
@@ -137,6 +161,16 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+.avatar-clickable {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
 .user-welcome-page {
   max-width: 1200px;
   margin: 0 auto;
