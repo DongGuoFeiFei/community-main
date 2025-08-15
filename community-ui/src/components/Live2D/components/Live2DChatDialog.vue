@@ -2,7 +2,7 @@
   <div class="compact-chat-input">
     <el-input
         v-model="inputMessage"
-        placeholder="和丛雨对话..."
+        placeholder="要说些什么呢？"
         @keyup.enter="sendMessage"
         clearable
         class="chat-input-field"
@@ -21,10 +21,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { generateText } from '@/api/deepseek.js';
-import { ElMessage } from 'element-plus';
-import { Promotion } from '@element-plus/icons-vue';
+import {ref} from 'vue';
+import {generateText} from '@/api/deepseek.js';
+import {ElMessage} from 'element-plus';
+import {Promotion} from '@element-plus/icons-vue';
 
 const emit = defineEmits(['update:text']);
 

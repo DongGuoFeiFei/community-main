@@ -15,7 +15,7 @@
                 class="control-btn"
                 icon="ChatRound"
                 circle
-                @mouseenter="showTooltipText('要与丛雨对话嘛？')"
+                @mouseenter="showTooltipText('要说些什么呢？')"
                 @mouseleave="hideTooltipText"
             />
           </template>
@@ -28,6 +28,7 @@
         <el-popover
             placement="left"
             :width="200"
+            disabled
             trigger="click"
         >
           <template #reference>
@@ -35,16 +36,16 @@
                 class="control-btn"
                 icon="Refresh"
                 circle
-                @mouseenter="showTooltipText('要找其他姐姐玩耍了嘛？')"
+                @mouseenter="showTooltipText('又要找其他姐姐玩耍了嘛(╯‵□′)╯︵┻━┻')"
                 @mouseleave="hideTooltipText"
-                @click="switchModel"
+                @click="emit('switch-model')"
             />
           </template>
         </el-popover>
       </div>
 
       <!-- 举报按钮 -->
-      <div v-if="isArticle">
+      <div v-if="showReportButton">
         <el-tooltip
             effect="dark"
             disabled
@@ -60,6 +61,7 @@
           />
         </el-tooltip>
       </div>
+      <Live2DReportDialog ref="reportDialog"/>
     </div>
 
     <!-- 始终显示的主控制按钮 -->
@@ -79,16 +81,13 @@
         />
       </el-tooltip>
     </div>
-
-    <Live2DReportDialog ref="reportDialog"/>
   </div>
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import Live2DReportDialog from "@/components/Live2D/components/Live2DReportDialog.vue";
 import Live2DChatDialog from "@/components/Live2D/components/Live2DChatDialog.vue";
-import {useRoute} from "vue-router";
 
 const props = defineProps({
   modelValue: {
@@ -100,19 +99,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip', 'switch-model']);
 
 const isVisible = ref(props.modelValue);
-const reportDialog = ref(null);
-const route = useRoute();
-const isArticle = computed(() => {
-  const articleRegex = /^\/(article|author)\/\d+$/;
-  return articleRegex.test(route.path);
-});
-
-// 可用模型列表
-const availableModels = ref([
-  {id: 'model1', name: '丛雨'},
-  {id: 'model2', name: '初音'},
-  {id: 'model3', name: '黑猫'}
-]);
 
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
@@ -129,14 +115,30 @@ const hideTooltipText = () => {
   emit('hide-tooltip');
 };
 
+
+/**
+ * 显示举报按钮
+ */
+const reportDialog = ref(null);
+const showReportButton = ref(false); // 新增状态
+
+// 监听 reportDialog 的变化
+watch(reportDialog, (newVal) => {
+  if (newVal) {
+    showReportButton.value = newVal.isShowButton;
+  }
+}, {immediate: true});
+
+onMounted(() => {
+  if (reportDialog.value) {
+    showReportButton.value = reportDialog.value.isShowButton;
+  }
+});
+
 const openReportDialog = () => {
   reportDialog.value.open();
 };
 
-// 切换模型
-const switchModel = () => {
-  emit('switch-model');
-};
 </script>
 
 <style scoped lang="scss">

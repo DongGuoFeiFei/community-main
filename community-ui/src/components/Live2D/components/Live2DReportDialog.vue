@@ -53,15 +53,22 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import {ElMessage} from 'element-plus';
 import {submitReport} from '@/api/report.js';
+import {useRoute} from "vue-router";
 
 const emit = defineEmits(['submitted']);
 
 const visible = ref(false);
 const isSubmitting = ref(false);
 const formRef = ref(null);
+
+const route = useRoute();
+const isShowButton = computed(() => {
+  const articleRegex = /^\/(article|author)\/\d+$/;
+  return articleRegex.test(route.path);
+});
 
 const reportTypes = [
   {value: 'spam', label: '垃圾广告'},
@@ -115,6 +122,7 @@ const submit = async () => {
 
 defineExpose({
   open,
+  isShowButton,
 });
 </script>
 
