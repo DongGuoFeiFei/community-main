@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="liveCanvas" class="live2d-canvas"></canvas>
+  <canvas ref="liveCanvas" class="live2d-canvas" @click="handleCanvasClick"></canvas>
 </template>
 
 <script setup>
@@ -16,7 +16,11 @@ const emit = defineEmits(['trigger-motion']);
 const modelConfig = {
   path: '/live2d/alya/Alya.model3.json',
   scale: 0.07,
-  greeting: "Дурак…哼！才、才不是关心你，只是路过提醒一下——我是艾莉，别忘啦！"
+  greeting: "Дурак…哼！才、才不是关心你，只是路过提醒一下——我是艾莉，别忘啦！",
+  // 身体点击区域定义 (相对坐标和尺寸)
+  hitAreas: [
+    {name: 'body', x: 0.3, y: 0.4, width: 0.4, height: 0.5}
+  ]
 };
 
 // 初始化Live2D
@@ -65,6 +69,49 @@ const initLive2D = async () => {
   }
 };
 
+const getRandomExpression = () => {
+  console.log("点击alya")
+};
+
+// 检查点击是否在身体区域
+const isInBodyArea = (clickX, clickY) => {
+  const modelRect = model.getBounds();
+  const modelX = clickX - model.position.x;
+  const modelY = clickY - model.position.y;
+
+  return modelConfig.hitAreas.some(area => {
+    const areaX = modelRect.width * area.x;
+    const areaY = modelRect.height * area.y;
+    const areaWidth = modelRect.width * area.width;
+    const areaHeight = modelRect.height * area.height;
+
+    return modelX >= areaX &&
+        modelX <= areaX + areaWidth &&
+        modelY >= areaY &&
+        modelY <= areaY + areaHeight;
+  });
+};
+
+// 处理画布点击
+const handleCanvasClick = (event) => {
+  if (!model || !app) return;
+
+  const rect = liveCanvas.value.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const clickY = event.clientY - rect.top;
+
+  // 检查是否点击身体区域
+  if (isInBodyArea(clickX, clickY)) {
+    const expression = getRandomExpression();
+    if (expression) {
+      model.expression = expression.name;
+      if (expression.hint) {
+        emit('trigger-motion', expression.hint, 1500);
+      }
+    }
+  }
+};
+
 // 销毁资源
 const destroyLive2D = () => {
   try {
@@ -95,5 +142,10 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   display: block;
+  cursor: pointer;
+
+  &:hover {
+    filter: drop-shadow(0 0 8px rgba(146, 230, 180, 0.6));
+  }
 }
 </style>

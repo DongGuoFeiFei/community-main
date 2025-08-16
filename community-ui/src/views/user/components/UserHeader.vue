@@ -46,12 +46,12 @@
                 </el-icon>
                 <span>首页</span>
               </el-dropdown-item>
-              <el-dropdown-item command="settings">
-                <el-icon>
-                  <Setting/>
-                </el-icon>
-                <span>账户设置</span>
-              </el-dropdown-item>
+<!--              <el-dropdown-item command="settings">-->
+<!--                <el-icon>-->
+<!--                  <Setting/>-->
+<!--                </el-icon>-->
+<!--                <span>账户设置</span>-->
+<!--              </el-dropdown-item>-->
               <el-dropdown-item command="logout" divided>
                 <el-icon>
                   <SwitchButton/>

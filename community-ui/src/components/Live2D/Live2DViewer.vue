@@ -28,7 +28,6 @@ import {localStores} from '@/stores/localStores.js';
 
 // 导入所有模型组件
 import MurasameModel from './models/MurasameModel.vue';
-import HuTaoModel from './models/HuTaoModel.vue';
 import NahidaModel from './models/NahidaModel.vue';
 import AlyaModel from './models/AlyaModel.vue';
 import CastoriceModel from './models/CastoriceModel.vue';
@@ -40,7 +39,7 @@ const store = localStores();
 // 模型组件映射
 const modelComponents = {
   murasame: MurasameModel,
-  huTao: HuTaoModel,
+  // huTao: HuTaoModel,
   nahida: NahidaModel,
   alya: AlyaModel,
   castorice: CastoriceModel,
@@ -51,7 +50,7 @@ const modelComponents = {
 // 当前模型组件
 const currentModelComponent = shallowRef(null);
 // 当前模型名称
-const currentModelName = ref('nahida');
+const currentModelName = ref('alya');
 
 // 文本相关状态
 const showText = ref(false);

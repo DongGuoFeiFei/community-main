@@ -120,6 +120,7 @@ public class AuthController {
 
     @PostMapping("/admin/login")
     @RequiresPermission(value = {"super_admin", "system_admin"}, logical = Logical.OR)
+    // TODO: 2025/8/16 登录时的权限验证，token 检测
     public Result<LoginResponse> loginAdmin(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);

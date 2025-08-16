@@ -43,7 +43,8 @@
       <div class="user-section">
         <el-dropdown
             @command="handleDropdownClick"
-            trigger="click">
+            trigger="click"
+        >
           <span class="user-avatar">
             <el-avatar :size="32"
                        :src="avatarUrl"
@@ -53,7 +54,7 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="myself">个人中心</el-dropdown-item>
-              <el-dropdown-item command="settings">设置</el-dropdown-item>
+<!--              <el-dropdown-item command="settings">设置</el-dropdown-item>-->
               <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>

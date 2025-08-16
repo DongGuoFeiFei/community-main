@@ -23,6 +23,25 @@
         </el-popover>
       </div>
 
+      <!-- 举报按钮 -->
+      <div v-if="showReportButton">
+        <el-tooltip
+            effect="dark"
+            disabled
+            placement="left"
+        >
+          <el-button
+              class="control-btn"
+              icon="Warning"
+              circle
+              @mouseenter="showTooltipText('发现违规内容，找我快速出警!')"
+              @mouseleave="hideTooltipText"
+              @click="openReportDialog"
+          />
+        </el-tooltip>
+      </div>
+      <Live2DReportDialog ref="reportDialog"/>
+
       <!-- 模型切换按钮 -->
       <div>
         <el-popover
@@ -43,25 +62,6 @@
           </template>
         </el-popover>
       </div>
-
-      <!-- 举报按钮 -->
-      <div v-if="showReportButton">
-        <el-tooltip
-            effect="dark"
-            disabled
-            placement="left"
-        >
-          <el-button
-              class="control-btn"
-              icon="Warning"
-              circle
-              @mouseenter="showTooltipText('发现违规内容，找我快速出警!')"
-              @mouseleave="hideTooltipText"
-              @click="openReportDialog"
-          />
-        </el-tooltip>
-      </div>
-      <Live2DReportDialog ref="reportDialog"/>
     </div>
 
     <!-- 始终显示的主控制按钮 -->
