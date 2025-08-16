@@ -1,4 +1,4 @@
-package com.example.communityserver.security.core;
+package com.example.communityserver.security.util;
 
 import com.example.communityserver.entity.model.LoginUser;
 import org.springframework.security.core.Authentication;
@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -18,7 +19,22 @@ import java.util.Arrays;
 
 
 @Component("perms")
-public class PermissionExpression {
+public class PermissionExpressionUtil {
+
+    /**
+     * 检查角色列表中是否包含任何指定的角色
+     *
+     * @param roles    需要检查的角色列表
+     * @param roleList 已有的角色列表
+     * @return 如果roles列表中任何一个角色存在于roleList中，则返回true；否则返回false
+     */
+    public static Boolean hasAnyRolePerm(List<String> roles, List<String> roleList) {
+        // 如果权限列表为空或长度为0，直接返回false
+        if (roles.isEmpty()) {
+            return false;
+        }
+        return roles.stream().anyMatch(roleList::contains);
+    }
 
     /**
      * 检查当前认证用户是否拥有指定权限
@@ -32,7 +48,7 @@ public class PermissionExpression {
     //    @PreAuthorize("@perms.hasPerm('system:user:view')")
     //
     // TODO: 2025/8/11 接口验证时先进行身份验证，后进行接口验证
-    public boolean hasPerm(String permission) {
+    public static boolean hasPerm(String permission) {
         // 从安全上下文中获取当前认证信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 如果认证信息为空或用户未认证，则直接返回false
@@ -59,7 +75,7 @@ public class PermissionExpression {
      * @param permissions 可变参数，表示需要检查的权限列表
      * @return 如果用户拥有任意一个指定的权限则返回true，否则返回false
      */
-    public boolean hasAnyPerm(String... permissions) {
+    public static boolean hasAnyPerm(String... permissions) {
         // 如果权限列表为空或长度为0，直接返回false
         if (permissions == null || permissions.length == 0) {
             return false;
@@ -92,7 +108,7 @@ public class PermissionExpression {
      * @param permissions 可变参数，表示需要检查的权限列表
      * @return 如果用户拥有所有指定的权限则返回true，否则返回false
      */
-    public boolean hasAllPerm(String... permissions) {
+    public static boolean hasAllPerm(String... permissions) {
         // 如果权限列表为空或长度为0，直接返回false
         if (permissions == null || permissions.length == 0) {
             return false;

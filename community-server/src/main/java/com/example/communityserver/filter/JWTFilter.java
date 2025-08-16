@@ -2,8 +2,8 @@ package com.example.communityserver.filter;
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
-import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +32,8 @@ public class JWTFilter extends OncePerRequestFilter {
             "/auth/registerCode",
             "/auth/send-email",
             "/auth/captcha",
-            "/uploads/**"
+            "/uploads/**",
+            "/auth/admin/login"
 //            "/posts/\\d+",  // 匹配数字ID（如 /posts/123）
 //            "/posts"        // 匹配 /posts
     );

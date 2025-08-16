@@ -17,7 +17,6 @@ const modelConfig = {
   path: '/live2d/alya/Alya.model3.json',
   scale: 0.07,
   greeting: "Дурак…哼！才、才不是关心你，只是路过提醒一下——我是艾莉，别忘啦！",
-  // 身体点击区域定义 (相对坐标和尺寸)
   hitAreas: [
     {name: 'body', x: 0.3, y: 0.4, width: 0.4, height: 0.5}
   ]

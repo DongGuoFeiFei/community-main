@@ -11,9 +11,8 @@ import com.example.communityserver.entity.request.GetValidateCodeDto;
 import com.example.communityserver.entity.request.LoginRequest;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.response.LoginResponse;
-import com.example.communityserver.security.core.Logical;
-import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.security.util.PermissionExpressionUtil;
 import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IFileEntityService;
@@ -32,9 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -119,8 +116,6 @@ public class AuthController {
     }
 
     @PostMapping("/admin/login")
-    @RequiresPermission(value = {"super_admin", "system_admin"}, logical = Logical.OR)
-    // TODO: 2025/8/16 登录时的权限验证，token 检测
     public Result<LoginResponse> loginAdmin(HttpServletRequest request) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
@@ -147,6 +142,15 @@ public class AuthController {
         Long userId = JWTUtil.getUserId(loginResponse.getToken());
         // 根据userId从redis中拿到loginUser数据
         LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
+
+        // 验证是否是拥有登录管理员的权限
+        List<String> roleList = new ArrayList<>();
+        roleList.add(SecurityConstants.SYSTEM_ADMIN);
+        roleList.add(SecurityConstants.SUPER_ADMIN);
+        Boolean isPerm = PermissionExpressionUtil.hasAnyRolePerm(loginUser.getRoles(),roleList);
+        if (!isPerm){
+            return Result.error("没有登录权限");
+        }
         loginUser.getUser().setPassword("");
         loginResponse.setTokenType("Bearer");
         loginResponse.setExpiresIn((int) SecurityConstants.TOKEN_EXPIRATION);

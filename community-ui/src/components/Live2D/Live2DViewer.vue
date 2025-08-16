@@ -31,7 +31,6 @@ import MurasameModel from './models/MurasameModel.vue';
 import NahidaModel from './models/NahidaModel.vue';
 import AlyaModel from './models/AlyaModel.vue';
 import CastoriceModel from './models/CastoriceModel.vue';
-import TakoMModel from './models/TakoMModel.vue';
 import TutuModel from "@/components/Live2D/models/TutuModel.vue";
 
 const store = localStores();
@@ -43,7 +42,7 @@ const modelComponents = {
   nahida: NahidaModel,
   alya: AlyaModel,
   castorice: CastoriceModel,
-  takoM: TakoMModel,
+  // takoM: TakoMModel,
   tutu: TutuModel,
 };
 

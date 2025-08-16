@@ -18,6 +18,8 @@ public class SecurityConstants {
     public static final long TOKEN_EXPIRATION = 3600 * 24 * 7; // token过期时间，7天
     // 权限相关
     public static final String ROLE_ADMIN = "ROLE_ADMIN"; // 管理员角色
+    public static final String SUPER_ADMIN = "super_admin"; // 管理员角色
+    public static final String SYSTEM_ADMIN = "system_admin"; // 管理员角色
     public static final String ROLE_USER = "ROLE_USER"; // 用户角色
     public static final String ROLE_MODERATOR = "ROLE_MODERATOR"; // 普通用户角色
 

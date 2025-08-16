@@ -56,7 +56,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 4. 构建LoginUser对象
         LoginUser loginUser = new LoginUser(user, apis, roles, menus);
 
-        log.info("用户[{}]登录成功，权限: {}", username, apis);
         return loginUser;
     }
 

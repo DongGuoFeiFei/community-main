@@ -60,6 +60,7 @@ public class SecurityConfig {
                         // 允许匿名访问的接口
                         .antMatchers(
                                 "/auth/login",
+                                "/auth/admin/login",
                                 "/auth/register",
                                 "/auth/send-email",
                                 "/auth/captcha",
