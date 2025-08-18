@@ -1,18 +1,22 @@
 package com.example.communityserver.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.ArticleCategoryRelation;
 import com.example.communityserver.entity.model.ContentCategory;
+import com.example.communityserver.entity.request.AddCategoryParam;
+import com.example.communityserver.entity.request.SearchNameStatusParam;
+import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.ContentCategoryTree;
+import com.example.communityserver.entity.response.UserDelVo;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IContentCategoryService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,4 +60,47 @@ public class ContentCategoryController {
         List<ContentCategoryTree> list = contentCategoryService.getCategoryTrees();
         return Result.success(list);
     }
+
+    @ApiOperation("获取分类列表")
+    @GetMapping()
+    @RequiresPermission(value = {"super_admin","view_admin","system_admin"}, logical = Logical.OR)
+    public Result<Result.PageData<ContentCategory>> getCategories(SearchNameStatusParam param) {
+        IPage<ContentCategory> page = contentCategoryService.getCategories(param);
+
+        return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
+    }
+
+//    /**
+// * 删除分类
+// * @param {number} categoryId 分类ID
+// * @returns {Promise}
+// */
+//export const deleteCategory = (categoryId) => {
+//  return request.delete(`/category/${categoryId}`);
+//};
+
+    @ApiOperation("获取分类列表")
+    @DeleteMapping("{categoryId}")
+    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    public Result<Void> deleteCategory(@PathVariable Long categoryId) {
+        Boolean is = contentCategoryService.deleteCategory(categoryId);
+        return is ? Result.success() : Result.error();
+    }
+
+    @ApiOperation("添加分类")
+    @PostMapping()
+    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    public Result<Void> addCategory(@RequestBody AddCategoryParam param) {
+        Boolean is = contentCategoryService.addCategory(param);
+        return is ? Result.success() : Result.error();
+    }
+
+    @ApiOperation("更新分类")
+    @PutMapping()
+    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    public Result<Void> updateCategory(@RequestBody AddCategoryParam param) {
+        Boolean is = contentCategoryService.updateCategory(param);
+        return is ? Result.success() : Result.error();
+    }
+
 }

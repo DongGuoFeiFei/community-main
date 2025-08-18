@@ -14,6 +14,7 @@ import lombok.Data;
 @Data
 public class SearchNameStatusParam {
     private String name;
+    private String keyword; // 同name，不同接口使用名称差异
     private Integer status;
     private Integer page;
     private Integer size;

@@ -10,20 +10,19 @@
       :model="formData"
       :rules="rules"
       label-width="100px"
-
     >
       <el-form-item label="分类名称" prop="category_name">
         <el-input v-model="formData.categoryName" placeholder="请输入分类名称" />
       </el-form-item>
 
-      <el-form-item label="URL标识" prop="category_slug">
+      <el-form-item label="URL标识" prop="categorySlug">
         <el-input v-model="formData.categorySlug" placeholder="请输入URL标识" />
       </el-form-item>
 
-      <el-form-item label="父级分类" prop="parent_id">
+      <el-form-item label="父级分类" prop="parentId">
         <category-selector
           v-model="formData.parentId"
-          :exclude-id="formData.categoryId"
+          :exclude-id="formData.id"
           placeholder="请选择父级分类"
         />
       </el-form-item>
@@ -49,7 +48,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="封面图" prop="cover_url">
+      <el-form-item label="封面图" prop="coverUrl">
         <el-upload
           class="avatar-uploader"
           action="/api/upload"
@@ -72,10 +71,9 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { ElMessage } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
-import { addCategory, updateCategory } from '@/api/category';
 import CategorySelector from './CategorySelector.vue';
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   modelValue: Boolean,
@@ -90,7 +88,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'success']);
+const emit = defineEmits(['update:modelValue', 'submit']);
 
 const visible = ref(false);
 const formRef = ref(null);
@@ -109,6 +107,7 @@ const rules = {
 // 处理对话框显示/隐藏
 watch(() => props.modelValue, (val) => {
   visible.value = val;
+  console.log(props.formData)
 });
 
 watch(visible, (val) => {
@@ -123,7 +122,7 @@ const handleClose = () => {
 // 上传成功处理
 const handleUploadSuccess = (response) => {
   if (response.code === 200) {
-    formData.value.coverUrl = response.data.url;
+    props.formData.coverUrl = response.data.url;
   } else {
     ElMessage.error(response.msg || '上传失败');
   }
@@ -148,20 +147,12 @@ const beforeUpload = (file) => {
 const handleSubmit = async () => {
   try {
     await formRef.value.validate();
-
-    if (props.mode === 'add') {
-      await addCategory(props.formData);
-      ElMessage.success('添加成功');
-    } else {
-      await updateCategory(props.formData);
-      ElMessage.success('更新成功');
-    }
-
-    emit('success');
+    console.log(props.formData)
+    emit('submit', props.formData);
     handleClose();
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.message || '操作失败');
+      ElMessage.error('请检查表单数据');
     }
   }
 };

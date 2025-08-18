@@ -36,14 +36,14 @@ public class RoleController {
 
     @ApiOperation("获取角色列表(分页)")
     @GetMapping("list")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<Role>> getRoleList(RoleSearchFormParam param) {
         IPage<Role> page = roleService.getRoleList(param);
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
     @ApiOperation("获取角色列表（不分页）")
     @GetMapping("getRoleList")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<Role>> getRoleList() {
         List<Role> page = roleService.getRoleList();
         return page != null ? Result.success(page) : Result.error();
@@ -67,7 +67,7 @@ public class RoleController {
 
     @ApiOperation("获取角色详情")
     @GetMapping("{roleId}")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Role> getRoleDetail(@PathVariable Long roleId) {
         Role role = roleService.getRoleDetail(roleId);
         return role != null ? Result.success(role) : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());

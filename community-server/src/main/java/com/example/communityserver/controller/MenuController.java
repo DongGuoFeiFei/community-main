@@ -43,7 +43,7 @@ public class MenuController {
 
     @ApiOperation("获取角色管理菜单")
     @GetMapping("tree")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<UserMenuTree>> getMenuTree() {
         List<UserMenuTree> listVo = menuService.getMenuTree();
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
@@ -51,7 +51,7 @@ public class MenuController {
 
     @ApiOperation("获取角色菜单权限id")
     @GetMapping("{roleId}")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<Long>> getRoleMenus(@PathVariable Long roleId) {
         List<Long> listVo = menuService.getRoleMenuIds(roleId);
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
@@ -59,7 +59,7 @@ public class MenuController {
 
     @ApiOperation("获取菜单列表")
     @GetMapping("list")
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<Menu>> getMenuList(MenuSearchParam param) {
         IPage<Menu> menuIPage = menuService.getMenuList(param);
         return menuIPage != null ? Result.pageSuccess(menuIPage.getTotal(), menuIPage.getRecords()) : Result.error("获取失败。");

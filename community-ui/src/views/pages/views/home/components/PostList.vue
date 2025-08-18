@@ -23,7 +23,7 @@ const formatDate = (dateString) => {
 
 <template>
   <div class="post-list-container">
-    <!-- 骨架屏 -->
+    <!-- todo 添加 骨架屏 -->
     <div v-if="loading" class="skeleton-container">
       <div v-for="i in pageSize" :key="`skeleton-${i}`" class="skeleton-card">
         <div class="skeleton-cover"></div>

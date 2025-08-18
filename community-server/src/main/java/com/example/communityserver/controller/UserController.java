@@ -83,16 +83,6 @@ public class UserController {
         return vo != null ? Result.success(vo) : Result.error();
     }
 
-//    /**
-// * 更新用户角色
-// * @param {Object} data - 更新数据
-// * @param {number} data.userId - 用户ID
-// * @param {Array} data.roleIds - 角色ID数组
-// * @returns {Promise}
-// */
-//export const updateUserRoles = (data) => {
-//  return request.put('/user/roles', data)
-//}
 
     @ApiOperation("更新用户角色")
     @PutMapping("roles")

@@ -1,4 +1,3 @@
-<!-- src/components/IconSelect.vue -->
 <template>
   <div class="icon-select-container">
     <el-tabs v-model="activeTab">

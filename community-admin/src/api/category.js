@@ -15,7 +15,7 @@ export const getCategories = (params) => {
  * @returns {Promise}
  */
 export const getCategoryTree = () => {
-  return request.get('/category/tree');
+  return request.get('/category/listTree');
 };
 
 /**
