@@ -63,7 +63,7 @@ public class ContentCategoryController {
 
     @ApiOperation("获取分类列表")
     @GetMapping()
-    @RequiresPermission(value = {"super_admin","view_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin","view_admin","system_admin"}, logical = Logical.OR)
     public Result<Result.PageData<ContentCategory>> getCategories(SearchNameStatusParam param) {
         IPage<ContentCategory> page = contentCategoryService.getCategories(param);
 
@@ -81,7 +81,7 @@ public class ContentCategoryController {
 
     @ApiOperation("获取分类列表")
     @DeleteMapping("{categoryId}")
-    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
     public Result<Void> deleteCategory(@PathVariable Long categoryId) {
         Boolean is = contentCategoryService.deleteCategory(categoryId);
         return is ? Result.success() : Result.error();
@@ -89,7 +89,7 @@ public class ContentCategoryController {
 
     @ApiOperation("添加分类")
     @PostMapping()
-    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
     public Result<Void> addCategory(@RequestBody AddCategoryParam param) {
         Boolean is = contentCategoryService.addCategory(param);
         return is ? Result.success() : Result.error();
@@ -97,7 +97,7 @@ public class ContentCategoryController {
 
     @ApiOperation("更新分类")
     @PutMapping()
-    @RequiresPermission(value = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
     public Result<Void> updateCategory(@RequestBody AddCategoryParam param) {
         Boolean is = contentCategoryService.updateCategory(param);
         return is ? Result.success() : Result.error();

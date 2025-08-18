@@ -87,7 +87,7 @@ public class UserController {
     @ApiOperation("更新用户角色")
     @PutMapping("roles")
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateUserRoles(@RequestBody IdIdsParam param) {
         Integer is = userService.updateUserRoles(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());

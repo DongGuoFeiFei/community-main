@@ -38,7 +38,7 @@ public class PermissionAspect {
     @Before("@annotation(requiresPermission)")
     public void before(RequiresPermission requiresPermission) {
         // 从注解中获取权限数组和逻辑关系
-        String[] permissions = requiresPermission.value();
+        String[] permissions = requiresPermission.role();
         Logical logical = requiresPermission.logical();
 
         // 获取当前登录用户信息
@@ -51,12 +51,10 @@ public class PermissionAspect {
         boolean hasPermission;
         if (logical == Logical.AND) {
             // AND逻辑：用户必须拥有所有权限
-            hasPermission = Arrays.stream(permissions)
-                    .allMatch(userRoles::contains);
+            hasPermission = Arrays.stream(permissions).allMatch(userRoles::contains);
         } else {
             // OR逻辑：用户只需拥有任一权限
-            hasPermission = Arrays.stream(permissions)
-                    .anyMatch(userRoles::contains);
+            hasPermission = Arrays.stream(permissions).anyMatch(userRoles::contains);
         }
 
         // 如果没有权限，抛出权限不足异常

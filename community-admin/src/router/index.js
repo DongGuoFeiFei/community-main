@@ -109,13 +109,13 @@ const router = createRouter({
           path: 'category',
           component: () => import("@/views/admin/views/category/Index.vue"),
           meta: {
-            title: '菜单管理'
+            title: '文章分类管理'
           }
         }, {
           path: 'permissionUser',
           component: () => import("@/views/admin/views/permissionUser/Index.vue"),
           meta: {
-            title: '菜单管理'
+            title: '用户权限管理'
           }
         }
       ]

@@ -291,7 +291,17 @@ onMounted(() => {
   }
 
   .search-form {
-    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .el-form-item {
+      margin-right: 0;
+
+      .el-input, .el-select {
+        width: 160px;
+      }
+    }
   }
 
   .pagination-container {

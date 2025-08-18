@@ -50,7 +50,7 @@ public class AdminUserController {
     }
     @ApiOperation("获取用户列表")
     @GetMapping("list")
-    @RequiresPermission(value = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<UserDelVo>> getUserList(UserSearchParam param) {
         IPage<UserDelVo> page = userService.getUserList(param);
 

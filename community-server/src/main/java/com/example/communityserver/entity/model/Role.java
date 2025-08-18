@@ -83,7 +83,6 @@ public class Role {
      * @return:
      * @Author: DongGuo
      */
-
     public Role(String roleName, String roleKey, Integer roleSort, Integer status, String remark) {
         this.roleName = roleName;
         this.roleKey = roleKey;

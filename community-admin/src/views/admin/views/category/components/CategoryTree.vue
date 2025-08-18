@@ -4,10 +4,10 @@
       <span>分类树</span>
       <el-button type="primary" size="small" @click="$emit('add-root')">添加根分类</el-button>
     </div>
-    <el-scrollbar height="calc(100vh - 180px)">
+    <el-scrollbar height="calc(100vh - 250px)">
       <el-tree
         :data="categories"
-        node-key="category_id"
+        node-key="id"
         :props="defaultProps"
         :expand-on-click-node="false"
         :highlight-current="true"

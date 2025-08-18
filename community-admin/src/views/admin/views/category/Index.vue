@@ -1,19 +1,38 @@
 <template>
   <div class="category-management">
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <el-form :inline="true" @submit.prevent class="search-form">
+        <el-form-item label="分类名称">
+          <el-input
+            v-model="searchForm.keyword"
+            placeholder="请输入分类名称"
+            clearable
+            @clear="handleSearch"
+            @keyup.enter="handleSearch"
+          />
+        </el-form-item>
+
+        <el-form-item label="状态">
+          <el-select
+            v-model="searchForm.status"
+            placeholder="请选择状态"
+            clearable
+            @change="handleSearch"
+          >
+            <el-option label="启用" :value="1"/>
+            <el-option label="禁用" :value="0"/>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <el-row :gutter="10">
-      <el-col :span="18">
-        <category-list
-          :categories="categories"
-          :loading="loading"
-          :pagination="pagination"
-          @search="handleSearch"
-          @add="handleAddRoot"
-          @edit="handleEdit"
-          @delete="handleDelete"
-          @status-change="handleStatusChange"
-          @sort-change="handleSortChange"
-        />
-      </el-col>
       <el-col :span="6">
         <category-tree
           :categories="treeData"
@@ -23,7 +42,31 @@
           @delete="handleTreeDelete"
         />
       </el-col>
+      <el-col :span="18">
+        <category-list
+          :categories="categories"
+          :loading="loading"
+          @add="handleAddRoot"
+          @edit="handleEdit"
+          @delete="handleDelete"
+          @status-change="handleStatusChange"
+          @sort-change="handleSortChange"
+        />
+      </el-col>
     </el-row>
+
+    <!-- 分页区域 - 移动到页面底部 -->
+    <div class="pagination-area">
+      <el-pagination
+        v-model:current-page="pagination.current"
+        v-model:page-size="pagination.size"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="pagination.total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
 
     <category-form
       v-model="formVisible"
@@ -87,7 +130,6 @@ const fetchData = async () => {
     categories.value = listRes.data.rows || [];
     pagination.value.total = listRes.data.total || 0;
     treeData.value = treeRes.data || [];
-    console.log(treeRes.data)
   } catch (error) {
     ElMessage.error(error.message || '获取数据失败');
   } finally {
@@ -96,9 +138,29 @@ const fetchData = async () => {
 };
 
 // 搜索处理
-const handleSearch = (form) => {
-  searchForm.value = form;
+const handleSearch = () => {
   pagination.value.current = 1;
+  fetchData();
+};
+
+// 重置搜索
+const resetSearch = () => {
+  searchForm.value = {
+    keyword: '',
+    status: ''
+  };
+  handleSearch();
+};
+
+// 分页大小变化
+const handleSizeChange = (size) => {
+  pagination.value.size = size;
+  fetchData();
+};
+
+// 当前页变化
+const handleCurrentChange = (current) => {
+  pagination.value.current = current;
   fetchData();
 };
 
@@ -132,7 +194,6 @@ const handleAddChild = (parent) => {
   formVisible.value = true;
 };
 
-
 // 编辑分类
 const handleEdit = (category) => {
   formMode.value = 'edit';
@@ -147,7 +208,7 @@ const handleTreeEdit = (category) => {
 
 // 删除分类
 const handleDelete = async (category) => {
-  await confirmDelete(category.c);
+  await confirmDelete(category);
 };
 
 // 树形组件删除
@@ -209,7 +270,7 @@ const handleFormSubmit = async (formData) => {
       await addCategory(formData);
       ElMessage.success('添加成功');
     } else {
-      console.log(formData)
+      await updateCategory(formData);
       ElMessage.success('更新成功');
     }
 
@@ -232,5 +293,42 @@ onMounted(() => {
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 40px); // 确保页面有足够高度
+
+  .search-area {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f5f7fa;
+    border-radius: 4px;
+
+    .search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+
+      .el-form-item {
+        margin-right: 0;
+
+        .el-input, .el-select {
+          width: 160px;
+        }
+      }
+    }
+  }
+
+  .pagination-area {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .el-row {
+    flex: 1; // 让内容区域占据剩余空间
+    margin-bottom: 20px;
+  }
 }
 </style>
