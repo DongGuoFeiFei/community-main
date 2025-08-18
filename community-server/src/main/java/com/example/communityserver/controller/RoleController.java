@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * TODO
@@ -32,12 +34,19 @@ public class RoleController {
     @Autowired
     private IRoleService roleService;
 
-    @ApiOperation("获取角色列表")
+    @ApiOperation("获取角色列表(分页)")
     @GetMapping("list")
     @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
     public Result<Result.PageData<Role>> getRoleList(RoleSearchFormParam param) {
         IPage<Role> page = roleService.getRoleList(param);
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
+    }
+    @ApiOperation("获取角色列表（不分页）")
+    @GetMapping("getRoleList")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<List<Role>> getRoleList() {
+        List<Role> page = roleService.getRoleList();
+        return page != null ? Result.success(page) : Result.error();
     }
 
     @ApiOperation("删除角色")

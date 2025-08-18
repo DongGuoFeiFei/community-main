@@ -1,5 +1,5 @@
 <script setup lang="js">
-import UserManagement from "@/views/admin/views/user/UserManagement.vue";
+import UserManagement from "@/views/admin/views/user/components/UserManagement.vue";
 </script>
 
 <template>

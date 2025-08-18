@@ -67,8 +67,8 @@
 
       <el-form-item label="活动状态" prop="status">
         <el-radio-group v-model="formData.status">
-          <el-radio :label="1">进行中</el-radio>
-          <el-radio :label="0">已结束</el-radio>
+          <el-radio :value="1">进行中</el-radio>
+          <el-radio :value="0">已结束</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>

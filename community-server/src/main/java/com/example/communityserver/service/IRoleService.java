@@ -7,6 +7,8 @@ import com.example.communityserver.entity.model.Role;
 import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.*;
 
+import java.util.List;
+
 /**
  * <p>
  * TODO
@@ -19,6 +21,8 @@ import com.example.communityserver.entity.request.*;
 
 public interface IRoleService extends IService<Role> {
     IPage<Role> getRoleList(RoleSearchFormParam param);
+
+    List<Role> getRoleList();
 
     ResponseCodeEnum changeRoleStatus(IdStatusParam param);
 

@@ -2,63 +2,63 @@
   <el-form :model="form" inline>
     <el-form-item label="标题">
       <el-input
-          v-model="form.title"
-          placeholder="请输入标题"
-          clearable
-          @keyup.enter="handleSearch"
+        v-model="form.title"
+        placeholder="请输入标题"
+        clearable
+        @keyup.enter="handleSearch"
       />
     </el-form-item>
 
     <el-form-item label="分类">
       <el-select
-          v-model="form.categoryId"
-          placeholder="请选择分类"
-          clearable
+        v-model="form.categoryId"
+        placeholder="请选择分类"
+        clearable
       >
         <el-option
-            v-for="item in categories"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
+          v-for="item in categories"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         />
       </el-select>
     </el-form-item>
 
     <el-form-item label="标签">
       <el-select
-          v-model="form.tagId"
-          placeholder="请选择标签"
-          clearable
+        v-model="form.tagId"
+        placeholder="请选择标签"
+        clearable
       >
         <el-option
-            v-for="item in tags"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
+          v-for="item in tags"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         />
       </el-select>
     </el-form-item>
 
     <el-form-item label="状态">
       <el-select
-          v-model="form.status"
-          placeholder="请选择状态"
-          clearable
+        v-model="form.status"
+        placeholder="请选择状态"
+        clearable
       >
-        <el-option label="草稿" :value="0" />
-        <el-option label="已发布" :value="1" />
-        <el-option label="已下架" :value="2" />
+        <el-option label="草稿" :value="0"/>
+        <el-option label="已发布" :value="1"/>
+        <el-option label="已下架" :value="2"/>
       </el-select>
     </el-form-item>
 
     <el-form-item label="发布时间">
       <el-date-picker
-          v-model="form.dateRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="YYYY-MM-DD"
+        v-model="form.dateRange"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        value-format="YYYY-MM-DD"
       />
     </el-form-item>
 
@@ -70,9 +70,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getCategories } from '@/api/article/category'
-import { getTags } from '@/api/article/tag'
+import {onMounted, ref} from 'vue'
+import {getCategories} from '@/api/article/category'
+import {getTags} from '@/api/article/tag'
 
 const emit = defineEmits(['search'])
 

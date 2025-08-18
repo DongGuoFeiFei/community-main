@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.communityserver.mapper.UserMapper">
+    <insert id="insUserRole">
+        INSERT INTO user_role(user_id, role_id)
+        VALUES
+        <foreach collection="param.ids" item="roleId" separator=",">
+            (#{param.id}, #{roleId})
+        </foreach>
+    </insert>
+    <delete id="delUserRole">
+        DELETE
+        FROM user_role
+        WHERE user_id = #{param.id}
+    </delete>
     <select id="queryPermissionByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.perms
         FROM menu m
@@ -64,5 +76,89 @@
                  LEFT JOIN
              profiles p ON u.user_id = p.user_id
         where u.user_id = #{userId}
+    </select>
+    <!-- 用户分页查询结果映射 -->
+    <resultMap id="UserDelVoResultMap" type="com.example.communityserver.entity.response.UserDelVo">
+        <id property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="avatar" column="avatar"/>
+        <result property="fullName" column="full_name"/>
+        <result property="bio" column="bio"/>
+        <result property="gender" column="gender"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="location" column="location"/>
+        <!-- 关联查询角色信息 -->
+        <collection property="roles" ofType="com.example.communityserver.entity.model.Role"
+                    select="selectUserRoles" column="user_id"/>
+    </resultMap>
+
+    <!-- 主查询：用户分页列表 -->
+    <select id="getUserList" resultMap="UserDelVoResultMap">
+        SELECT
+        u.user_id,
+        u.nickname,
+        u.username,
+        u.password,
+        u.email,
+        u.phone,
+        u.is_active,
+        u.create_time,
+        u.last_login,
+        u.avatar
+        FROM
+        `user` u
+        WHERE
+        u.is_del = 0
+        <!-- 用户名模糊查询 -->
+        <if test="param.username != null and param.username != ''">
+            AND u.username LIKE CONCAT('%', #{param.username}, '%')
+        </if>
+        <!-- 邮箱模糊查询 -->
+        <if test="param.email != null and param.email != ''">
+            AND u.email LIKE CONCAT('%', #{param.email}, '%')
+        </if>
+        <!-- 状态筛选 -->
+        <if test="param.status != null and param.status != ''">
+            AND u.is_active = #{param.status}
+        </if>
+        <!-- 角色ID筛选 -->
+        <if test="param.roleId != null and param.roleId != ''">
+            AND EXISTS (
+            SELECT 1 FROM user_role ur
+            WHERE ur.user_id = u.user_id
+            AND ur.role_id = #{param.roleId}
+            )
+        </if>
+        ORDER BY
+        u.create_time DESC
+    </select>
+
+    <!-- 子查询：获取用户关联角色 -->
+    <select id="selectUserRoles" resultType="com.example.communityserver.entity.model.Role">
+        SELECT
+            r.role_id,
+            r.role_name,
+            r.role_key,
+            r.role_sort,
+            r.status,
+            r.create_time,
+            r.update_time,
+            r.remark,
+            r.is_system,
+            r.is_del
+        FROM
+            role r
+                INNER JOIN
+            user_role ur ON r.role_id = ur.role_id
+        WHERE
+            ur.user_id = #{userId}
+          AND r.is_del = 0
     </select>
 </mapper>

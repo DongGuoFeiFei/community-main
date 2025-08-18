@@ -99,6 +99,24 @@ const router = createRouter({
           meta: {
             title: '角色管理'
           }
+        }, {
+          path: 'menu',
+          component: () => import("@/views/admin/views/menu/Index.vue"),
+          meta: {
+            title: '菜单管理'
+          }
+        }, {
+          path: 'category',
+          component: () => import("@/views/admin/views/category/Index.vue"),
+          meta: {
+            title: '菜单管理'
+          }
+        }, {
+          path: 'permissionUser',
+          component: () => import("@/views/admin/views/permissionUser/Index.vue"),
+          meta: {
+            title: '菜单管理'
+          }
         }
       ]
     },

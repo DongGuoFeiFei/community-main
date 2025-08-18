@@ -16,6 +16,7 @@ public class UserSearchParam {
     private String username;
     private String email;
     private String status;
+    private String roleId;
     private Integer page;
     private Integer size;
 }

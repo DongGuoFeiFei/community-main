@@ -51,6 +51,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<String> roles = roleMapper.selectRoleKeysByUserId(user.getUserId());
 
         // 3. 查询用户菜单权限
+        // TODO: 2025/8/17 该方法已被禁用，使用角色获取菜单 
         List<String> menus = menuMapper.selectMenuKeysByUserId(user.getUserId());
 
         // 4. 构建LoginUser对象

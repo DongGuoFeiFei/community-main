@@ -10,6 +10,8 @@ import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.ModifyUserParam;
 import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.UserDelVo;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.security.util.SecurityUtils;
@@ -43,6 +45,14 @@ public class AdminUserController {
     @GetMapping()
     public Result<Result.PageData<UserDelVo>> getUsers(UserSearchParam param) {
         IPage<UserDelVo> page = userService.getUsers(param);
+
+        return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
+    }
+    @ApiOperation("获取用户列表")
+    @GetMapping("list")
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Result.PageData<UserDelVo>> getUserList(UserSearchParam param) {
+        IPage<UserDelVo> page = userService.getUserList(param);
 
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }

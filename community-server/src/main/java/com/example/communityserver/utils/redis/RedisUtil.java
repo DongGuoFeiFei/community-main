@@ -94,6 +94,22 @@ public class RedisUtil {
     }
 
     /**
+     * 删除指定前缀下的所有Key及其数据
+     *
+     * @param prefix Key前缀（如 "login:user:permissions:"）
+     * @return 删除的Key数量
+     */
+    public long deleteAllByPrefix(String prefix) {
+        // 添加通配符*以匹配所有以prefix开头的Key
+        String pattern = prefix + "*";
+        Set<String> keys = redisTemplate.keys(pattern);
+        if (keys != null && !keys.isEmpty()) {
+            return redisTemplate.delete(keys);
+        }
+        return 0L;
+    }
+
+    /**
      * 设置有效时间
      *
      * @param key     Redis键
@@ -141,7 +157,7 @@ public class RedisUtil {
     /**
      * 获得缓存的list对象，并指定元素类型
      *
-     * @param key 缓存的键值
+     * @param key         缓存的键值
      * @param elementType 列表元素的类型
      * @return 缓存键值对应的数据
      */

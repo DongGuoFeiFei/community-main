@@ -9,6 +9,7 @@ import com.example.communityserver.entity.constants.SystemConstants;
 import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.User;
+import com.example.communityserver.entity.request.IdIdsParam;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.AuthorInfoVo;
@@ -17,18 +18,19 @@ import com.example.communityserver.entity.response.UserDelVo;
 import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.FollowMapper;
 import com.example.communityserver.mapper.UserMapper;
+import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IFollowService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.security.util.JWTUtil;
-import com.example.communityserver.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeUnit;
 
@@ -201,6 +203,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         UserDelVo userProfile = userMapper.getUserProfile(userId);
         userProfile.setAvatar(SystemConstants.BASIC_URL + userProfile.getAvatar());
         return userProfile;
+    }
+
+    @Override
+    public IPage<UserDelVo> getUserList(UserSearchParam param) {
+        Page<UserDelVo> page = new Page<>(param.getPage(), param.getSize());
+        return userMapper.getUserList(page, param);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer updateUserRoles(IdIdsParam param) {
+        // todo 删除用户redis登录全部缓存
+        Integer del = userMapper.delUserRole(param);
+        return userMapper.insUserRole(param);
     }
 
 

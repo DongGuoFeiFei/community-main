@@ -15,6 +15,8 @@ import com.example.communityserver.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * TODO
@@ -38,6 +40,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(param.getRoleName() != null, Role::getRoleName, param.getRoleName()).like(param.getRoleKey() != null, Role::getRoleKey, param.getRoleKey()).eq(param.getStatus() != null, Role::getStatus, param.getStatus());
         return roleMapper.selectPage(rolePage, queryWrapper);
+    }
+
+    @Override
+    public List<Role> getRoleList() {
+        return list();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.User;
+import com.example.communityserver.entity.request.IdIdsParam;
 import com.example.communityserver.entity.request.RegisterDto;
 import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.AuthorInfoVo;
@@ -26,4 +27,8 @@ public interface IUserService extends IService<User> {
     IPage<UserDelVo> getUsers(UserSearchParam param);
 
     UserDelVo getUserProfile(Long userId);
+
+    IPage<UserDelVo> getUserList(UserSearchParam param);
+
+    Integer updateUserRoles(IdIdsParam param);
 }

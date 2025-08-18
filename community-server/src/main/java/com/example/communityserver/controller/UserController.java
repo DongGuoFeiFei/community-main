@@ -1,21 +1,26 @@
 package com.example.communityserver.controller;
 
 
+import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.User;
+import com.example.communityserver.entity.request.IdIdsParam;
 import com.example.communityserver.entity.request.UpdateUserInfo;
 import com.example.communityserver.entity.response.AuthorInfoVo;
 import com.example.communityserver.entity.response.UserCountStats;
 import com.example.communityserver.entity.response.UserDelVo;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -76,6 +81,26 @@ public class UserController {
     public Result<UserDelVo> getUserProfile(@PathVariable Long userId) {
         UserDelVo vo = userService.getUserProfile(userId);
         return vo != null ? Result.success(vo) : Result.error();
+    }
+
+//    /**
+// * 更新用户角色
+// * @param {Object} data - 更新数据
+// * @param {number} data.userId - 用户ID
+// * @param {Array} data.roleIds - 角色ID数组
+// * @returns {Promise}
+// */
+//export const updateUserRoles = (data) => {
+//  return request.put('/user/roles', data)
+//}
+
+    @ApiOperation("更新用户角色")
+    @PutMapping("roles")
+    @Transactional(rollbackFor = Exception.class)
+    @RequiresPermission(value = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> updateUserRoles(@RequestBody IdIdsParam param) {
+        Integer is = userService.updateUserRoles(param);
+        return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
     }
 
 

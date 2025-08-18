@@ -1,7 +1,10 @@
 package com.example.communityserver.entity.response;
 
+import com.example.communityserver.entity.model.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +35,5 @@ public class UserDelVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String birthDate;
     private String location;
+    private List<Role> roles;
 }

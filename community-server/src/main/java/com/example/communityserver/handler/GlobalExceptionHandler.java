@@ -1,6 +1,7 @@
 package com.example.communityserver.handler;
 
 import com.example.communityserver.entity.response.ErrorResponse;
+import com.example.communityserver.utils.web.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,12 +17,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author: DongGuo
  * @create: 2025-07-23
  **/
-
+// TODO: 2025/8/17 分析全局处理器和权限认证处理器的作用域 
 // 使用@RestControllerAdvice注解声明这是一个全局异常处理器
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    // 使用@ExceptionHandler注解声明这是一个处理特定异常的方法
-    // 当系统中抛出InsufficientBalanceException异常时，将调用此方法进行处理
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientBalance(InsufficientBalanceException e) {
         // 创建错误响应对象，包含错误代码、错误信息和HTTP状态码
@@ -32,6 +31,14 @@ public class GlobalExceptionHandler {
         );
         // 返回带有指定HTTP状态码的错误响应体
         return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(errorResponse);
+    }
+
+    /**
+     * 处理业务异常
+     */
+    @ExceptionHandler(BusinessException.class)
+    public Result<String> handleBusinessException(BusinessException e) {
+        return Result.error(e.getMessage());
     }
 }
 

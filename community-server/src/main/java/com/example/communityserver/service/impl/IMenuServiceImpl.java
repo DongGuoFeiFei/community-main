@@ -1,18 +1,26 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.entity.model.Menu;
 import com.example.communityserver.entity.model.Role;
+import com.example.communityserver.entity.request.MenuDto;
+import com.example.communityserver.entity.request.MenuSearchParam;
 import com.example.communityserver.entity.response.UserMenuTree;
+import com.example.communityserver.handler.BusinessException;
 import com.example.communityserver.mapper.MenuMapper;
 import com.example.communityserver.mapper.RoleMapper;
 import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IMenuService;
+import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,6 +99,68 @@ public class IMenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements I
         List<Menu> menus = menuMapper.selectRoleMenus(roleId);
         List<Menu> lowestNodeMenus = toLowestNodeMenus(menus);
         return lowestNodeMenus.stream().map(Menu::getMenuId).collect(Collectors.toList());
+    }
+
+    @Override
+    public IPage<Menu> getMenuList(MenuSearchParam param) {
+        Page<Menu> menuPage = new Page<>(param.getPageNum(), param.getPageSize());
+        LambdaQueryWrapper<Menu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        menuLambdaQueryWrapper
+                .like(StringUtil.isNotBlank(param.getMenuName()), Menu::getMenuName, param.getMenuName())
+                .eq(StringUtil.isNotBlank(param.getMenuType()), Menu::getMenuType, param.getMenuType())
+                .eq(param.getStatus() != null, Menu::getStatus, param.getStatus());
+        return menuMapper.selectPage(menuPage, menuLambdaQueryWrapper);
+    }
+
+    @Override
+    public Boolean deleteMenu(Long menuId) {
+        int del = menuMapper.deleteById(menuId);
+        if (del > 0) {
+            redisUtil.deleteAllByPrefix(CacheKeyConstants.ROLE_MANAGE_MENUS);
+        }
+        return del > 0;
+    }
+
+    @Override
+    public Boolean addMenu(MenuDto dto) {
+        Menu menu = new Menu();
+        BeanUtils.copyProperties(dto, menu);
+        int insert = menuMapper.insert(menu);
+        if (insert > 0) {
+            redisUtil.deleteAllByPrefix(CacheKeyConstants.ROLE_MANAGE_MENUS);
+        }
+        return insert > 0;
+    }
+
+    @Override
+    public Boolean updateMenu(MenuDto dto) {
+        Menu existingMenu = menuMapper.selectById(dto.getMenuId());
+        if (existingMenu == null) {
+            throw new BusinessException("菜单不存在");
+        }
+        LambdaUpdateWrapper<Menu> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                .eq(Menu::getMenuId, dto.getMenuId())
+                .set(dto.getMenuName() != null, Menu::getMenuName, dto.getMenuName())
+                .set(dto.getParentId() != null, Menu::getParentId, dto.getParentId())
+                .set(dto.getOrderNum() != null, Menu::getOrderNum, dto.getOrderNum())
+                .set(dto.getPath() != null, Menu::getPath, dto.getPath())
+                .set(dto.getComponent() != null, Menu::getComponent, dto.getComponent())
+                .set(dto.getMenuType() != null, Menu::getMenuType, dto.getMenuType())
+                .set(dto.getVisible() != null, Menu::getVisible, dto.getVisible())
+                .set(dto.getStatus() != null, Menu::getStatus, dto.getStatus())
+                .set(dto.getPerms() != null, Menu::getPerms, dto.getPerms())
+                .set(dto.getIcon() != null, Menu::getIcon, dto.getIcon())
+                .set(dto.getRemark() != null, Menu::getRemark, dto.getRemark())
+                .set(dto.getIsExternal() != null, Menu::getIsExternal, dto.getIsExternal())
+                .set(dto.getTarget() != null, Menu::getTarget, dto.getTarget());
+
+        int update = menuMapper.update(null, updateWrapper);
+
+        if (update > 0) {
+            redisUtil.deleteAllByPrefix(CacheKeyConstants.ROLE_MANAGE_MENUS);
+        }
+        return update > 0;
     }
 
     private List<UserMenuTree> buildMenuTree(List<Menu> menus) {

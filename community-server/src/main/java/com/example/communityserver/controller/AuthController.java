@@ -147,8 +147,9 @@ public class AuthController {
         List<String> roleList = new ArrayList<>();
         roleList.add(SecurityConstants.SYSTEM_ADMIN);
         roleList.add(SecurityConstants.SUPER_ADMIN);
-        Boolean isPerm = PermissionExpressionUtil.hasAnyRolePerm(loginUser.getRoles(),roleList);
-        if (!isPerm){
+        roleList.add("view_admin");
+        Boolean isPerm = PermissionExpressionUtil.hasAnyRolePerm(loginUser.getRoles(), roleList);
+        if (!isPerm) {
             return Result.error("没有登录权限");
         }
         loginUser.getUser().setPassword("");

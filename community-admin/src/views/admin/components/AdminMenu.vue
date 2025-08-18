@@ -50,27 +50,8 @@
 </template>
 
 <script setup>
-import {computed, markRaw, onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import {useRoute} from 'vue-router';
-import {
-  Bell,
-  ChatDotRound,
-  Collection,
-  Connection,
-  Document,
-  Flag,
-  Grid,
-  Key,
-  List,
-  Lock,
-  Message,
-  Monitor,
-  Notebook,
-  Setting,
-  TrendCharts,
-  User,
-  Warning
-} from "@element-plus/icons-vue";
 import {getUserMenuTree} from "@/api/menu.js";
 import {sessionStores} from "@/stores/sessionStores.js";
 
@@ -80,26 +61,6 @@ const props = defineProps({
     default: false
   }
 });
-
-const iconComponents = {
-  monitor: markRaw(Monitor),
-  grid: markRaw(Grid),
-  document: markRaw(Document),
-  collection: markRaw(Collection),
-  ChatDotRound: markRaw(ChatDotRound),
-  connection: markRaw(Connection),
-  TrendCharts: markRaw(TrendCharts),
-  user: markRaw(User),
-  warning: markRaw(Warning),
-  lock: markRaw(Lock),
-  key: markRaw(Key),
-  list: markRaw(List),
-  notebook: markRaw(Notebook),
-  flag: markRaw(Flag),
-  bell: markRaw(Bell),
-  message: markRaw(Message),
-  setting: markRaw(Setting)
-};
 
 const menuData = ref([]);
 const route = useRoute();
@@ -114,7 +75,7 @@ const transformMenuData = (menuItems) => {
       ...item,
       meta: {
         ...item.meta,
-        iconComponent: item.meta.icon ? iconComponents[item.meta.icon] : null
+        iconComponent: item.meta.icon ? item.meta.icon : 'aim'
       },
       children
     };
@@ -139,7 +100,6 @@ const loadMenuData = async () => {
 onMounted(() => {
   loadMenuData()
 });
-
 
 const activeMenu = computed(() => {
   const {path} = route;

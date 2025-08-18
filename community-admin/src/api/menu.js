@@ -27,3 +27,23 @@ export const getRoleMenus = (roleId) => {
 export const updateRoleMenus = (roleId, menuIds) => {
   return request.put('/role/menu', {id: roleId, ids: menuIds});
 };
+
+// 获取菜单列表
+export const getMenuList = (params) => {
+  return request.get('/menu/list', {params})
+}
+
+// 添加菜单
+export const addMenu = (data) => {
+  return request.post('/menu', data)
+}
+
+// 更新菜单
+export const updateMenu = (data) => {
+  return request.put('/menu', data)
+}
+
+// 删除菜单
+export const deleteMenu = (menuId) => {
+  return request.delete(`/menu/${menuId}`)
+}
