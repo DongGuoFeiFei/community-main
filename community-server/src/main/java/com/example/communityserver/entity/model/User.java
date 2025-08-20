@@ -22,6 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @TableName("user")
 public class User implements Serializable {
+    private static final long serialVersionUID = -2025848638077249354L;
     @TableId(type = IdType.AUTO)
     private Long userId;
     private Long fileId;

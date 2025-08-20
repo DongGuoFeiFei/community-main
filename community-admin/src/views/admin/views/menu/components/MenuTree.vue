@@ -24,9 +24,9 @@
               <el-button link type="primary" size="small" @click.stop="handleAddChild(data)">
                 <el-icon><Plus /></el-icon>
               </el-button>
-              <el-button link type="primary" size="small" @click.stop="handleEdit(data)">
-                <el-icon><Edit /></el-icon>
-              </el-button>
+<!--              <el-button link type="primary" size="small" @click.stop="handleEdit(data)">-->
+<!--                <el-icon><Edit /></el-icon>-->
+<!--              </el-button>-->
             </span>
           </span>
         </template>

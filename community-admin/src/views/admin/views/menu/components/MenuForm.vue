@@ -49,11 +49,11 @@
         <el-input v-model="formData.component" placeholder="请输入组件路径"/>
       </el-form-item>
 
-      <el-form-item v-if="formData.menuType !== 'M'" label="权限标识" prop="perms">
+      <el-form-item v-if="formData.menuType !== 'M'" label="权限标识" required prop="perms">
         <el-input v-model="formData.perms" placeholder="请输入权限标识"/>
       </el-form-item>
 
-      <el-form-item label="菜单图标" prop="icon">
+      <el-form-item label="菜单图标"  prop="icon" required>
         <el-popover
           placement="bottom-start"
           width="450"

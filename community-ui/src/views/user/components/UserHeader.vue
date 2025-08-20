@@ -6,6 +6,7 @@
         <span>采芙蓉</span>
       </div>
 
+      <!--  todo 后台获取，统一管理    -->
       <el-menu
           mode="horizontal"
           :default-active="activeMenu"
@@ -30,6 +31,9 @@
         <el-menu-item index="follow&fans">
           <span>关注&粉丝</span>
         </el-menu-item>
+        <el-menu-item index="pointAccount">
+          <span>积分</span>
+        </el-menu-item>
       </el-menu>
 
       <div class="user-section">
@@ -46,12 +50,12 @@
                 </el-icon>
                 <span>首页</span>
               </el-dropdown-item>
-<!--              <el-dropdown-item command="settings">-->
-<!--                <el-icon>-->
-<!--                  <Setting/>-->
-<!--                </el-icon>-->
-<!--                <span>账户设置</span>-->
-<!--              </el-dropdown-item>-->
+              <!--              <el-dropdown-item command="settings">-->
+              <!--                <el-icon>-->
+              <!--                  <Setting/>-->
+              <!--                </el-icon>-->
+              <!--                <span>账户设置</span>-->
+              <!--              </el-dropdown-item>-->
               <el-dropdown-item command="logout" divided>
                 <el-icon>
                   <SwitchButton/>
@@ -69,7 +73,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {Setting, SwitchButton, User} from '@element-plus/icons-vue'
+import {SwitchButton, User} from '@element-plus/icons-vue'
 import {localStores} from '@/stores/localStores.js'
 import {sessionStores} from '@/stores/sessionStores.js'
 import {logout} from '@/api/auth.js'

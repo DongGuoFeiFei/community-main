@@ -1,3 +1,54 @@
+<template>
+  <Live2DViewer/>
+  <el-container>
+    <el-header>
+      <HomeHeader/>
+    </el-header>
+    <el-main>
+      <div class="editor-container">
+        <!-- 编辑器头部 -->
+        <EditorHeader
+            v-model:title="articleData.title"
+            :is-edit-mode="isEditMode"
+            @back="goBack"
+            @save="saveArticle"
+        />
+
+        <!-- 编辑器主体 -->
+        <tiptap-editor v-model:html="articleData.content"/>
+        <!--类别选择器-->
+        <CategorySelector
+            v-model:selected="articleData.categoryIds"
+            class="category-selector-container"
+            :initial-selected="articleData.categoryIds"
+        />
+        <!-- 标签选择器 -->
+        <TagSelector
+            v-model="tags"
+            class="tag-selector-container"
+            :max-tags="5"
+        />
+
+        <!-- 封面区域 -->
+        <CoverSection
+            :cover-url="coverImageData.accessUrl"
+            @select="openFileDialog"
+            @remove="removeCover"
+        />
+
+        <!-- 隐藏的文件输入 -->
+        <input
+            type="file"
+            ref="fileInput"
+            @change="handleCoverUpload"
+            accept="image/*"
+            style="display: none;"
+        >
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
 <script setup>
 
 import {computed, onMounted, reactive, ref} from 'vue'
@@ -243,57 +294,6 @@ const goBack = async () => {
 // )
 
 </script>
-
-<template>
-  <Live2DViewer/>
-  <el-container>
-    <el-header>
-      <HomeHeader/>
-    </el-header>
-    <el-main>
-      <div class="editor-container">
-        <!-- 编辑器头部 -->
-        <EditorHeader
-            v-model:title="articleData.title"
-            :is-edit-mode="isEditMode"
-            @back="goBack"
-            @save="saveArticle"
-        />
-
-        <!-- 编辑器主体 -->
-        <tiptap-editor v-model:html="articleData.content"/>
-        <!--类别选择器-->
-        <CategorySelector
-            v-model:selected="articleData.categoryIds"
-            class="category-selector-container"
-            :initial-selected="articleData.categoryIds"
-        />
-        <!-- 标签选择器 -->
-        <TagSelector
-            v-model="tags"
-            class="tag-selector-container"
-            :max-tags="5"
-        />
-
-        <!-- 封面区域 -->
-        <CoverSection
-            :cover-url="coverImageData.accessUrl"
-            @select="openFileDialog"
-            @remove="removeCover"
-        />
-
-        <!-- 隐藏的文件输入 -->
-        <input
-            type="file"
-            ref="fileInput"
-            @change="handleCoverUpload"
-            accept="image/*"
-            style="display: none;"
-        >
-      </div>
-    </el-main>
-  </el-container>
-</template>
 
 <style scoped>
 .editor-container {

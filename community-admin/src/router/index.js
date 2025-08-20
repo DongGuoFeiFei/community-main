@@ -117,6 +117,36 @@ const router = createRouter({
           meta: {
             title: '用户权限管理'
           }
+        }, {
+          path: 'report',
+          component: () => import("@/views/admin/views/report/Index.vue"),
+          meta: {
+            title: '举报管理'
+          }
+        }, {
+          path: 'pointAccount',
+          component: () => import("@/views/admin/views/pointAccount/Index.vue"),
+          meta: {
+            title: '积分账户'
+          }
+        }, {
+          path: 'pointSettings',
+          component: () => import("@/views/admin/views/pointSetting/Index.vue"),
+          meta: {
+            title: '积分设置'
+          }
+        }, {
+          path: 'pointLevels',
+          component: () => import("@/views/admin/views/pointLevels/Index.vue"),
+          meta: {
+            title: '积分等级'
+          }
+        }, {
+          path: 'pointRules',
+          component: () => import("@/views/admin/views/pointRules/Index.vue"),
+          meta: {
+            title: '积分规则'
+          }
         }
       ]
     },
@@ -179,7 +209,7 @@ function isTokenExpired(userInfo) {
     return dayjs().isAfter(expiryTime)
   } catch (e) {
     console.error('Token expiry check failed:', e)
-    return true // 日期解析失败视为过期
+    return true
   }
 }
 

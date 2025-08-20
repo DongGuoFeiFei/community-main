@@ -7,6 +7,9 @@ export const getRoleUsers = (roleId) => {
   return request.get(`/role/users/${roleId}`);
 };
 
+export const getUserInfo = (articleId) => {
+  return request.get(`/user/${articleId}/info`)
+}
 /**
  * 分配用户给角色
  */

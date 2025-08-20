@@ -13,6 +13,7 @@
 
     <el-table
         :data="users"
+        border
         v-loading="loading"
         @selection-change="handleSelectionChange"
         style="width: 100%"

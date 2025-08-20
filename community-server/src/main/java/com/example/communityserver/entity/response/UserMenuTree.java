@@ -21,6 +21,7 @@ public class UserMenuTree {
     private String menuType;
     private String component;
     private String icon;
+
     private Meta meta;
     private List<UserMenuTree> children;
 

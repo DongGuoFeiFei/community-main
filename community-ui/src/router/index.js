@@ -130,6 +130,15 @@ const router = createRouter({
                         requiresAuth: true,
                     }
                 },
+                {
+                    path: 'pointAccount',
+                    name: 'pointAccount',
+                    component: () => import('@/views/user/views/pointAccount/Index.vue'),
+                    meta: {
+                        title: '积分',
+                        requiresAuth: true,
+                    }
+                },
             ]
         },
         {
@@ -176,7 +185,7 @@ router.beforeEach((to, from, next) => {
         if (!token || isTokenExpired(userInfo)) {
             next({
                 path: '/login',
-                query: {redirect: to.fullPath} // 保存目标路径以便登录后跳转
+                query: {redirect: to.fullPath}
             })
         } else {
             // 有有效 token，继续导航
@@ -200,7 +209,7 @@ function isTokenExpired(userInfo) {
         return dayjs().isAfter(expiryTime)
     } catch (e) {
         console.error('Token expiry check failed:', e)
-        return true // 日期解析失败视为过期
+        return true
     }
 }
 
