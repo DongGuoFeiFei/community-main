@@ -14,8 +14,8 @@
     >
       <el-form-item label="调整类型" prop="operationType">
         <el-radio-group v-model="formData.operationType">
-          <el-radio :label="1">增加积分</el-radio>
-          <el-radio :label="2">减少积分</el-radio>
+          <el-radio :value="1">增加积分</el-radio>
+          <el-radio :value="2">减少积分</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="积分数量" prop="points">
@@ -45,15 +45,15 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { adjustPoints } from '@/api/points';
-import { ElMessage } from 'element-plus';
+import {reactive, ref} from 'vue';
+import {adjustPoints} from '@/api/points';
+import {ElMessage} from 'element-plus';
 
 const props = defineProps({
   accountId: {
     type: Number,
     required: true,
-  },
+  }
 });
 
 const emit = defineEmits(['close', 'success']);
@@ -69,15 +69,15 @@ const formData = reactive({
 
 const rules = {
   operationType: [
-    { required: true, message: '请选择调整类型', trigger: 'change' },
+    {required: true, message: '请选择调整类型', trigger: 'change'},
   ],
   points: [
-    { required: true, message: '请输入积分数量', trigger: 'blur' },
-    { type: 'number', min: 1, message: '积分必须大于0', trigger: 'blur' },
+    {required: true, message: '请输入积分数量', trigger: 'blur'},
+    {type: 'number', min: 1, message: '积分必须大于0', trigger: 'blur'},
   ],
   reason: [
-    { required: true, message: '请输入调整原因', trigger: 'blur' },
-    { max: 200, message: '原因不能超过200个字符', trigger: 'blur' },
+    {required: true, message: '请输入调整原因', trigger: 'blur'},
+    {max: 200, message: '原因不能超过200个字符', trigger: 'blur'},
   ],
 };
 

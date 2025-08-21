@@ -1,12 +1,13 @@
 import request from '@/utils/request';
 
-/**
- * 获取用户积分账户信息
- * @param {number} userId - 用户ID
- * @returns {Promise}
- */
-export const getPointsAccount = (userId) => {
-  return request.get(`/points/account/${userId}`);
+
+   /**
+* 获取单个用户积分账户详情
+* @param {number} accountId 账户ID
+* @returns {Promise}
+*/
+export const getPointsAccountDetail = (accountId) => {
+ return request.get(`/pointsAccount/${accountId}`);
 };
 
 /**
@@ -26,7 +27,7 @@ export const updatePointsAccount = (userId, data) => {
  * @returns {Promise}
  */
 export const getPointsTransactions = (userId, params = {}) => {
-  return request.get(`/points/transactions/${userId}`, {params});
+  return request.get(`/pointsConsumption/${userId}`, {params});
 };
 
 /**
@@ -44,7 +45,7 @@ export const addPointsTransaction = (data) => {
  * @returns {Promise}
  */
 export const getPointsLevels = () => {
-  return request.get('/points/levels');
+  return request.get('/pointsLevel');
 };
 
 /**

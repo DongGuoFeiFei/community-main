@@ -24,8 +24,7 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
-import {getUserInfo} from '@/api/user';
-import {getPointsAccount} from "@/api/points.js";
+import {getPointsAccountDetail} from "@/api/points.js";
 import {localStores} from "@/stores/localStores.js";
 import PointsAccountOverview from "@/views/user/views/pointAccount/components/PointsAccountOverview.vue";
 import PointsLevelInfo from "@/views/user/views/pointAccount/components/PointsLevelInfo.vue";
@@ -35,39 +34,22 @@ const store = localStores()
 const route = useRoute();
 const router = useRouter();
 const userId = ref(store.userInfo.userInfo.userId);
-const userInfo = ref({});
 const refreshKey = ref(0);
 
-const loadUserInfo = async () => {
-  try {
-    const response = await getUserInfo(userId.value);
-    userInfo.value = response.data;
-    loadAccountInfo
-  } catch (error) {
-    console.error('Failed to load user info:', error);
-  }
-};
-
-const accountData = ref({
-  levelId: 0,
-  experience: 0
-});
+const accountData = ref();
 
 const loadAccountInfo = async () => {
   try {
-    const response = await getPointsAccount(props.userId);
+    const response = await getPointsAccountDetail(userId.value);
     accountData.value = response.data;
+    console.log(accountData.value)
   } catch (error) {
     console.error('Failed to load points account:', error);
   }
 };
 
-const handleUpdateSuccess = () => {
-  refreshKey.value++;
-};
-
 onMounted(() => {
-  loadUserInfo();
+  loadAccountInfo();
 });
 </script>
 

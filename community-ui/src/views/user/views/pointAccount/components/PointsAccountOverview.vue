@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import dayjs from 'dayjs';
-import {getPointsAccount} from "@/api/points.js";
+import {getPointsAccountDetail} from "@/api/points.js";
 
 const props = defineProps({
   userId: {
@@ -49,7 +49,7 @@ const account = ref({
 
 const loadAccountInfo = async () => {
   try {
-    const response = await getPointsAccount(props.userId);
+    const response = await getPointsAccountDetail(props.userId);
     account.value = response.data;
   } catch (error) {
     console.error('Failed to load points account:', error);

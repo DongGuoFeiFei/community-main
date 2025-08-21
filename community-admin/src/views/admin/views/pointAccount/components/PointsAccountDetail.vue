@@ -31,7 +31,7 @@ const props = defineProps({
   accountId: {
     type: Number,
     required: true,
-  },
+  }
 });
 
 const emit = defineEmits(['close']);

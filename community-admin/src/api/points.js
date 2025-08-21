@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @returns {Promise}
  */
 export const getPointsAccounts = (params) => {
-  return request.get('/points/accounts', { params });
+  return request.get('/pointsAccount', {params});
 };
 
 /**
@@ -15,7 +15,7 @@ export const getPointsAccounts = (params) => {
  * @returns {Promise}
  */
 export const getPointsAccountDetail = (accountId) => {
-  return request.get(`/points/accounts/${accountId}`);
+  return request.get(`/pointsAccount/${accountId}`);
 };
 
 /**
@@ -25,7 +25,7 @@ export const getPointsAccountDetail = (accountId) => {
  * @returns {Promise}
  */
 export const adjustPoints = (accountId, data) => {
-  return request.post(`/points/accounts/${accountId}/adjust`, data);
+  return request.post(`/pointsAccount/${accountId}/adjust`, data);
 };
 
 /**
@@ -35,7 +35,7 @@ export const adjustPoints = (accountId, data) => {
  * @returns {Promise}
  */
 export const freezePoints = (accountId, data) => {
-  return request.post(`/points/accounts/${accountId}/freeze`, data);
+  return request.post(`/pointsAccount/${accountId}/freeze`, data);
 };
 
 /**
@@ -44,7 +44,7 @@ export const freezePoints = (accountId, data) => {
  * @returns {Promise}
  */
 export const getPointsLogs = (params) => {
-  return request.get('/points/logs', { params });
+  return request.get('/pointsLogs', {params});
 };
 
 /**
@@ -53,7 +53,7 @@ export const getPointsLogs = (params) => {
  * @returns {Promise}
  */
 export const revokePointsLog = (logId) => {
-  return request.post(`/points/logs/${logId}/revoke`);
+  return request.post(`/pointsLogs/${logId}/revoke`);
 };
 
 /**
@@ -62,7 +62,7 @@ export const revokePointsLog = (logId) => {
  * @returns {Promise}
  */
 export const getPointsConsumptions = (params) => {
-  return request.get('/points/consumptions', { params });
+  return request.get('/pointsConsumptions', {params});
 };
 
 /**
@@ -71,5 +71,5 @@ export const getPointsConsumptions = (params) => {
  * @returns {Promise}
  */
 export const cancelPointsConsumption = (consumptionId) => {
-  return request.post(`/points/consumptions/${consumptionId}/cancel`);
+  return request.post(`/pointsConsumptions/${consumptionId}/cancel`);
 };

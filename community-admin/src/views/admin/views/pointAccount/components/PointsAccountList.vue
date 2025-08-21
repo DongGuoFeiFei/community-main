@@ -14,7 +14,7 @@
               @keyup.enter="handleSearch"
             >
               <template #append>
-                <el-button :icon="Search" @click="handleSearch" />
+                <el-button :icon="Search" @click="handleSearch"/>
               </template>
             </el-input>
           </div>
@@ -28,15 +28,14 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="accountId" label="账户ID" width="100" />
-        <el-table-column prop="userId" label="用户ID" width="100" />
+        <el-table-column prop="accountId" label="账户ID" width="100"/>
+        <el-table-column prop="userId" label="用户ID" width="100"/>
         <el-table-column label="用户信息" min-width="180">
           <template #default="{ row }">
             <div class="flex items-center">
-              <el-avatar :size="40" :src="row.user.avatar" />
+              <el-avatar :size="40" :src="store.baseURL + row.user.avatar"/>
               <div class="ml-2">
                 <div>{{ row.user.nickname }}</div>
-                <div class="text-gray-500 text-xs">{{ row.user.username }}</div>
               </div>
             </div>
           </template>
@@ -53,10 +52,10 @@
         </el-table-column>
         <el-table-column prop="levelId" label="等级" width="120">
           <template #default="{ row }">
-            <el-tag>{{ row.level.levelName }}</el-tag>
+            <el-tag>{{ row.pointsLevel.levelName }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="lastUpdateTime" label="最后更新时间" width="180" />
+        <el-table-column prop="lastUpdateTime" label="最后更新时间" width="180"/>
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button
@@ -105,17 +104,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { Search } from '@element-plus/icons-vue';
-import { getPointsAccounts } from '@/api/points';
+import {onMounted, reactive, ref} from 'vue';
+import {Search} from '@element-plus/icons-vue';
+import {getPointsAccounts} from '@/api/points';
 import PointsAccountDetail from './PointsAccountDetail.vue';
 import PointsAdjustDialog from './PointsAdjustDialog.vue';
+import {localStores} from "@/stores/localStores.js";
 
 const loading = ref(false);
 const accountList = ref([]);
 const showDetail = ref(false);
 const showAdjustDialog = ref(false);
 const currentAccountId = ref(null);
+const store = localStores()
 
 const searchParams = reactive({
   keyword: '',
@@ -137,7 +138,7 @@ const fetchPointsAccounts = async () => {
       size: pagination.size,
     };
     const res = await getPointsAccounts(params);
-    accountList.value = res.data.records;
+    accountList.value = res.data.rows;
     pagination.total = res.data.total;
   } catch (error) {
     console.error('获取积分账户列表失败:', error);
@@ -168,15 +169,16 @@ const handleCurrentChange = (current) => {
 const handleDetail = (accountId) => {
   currentAccountId.value = accountId;
   showDetail.value = true;
+  console.log(showDetail.value)
 };
 
 // 调整积分
 const handleAdjust = (accountId) => {
   currentAccountId.value = accountId;
   showAdjustDialog.value = true;
+  console.log(showAdjustDialog.value)
 };
 
-// 调整成功回调
 const handleAdjustSuccess = () => {
   fetchPointsAccounts();
 };

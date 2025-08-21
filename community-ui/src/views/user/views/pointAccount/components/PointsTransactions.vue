@@ -92,7 +92,7 @@ const loadTransactions = async () => {
     const params = {
       page: pagination.value.current,
       size: pagination.value.size,
-      search: searchQuery.value
+      name: searchQuery.value
     };
 
     const response = await getPointsTransactions(props.userId, params);
