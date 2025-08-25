@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.SysAnnouncement;
 import com.example.communityserver.entity.request.GetAnnouncementsParam;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IAnnouncementService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -34,14 +35,16 @@ public class AnnouncementController {
 
     @GetMapping("/list")
     @ApiOperation("获取公告列表")
+    @RequiresPermission(api = {"system:announcement:list:get"}, role = {"super_admin"})
     public Result<Result.PageData<SysAnnouncement>> list(GetAnnouncementsParam param) {
         // TODO: 2025/8/2 菲菲发布的数据即id-13数据的开始时间在后端传至前端时数据不对
         IPage<SysAnnouncement> page = announcementService.GetAnnouncementsList(param);
         return Result.pageSuccess(page.getTotal(), page.getRecords());
     }
 
-    @PostMapping
+    @PostMapping()
     @ApiOperation("新增公告")
+    @RequiresPermission(api = {"system:announcement:post"}, role = {"super_admin"})
     public Result<Void> addAnnouncement(@Validated @RequestBody SysAnnouncement announcement) {
         announcementService.saveAnnouncement(announcement);
         return Result.success();
@@ -49,6 +52,7 @@ public class AnnouncementController {
 
     @PutMapping
     @ApiOperation("修改公告")
+    @RequiresPermission(api = {"system:announcement:put"}, role = {"super_admin"})
     public Result<Void> edit(@Validated @RequestBody SysAnnouncement announcement) {
         announcementService.updateAnnouncement(announcement);
         return Result.success();
@@ -56,6 +60,7 @@ public class AnnouncementController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除公告")
+    @RequiresPermission(api = {"system:announcement:{id}:delete"}, role = {"super_admin"})
     public Result<Void> remove(@PathVariable Long id) {
         announcementService.removeAnnouncement(id);
         return Result.success();
@@ -63,6 +68,7 @@ public class AnnouncementController {
 
     @ApiOperation("获取激活的公告")
     @GetMapping("/active")
+    @RequiresPermission(api = {"system:announcement:active:get"}, role = {"super_admin"})
     public Result<List<SysAnnouncement>> getActiveAnnouncements() {
         List<SysAnnouncement> announcements = announcementService.getActiveAnnouncements();
         return Result.success(announcements);
@@ -70,6 +76,7 @@ public class AnnouncementController {
 
     @ApiOperation("获取最新的公告")
     @GetMapping("/latest")
+    @RequiresPermission(api = {"system:announcement:latest:get"}, role = {"super_admin"})
     public Result<SysAnnouncement> getLatestAnnouncement() {
         SysAnnouncement announcement = announcementService.getLatestAnnouncement();
         return Result.success(announcement);
@@ -77,6 +84,7 @@ public class AnnouncementController {
 
     @ApiOperation("发布公告")
     @PostMapping("/publish/{id}")
+    @RequiresPermission(api = {"system:announcement:publish:{id}:post"}, role = {"super_admin"})
     public Result<Void> publishAnnouncement(@PathVariable Long id) {
         LambdaUpdateWrapper<SysAnnouncement> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(SysAnnouncement::getId, id)
@@ -87,6 +95,7 @@ public class AnnouncementController {
 
     @ApiOperation("下线公告")
     @PostMapping("/offline/{id}")
+    @RequiresPermission(api = {"system:announcement:offline:{id}:get"}, role = {"super_admin"})
     public Result<Void> offlineAnnouncement(@PathVariable Long id) {
         LambdaUpdateWrapper<SysAnnouncement> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(SysAnnouncement::getId, id)
@@ -97,11 +106,11 @@ public class AnnouncementController {
 
     @ApiOperation("获取公告详情")
     @GetMapping("{id}")
+    @RequiresPermission(api = {"system:announcement:{id}:get"}, role = {"super_admin"})
     public Result<SysAnnouncement> getAnnouncementDetail(@PathVariable Long id) {
         LambdaQueryWrapper<SysAnnouncement> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysAnnouncement::getId, id);
         SysAnnouncement announcement = announcementService.getOne(queryWrapper);
-        return announcement!=null?Result.success(announcement):Result.error();
+        return announcement != null ? Result.success(announcement) : Result.error();
     }
-
 }

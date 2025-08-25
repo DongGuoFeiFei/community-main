@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.response.AdminArticleListVo;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -30,18 +31,18 @@ public class AdminArticleController {
 
     @ApiOperation("获取文章列表")
     @GetMapping("list")
+    @RequiresPermission(api = {"admin:article:list:get"}, role = {"super_admin"})
     public Result<Result.PageData<AdminArticleListVo>> getArticleList(ArticleSearchParam param) {
         IPage<AdminArticleListVo> page = articleService.getAdminArticleList(param);
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
-
     }
 
     @ApiOperation("删除文章")
     @PostMapping("delete/{id}")
+    @RequiresPermission(api = {"admin:article:delete:{id}:post"}, role = {"super_admin"})
     public Result<Void> deleteArticle(@PathVariable Long id) {
         LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(Article::getArticleId, id)
-                .set(Article::getIsDel, 0);
+        updateWrapper.eq(Article::getArticleId, id).set(Article::getIsDel, 0);
         boolean b = articleService.update(updateWrapper);
         return b ? Result.success() : Result.error();
     }

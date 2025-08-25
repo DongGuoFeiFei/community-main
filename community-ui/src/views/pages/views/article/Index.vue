@@ -49,7 +49,7 @@ watch(
     () => route.params.id,
     (newId) => {
       if (newId) {
-        articleId.value = newId
+        fetchAuthorInfo()
       }
     }
 )
@@ -72,7 +72,7 @@ watch(
           <el-main>
             <post-detail v-model="articleId"/>
             <tags v-if="Number(articleId)" :postId="Number(articleId)"/>
-              <CommentSection v-if="Number(articleId)" :postId="Number(articleId)" :author-id="Number(author.id)"/>
+            <CommentSection v-if="Number(articleId)" :postId="Number(articleId)" :author-id="Number(author.id)"/>
             <!--    todo 付费内容    -->
           </el-main>
           <el-aside width="100px">

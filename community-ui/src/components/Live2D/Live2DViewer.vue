@@ -49,7 +49,7 @@ const modelComponents = {
 // 当前模型组件
 const currentModelComponent = shallowRef(null);
 // 当前模型名称
-const currentModelName = ref('alya');
+const currentModelName = ref('murasame');
 
 // 文本相关状态
 const showText = ref(false);

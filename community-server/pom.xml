@@ -131,8 +131,12 @@
             <artifactId>commonmark-ext-gfm-tables</artifactId>
             <version>0.21.0</version>
         </dependency>
-
-
+        <!--支付宝付款依赖-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.9.28.ALL</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

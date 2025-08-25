@@ -1,44 +1,46 @@
 <template>
   <div class="author-card">
     <div class="author-header">
-      <el-avatar :size="80" :src="store.baseURL + authorInfo.avatar"/>
-      <router-link :to="{ path: `/author/${authorInfo.id}` }" target="_blank"><h3>{{ authorInfo.nickname }}</h3>
+      <el-avatar :size="80" :src="store.baseURL + props.authorInfo.avatar"/>
+      <router-link :to="{ path: `/author/${props.authorInfo.id}` }" target="_blank"><h3>{{
+          props.authorInfo.nickname
+        }}</h3>
       </router-link>
     </div>
 
     <div class="author-bio">
-      <p>{{ authorInfo.bio || '这个作者很懒，什么都没留下~' }}</p>
+      <p>{{ props.authorInfo.bio || '这个作者很懒，什么都没留下~' }}</p>
     </div>
 
     <div class="author-stats">
       <div class="stat-item">
-        <span class="stat-number">{{ authorInfo.postCount }}</span>
+        <span class="stat-number">{{ props.authorInfo.postCount }}</span>
         <span class="stat-label">文章</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">{{ authorInfo.followingCount }}</span>
+        <span class="stat-number">{{ props.authorInfo.followingCount }}</span>
         <span class="stat-label">粉丝</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">{{ authorInfo.followerCount }}</span>
+        <span class="stat-number">{{ props.authorInfo.followerCount }}</span>
         <span class="stat-label">关注</span>
       </div>
     </div>
 
     <div class="author-actions">
       <el-button
-          :type="authorInfo.isFollowing ? 'default' : 'primary'"
+          :type="props.authorInfo.isFollowing ? 'default' : 'primary'"
           size="small"
           @click="toggleFollow"
-          :disabled="Number(authorInfo.id) === store.userInfo.userInfo.userId"
+          :disabled="Number(props.authorInfo.id) === store.userInfo.userInfo.userId"
       >
-        {{ authorInfo.isFollowing ? '已关注' : '关注' }}
+        {{ props.authorInfo.isFollowing ? '已关注' : '关注' }}
       </el-button>
     </div>
 
     <div class="author-meta">
       <el-tag size="small" type="info">
-        <i class="el-icon-time"></i> 加入于 {{ authorInfo.joinDate }}
+        <i class="el-icon-time"></i> 加入于 {{ props.authorInfo.joinDate }}
       </el-tag>
     </div>
   </div>
@@ -48,7 +50,6 @@
 import {ElAvatar, ElButton, ElTag} from 'element-plus'
 import {localStores} from "@/stores/localStores.js";
 import {addFollowAuthor, delFollowAuthor} from "@/api/follow.js";
-import {ref} from "vue";
 
 const props = defineProps({
   authorInfo: {
@@ -58,20 +59,16 @@ const props = defineProps({
 })
 const store = localStores()
 
-const authorInfo = ref({
-  ...props.authorInfo
-})
-console.log(authorInfo.value)
 // 关注/取消关注
 const toggleFollow = () => {
-  if (authorInfo.value.isFollowing) {
-    delFollowAuthor(authorInfo.value.id)
-    authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-    authorInfo.value.followingCount += authorInfo.value.isFollowing ? 1 : -1
+  if (props.authorInfo.isFollowing) {
+    delFollowAuthor(props.authorInfo.id)
+    props.authorInfo.isFollowing = !props.authorInfo.isFollowing
+    props.authorInfo.followingCount += props.authorInfo.isFollowing ? 1 : -1
   } else {
-    addFollowAuthor(authorInfo.value.id)
-    authorInfo.value.isFollowing = !authorInfo.value.isFollowing
-    authorInfo.value.followingCount += authorInfo.value.isFollowing ? 1 : -1
+    addFollowAuthor(props.authorInfo.id)
+    props.authorInfo.isFollowing = !props.authorInfo.isFollowing
+    props.authorInfo.followingCount += props.authorInfo.isFollowing ? 1 : -1
   }
 }
 </script>

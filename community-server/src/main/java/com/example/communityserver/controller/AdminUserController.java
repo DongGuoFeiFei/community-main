@@ -12,9 +12,9 @@ import com.example.communityserver.entity.request.UserSearchParam;
 import com.example.communityserver.entity.response.UserDelVo;
 import com.example.communityserver.security.core.Logical;
 import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IEmailService;
 import com.example.communityserver.service.IUserService;
-import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,14 +43,17 @@ public class AdminUserController {
 
     @ApiOperation("获取用户列表")
     @GetMapping()
+    @RequiresPermission(api = {"admin:users:get"}, role = {"super_admin"})
     public Result<Result.PageData<UserDelVo>> getUsers(UserSearchParam param) {
         IPage<UserDelVo> page = userService.getUsers(param);
 
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
+
     @ApiOperation("获取用户列表")
     @GetMapping("list")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+
+    @RequiresPermission(api = {"admin:users:list:get"}, role = {"super_admin", "view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<UserDelVo>> getUserList(UserSearchParam param) {
         IPage<UserDelVo> page = userService.getUserList(param);
 
@@ -59,6 +62,7 @@ public class AdminUserController {
 
     @ApiOperation("删除用户")
     @DeleteMapping("/{userId}")
+    @RequiresPermission(api = {"admin:users:{id}:delete"}, role = {"super_admin"})
     public Result<Void> deleteUser(@PathVariable Long userId) {
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(User::getUserId, userId).set(User::getIsDel, 1);
@@ -67,6 +71,7 @@ public class AdminUserController {
 
     @ApiOperation("批量删除用户")
     @PostMapping("/batch-delete")
+    @RequiresPermission(api = {"admin:users:batch-delete:post"}, role = {"super_admin"})
     public Result<Void> batchDeleteUser(@RequestBody IdsListParam param) {
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.in(User::getUserId, param.getIds()).set(User::getIsDel, 1);
@@ -75,25 +80,21 @@ public class AdminUserController {
 
     @ApiOperation("改变激活用户状态")
     @PostMapping("/active-change")
+    @RequiresPermission(api = {"admin:users:active-change:post"}, role = {"super_admin"})
     public Result<Void> activeChange(@RequestBody IdStatusParam param) {
         log.info("{}", param);
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(User::getUserId, param.getId())
-                .set(User::getIsActive, param.getStatus());
+        updateWrapper.eq(User::getUserId, param.getId()).set(User::getIsActive, param.getStatus());
         return userService.update(updateWrapper) ? Result.success() : Result.error();
     }
 
     @ApiOperation("更新用户信息")
     @PutMapping("/{userId}")
+    @RequiresPermission(api = {"admin:users:{id}:put"}, role = {"super_admin"})
     public Result<Void> activeChange(@PathVariable Long userId, @RequestBody ModifyUserParam param) {
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper
-                .eq(User::getUserId, userId)  // 确保只能更新自己的信息
-                .set(param.getUsername() != null, User::getUsername, param.getUsername())
-                .set(param.getNickname() != null, User::getNickname, param.getNickname())
-                .set(param.getEmail() != null, User::getEmail, param.getEmail())
-                .set(param.getPhone() != null, User::getPhone, param.getPhone())
-                .set(param.getIsActive() != null, User::getIsActive, param.getIsActive());
+        updateWrapper.eq(User::getUserId, userId)  // 确保只能更新自己的信息
+                .set(param.getUsername() != null, User::getUsername, param.getUsername()).set(param.getNickname() != null, User::getNickname, param.getNickname()).set(param.getEmail() != null, User::getEmail, param.getEmail()).set(param.getPhone() != null, User::getPhone, param.getPhone()).set(param.getIsActive() != null, User::getIsActive, param.getIsActive());
         // 执行更新并检查影响行数
         boolean success = userService.update(updateWrapper);
         return success ? Result.success() : Result.error();
@@ -101,6 +102,7 @@ public class AdminUserController {
 
     @ApiOperation("添加用户")
     @PutMapping("/addUser")
+    @RequiresPermission(api = {"admin:users:addUser:put"}, role = {"super_admin"})
     public Result<Void> addUser(@RequestBody ModifyUserParam param) {
         User user = new User();
         ResponseCodeEnum existUser = userService.isExistUser(null, param.getUsername(), null);
@@ -114,6 +116,4 @@ public class AdminUserController {
         user.setAvatar(SecurityConstants.ORIGINAL_AVATAR);
         return Result.success();
     }
-
-
 }

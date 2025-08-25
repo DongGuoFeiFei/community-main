@@ -16,9 +16,9 @@ spring:
     url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
     username: root
     password: 123456
-#    url: jdbc:mysql://123.207.189.85:3306/db_community?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
-#    username: root
-#    password: 20021118
+  #    url: jdbc:mysql://123.207.189.85:3306/db_community?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+  #    username: root
+  #    password: 20021118
   # MVC的URL路径匹配策略
   mvc:
     path match:
@@ -69,7 +69,7 @@ logging:
     root: info
     org.springframework.web: info
     com.example: debug
-#    com.baomidou.mybatisplus: debug #开发
+    #    com.baomidou.mybatisplus: debug #开发
     com.baomidou.mybatisplus: warn #生产
   file:
     name: ./logs/application.log
@@ -85,3 +85,10 @@ deepseek:
     key: sk-8c14d3bc281c4be4abb49bdf02a82f6b
     url: https://api.deepseek.com/v1/chat/completions
 
+# 支付宝配置
+#alipay:
+#  app-id: 你的沙箱应用APPID
+#  private-key: 你的应用私钥
+#  public-key: 支付宝公钥（从沙箱环境获取）
+#  notify-url: http://你的域名/api/payment/alipay/notify
+#  return-url: http://你的域名/api/payment/alipay/return

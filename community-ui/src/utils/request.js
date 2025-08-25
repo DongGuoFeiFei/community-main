@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {ElMessage, ElMessageBox} from "element-plus";
 import config from "@/utils/env.js";
+import router from '@/router';
 
 const request = axios.create({
     baseURL: config.apiBaseUrl,
@@ -115,36 +116,51 @@ function handleHttpError(status, message) {
     }
 }
 
+// 全局变量，用于存储登录弹窗实例
+let loginDialog = null
+
+// 设置登录弹窗实例的方法
+const setLoginDialog = (dialogInstance) => {
+    loginDialog = dialogInstance
+}
+
+
 // 专门处理401未授权错误
-function handleUnauthorizedError(message) {
-    ElMessageBox.confirm(
-        message || '登录已过期，是否重新登录？',
-        '提示',
-        {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning',
-            closeOnClickModal: false,
-            closeOnPressEscape: false,
-            showClose: false,
-            beforeClose: (action, instance, done) => {
-                if (action === 'confirm') {
-                    instance.confirmButtonLoading = true;
-                    // 清除token并跳转到登录页
-                    localStorage.removeItem('token');
-                    router.push('/login').finally(() => {
-                        done();
-                        instance.confirmButtonLoading = false;
-                    });
-                } else {
-                    done();
-                }
+async function handleUnauthorizedError(errorMsg) {
+    const defaultMessage = errorMsg || '登录状态已过期，请重新登录'
+
+    try {
+        await ElMessageBox.confirm(
+            defaultMessage,
+            '会话过期',
+            {
+                confirmButtonText: '立即登录',
+                cancelButtonText: '稍后再说',
+                type: 'warning',
+                customClass: 'session-expired-dialog',
+                closeOnClickModal: false,
+                closeOnPressEscape: false,
+                showClose: false,
+                distinguishCancelAndClose: true
             }
+        )
+
+        // 用户确认登录，显示登录弹窗
+        if (loginDialog) {
+            loginDialog.openDialog()
+        } else {
+            // 如果弹窗未初始化，回退到跳转登录页
+            localStorage.removeItem('token')
+            window.location.reload()
         }
-    ).catch(() => {
-        // 用户点击了取消
-        ElMessage.info('已取消重新登录');
-    });
+
+    } catch (action) {
+        if (action === 'cancel') {
+            // 用户选择"稍后再说"
+            ElMessage.info('您选择了稍后登录')
+        }
+    }
 }
 
 export default request;
+export { setLoginDialog }
