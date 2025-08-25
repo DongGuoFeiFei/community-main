@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -32,12 +33,6 @@ public class SecurityConfig {
         this.accessDeniedHandler = accessDeniedHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     // TODO: 2025/8/9 添加权限配置,添加接口的统一认证
 //    @Bean
 //    protected void configure(HttpSecurity http) throws Exception {
@@ -80,19 +75,24 @@ public class SecurityConfig {
                         // 其他所有请求需要认证
                         .anyRequest().authenticated()
                 )
-
-                // 添加JWT过滤器
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 // 异常处理
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
+                // 添加JWT过滤器
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 // 允许跨域
                 .cors(cors -> cors.configure(http));
 
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

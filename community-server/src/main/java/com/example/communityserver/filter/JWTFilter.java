@@ -5,8 +5,10 @@ import com.example.communityserver.entity.model.LoginUser;
 import com.example.communityserver.security.util.JWTUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -25,7 +28,6 @@ import java.util.regex.PatternSyntaxException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    // 定义白名单路径
     private static final List<String> WHITE_LIST = Arrays.asList(
             "/auth/login",
             "/auth/register",
@@ -33,12 +35,17 @@ public class JWTFilter extends OncePerRequestFilter {
             "/auth/send-email",
             "/auth/captcha",
             "/uploads/**",
-            "/auth/admin/login"
-//            "/posts/\\d+",  // 匹配数字ID（如 /posts/123）
-//            "/posts"        // 匹配 /posts
+            "/auth/admin/login",
+            "/swagger-ui.html",
+            "/doc.html",
+            "/webjars/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/v2/**"
     );
-    // Ant风格路径匹配器（支持 ** 和 *）
+
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+
     @Autowired
     private RedisUtil redisUtil;
 
@@ -48,42 +55,71 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String requestURI = req.getRequestURI();
 
-        // 1. 检查是否是白名单路径
+        // 白名单直接放行
         if (isWhiteList(requestURI)) {
             filterChain.doFilter(req, resp);
             return;
         }
 
-        // 2. 获取token
         String token = req.getHeader("token");
 
-        // 3. 没有token的情况处理
-        if (token == null || token.isEmpty()) {
+        try {
+            // 1. 检查Token是否存在
+            if (token == null || token.isEmpty()) {
+                setUnauthenticatedContext("请提供访问令牌");
+                filterChain.doFilter(req, resp);
+                return;
+            }
+
+            // 2. 验证Token有效性
+            if (!JWTUtil.verifyToken(token)) {
+                setUnauthenticatedContext("访问令牌无效或已过期");
+                filterChain.doFilter(req, resp);
+                return;
+            }
+
+            // 3. 获取用户信息
+            Long userId = JWTUtil.getUserId(token);
+            LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
+
+            if (loginUser == null) {
+                setUnauthenticatedContext("用户登录信息已过期，请重新登录");
+                filterChain.doFilter(req, resp);
+                return;
+            }
+
+            // 4. 认证成功，设置Authentication
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    loginUser, null, loginUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             filterChain.doFilter(req, resp);
-            return;
+
+        } catch (Exception e) {
+            // 处理其他异常
+            SecurityContextHolder.clearContext();
+            throw new ServletException(e);
         }
+    }
 
-        // 4. 验证token有效性
-        if (!JWTUtil.verifyToken(token)) {
-            throw new RuntimeException("token失效，请重新登录");
-        }
-
-        // 5. 从token中获取userId
-        Long userId = JWTUtil.getUserId(token);
-
-        // 6. 从redis获取用户信息
-        LoginUser loginUser = redisUtil.getCacheObject(CacheKeyConstants.LOGIN_USER_ID + userId);
-        if (loginUser == null) {
-            throw new RuntimeException("用户信息已过期，请重新登录");
-        }
-
-        // 7. 创建Authentication对象并设置到安全上下文
-        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginUser, null, loginUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-        // 8. 放行
-        filterChain.doFilter(req, resp);
+    /**
+     * 设置未认证的安全上下文
+     *
+     * @param message 错误信息
+     */
+    private void setUnauthenticatedContext(String message) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new AnonymousAuthenticationToken(
+                        "anonymous",
+                        "anonymous",
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))
+                ) {
+                    @Override
+                    public Object getDetails() {
+                        return message;
+                    }
+                }
+        );
     }
 
     // 检查请求URI是否在白名单中

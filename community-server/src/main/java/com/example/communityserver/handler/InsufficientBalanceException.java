@@ -2,14 +2,14 @@ package com.example.communityserver.handler;
 
 /**
  * <p>
- *  自定义异常类
+ * 自定义异常类
  * <p>
- *  该类继承自RuntimeException，用于处理账户余额不足的情况
-
- *  当用户尝试进行超出其账户余额的操作时，可以抛出此异常
+ * 该类继承自RuntimeException，用于处理账户余额不足的情况
+ * <p>
+ * 当用户尝试进行超出其账户余额的操作时，可以抛出此异常
  *
- * @author: DongGuo    // 作者名
- * @create: 2025-07-23 // 创建日期
+ * @author: DongGuo
+ * @create: 2025-07-23
  **/
 
 

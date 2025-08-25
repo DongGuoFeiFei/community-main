@@ -1,10 +1,9 @@
-<!--todo 添加删除用户自己的评论取得按钮-->
 <template>
   <div class="comment-section">
     <h3 class="comment-title">评论区 ({{ totalComments }})</h3>
 
     <!-- 评论输入框 -->
-    <div class="comment-form">
+    <div v-if="isOpen" class="comment-form">
       <el-input
           type="textarea"
           v-model="newComment"
@@ -19,8 +18,19 @@
       </div>
     </div>
 
+    <!-- 评论关闭提示 -->
+    <div v-else class="comment-closed">
+      <el-alert
+          title="评论功能已关闭"
+          type="info"
+          description="当前文章的评论功能已关闭，无法发表新的评论。"
+          :closable="false"
+          show-icon
+      />
+    </div>
+
     <!-- 评论列表 -->
-    <div class="comment-list">
+    <div v-if="isOpen" class="comment-list">
       <div v-if="loading" class="loading-comments">
         <el-icon class="is-loading">
           <Loading/>
@@ -46,6 +56,18 @@
                   class="comment-author">{{ comment.nickname }}</span>
               </router-link>
               <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
+
+              <!-- 删除按钮 -->
+              <el-button
+                  v-if="canDeleteComment(comment)"
+                  link
+                  type="danger"
+                  size="small"
+                  class="delete-btn"
+                  @click="handleDeleteComment(comment.commentId)"
+              >
+                删除
+              </el-button>
 
               <!-- 展开/收起按钮 -->
               <el-button
@@ -112,6 +134,18 @@
                   </span>
                 </span>
                 <span class="reply-time">{{ formatDate(reply.createdAt) }}</span>
+
+                <!-- 回复删除按钮 -->
+                <el-button
+                    v-if="canDeleteComment(reply)"
+                    link
+                    type="danger"
+                    size="small"
+                    class="delete-btn"
+                    @click="handleDeleteComment(reply.commentId)"
+                >
+                  删除
+                </el-button>
               </div>
               <div class="reply-content">{{ reply.content }}</div>
 
@@ -156,22 +190,30 @@
   </div>
 </template>
 
-<!--todo 添加一个评论删除按钮 ， 将回复框设置为弹窗-->
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
-import {ElMessage} from 'element-plus'
-import {sessionStores} from "@/stores/sessionStores.js"
-import {fetchCommentsByPostId, submitCommentToPost} from '@/api/index.js'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {deleteComment, fetchCommentsByPostId, submitCommentToPost} from '@/api/index.js'
+import {localStores} from "@/stores/localStores.js";
 
-const sStore = sessionStores()
+const store = localStores()
 
 const props = defineProps({
   postId: {
     type: [String, Number],
     required: true,
     default: null
+  },
+  authorId: {
+    type: [String, Number],
+    required: true,
+    default: null
   }
 })
+
+console.log(props.authorId)
+
+const isOpen = ref(true)
 
 // 数据状态
 const comments = ref([])
@@ -212,6 +254,7 @@ const initExpandedState = () => {
 // 加载评论
 const loadComments = async () => {
   if (!props.postId) return
+  if (!isOpen.value) return
 
   try {
     loading.value = true
@@ -219,10 +262,66 @@ const loadComments = async () => {
     comments.value = res.data || []
     initExpandedState()
   } catch (e) {
-    ElMessage.error('加载评论失败: ' + (e.message || '未知错误'))
+    // todo 通过返回的错误提示，显示不同的状态 分类iSOpen的数据
+    if (e.msg === '评论区未开启') {
+      isOpen.value = false
+    } else {
+      ElMessage.error('加载评论失败: ' + (e.msg || '未知错误'))
+    }
   } finally {
     loading.value = false
   }
+}
+
+// 获取当前登录用户信息
+const currentUserId = store.userInfo.userInfo.userId
+// 检查用户是否有权限删除评论
+const canDeleteComment = (comment) => {
+  console.log(comment)
+  // 用户可删除自己的评论
+  const isOwnComment = currentUserId === comment.userId
+  // 文章作者可删除自己文章下的所有评论
+  const isArticleAuthor = currentUserId === props.authorId
+
+  return isOwnComment || isArticleAuthor
+}
+
+// 处理删除评论
+const handleDeleteComment = async (commentId) => {
+  try {
+    await ElMessageBox.confirm('确定要删除这条评论吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+
+    await deleteComment(commentId)
+    ElMessage.success('删除成功')
+
+    // 从评论列表中移除已删除的评论
+    removeCommentFromList(comments.value, commentId)
+  } catch (error) {
+    if (error === 'cancel') {
+      return
+    }
+    ElMessage.error('删除失败: ' + (error.message || '未知错误'))
+  }
+}
+
+// 从评论列表中递归移除评论
+const removeCommentFromList = (commentList, commentId) => {
+  for (let i = 0; i < commentList.length; i++) {
+    if (commentList[i].commentId === commentId) {
+      commentList.splice(i, 1)
+      return true
+    }
+
+    if (commentList[i].voList && commentList[i].voList.length > 0) {
+      const removed = removeCommentFromList(commentList[i].voList, commentId)
+      if (removed) return true
+    }
+  }
+  return false
 }
 
 // 提交主评论
@@ -353,7 +452,7 @@ const toggleReplies = (commentId) => {
 
 // 辅助方法：获取完整URL
 const getFullUrl = (path) => {
-  return path ? `${sStore.baseURL}${path}` : ''
+  return path ? `${store.baseURL}${path}` : ''
 }
 
 // 辅助方法：格式化日期
@@ -479,6 +578,12 @@ watch(
   font-size: 12px;
 }
 
+.delete-btn {
+  margin-left: auto;
+  margin-right: 10px;
+  font-size: 12px;
+}
+
 .toggle-replies {
   position: absolute;
   right: 0;
@@ -516,6 +621,7 @@ watch(
 .reply-item {
   padding: 10px 0;
   border-bottom: 1px dashed #f0f0f0;
+  position: relative;
 }
 
 .reply-item:last-child {

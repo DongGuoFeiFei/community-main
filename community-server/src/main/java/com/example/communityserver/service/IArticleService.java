@@ -3,11 +3,8 @@ package com.example.communityserver.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.communityserver.entity.request.AddArticleDto;
+import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.model.Article;
-import com.example.communityserver.entity.request.ArticleSearchParam;
-import com.example.communityserver.entity.request.GetArticleListDto;
-import com.example.communityserver.entity.request.FetchPostsParam;
 import com.example.communityserver.entity.response.*;
 
 import java.util.List;
@@ -46,4 +43,6 @@ public interface IArticleService extends IService<Article> {
     List<UserPostVo> getUserPosts(Long userId);
 
     List<UserPostVo> getUserFavorites(Long userId);
+
+    boolean updateArticleCommentStatus(Long articleId, IdStatusParam param);
 }

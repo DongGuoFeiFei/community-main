@@ -13,20 +13,17 @@ import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.model.ArticleInteraction;
 import com.example.communityserver.entity.model.ContentCategory;
 import com.example.communityserver.entity.model.FileEntity;
-import com.example.communityserver.entity.request.AddArticleDto;
-import com.example.communityserver.entity.request.ArticleSearchParam;
-import com.example.communityserver.entity.request.FetchPostsParam;
-import com.example.communityserver.entity.request.GetArticleListDto;
+import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapper.*;
 import com.example.communityserver.mapping.ArticleMapping;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.markdown.MarkDownUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,10 +188,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return voPage;
     }
 
-
     @Override
     public Page<ArticleListVo> getArticleList(GetArticleListDto dto) {
-
         Page<ArticleListVo> page = new Page<>(dto.getPage(), dto.getSize());
         return articleMapper.getArticleList(page, dto, SecurityUtils.getLoginUserId());
     }
@@ -241,4 +236,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     }
 
+    @Override
+    public boolean updateArticleCommentStatus(Long articleId, IdStatusParam param) {
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getArticleId, articleId)
+                .set(Article::getIsOpenComment, param.getStatus());
+        return articleMapper.update(updateWrapper) > 0;
+    }
 }

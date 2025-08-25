@@ -78,4 +78,6 @@ public class Article {
 
     @ApiModelProperty(value = "热度分数", example = "85.5")
     private Double hotScore = 0.0;
+
+    private Integer isOpenComment;
 }

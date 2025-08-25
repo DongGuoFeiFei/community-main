@@ -1,6 +1,7 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,9 +22,9 @@ import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.CommentMapper;
 import com.example.communityserver.mapper.NotificationMapper;
 import com.example.communityserver.mapper.UserMapper;
+import com.example.communityserver.security.util.SecurityUtils;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public List<CommentVo> getCommentsById(Integer postId) {
+
         List<CommentVo> voList = null;
         voList = redisUtil.getCacheList(CacheKeyConstants.ARTICLE_COMMENT + postId);
         if (voList.isEmpty()) {
@@ -136,12 +138,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
         log.info("{}", param);
         LambdaQueryWrapper<Notification> notificationQueryWrapper = new LambdaQueryWrapper<>();
-        notificationQueryWrapper
-                .eq(Notification::getUserId, SecurityUtils.getLoginUserId())
-                .eq(Notification::getType, param.getType().toUpperCase())
-                .eq(Notification::getIsDel, 0)
-                .orderByAsc(Notification::getIsRead)
-                .orderByDesc(Notification::getCreatedAt);
+        notificationQueryWrapper.eq(Notification::getUserId, SecurityUtils.getLoginUserId()).eq(Notification::getType, param.getType().toUpperCase()).eq(Notification::getIsDel, 0).orderByAsc(Notification::getIsRead).orderByDesc(Notification::getCreatedAt);
         IPage<Notification> notificationIPage = notificationMapper.selectPage(notificationPage, notificationQueryWrapper);
 
         List<Long> sendIds = notificationIPage.getRecords().stream().map(Notification::getSenderId).distinct().collect(Collectors.toList());
@@ -154,44 +151,30 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
         // 发起者用户senders  文章名称articles  评论内容comments  通知数据
         //转换为VO列表
-        List<NotificationListVo> listVos = notificationIPage
-                .getRecords()
-                .stream()
-                .map(notification -> {
-                    NotificationListVo vo = new NotificationListVo();
-                    vo.setNotificationId(notification.getNotificationId());
-                    vo.setType(notification.getType());
-                    vo.setIsRead(notification.getIsRead() == 1);
-                    // 设置发送者信息
-                    senders.stream()
-                            .filter(sender -> sender.getUserId().equals(notification.getSenderId()))
-                            .findFirst()
-                            .ifPresent(sender -> {
-                                vo.setSenderId(sender.getUserId());
-                                vo.setSenderName(sender.getNickname());
-                                vo.setSenderAvatar(sender.getAvatar());
-                            });
-                    // 设置文章信息
-                    comments
-                            .stream()
-                            .filter(comment -> comment.getCommentId().equals(notification.getContentId()))
-                            .findFirst()
-                            .ifPresent(comment -> {
-                                articles.stream()
-                                        .filter(article -> article.getArticleId().equals(comment.getArticleId()))
-                                        .findFirst()
-                                        .ifPresent(article -> {
-                                            vo.setSourceId(article.getArticleId());
-                                            vo.setSourceTitle(article.getTitle());
-                                            vo.setRelatedId(comment.getCommentId());
-                                            vo.setRelatedContent(comment.getContent());
-                                        });
-                            });
-                    vo.setCreatedAt(notification.getCreatedAt());
-                    vo.setExtraData(notification.getExtraData());
-                    return vo;
-                })
-                .collect(Collectors.toList());
+        List<NotificationListVo> listVos = notificationIPage.getRecords().stream().map(notification -> {
+            NotificationListVo vo = new NotificationListVo();
+            vo.setNotificationId(notification.getNotificationId());
+            vo.setType(notification.getType());
+            vo.setIsRead(notification.getIsRead() == 1);
+            // 设置发送者信息
+            senders.stream().filter(sender -> sender.getUserId().equals(notification.getSenderId())).findFirst().ifPresent(sender -> {
+                vo.setSenderId(sender.getUserId());
+                vo.setSenderName(sender.getNickname());
+                vo.setSenderAvatar(sender.getAvatar());
+            });
+            // 设置文章信息
+            comments.stream().filter(comment -> comment.getCommentId().equals(notification.getContentId())).findFirst().ifPresent(comment -> {
+                articles.stream().filter(article -> article.getArticleId().equals(comment.getArticleId())).findFirst().ifPresent(article -> {
+                    vo.setSourceId(article.getArticleId());
+                    vo.setSourceTitle(article.getTitle());
+                    vo.setRelatedId(comment.getCommentId());
+                    vo.setRelatedContent(comment.getContent());
+                });
+            });
+            vo.setCreatedAt(notification.getCreatedAt());
+            vo.setExtraData(notification.getExtraData());
+            return vo;
+        }).collect(Collectors.toList());
         // 构建返回分页对象
         IPage<NotificationListVo> page = new Page<>();
         page.setRecords(listVos);
@@ -204,6 +187,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public IPage<CommentListVo> getCommentList(CommentQuery query) {
         Page<CommentListVo> commentListVoPage = new Page<>(query.getPage(), query.getSize());
-        return commentMapper.getCommentList(commentListVoPage,query);
+        return commentMapper.getCommentList(commentListVoPage, query);
+    }
+
+    @Override
+    public boolean deleteComment(Long commentId) {
+        return commentMapper.update(new LambdaUpdateWrapper<Comment>().eq(Comment::getCommentId, commentId)) > 0;
+    }
+
+    @Override
+    public boolean isOpenCommentById(Integer postId) {
+        Article article = articleMapper.selectById(postId);
+        return article.getIsOpenComment() > 0;
     }
 }

@@ -132,12 +132,6 @@ const formatDate = (dateString) => {
   const date = dayjs().format('YYYY-MM-DD')
   return date.toLocaleString()
 }
-
-// 返回上一页
-const goBack = () => {
-  router.go(-1);
-}
-
 // 获取帖子详情
 const fetchPostData = async (id) => {
   try {

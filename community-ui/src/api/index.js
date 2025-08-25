@@ -1,6 +1,8 @@
 // api/index.js
 import request from "@/utils/request.js";
 
+
+
 export const fetchPosts = (params) => {
     return request.get('/posts', {params}).then(res => {
         if (res.code === 200) {
@@ -100,6 +102,16 @@ export const submitCommentToPost = async (postId, {content, parentId, firstId}) 
         throw error
     }
 }
+
+export const deleteComment = (commentId) => {
+    return request.delete(`/comments/${commentId}`).then(res => {
+        if (res.code === 200) {
+            return res.data;
+        } else {
+            throw new Error(res.msg);
+        }
+    });
+};
 
 // 获取文章详情
 export const getArticleById = (id) => {

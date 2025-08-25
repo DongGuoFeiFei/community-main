@@ -22,6 +22,7 @@ public class ArticleListVo {
     private Integer viewCount = 0;      // 浏览量（默认0）
     private Integer likeCount = 0;      // 点赞数（默认0）
     private Integer commentCount = 0;   // 评论数（默认0）
+    private Integer isOpenComment;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createTime;   // 创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

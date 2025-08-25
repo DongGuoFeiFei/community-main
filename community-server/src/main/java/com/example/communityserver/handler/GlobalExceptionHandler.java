@@ -17,19 +17,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author: DongGuo
  * @create: 2025-07-23
  **/
-// TODO: 2025/8/17 分析全局处理器和权限认证处理器的作用域 
-// 使用@RestControllerAdvice注解声明这是一个全局异常处理器
+// TODO: 2025/8/17 分析全局处理器和权限认证处理器的作用域
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientBalance(InsufficientBalanceException e) {
-        // 创建错误响应对象，包含错误代码、错误信息和HTTP状态码
-        ErrorResponse errorResponse = new ErrorResponse(
-                "INSUFFICIENT_BALANCE",
-                e.getMessage(),
-                HttpStatus.PAYMENT_REQUIRED.value()
-        );
-        // 返回带有指定HTTP状态码的错误响应体
+        ErrorResponse errorResponse = new ErrorResponse("INSUFFICIENT_BALANCE", e.getMessage(), HttpStatus.PAYMENT_REQUIRED.value());
         return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(errorResponse);
     }
 

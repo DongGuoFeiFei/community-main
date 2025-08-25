@@ -11,13 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/** 
-* @Description:  访问被拒绝处理器实现类，用于处理用户权限不足时的访问拒绝情况
-* @Param: 
-* @return: 
-* 
-* @Author: DongGuo
-*/
+/**
+ * @Description: 访问被拒绝处理器实现类，用于处理用户权限不足时的访问拒绝情况
+ * @Param:
+ * @return:
+ * @Author: DongGuo
+ */
 
 @Component
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {

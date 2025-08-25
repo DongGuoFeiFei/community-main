@@ -88,14 +88,40 @@
           </template>
         </el-table-column>
 
+        <!-- 新增评论区状态列 -->
+        <el-table-column prop="isOpenComment" label="评论区" width="100" align="center">
+          <template #default="{ row }">
+            <el-tag
+                :type="row.isOpenComment === 1 ? 'success' : 'info'"
+                size="small"
+            >
+              {{ row.isOpenComment === 1 ? '开启' : '关闭' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="createTime" label="发布时间" width="180" sortable="custom">
           <template #default="{ row }">
             {{ formatDateTime(row.createTime) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
+            <!-- 评论区开关 -->
+            <el-tooltip
+                :content="row.isOpenComment === 1 ? '关闭评论区' : '开启评论区'"
+                placement="top"
+            >
+              <el-switch
+                  v-model="row.isOpenComment"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="toggleCommentStatus(row)"
+                  style="margin-right: 8px"
+              />
+            </el-tooltip>
+
             <el-button
                 size="small"
                 @click="editArticle(row.id)"
@@ -134,7 +160,7 @@ import {useRouter} from 'vue-router'
 import {Delete, Edit, Search} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
-import {deleteArticle, getMyArticles} from '../../../../../../community-admin/src/api/index.js'
+import {deleteArticle, getMyArticles, updateArticleCommentStatus} from '@/api/article'
 import {localStores} from "@/stores/localStores.js";
 import {sessionStores} from "@/stores/sessionStores.js";
 
@@ -171,7 +197,7 @@ const fetchArticles = async () => {
   loading.value = true
   try {
     const params = {
-      page: pagination.current, // 或 page，根据后端API
+      page: pagination.current,
       size: pagination.size,
       title: searchQuery.value,
       status: filterStatus.value,
@@ -190,6 +216,24 @@ const fetchArticles = async () => {
     ElMessage.error('获取文章列表失败: ' + error.message)
   } finally {
     loading.value = false
+  }
+}
+
+// 切换评论区状态
+const toggleCommentStatus = async (article) => {
+  try {
+    const originalStatus = article.isOpenComment === 1 ? 0 : 1 // 保存原始状态用于回滚
+
+    const res = await updateArticleCommentStatus(article.id, article.isOpenComment)
+    if (res.code === 200) {
+      ElMessage.success(article.isOpenComment === 1 ? '已开启评论区' : '已关闭评论区')
+    } else {
+      // 如果API调用失败，恢复原来的状态
+      article.isOpenComment = originalStatus
+      throw new Error(res.msg || '操作失败')
+    }
+  } catch (error) {
+    ElMessage.error('操作失败: ' + error.message)
   }
 }
 
@@ -254,7 +298,6 @@ const handleDelete = async (id) => {
     }
   }
 }
-
 
 onMounted(() => {
   fetchArticles()

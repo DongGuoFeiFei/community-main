@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import config from "@/utils/env.js";
 
 const request = axios.create({
@@ -80,7 +80,7 @@ function handleErrorResponse(data) {
             ElMessage.error(msg || '请求的资源不存在');
             break;
         case 500:
-            ElMessage.error(msg || '服务器内部错误');
+            // ElMessage.error(msg || '服务器内部错误');
             break;
         default:
             ElMessage.error(msg || `请求失败，错误码: ${code}`);
@@ -91,7 +91,7 @@ function handleErrorResponse(data) {
 function handleHttpError(status, message) {
     switch (status) {
         case 400:
-            ElMessage.error(message || '请求参数错误');
+            // ElMessage.error(message || '请求参数错误');
             break;
         case 401:
             handleUnauthorizedError(message);
@@ -103,7 +103,7 @@ function handleHttpError(status, message) {
             ElMessage.error('请求的资源不存在');
             break;
         case 500:
-            ElMessage.error(message || '服务器内部错误');
+            // ElMessage.error(message || '服务器内部错误');
             break;
         case 502:
         case 503:
@@ -117,34 +117,34 @@ function handleHttpError(status, message) {
 
 // 专门处理401未授权错误
 function handleUnauthorizedError(message) {
-    // ElMessageBox.confirm(
-    //     message || '登录已过期，是否重新登录？',
-    //     '提示',
-    //     {
-    //         confirmButtonText: '重新登录',
-    //         cancelButtonText: '取消',
-    //         type: 'warning',
-    //         closeOnClickModal: false,
-    //         closeOnPressEscape: false,
-    //         showClose: false,
-    //         beforeClose: (action, instance, done) => {
-    //             if (action === 'confirm') {
-    //                 instance.confirmButtonLoading = true;
-    //                 // 清除token并跳转到登录页
-    //                 localStorage.removeItem('token');
-    //                 router.push('/login').finally(() => {
-    //                     done();
-    //                     instance.confirmButtonLoading = false;
-    //                 });
-    //             } else {
-    //                 done();
-    //             }
-    //         }
-    //     }
-    // ).catch(() => {
-    //     // 用户点击了取消
-    //     ElMessage.info('已取消重新登录');
-    // });
+    ElMessageBox.confirm(
+        message || '登录已过期，是否重新登录？',
+        '提示',
+        {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning',
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
+            showClose: false,
+            beforeClose: (action, instance, done) => {
+                if (action === 'confirm') {
+                    instance.confirmButtonLoading = true;
+                    // 清除token并跳转到登录页
+                    localStorage.removeItem('token');
+                    router.push('/login').finally(() => {
+                        done();
+                        instance.confirmButtonLoading = false;
+                    });
+                } else {
+                    done();
+                }
+            }
+        }
+    ).catch(() => {
+        // 用户点击了取消
+        ElMessage.info('已取消重新登录');
+    });
 }
 
 export default request;

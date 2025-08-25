@@ -41,11 +41,11 @@ public class PointsConsumptionController {
 //  return request.get(`/pointsConsumption/${userId}`, {params});
 //};
 
-    @GetMapping()
-    @ApiOperation("获取积分等级列表")
-    @RequiresPermission(api = {"pointsAccount:get"})
-    public Result<List<PointsLevel>> getPointsLevels() {
-        List<PointsLevel> levels = pointsLevelService.getPointsLevels();
-        return levels != null ? Result.success(levels) : Result.error();
-    }
+//    @GetMapping("{userId}")
+//    @ApiOperation("获取用户积分交易记录")
+//    @RequiresPermission(api = {"pointsConsumption:{id}:get"})
+//    public Result<Void> getPointsTransactions() {
+//        List<PointsLevel> levels = pointsConsumptionService.getPointsTransactions();
+//        return null;
+//    }
 }

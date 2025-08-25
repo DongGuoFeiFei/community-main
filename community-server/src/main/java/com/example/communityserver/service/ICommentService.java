@@ -31,4 +31,8 @@ public interface ICommentService extends IService<Comment> {
     IPage<NotificationListVo> getCommentNotificationsVo(GetNotificationsParam param);
 
     IPage<CommentListVo> getCommentList(CommentQuery query);
+
+    boolean deleteComment(Long commentId);
+
+    boolean isOpenCommentById(Integer postId);
 }

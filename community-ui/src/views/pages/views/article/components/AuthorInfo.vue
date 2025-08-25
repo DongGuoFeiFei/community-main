@@ -2,7 +2,8 @@
   <div class="author-card">
     <div class="author-header">
       <el-avatar :size="80" :src="store.baseURL + authorInfo.avatar"/>
-      <router-link :to="{ path: `/author/${authorInfo.id}` }" target="_blank"><h3>{{ authorInfo.nickname }}</h3></router-link>
+      <router-link :to="{ path: `/author/${authorInfo.id}` }" target="_blank"><h3>{{ authorInfo.nickname }}</h3>
+      </router-link>
     </div>
 
     <div class="author-bio">
@@ -44,47 +45,23 @@
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from 'vue'
-import {getUserInfo} from '@/api/user.js'
 import {ElAvatar, ElButton, ElTag} from 'element-plus'
 import {localStores} from "@/stores/localStores.js";
 import {addFollowAuthor, delFollowAuthor} from "@/api/follow.js";
-
+import {ref} from "vue";
 
 const props = defineProps({
-  articleId: {
-    type: Number,
+  authorInfo: {
+    type: Object,
     required: true
   }
 })
-
 const store = localStores()
+
 const authorInfo = ref({
-  id: null,
-  username: '',
-  nickname: '',
-  avatar: '',
-  bio: '',
-  joinDate: '',
-  postCount: 0,
-  followerCount: 0,
-  followingCount: 0,
-  isFollowing: false
+  ...props.authorInfo
 })
-
-// 获取作者信息
-const fetchAuthorInfo = async () => {
-  try {
-    if (props.articleId) {
-      const res = await getUserInfo(props.articleId)
-      authorInfo.value = res.data
-      console.log(authorInfo.value)
-    }
-  } catch (error) {
-    console.error('获取作者信息失败:', error)
-  }
-}
-
+console.log(authorInfo.value)
 // 关注/取消关注
 const toggleFollow = () => {
   if (authorInfo.value.isFollowing) {
@@ -97,18 +74,6 @@ const toggleFollow = () => {
     authorInfo.value.followingCount += authorInfo.value.isFollowing ? 1 : -1
   }
 }
-
-onMounted(() => {
-  fetchAuthorInfo()
-})
-
-// 监听路由参数变化
-watch(
-    () => props.articleId,
-    () => {
-        fetchAuthorInfo()
-    }
-)
 </script>
 
 <style scoped lang="scss">

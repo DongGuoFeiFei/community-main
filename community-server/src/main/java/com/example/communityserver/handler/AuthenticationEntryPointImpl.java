@@ -11,13 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/** 
-* @Description:  认证入口点实现类，用于处理认证失败的情况
-* @Param: 
-* @return: 
-* 
-* @Author: DongGuo
-*/
+/**
+ * @Description: 认证入口点实现类，用于处理认证失败的情况
+ * @Param:
+ * @return:
+ * @Author: DongGuo
+ */
 
 @Component
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {

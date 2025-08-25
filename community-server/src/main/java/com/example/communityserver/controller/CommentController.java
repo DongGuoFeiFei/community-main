@@ -6,6 +6,7 @@ import com.example.communityserver.entity.request.CommentQuery;
 import com.example.communityserver.entity.response.CommentListVo;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.ReplyVo;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -43,6 +44,10 @@ public class CommentController {
     @ApiOperation("获取评论")
     @GetMapping("/getCommentsById")
     public Result<List<CommentVo>> getCommentsById(Integer postId) {
+        boolean is = commentService.isOpenCommentById(postId);
+        if (!is) {
+            return Result.error("评论区未开启");
+        }
         List<CommentVo> list = commentService.getCommentsById(postId);
         return Result.success(list);
     }
@@ -61,5 +66,10 @@ public class CommentController {
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error("获取失败");
     }
 
-
+    @ApiOperation("删除评论")
+    @DeleteMapping("{commentId}")
+    @RequiresPermission(api = {"comments:{id}:delete"})
+    public Result<Void> deleteComment(@PathVariable Long commentId) {
+        return commentService.deleteComment(commentId) ? Result.success() : Result.error("获取失败");
+    }
 }

@@ -7,8 +7,10 @@ import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.AddArticleDto;
 import com.example.communityserver.entity.request.FetchPostsParam;
 import com.example.communityserver.entity.request.GetArticleListDto;
+import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;
@@ -48,7 +50,7 @@ public class ArticleController {
     @Autowired
     private IArticleCategoryRelationService articleCategoryRelationService;
 
-    // TODO: 2025/6/28 游客能够直接使用查看文章功能 
+    // TODO: 2025/6/28 游客能够直接使用查看文章功能
     // TODO: 2025/6/28 权限使用
 
     @ApiOperation("搜索文章（首页列表）")
@@ -65,7 +67,7 @@ public class ArticleController {
     @ApiOperation("文章详情(打开一篇文章，阅读文章)")
     @GetMapping("/{id}")
     public Result<ArticleDtlVo> fetchPostsDetail(@PathVariable Long id) {
-        // TODO: 2025/7/17 文章被删除时的文章展示 
+        // TODO: 2025/7/17 文章被删除时的文章展示
         ArticleDtlVo articleDtlVo = postsService.getArticleDtlVo(id);
         return articleDtlVo != null ? Result.success(articleDtlVo) : Result.error();
     }
@@ -158,6 +160,22 @@ public class ArticleController {
     public Result<List<UserPostVo>> getUserFavorites(@PathVariable Long userId) {
         List<UserPostVo> voList = postsService.getUserFavorites(userId);
         return voList != null ? Result.success(voList) : Result.error();
+    }
+//    /**
+// * 更新文章评论区状态
+// * @param {number} articleId 文章ID
+// * @param {number} status 状态：0-关闭，1-开启
+// * @returns {Promise}
+// */
+//export const updateArticleCommentStatus = (articleId, status) => {
+//    return request.put(`/article/${articleId}/comment-status`, { isOpenComment: status });
+//};
+
+    @ApiOperation("更新文章评论区状态")
+    @PutMapping("{articleId}/comment-status")
+    @RequiresPermission(api = {"posts:{id}:comment-status:put"})
+    public Result<Void> updateArticleCommentStatus(@PathVariable Long articleId, @RequestBody IdStatusParam param) {
+        return postsService.updateArticleCommentStatus(articleId,param) ? Result.success() : Result.error();
     }
 
 }
