@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@MapperScan("com.example.communityserver.mapper")
+@MapperScan({"com.example.communityserver.mapper","com.example.communityserver.chat.mapper"})
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableTransactionManagement
 @EnableRetry // 启用重试功能

@@ -24,13 +24,14 @@ public class SwaggerConfig {
 
     @Value("${swagger.enabled}")
     private boolean swaggerEnabled;
+
     @Bean
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())// 接口文档的一些信息
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example.communityserver.controller")
-                        .or(RequestHandlerSelectors.basePackage("com.example.communityserver.adminController")))
+                        .or(RequestHandlerSelectors.basePackage("com.example.communityserver.chat.controller")))
                 .build();
     }
 

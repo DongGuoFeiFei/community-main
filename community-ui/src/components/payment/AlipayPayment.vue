@@ -44,7 +44,7 @@
 
 <script setup>
 import {onMounted, onUnmounted, reactive, ref} from 'vue'
-import {createAlipayPayment} from '@/api/payment'
+import {createAlipayPayment} from '@/api/payment.js'
 
 const props = defineProps({
   // 订单信息

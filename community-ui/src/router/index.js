@@ -71,6 +71,24 @@ const router = createRouter({
             }
         },
         {
+            path: '/test',
+            name: 'test',
+            component: () => import("@/views/pages/views/test/Index.vue"),
+            meta: {
+                requiresAuth: true,
+                title: "页面测试"
+            }
+        },
+        {
+            path: '/ws-chat',
+            name: 'ws-chat',
+            component: () => import("@/views/pages/views/wsChat/Index.vue"),
+            meta: {
+                requiresAuth: true,
+                title: "聊天室"
+            }
+        },
+        {
             path: '/editor-edit',
             name: 'editor-edit',
             component: () => import("@/views/pages/views/edit/Index.vue"),

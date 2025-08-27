@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * <p>
- *  显式配置静态资源映射，否则无法直接通过 URL 访问本地文件
+ * 显式配置静态资源映射，否则无法直接通过 URL 访问本地文件
  * <p>
  *
  * @author: DongGuo

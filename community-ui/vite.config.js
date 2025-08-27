@@ -17,4 +17,10 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         },
     },
+    define: {
+        global: 'globalThis', // 修复global未定义的问题
+    },
+    optimizeDeps: {
+        include: ['sockjs-client'] // 确保sockjs-client被正确优化
+    }
 })

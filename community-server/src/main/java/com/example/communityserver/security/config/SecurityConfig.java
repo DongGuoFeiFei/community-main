@@ -14,8 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +37,7 @@ public class SecurityConfig {
         this.accessDeniedHandler = accessDeniedHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
+
     // TODO: 2025/8/9 添加权限配置,添加接口的统一认证
 //    @Bean
 //    protected void configure(HttpSecurity http) throws Exception {
@@ -66,7 +71,17 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/swagger-resources",
                                 "/swagger-resources/**",
-                                "/v2/**"
+                                "/v2/**",
+                                "/api/websocket/*",
+                                "/ws/**", "/ws",
+                                "/websocket/**",
+                                "/sockjs/**",
+                                "/ws/**",
+                                "/websocket/**",
+                                "/sockjs/**",
+                                "/app/**",
+                                "/topic/**",
+                                "/user/**"
                         ).permitAll()
                         // 显式声明重要接口请求需要认证
                         .antMatchers(
@@ -93,9 +108,22 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
+    }
+
+    // 配置CORS
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

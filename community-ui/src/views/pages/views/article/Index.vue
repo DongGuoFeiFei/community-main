@@ -65,7 +65,7 @@ watch(
           <HomeHeader/>
         </el-header>
         <el-container>
-          <el-aside width="400px">
+          <el-aside width="350px">
             <AuthorInfo v-if="articleId" :author-info="author"/>
             <RecommendSidebar :articleId="Number(articleId)"/>
           </el-aside>
@@ -100,7 +100,7 @@ watch(
 
       .el-main {
         padding: 20px;
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
       }
     }

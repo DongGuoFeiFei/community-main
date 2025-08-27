@@ -41,7 +41,8 @@ public class JWTFilter extends OncePerRequestFilter {
             "/webjars/**",
             "/swagger-resources",
             "/swagger-resources/**",
-            "/v2/**"
+            "/v2/**",
+            "/api/websocket/*"
     );
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -57,6 +58,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 白名单直接放行
         if (isWhiteList(requestURI)) {
+            filterChain.doFilter(req, resp);
+            return;
+        }
+
+        // 放行WebSocket握手请求
+        String path = req.getRequestURI();
+        if (path.startsWith("/ws") || path.startsWith("/websocket")) {
             filterChain.doFilter(req, resp);
             return;
         }

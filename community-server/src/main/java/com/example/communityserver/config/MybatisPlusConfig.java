@@ -34,14 +34,29 @@ public class MybatisPlusConfig {
     }
 
     /**
-     * @Description: 添加map拦截器
-     * @Param: []
-     * @return: com.example.communityserver.handler.JsonMapTypeHandler
-     * @Author: DongGuo
+     * 添加map拦截器
      */
-
     @Bean
     public JsonMapTypeHandler jsonMapTypeHandler() {
         return new JsonMapTypeHandler();
     }
+
+    // TODO: 2025/8/26 动态分表
+//    @Bean
+//    public DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor() {
+//        DynamicTableNameInnerInterceptor interceptor = new DynamicTableNameInnerInterceptor();
+//        Map<String, TableNameHandler> tableNameHandlerMap = new HashMap<>();
+//
+//        // 为 im_message 表设置动态表名处理器
+//        tableNameHandlerMap.put("im_message", (sql, tableName) -> {
+//            // 根据业务逻辑动态生成表名，比如按年月: im_message_202501
+//            // 这里可以根据线程局部变量、参数等决定表名
+//            LocalDateTime now = LocalDateTime.now();
+//            String yearMonth = String.format("%d%02d", now.getYear(), now.getMonthValue());
+//            return "im_message_" + yearMonth;
+//        });
+//        interceptor.setTableNameHandlerMap(tableNameHandlerMap);
+//        return interceptor;
+//    }
+
 }
