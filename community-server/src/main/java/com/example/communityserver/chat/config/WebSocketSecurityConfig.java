@@ -35,37 +35,12 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
                     System.out.println("=== STOMP 命令: " + accessor.getCommand());
                     System.out.println("=== 会话ID: " + accessor.getSessionId());
                     System.out.println("=== 原生头: " + accessor.getMessageHeaders());
-
                     if (StompCommand.CONNECT.equals(accessor.getCommand())) {
                         String token = accessor.getFirstNativeHeader("Authorization");
                         System.out.println("=== Token: " + (token != null ? "提供" : "未提供"));
                     }
                 }
-//                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-//
-                // 注解放行
-//                if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    String token = accessor.getFirstNativeHeader("Authorization");
-//
-//                    if (token != null && token.startsWith("Bearer ")) {
-//                        token = token.substring(7);
-//                        try {
-//                            String username = SecurityUtils.getCurrentUsername();
-//                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//
-//                            // todo 进一步验证token和个人的管理是否正确，而不仅仅是验证token本身的正确性
-//                            if (JWTUtil.verifyToken(token)) {
-//                                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//                                SecurityContextHolder.getContext().setAuthentication(authentication);
-//                                accessor.setUser(authentication);
-//                                log.info("WebSocket user authenticated: {}", username);
-//                            }
-//                        } catch (Exception e) {
-//                            log.error("WebSocket authentication failed: {}", e.getMessage());
-//                            throw new RuntimeException("Authentication failed");
-//                        }
-//                    }
-//                }
+                // TODO: 2025/8/27 验证token
                 return message;
             }
 

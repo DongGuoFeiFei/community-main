@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@MapperScan("com.example.communityserver.mapper")
+@MapperScan({"com.example.communityserver.mapper", "com.example.communityserver.chat.mapper"})
 public class MybatisPlusConfig {
 
     /**

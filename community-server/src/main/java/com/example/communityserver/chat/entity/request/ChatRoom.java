@@ -1,4 +1,4 @@
-package com.example.communityserver.chat.entity.model;
+package com.example.communityserver.chat.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

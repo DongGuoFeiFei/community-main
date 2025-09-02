@@ -14,23 +14,26 @@
         <spring-boot.version>2.7.18</spring-boot.version>
     </properties>
     <dependencies>
-
+        <!--mysql-->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--test测试模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!--spring security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -75,7 +78,6 @@
             <artifactId>fastjson</artifactId>
             <version>2.0.42</version>
         </dependency>
-
         <!--  使用knife4j可以将swagger的两个依赖删除 -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -101,13 +103,11 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>1.4.2.Final</version>
         </dependency>
-
         <!-- Spring Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-
         <!--重试-->
         <dependency>
             <groupId>org.springframework.retry</groupId>
@@ -119,7 +119,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-
         <!-- commonmark 解析markdown -->
         <dependency>
             <groupId>org.commonmark</groupId>
@@ -152,6 +151,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <!--RabbitMQ-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <!--STOMP协议代理-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-reactor-netty</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>

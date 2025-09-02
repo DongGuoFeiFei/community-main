@@ -2,6 +2,9 @@ package com.example.communityserver.chat.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.communityserver.chat.entity.model.ImChatSession;
+import com.example.communityserver.chat.entity.model.ImMessage;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +17,8 @@ import com.example.communityserver.chat.entity.model.ImChatSession;
 
 
 public interface IImChatSessionService extends IService<ImChatSession> {
+    List<ImChatSession> getSessions();
+
+
+    List<ImMessage> getSessionMessages(Long sessionId);
 }

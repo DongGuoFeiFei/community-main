@@ -1,28 +1,28 @@
 package com.example.communityserver.chat.entity.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import java.util.Date;
-/**
- * <p>
- * TODO
- * <p>
- *
- * @author: DongGuo
- * @create: 2025-08-26
- **/
+import lombok.NoArgsConstructor;
 
-
-
+import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatMessage {
-    private String type;
-    private Long senderId;
+    private Long sessionId;
+    private MessageType type;
     private String content;
-    private Date timestamp;
+    private String sender;
+    private String roomId;
+    private Long senderId;
+    private LocalDateTime timestamp;
+    private String receiver;
+    private String messageId;
 
-    // 基础构造方法
-    public ChatMessage() {
-        this.timestamp = new Date();
+    public enum MessageType {
+        JOIN, LEAVE, CHAT, TYPING, SYSTEM, READ_RECEIPT,TYPING_START,TYPING_STOP
     }
 }

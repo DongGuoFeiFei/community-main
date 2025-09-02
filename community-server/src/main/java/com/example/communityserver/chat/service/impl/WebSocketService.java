@@ -1,6 +1,6 @@
 package com.example.communityserver.chat.service.impl;
 
-import com.example.communityserver.chat.entity.model.ChatMessage;
+import com.example.communityserver.chat.entity.request.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

@@ -1,0 +1,70 @@
+// 聊天室基础样式
+.chat-room {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+// 消息气泡样式
+.message-bubble {
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 4px 0;
+  word-break: break-word;
+
+  &.own {
+    background-color: #1890ff;
+    color: white;
+    margin-left: auto;
+  }
+
+  &.other {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  &.system {
+    background-color: #ffe58f;
+    color: #d48806;
+    text-align: center;
+    font-style: italic;
+  }
+}
+
+// 输入框样式
+.chat-input {
+  border-top: 1px solid #e4e7ed;
+  padding: 16px;
+  background: white;
+
+  .input-tools {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .tool-button {
+      margin-right: 8px;
+      color: #909399;
+      cursor: pointer;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+  }
+
+  .session-list {
+    width: 100%;
+    height: 200px;
+  }
+
+  .message-bubble {
+    max-width: 85%;
+  }
+}

@@ -23,13 +23,10 @@ export function useChatWebSocket() {
         client = new Client({
             brokerURL: `ws://localhost:8081/ws`,
             connectHeaders: {
-                Authorization: `Bearer ${store.tokenInfo.token}`
-            },
-            debug: function (str) {
-                console.log('STOMP:', str); // 查看所有STOMP事件
+                Authorization: `Bearer ${store.tokenInfo.token}`,
             },
             onWebSocketError: (event) => {
-                console.error('WebSocket Error:', event); // 捕获底层错误
+                console.error('WebSocket Error:', event);
             },
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
@@ -160,7 +157,7 @@ export function useChatWebSocket() {
     };
 
     // 发送私聊消息
-    const sendPrivateMessage = (content, receiver) => {
+    const sendPrivateMessage = (content, sessionId) => {
         if (!client?.connected) {
             throw new Error('WebSocket not connected');
         }
@@ -169,7 +166,8 @@ export function useChatWebSocket() {
             type: 'CHAT',
             content: content,
             sender: store.userInfo.userInfo.username,
-            receiver: receiver,
+            senderId:store.userInfo.userInfo.userId,
+            sessionId: sessionId,
             timestamp: new Date().toISOString()
         };
 

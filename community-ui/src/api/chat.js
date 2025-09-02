@@ -6,27 +6,32 @@ export const getSessions = () => {
 }
 
 // 获取会话消息
-export const getSessionMessages = (sessionId, params = {}) => {
+export const getSessionMessages = (sessionId, lastMessageId = null) => {
+    const params = {}
+    if (lastMessageId) {
+        params.lastMessageId = lastMessageId
+    }
     return request.get(`/chat/sessions/${sessionId}/messages`, { params })
 }
 
-// 发送文本消息
-export const sendTextMessage = (sessionId, content) => {
-    return request.post('/chat/messages/text', {
+// 创建会话
+export const createSession = (userId) => {
+    return request.post('/chat/sessions', { userId })
+}
+
+// 发送消息
+export const sendMessage = (sessionId, content, type = 1) => {
+    return request.post('/chat/messages', {
         sessionId,
-        content
+        content,
+        contentType: type
     })
 }
 
 // 标记消息已读
-export const markMessagesAsRead = (sessionId, messageIds) => {
+export const markMessageRead = (sessionId, messageId) => {
     return request.post('/chat/messages/read', {
         sessionId,
-        messageIds
+        messageId
     })
-}
-
-// 创建群聊
-export const createGroup = (data) => {
-    return request.post('/chat/groups', data)
 }

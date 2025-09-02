@@ -1,6 +1,7 @@
 package com.example.communityserver.chat.controller;
 
-import com.example.communityserver.chat.entity.model.ChatMessage;
+import com.example.communityserver.chat.entity.request.ChatMessage;
+import com.example.communityserver.chat.service.impl.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,6 +22,8 @@ public class WebSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
 
+    private final ChatMessageService messageService; // 新增服务层
+
     // 公共聊天消息
     @MessageMapping("/chat.public")
     @SendTo("/topic/public")
@@ -28,6 +31,8 @@ public class WebSocketController {
         message.setSender(principal.getName());
         message.setTimestamp(LocalDateTime.now());
         message.setMessageId(UUID.randomUUID().toString());
+        // 2. 异步保存到数据库（非阻塞）
+        messageService.asyncSaveMessage(message);
         log.info("Public message from {}: {}", principal.getName(), message.getContent());
         return message;
     }
@@ -38,7 +43,8 @@ public class WebSocketController {
         message.setSender(principal.getName());
         message.setTimestamp(LocalDateTime.now());
         message.setMessageId(UUID.randomUUID().toString());
-
+        // 2. 异步保存到数据库（非阻塞）
+        messageService.asyncSaveMessage(message);
         messagingTemplate.convertAndSendToUser(
                 message.getReceiver(),
                 "/queue/private",

@@ -27,17 +27,25 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(new DefaultHandshakeHandler());
+        // TODO: 2025/8/27 解决SockJS添加失败问题，SockJS是WebSocket解决旧浏览器无法连接问题得解决方案
     }
 
+    // 消息代理
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic", "/queue", "/user");
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.setUserDestinationPrefix("/user");
+
+        // 基于内存的消息代理
+        registry.enableSimpleBroker("/topic", "/queue", "/user");// 服务端广播前缀
+        registry.setApplicationDestinationPrefixes("/app");// 客户端发送前缀
+        registry.setUserDestinationPrefix("/user");//设置用户目标的前缀
+        // 基于rabbitMQ的消息代理
     }
-//    原生 WebSocket API
+
+    //    原生 WebSocket API
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
+
+    // TODO: 2025/8/27 添加监听和异常处理
 }

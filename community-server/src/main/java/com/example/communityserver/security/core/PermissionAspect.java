@@ -37,6 +37,7 @@ public class PermissionAspect {
      */
     @Before("@annotation(requiresPermission)")
     public void before(RequiresPermission requiresPermission) {
+
         // 从注解中获取权限数组和逻辑关系
         String[] permissions = requiresPermission.role();
         Logical logical = requiresPermission.logical();
