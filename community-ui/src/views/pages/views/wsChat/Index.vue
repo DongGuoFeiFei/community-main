@@ -14,7 +14,6 @@
         <!-- 聊天头部 -->
         <ChatHeader
             :session="currentSession"
-            :online-users="onlineUsers"
             @show-session-info="showSessionInfo"
         />
 
@@ -26,11 +25,11 @@
               @load-more="loadMoreMessages"
           />
 
-          <!-- 输入状态指示器 -->
-          <TypingIndicator
-              v-if="isTyping"
-              :typing-users="typingUsersList"
-          />
+          <!--          &lt;!&ndash; 输入状态指示器 &ndash;&gt;-->
+          <!--          <TypingIndicator-->
+          <!--              v-if="isTyping"-->
+          <!--              :typing-users="typingUsersList"-->
+          <!--          />-->
         </div>
 
         <!-- 消息输入框 -->
@@ -68,7 +67,6 @@ import ChatSidebar from './components/ChatSidebar.vue'
 import ChatHeader from './components/ChatHeader.vue'
 import MessageList from './components/MessageList.vue'
 import ChatInput from './components/ChatInput.vue'
-import TypingIndicator from './components/TypingIndicator.vue'
 
 // API导入
 import {createSession, getSessionMessages, getSessions} from '@/api/chat'
@@ -77,23 +75,18 @@ import {createSession, getSessionMessages, getSessions} from '@/api/chat'
 import {useChatWebSocket} from '@/utils/websocket'
 
 // 状态管理
-const sessions = ref()
+const sessions = ref([])
 const currentSession = ref(null)
 const messagesMap = ref(new Map()) // 按会话ID存储消息
-const onlineUsers = ref([])
 
 // WebSocket连接
 const {
   connect,
   disconnect,
   isConnected,
-  sendPublicMessage,
   sendPrivateMessage,
-  sendTypingIndicator,
-  publicMessages,
-  privateMessagesList,
-  isTyping,
-  typingUsersList
+  privateMessages,
+  error
 } = useChatWebSocket()
 
 // 计算当前会话的消息
@@ -111,9 +104,27 @@ onMounted(async () => {
     // 连接WebSocket
     connect()
 
-    // 监听消息
-    watch(publicMessages, handleNewMessages)
-    watch(privateMessagesList, handleNewMessages)
+    // 监听私聊消息
+    watch(privateMessages, (newMessages) => {
+      if (newMessages.length === 0) return
+
+      newMessages.forEach(message => {
+        const sessionId = message.sessionId
+        if (sessionId) {
+          const existingMessages = messagesMap.value.get(sessionId) || []
+          messagesMap.value.set(sessionId, [...existingMessages, message])
+        } else {
+          console.warn('收到无sessionId的私聊消息:', message)
+        }
+      })
+    })
+
+    // 监听错误
+    watch(error, (err) => {
+      if (err) {
+        ElMessage.error('WebSocket错误: ' + err)
+      }
+    })
   } catch (error) {
     ElMessage.error('初始化聊天室失败: ' + error.message)
   }
@@ -140,39 +151,11 @@ const loadMoreMessages = async (lastMessageId) => {
 
   try {
     const response = await getSessionMessages(currentSession.value.id, lastMessageId)
-    const existingMessages = messagesMap.value.get(zcurrentSession.value.id) || []
+    const existingMessages = messagesMap.value.get(currentSession.value.id) || []
     messagesMap.value.set(currentSession.value.id, [...response.data, ...existingMessages])
   } catch (error) {
     ElMessage.error('加载更多消息失败: ' + error.message)
   }
-}
-
-// 处理新消息
-const handleNewMessages = (newMessages) => {
-  if (newMessages.length === 0) return
-
-  newMessages.forEach(message => {
-    // 确定消息所属的会话
-    let sessionId
-    if (message.receiver) {
-      // 私聊消息，确定会话ID
-      sessionId = determinePrivateSessionId(message)
-    } else {
-      // 群聊消息
-      sessionId = message.sessionId || 'public'
-    }
-
-    // 添加到对应会话的消息列表
-    const existingMessages = messagesMap.value.get(sessionId) || []
-    messagesMap.value.set(sessionId, [...existingMessages, message])
-  })
-}
-
-// 确定私聊会话ID (需要根据业务逻辑实现)
-const determinePrivateSessionId = (message) => {
-  // 这里需要根据您的业务逻辑确定私聊会话ID
-  // 可能是基于发送者和接收者ID生成的唯一标识
-  return `private_${Math.min(message.senderId, message.receiverId)}_${Math.max(message.senderId, message.receiverId)}`
 }
 
 // 选择会话
@@ -205,33 +188,23 @@ const handleCreateSession = async (userId) => {
 const sendMessage = (content) => {
   if (!currentSession.value) return
 
-  console.log(content)
   try {
-    if (currentSession.value.type === 1) {
-      sendPrivateMessage(content, currentSession.value.id)
-    } else if (currentSession.value.type === 2) {
-      sendPrivateMessage(content, currentSession.value.id)
-    } else {
-      sendPublicMessage(content, currentSession.value.id)
-    }
+    console.log('发送消息:', content, '到会话:', currentSession.value.id)
+    sendPrivateMessage(content, currentSession.value.id)
   } catch (error) {
     ElMessage.error('发送消息失败: ' + error.message)
   }
 }
 
-// 处理输入开始
-const handleTypingStart = () => {
-  sendTypingIndicator(true)
-}
-
-// 处理输入结束
 const handleTypingStop = () => {
-  sendTypingIndicator(false)
+  console.log("停止输入")
+}
+const handleTypingStart = () => {
+  console.log("开始输入")
 }
 
 // 显示会话信息
 const showSessionInfo = () => {
-  // 实现会话信息展示逻辑
   console.log('显示会话信息:', currentSession.value)
 }
 </script>

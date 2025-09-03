@@ -14,7 +14,6 @@
         </div>
         <div v-else>
           {{ message.content }}
-          123
         </div>
       </div>
 
