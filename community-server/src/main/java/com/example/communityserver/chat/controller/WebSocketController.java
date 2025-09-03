@@ -24,35 +24,6 @@ public class WebSocketController {
 
     private final ChatMessageService messageService; // 新增服务层
 
-    // 公共聊天消息
-    @MessageMapping("/chat.public")
-    @SendTo("/topic/public")
-    public ChatMessage handlePublicMessage(@Payload ChatMessage message, Principal principal) {
-        message.setSender(principal.getName());
-        message.setTimestamp(LocalDateTime.now());
-        message.setMessageId(UUID.randomUUID().toString());
-        // 2. 异步保存到数据库（非阻塞）
-        messageService.asyncSaveMessage(message);
-        log.info("Public message from {}: {}", principal.getName(), message.getContent());
-        return message;
-    }
-
-    // 私聊消息
-    @MessageMapping("/chat.private")
-    public void handlePrivateMessage(@Payload ChatMessage message, Principal principal) {
-        message.setSender(principal.getName());
-        message.setTimestamp(LocalDateTime.now());
-        message.setMessageId(UUID.randomUUID().toString());
-        // 2. 异步保存到数据库（非阻塞）
-        messageService.asyncSaveMessage(message);
-        messagingTemplate.convertAndSendToUser(
-                message.getReceiver(),
-                "/queue/private",
-                message
-        );
-        log.info("Private message from {} to {}: {}", principal.getName(), message.getReceiver(), message.getContent());
-    }
-
     // 用户加入聊天室
     @MessageMapping("/chat.join")
     @SendTo("/topic/public")
@@ -92,4 +63,34 @@ public class WebSocketController {
         message.setTimestamp(LocalDateTime.now());
         return message;
     }
+
+    // 公共聊天消息
+    @MessageMapping("/chat.public")
+    @SendTo("/topic/public")
+    public ChatMessage handlePublicMessage(@Payload ChatMessage message, Principal principal) {
+        message.setSender(principal.getName());
+        message.setTimestamp(LocalDateTime.now());
+        message.setMessageId(UUID.randomUUID().toString());
+        // 2. 异步保存到数据库（非阻塞）
+        messageService.asyncSaveMessage(message);
+        log.info("Public message from {}: {}", principal.getName(), message.getContent());
+        return message;
+    }
+
+    // 私聊消息
+    @MessageMapping("/chat.private")
+    public void handlePrivateMessage(@Payload ChatMessage message, Principal principal) {
+        message.setSender(principal.getName());
+        message.setTimestamp(LocalDateTime.now());
+        message.setMessageId(UUID.randomUUID().toString());
+        // 2. 异步保存到数据库（非阻塞）
+        messageService.asyncSaveMessage(message);
+        messagingTemplate.convertAndSendToUser(
+                message.getReceiver(),
+                "/queue/private",
+                message
+        );
+        log.info("Private message from {} to {}: {}", principal.getName(), message.getReceiver(), message.getContent());
+    }
+
 }

@@ -14,6 +14,7 @@
         </div>
         <div v-else>
           {{ message.content }}
+          123
         </div>
       </div>
 
@@ -75,7 +76,7 @@ const formatTime = (time) => {
 
     .message-bubble {
       background-color: #1890ff;
-      color: white;
+      //color: white;
     }
   }
 
