@@ -11,7 +11,7 @@
         <div class="session-name">{{ session.name }}</div>
         <div class="online-status">
           <span v-if="onlineUsers.length > 0">{{ onlineUsers.length }}人在线</span>
-          <span v-else>离线</span>
+<!--          <span v-else>离线</span>-->
         </div>
       </div>
     </div>

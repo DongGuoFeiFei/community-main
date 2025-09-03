@@ -58,9 +58,9 @@
 </template>
 
 <script setup>
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
-import {ElMessage} from 'element-plus'
-import {ChatDotRound} from '@element-plus/icons-vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+import { ChatDotRound } from '@element-plus/icons-vue'
 
 // 组件导入
 import ChatSidebar from './components/ChatSidebar.vue'
@@ -69,23 +69,27 @@ import MessageList from './components/MessageList.vue'
 import ChatInput from './components/ChatInput.vue'
 
 // API导入
-import {createSession, getSessionMessages, getSessions} from '@/api/chat'
+import { createSession, getSessionMessages, getSessions } from '@/api/chat'
 
 // WebSocket Hook
-import {useChatWebSocket} from '@/utils/websocket'
+import { useChatWebSocket } from '@/utils/websocket'
+import {localStores} from "@/stores/localStores.js";
 
 // 状态管理
 const sessions = ref([])
 const currentSession = ref(null)
 const messagesMap = ref(new Map()) // 按会话ID存储消息
 
+const  store = localStores()
 // WebSocket连接
 const {
   connect,
   disconnect,
   isConnected,
+  subscribeToRoom,
+  unsubscribeFromRoom,
   sendPrivateMessage,
-  privateMessages,
+  getMessagesBySession,
   error
 } = useChatWebSocket()
 
@@ -104,26 +108,9 @@ onMounted(async () => {
     // 连接WebSocket
     connect()
 
-    // 监听私聊消息
-    watch(privateMessages, (newMessages) => {
-      if (newMessages.length === 0) return
-
-      newMessages.forEach(message => {
-        const sessionId = message.sessionId
-        if (sessionId) {
-          const existingMessages = messagesMap.value.get(sessionId) || []
-          messagesMap.value.set(sessionId, [...existingMessages, message])
-        } else {
-          console.warn('收到无sessionId的私聊消息:', message)
-        }
-      })
-    })
-
     // 监听错误
     watch(error, (err) => {
-      if (err) {
-        ElMessage.error('WebSocket错误: ' + err)
-      }
+      if (err) ElMessage.error('WebSocket错误: ' + err)
     })
   } catch (error) {
     ElMessage.error('初始化聊天室失败: ' + error.message)
@@ -132,6 +119,7 @@ onMounted(async () => {
 
 // 清理
 onUnmounted(() => {
+  unsubscribeFromRoom(currentSession.value?.id)
   disconnect()
 })
 
@@ -140,27 +128,24 @@ const loadSessions = async () => {
   try {
     const response = await getSessions()
     sessions.value = response.data
+    // 默认选择第一个会话
+    if (sessions.value.length > 0) {
+      handleSelectSession(sessions.value[0])
+    }
   } catch (error) {
     ElMessage.error('加载会话列表失败: ' + error.message)
   }
 }
 
-// 加载更多消息
-const loadMoreMessages = async (lastMessageId) => {
-  if (!currentSession.value) return
-
-  try {
-    const response = await getSessionMessages(currentSession.value.id, lastMessageId)
-    const existingMessages = messagesMap.value.get(currentSession.value.id) || []
-    messagesMap.value.set(currentSession.value.id, [...response.data, ...existingMessages])
-  } catch (error) {
-    ElMessage.error('加载更多消息失败: ' + error.message)
-  }
-}
-
 // 选择会话
 const handleSelectSession = async (session) => {
+  // 取消订阅之前的会话
+  if (currentSession.value) {
+    unsubscribeFromRoom(currentSession.value.id)
+  }
+
   currentSession.value = session
+  subscribeToRoom(session.id)
 
   // 如果还没有加载过此会话的消息，则加载
   if (!messagesMap.value.has(session.id)) {
@@ -177,8 +162,9 @@ const handleSelectSession = async (session) => {
 const handleCreateSession = async (userId) => {
   try {
     const response = await createSession(userId)
-    sessions.value.push(response.data)
-    currentSession.value = response.data
+    const newSession = response.data
+    sessions.value.push(newSession)
+    handleSelectSession(newSession)
   } catch (error) {
     ElMessage.error('创建会话失败: ' + error.message)
   }
@@ -187,20 +173,45 @@ const handleCreateSession = async (userId) => {
 // 发送消息
 const sendMessage = (content) => {
   if (!currentSession.value) return
-
   try {
-    console.log('发送消息:', content, '到会话:', currentSession.value.id)
     sendPrivateMessage(content, currentSession.value.id)
+    // 更新本地消息列表
+    const existingMessages = messagesMap.value.get(currentSession.value.id) || []
+    messagesMap.value.set(currentSession.value.id, [
+      ...existingMessages,
+      {
+        content,
+        sender: '我',
+        senderId: store.userInfo.userInfo.userId,
+        sessionId: currentSession.value.id,
+        timestamp: new Date().toISOString()
+      }
+    ])
   } catch (error) {
     ElMessage.error('发送消息失败: ' + error.message)
   }
 }
 
-const handleTypingStop = () => {
-  console.log("停止输入")
+// 加载更多消息
+const loadMoreMessages = async (lastMessageId) => {
+  if (!currentSession.value) return
+
+  try {
+    const response = await getSessionMessages(currentSession.value.id, lastMessageId)
+    const existingMessages = messagesMap.value.get(currentSession.value.id) || []
+    messagesMap.value.set(currentSession.value.id, [...response.data, ...existingMessages])
+  } catch (error) {
+    ElMessage.error('加载更多消息失败: ' + error.message)
+  }
 }
+
+// 输入状态处理
 const handleTypingStart = () => {
   console.log("开始输入")
+}
+
+const handleTypingStop = () => {
+  console.log("停止输入")
 }
 
 // 显示会话信息
@@ -208,6 +219,7 @@ const showSessionInfo = () => {
   console.log('显示会话信息:', currentSession.value)
 }
 </script>
+
 
 <style lang="scss" scoped>
 .chat-room {

@@ -1,12 +1,13 @@
 // /utils/websocket.js
-import {Client} from '@stomp/stompjs';
-import {ref} from 'vue';
-import {localStores} from '@/stores/localStores';
+import { Client } from '@stomp/stompjs';
+import { ref } from 'vue';
+import { localStores } from '@/stores/localStores';
 
 let client = null;
 const isConnected = ref(false);
-const privateMessages = ref([]);
+const privateMessages = ref({}); // 改为对象，按sessionId存储消息
 const error = ref(null);
+const subscriptions = ref({}); // 存储所有订阅
 
 const store = localStores();
 
@@ -37,13 +38,33 @@ export function useChatWebSocket() {
         client.activate();
     };
 
-    // 断开连接
-    const disconnect = () => {
-        if (client) {
-            client.deactivate();
-            client = null;
-            isConnected.value = false;
-            console.log('WebSocket disconnected');
+    // 订阅特定聊天室
+    const subscribeToRoom = (sessionId) => {
+        if (!client?.connected || subscriptions.value[sessionId]) return;
+
+        console.log(`[WebSocket] 正在订阅聊天室: ${sessionId}`);
+
+        const subscription = client.subscribe(
+            `/chatRoom.private.${sessionId}`,
+            (message) => {
+                console.log(`[WebSocket] 收到来自聊天室 ${sessionId} 的消息:`, message);
+                const msg = JSON.parse(message.body);
+                console.log('解析后的消息内容:', msg);
+                handleIncomingMessage(msg, sessionId);
+            }
+        );
+
+        subscriptions.value[sessionId] = subscription;
+        privateMessages.value[sessionId] = privateMessages.value[sessionId] || [];
+        console.log(`[WebSocket] 聊天室 ${sessionId} 订阅成功`);
+    };
+
+    // 取消订阅特定聊天室
+    const unsubscribeFromRoom = (sessionId) => {
+        if (subscriptions.value[sessionId]) {
+            subscriptions.value[sessionId].unsubscribe();
+            delete subscriptions.value[sessionId];
+            console.log(`[WebSocket] 已取消订阅聊天室: ${sessionId}`);
         }
     };
 
@@ -51,40 +72,24 @@ export function useChatWebSocket() {
     const onConnect = (frame) => {
         isConnected.value = true;
         error.value = null;
-        console.log('WebSocket connected successfully');
-
-        // 订阅私有频道
-        client.subscribe(`/user/chatRoom.private.${store.userInfo.userInfo.userId}`, (message) => {
-            const msg = JSON.parse(message.body);
-            handleIncomingMessage(msg);
-        });
+        console.log('[WebSocket] 连接成功', frame);
     };
 
-    // 错误处理
-    const onError = (frame) => {
-        error.value = `WebSocket error: ${frame.headers.message}`;
-        console.error('STOMP error:', frame);
-        isConnected.value = false;
-    };
-
-    // 断开连接处理
-    const onDisconnect = () => {
-        isConnected.value = false;
-        console.log('WebSocket disconnected');
-    };
-
-    // 处理接收到的消息
-    const handleIncomingMessage = (message) => {
+    // 处理接收到的消息（按sessionId分类）
+    const handleIncomingMessage = (message, sessionId) => {
+        console.log(`[WebSocket] 处理聊天室 ${sessionId} 的消息`, message);
         message.timestamp = new Date(message.timestamp);
-        privateMessages.value.push(message);
-        console.log("privateMessages.value", privateMessages.value)
+        if (!privateMessages.value[sessionId]) {
+            privateMessages.value[sessionId] = [];
+        }
+        privateMessages.value[sessionId].push(message);
+
+        console.log(`[WebSocket] 聊天室 ${sessionId} 当前消息:`, privateMessages.value[sessionId]);
     };
 
     // 发送私聊消息
     const sendPrivateMessage = (content, sessionId) => {
-        if (!client?.connected) {
-            throw new Error('WebSocket not connected');
-        }
+        if (!client?.connected) throw new Error('WebSocket not connected');
 
         const message = {
             content: content,
@@ -94,31 +99,52 @@ export function useChatWebSocket() {
             timestamp: new Date().toISOString()
         };
 
+        console.log(`[WebSocket] 发送消息到聊天室 ${sessionId}:`, message);
+
         client.publish({
             destination: `/app/privateChat.${sessionId}`,
             body: JSON.stringify(message),
-            headers: {Authorization: `Bearer ${store.tokenInfo.token}`}
+            headers: { Authorization: `Bearer ${store.tokenInfo.token}` }
         });
     };
 
+    // 获取特定聊天室的消息
+    const getMessagesBySession = (sessionId) => {
+        return privateMessages.value[sessionId] || [];
+    };
+
+    // 断开连接
+    const disconnect = () => {
+        if (client) {
+            Object.keys(subscriptions.value).forEach(unsubscribeFromRoom);
+            client.deactivate();
+            client = null;
+            isConnected.value = false;
+            console.log('[WebSocket] 已断开连接');
+        }
+    };
+
+    // 错误处理
+    const onError = (frame) => {
+        error.value = `WebSocket error: ${frame.headers.message}`;
+        console.error('[WebSocket] STOMP协议错误:', frame);
+        isConnected.value = false;
+    };
+
+    // 断开连接处理
+    const onDisconnect = () => {
+        isConnected.value = false;
+        console.log('[WebSocket] 连接已断开');
+    };
+
     return {
-        // 连接管理
         connect,
         disconnect,
         isConnected,
-
-        // 消息发送
+        subscribeToRoom,
+        unsubscribeFromRoom,
         sendPrivateMessage,
-
-        // 数据
-        privateMessages,
-
-        // 错误处理
-        error,
-
-        // 工具方法
-        clearMessages: () => {
-            privateMessages.value = [];
-        }
+        getMessagesBySession,
+        error
     };
 }

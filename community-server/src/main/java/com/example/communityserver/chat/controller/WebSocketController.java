@@ -21,8 +21,8 @@ public class WebSocketController {
 
     @MessageMapping("/privateChat.{sessionId}")
     public void singleChat(@Payload ChatMessage message, @DestinationVariable Long sessionId) {
-        log.info("收到单聊消息: {}", message);
+        log.info("收到聊天消息: {}", message);
         log.info("sessionId: {}", sessionId);
-        messagingTemplate.convertAndSend("/chatRoom.private." + message.getSessionId(), message);
+        messagingTemplate.convertAndSend("/chatRoom.private." + sessionId, message);
     }
 }
