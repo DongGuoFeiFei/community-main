@@ -166,8 +166,6 @@ const sendMessage = async () => {
     const sessionId = '1145141919810'; // 测试用聊天室ID
     send(`/app/privateChat.${sessionId}`, message);
 
-    // 本地显示自己发送的消息
-    messages.value.push(message);
     inputMessage.value = '';
     scrollToBottom();
   } catch (err) {
