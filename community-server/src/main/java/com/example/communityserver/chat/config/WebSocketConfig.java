@@ -46,6 +46,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
-
-    // TODO: 2025/8/27 添加监听和异常处理
 }

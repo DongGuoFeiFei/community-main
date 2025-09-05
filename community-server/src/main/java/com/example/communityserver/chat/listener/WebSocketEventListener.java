@@ -1,5 +1,6 @@
 package com.example.communityserver.chat.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -16,7 +17,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
  * @create: 2025-09-03
  **/
 
-
+@Slf4j
 @Component
 public class WebSocketEventListener {
 
@@ -28,13 +29,13 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         userNumber++;
         messagingTemplate.convertAndSend("/topic/join", userNumber);
-        System.out.println("我来了哦~");
+        log.info("我来了哦~");
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         userNumber--;
         messagingTemplate.convertAndSend("/topic/leave", userNumber);
-        System.out.println("我走了哦~");
+        log.info("我走了哦~");
     }
 }
