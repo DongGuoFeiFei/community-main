@@ -68,7 +68,7 @@ public class AnnouncementController {
 
     @ApiOperation("获取激活的公告")
     @GetMapping("/active")
-    @RequiresPermission(api = {"system:announcement:active:get"}, role = {"super_admin"})
+//    @RequiresPermission(api = {"system:announcement:active:get"}, role = {"super_admin"})
     public Result<List<SysAnnouncement>> getActiveAnnouncements() {
         List<SysAnnouncement> announcements = announcementService.getActiveAnnouncements();
         return Result.success(announcements);
@@ -76,7 +76,7 @@ public class AnnouncementController {
 
     @ApiOperation("获取最新的公告")
     @GetMapping("/latest")
-    @RequiresPermission(api = {"system:announcement:latest:get"}, role = {"super_admin"})
+//    @RequiresPermission(api = {"system:announcement:latest:get"}, role = {"super_admin"})
     public Result<SysAnnouncement> getLatestAnnouncement() {
         SysAnnouncement announcement = announcementService.getLatestAnnouncement();
         return Result.success(announcement);

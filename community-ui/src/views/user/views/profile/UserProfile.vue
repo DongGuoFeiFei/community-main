@@ -91,8 +91,9 @@ import {localStores} from '@/stores/localStores.js'
 import {Camera} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import dayjs from 'dayjs'
-import { uploadFile} from "@/api/index.js";
+import {uploadFile} from "@/api/index.js";
 import {updateUserCoverId, updateUserProfile} from "@/api/user.js";
+
 const lStore = localStores()
 const loading = ref(false)
 
@@ -176,9 +177,11 @@ const submitForm = async () => {
   try {
     // 这里添加保存逻辑
     const res = await updateUserProfile(formData)
-    lStore.userInfo.userInfo = {
-      ...res.data
-    }
+    lStore.userInfo.userInfo.username = formData.username
+    lStore.userInfo.userInfo.nickname = formData.nickname
+    lStore.userInfo.userInfo.email = formData.email
+    lStore.userInfo.userInfo.phone = formData.phone
+
     ElMessage.success('个人信息已更新')
   } catch (error) {
     ElMessage.error('保存失败: ' + error.message)

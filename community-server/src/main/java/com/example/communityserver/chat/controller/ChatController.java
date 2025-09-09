@@ -39,7 +39,8 @@ public class ChatController {
         List<ImChatSession> sessions = chatSessionService.getSessions();
         return Result.success(sessions);
     }
-//    // 获取会话消息
+
+    //    // 获取会话消息
 //export const getSessionMessages = (sessionId, lastMessageId = null) => {
 //    const params = {}
 //    if (lastMessageId) {
@@ -47,13 +48,13 @@ public class ChatController {
 //    }
 //    return request.get(`/chat/sessions/${sessionId}/messages`, { params })
 //}
-@ApiOperation("获取会话消息")
-@GetMapping("sessions/{sessionId}/messages")
+    @ApiOperation("获取会话消息")
+    @GetMapping("sessions/{sessionId}/messages")
 //    @RequiresPermission(api = {"chat:sessions:{id}:messages:get"}, role = {"super_admin"}, logical = Logical.OR)
-public Result<List<ImMessage>> getSessionMessages(@PathVariable Long sessionId) {
-    List<ImMessage> sessions = chatSessionService.getSessionMessages(sessionId);
-    return Result.success(sessions);
-}
+    public Result<List<ImMessage>> getSessionMessages(@PathVariable Long sessionId) {
+        List<ImMessage> sessions = chatSessionService.getSessionMessages(sessionId);
+        return Result.success(sessions);
+    }
 
 
 }

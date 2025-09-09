@@ -31,9 +31,9 @@
         <el-menu-item index="follow&fans">
           <span>关注&粉丝</span>
         </el-menu-item>
-        <el-menu-item index="pointAccount">
-          <span>积分</span>
-        </el-menu-item>
+<!--        <el-menu-item index="pointAccount">-->
+<!--          <span>积分</span>-->
+<!--        </el-menu-item>-->
       </el-menu>
 
       <div class="user-section">
