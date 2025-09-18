@@ -29,11 +29,11 @@ public class WebSocketController {
                 message
         );
 
-//        // 同时发送给发送者自己（确保发送者也能收到）
-//        messagingTemplate.convertAndSendToUser(
-//                message.getSenderId().toString(),
-//                "/queue/private",
-//                message
-//        );
+        // 同时发送给发送者自己（确保发送者也能收到）
+        messagingTemplate.convertAndSendToUser(
+                message.getSenderId().toString(),
+                "/queue/private",
+                message
+        );
     }
 }

@@ -1,64 +1,38 @@
 <template>
-  <div :class="['message-item', { 'is-self': isSelf, 'is-system': isSystem }]">
+  <div class="message-item" :class="{ 'self-message': isSelf }">
     <div class="message-avatar">
-      <el-avatar v-if="!isSystem" :size="36" :src="message.senderAvatar"/>
+      <el-avatar :src="message.senderAvatar" :size="36" />
     </div>
-
     <div class="message-content">
-      <div class="message-sender" v-if="!isSelf && !isSystem">
-        {{ message.senderName }}
+      <div class="message-info">
+        <span class="sender-name">{{ message.senderName }}</span>
+        <span class="message-time">{{ formatTime(message.sendTime) }}</span>
       </div>
-      <div :class="['message-bubble', { 'system-message': isSystem }]">
-        <div v-if="isSystem" class="system-content">
-          {{ message.content }}
-        </div>
-        <div v-else>
-          {{ message.content }}
-        </div>
-      </div>
-
-      <div class="message-time">
-        {{ formatTime(message.sendTime || message.timestamp) }}
+      <div class="message-body">
+        <div class="message-text">{{ message.content }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {computed} from 'vue'
-import {localStores} from '@/stores/localStores'
-import dayjs from 'dayjs'
+import { defineProps, computed } from 'vue';
+import dayjs from 'dayjs';
 
 const props = defineProps({
   message: {
     type: Object,
     required: true
   },
-  session: {
-    type: Object,
-    required: true
+  isSelf: {
+    type: Boolean,
+    default: false
   }
-})
+});
 
-console.log(props.message)
-
-const store = localStores()
-
-// 判断是否是自己的消息
-const isSelf = computed(() => {
-  return props.message.senderId === store.userInfo.userInfo.userId
-})
-
-// 判断是否是系统消息
-const isSystem = computed(() => {
-  return props.message.contentType === 6 // 系统消息类型
-})
-
-// 格式化时间
 const formatTime = (time) => {
-  if (!time) return ''
-  return dayjs(time).format('HH:mm')
-}
+  return dayjs(time).format('HH:mm');
+};
 </script>
 
 <style lang="scss" scoped>
@@ -66,61 +40,55 @@ const formatTime = (time) => {
   display: flex;
   margin-bottom: 16px;
 
-  &.is-self {
-    flex-direction: row-reverse;
-
-    .message-content {
-      align-items: flex-end;
-    }
-
-    .message-bubble {
-      background-color: #1890ff;
-      //color: white;
-    }
-  }
-
-  &.is-system {
-    justify-content: center;
-
-    .message-bubble {
-      background-color: transparent;
-      color: #999;
-    }
-  }
-
   .message-avatar {
-    margin: 0 12px;
+    margin-right: 12px;
   }
 
   .message-content {
-    display: flex;
-    flex-direction: column;
-    max-width: 60%;
+    max-width: 70%;
 
-    .message-sender {
-      font-size: 12px;
-      color: #999;
+    .message-info {
       margin-bottom: 4px;
-    }
 
-    .message-bubble {
-      padding: 8px 12px;
-      border-radius: 4px;
-      background-color: white;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-      word-break: break-word;
+      .sender-name {
+        font-size: 14px;
+        font-weight: 500;
+        margin-right: 8px;
+      }
 
-      &.system-message {
-        background-color: transparent;
-        box-shadow: none;
-        font-style: italic;
+      .message-time {
+        font-size: 12px;
+        color: #999;
       }
     }
 
-    .message-time {
-      font-size: 12px;
-      color: #999;
-      margin-top: 4px;
+    .message-body {
+      .message-text {
+        padding: 8px 12px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        word-break: break-word;
+      }
+    }
+  }
+
+  &.self-message {
+    flex-direction: row-reverse;
+
+    .message-avatar {
+      margin-right: 0;
+      margin-left: 12px;
+    }
+
+    .message-content {
+      text-align: right;
+
+      .message-body {
+        .message-text {
+          background: #409eff;
+          color: white;
+        }
+      }
     }
   }
 }

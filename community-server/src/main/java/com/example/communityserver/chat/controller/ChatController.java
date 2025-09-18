@@ -2,6 +2,7 @@ package com.example.communityserver.chat.controller;
 
 import com.example.communityserver.chat.entity.model.ImChatSession;
 import com.example.communityserver.chat.entity.model.ImMessage;
+import com.example.communityserver.chat.entity.response.SessionDetailVo;
 import com.example.communityserver.chat.service.IImChatSessionService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -40,20 +41,27 @@ public class ChatController {
         return Result.success(sessions);
     }
 
-    //    // 获取会话消息
-//export const getSessionMessages = (sessionId, lastMessageId = null) => {
-//    const params = {}
-//    if (lastMessageId) {
-//        params.lastMessageId = lastMessageId
-//    }
-//    return request.get(`/chat/sessions/${sessionId}/messages`, { params })
-//}
     @ApiOperation("获取会话消息")
     @GetMapping("sessions/{sessionId}/messages")
 //    @RequiresPermission(api = {"chat:sessions:{id}:messages:get"}, role = {"super_admin"}, logical = Logical.OR)
     public Result<List<ImMessage>> getSessionMessages(@PathVariable Long sessionId) {
         List<ImMessage> sessions = chatSessionService.getSessionMessages(sessionId);
         return Result.success(sessions);
+    }
+
+    //    /**
+// * 获取会话详情
+// * @param {number} sessionId 会话ID
+// */
+//export const getSessionDetail = (sessionId) => {
+//    return request.get(`/chat/sessions/${sessionId}`);
+//};
+    @ApiOperation("获取会话详情")
+    @GetMapping("sessions/{sessionId}")
+//    @RequiresPermission(api = {"chat:sessions:{id}:get"}, role = {"super_admin"}, logical = Logical.OR)
+    public Result<SessionDetailVo> getSessionDetail(@PathVariable Long sessionId) {
+        SessionDetailVo sessionDetailVo = chatSessionService.getSessionDetail(sessionId);
+        return Result.success(sessionDetailVo);
     }
 
 

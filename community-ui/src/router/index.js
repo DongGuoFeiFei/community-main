@@ -80,13 +80,19 @@ const router = createRouter({
             }
         },
         {
-            path: '/ws-chat',
-            name: 'ws-chat',
+            path: '/chat',
+            name: 'chat',
             component: () => import("@/views/pages/views/wsChat/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "聊天室"
             }
+        },
+        {
+            path: '/chat/:sessionId',
+            name: 'ChatDetail',
+            component: () => import("@/views/pages/views/wsChat/components/ChatDetailView.vue"),
+            meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',

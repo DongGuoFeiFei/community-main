@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.chat.entity.model.ImChatSession;
 import com.example.communityserver.chat.entity.model.ImMessage;
 import com.example.communityserver.chat.entity.model.ImSessionMember;
+import com.example.communityserver.chat.entity.response.SessionDetailVo;
 import com.example.communityserver.chat.mapper.ImChatSessionMapper;
 import com.example.communityserver.chat.mapper.ImMessageMapper;
 import com.example.communityserver.chat.mapper.ImSessionMemberMapper;
 import com.example.communityserver.chat.service.IImChatSessionService;
 import com.example.communityserver.security.util.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,15 +43,23 @@ public class ImChatSessionServiceImpl extends ServiceImpl<ImChatSessionMapper, I
     public List<ImChatSession> getSessions() {
         List<ImSessionMember> imSessionMembers = sessionMemberMapper.selectList(new LambdaQueryWrapper<ImSessionMember>().eq(ImSessionMember::getUserId, SecurityUtils.getLoginUserId()));
         List<Long> sessionIds = imSessionMembers.stream().map(ImSessionMember::getSessionId).collect(Collectors.toList());
-        List<ImChatSession> imChatSessions = chatSessionMapper.selectList(new LambdaQueryWrapper<ImChatSession>()
-                .in(!sessionIds.isEmpty(), ImChatSession::getId, sessionIds));
+        List<ImChatSession> imChatSessions = chatSessionMapper.selectList(new LambdaQueryWrapper<ImChatSession>().in(!sessionIds.isEmpty(), ImChatSession::getId, sessionIds));
         return imChatSessions;
     }
 
     @Override
     public List<ImMessage> getSessionMessages(Long sessionId) {
-        List<ImMessage> imMessages = messageMapper.selectList(new LambdaQueryWrapper<ImMessage>()
-                .eq(ImMessage::getSessionId, sessionId));
+        List<ImMessage> imMessages = messageMapper.selectList(new LambdaQueryWrapper<ImMessage>().eq(ImMessage::getSessionId, sessionId));
         return imMessages;
+    }
+
+    @Override
+    public SessionDetailVo getSessionDetail(Long sessionId) {
+        SessionDetailVo sessionDetailVo = new SessionDetailVo();
+        ImChatSession imChatSession = chatSessionMapper.selectById(sessionId);
+        BeanUtils.copyProperties(imChatSession, sessionDetailVo);
+        ImSessionMember imSessionMember = sessionMemberMapper.selectOne(new LambdaQueryWrapper<ImSessionMember>().eq(ImSessionMember::getSessionId, sessionId).ne(ImSessionMember::getUserId, SecurityUtils.getLoginUserId()));
+        BeanUtils.copyProperties(imSessionMember, sessionDetailVo);
+        return sessionDetailVo;
     }
 }
