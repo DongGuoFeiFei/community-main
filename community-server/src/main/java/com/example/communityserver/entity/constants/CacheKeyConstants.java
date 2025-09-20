@@ -28,6 +28,7 @@ public class CacheKeyConstants {
     public static final String UNREAD_TYPE_VO_COUNT = "unread_count_by_type:";
     public static final String CAPTCHA_CODE = "captcha:code:";
     public static final String SITE_STATISTICS = "site:statistics:";
+    public static final String CHAT_SESSION_MESSAGES = "chat:session:message:";
     private static final String ONLINE_USERS_KEY = "chat:online:users";
     private static final String SESSION_MESSAGES_KEY = "chat:session:messages:";
     private static final String SESSION_INFO_KEY = "chat:session:info:";

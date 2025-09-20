@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Builder
@@ -18,11 +18,11 @@ public class ChatMessage {
     private String sender;
     private String roomId;
     private Long senderId;
-    private LocalDateTime timestamp;
+    private Date timestamp;
     private String receiver;
     private String messageId;
 
     public enum MessageType {
-        JOIN, LEAVE, CHAT, TYPING, SYSTEM, READ_RECEIPT,TYPING_START,TYPING_STOP
+        JOIN, LEAVE, CHAT, TYPING, SYSTEM, READ_RECEIPT, TYPING_START, TYPING_STOP
     }
 }

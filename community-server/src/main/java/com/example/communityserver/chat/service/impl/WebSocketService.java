@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class WebSocketService {
         message.setType(ChatMessage.MessageType.SYSTEM);
         message.setSender("System");
         message.setContent(content);
-        message.setTimestamp(LocalDateTime.now());
+        message.setTimestamp(new Date());
 
         messagingTemplate.convertAndSend("/topic/system", message);
     }
@@ -41,7 +42,7 @@ public class WebSocketService {
         receipt.setSender("System");
         receipt.setContent("Message read");
         receipt.setMessageId(messageId);
-        receipt.setTimestamp(LocalDateTime.now());
+        receipt.setTimestamp(new Date());
 
         messagingTemplate.convertAndSendToUser(toUser, "/queue/receipts", receipt);
     }

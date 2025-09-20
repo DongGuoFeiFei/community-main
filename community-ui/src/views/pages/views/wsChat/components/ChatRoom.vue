@@ -2,7 +2,7 @@
   <div class="chat-room">
     <div class="chat-header">
       <div class="header-info">
-        <el-avatar :src="currentSession.avatar" :size="40" />
+        <el-avatar :src="currentSession.avatar" :size="40"/>
         <div class="header-text">
           <div class="session-name">{{ currentSession.name }}</div>
           <div class="session-status">
@@ -12,14 +12,16 @@
         </div>
       </div>
       <div class="header-actions">
-        <el-button type="text" icon="el-icon-more" @click="showMoreActions" />
+        <el-button type="text" icon="el-icon-more" @click="showMoreActions"/>
       </div>
     </div>
 
     <div class="chat-content">
       <div class="message-list" ref="messageListRef">
         <div v-if="loading" class="loading-more">
-          <el-icon class="is-loading"><loading /></el-icon>
+          <el-icon class="is-loading">
+            <loading/>
+          </el-icon>
           <span>加载中...</span>
         </div>
 
@@ -41,8 +43,8 @@
             @keyup.enter="sendMessage"
         />
         <div class="input-actions">
-          <el-button type="text" icon="el-icon-picture" @click="showEmojiPicker" />
-          <el-button type="text" icon="el-icon-folder" @click="showFilePicker" />
+          <el-button type="text" icon="el-icon-picture" @click="showEmojiPicker"/>
+          <el-button type="text" icon="el-icon-folder" @click="showFilePicker"/>
           <el-button
               type="primary"
               size="small"
@@ -58,11 +60,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import { Loading } from '@element-plus/icons-vue';
-import { useChatWebSocket } from '@/utils/websocket';
-import { localStores } from '@/stores/localStores';
-import { getMessages, markMessageAsRead } from '@/api/message';
+import {computed, nextTick, onMounted, onUnmounted, ref} from 'vue';
+import {Loading} from '@element-plus/icons-vue';
+import {useChatWebSocket} from '@/utils/websocket';
+import {localStores} from '@/stores/localStores';
+import {getMessages, markMessageAsRead} from '@/api/message';
 import MessageItem from './MessageItem.vue';
 
 const props = defineProps({
@@ -183,7 +185,7 @@ const initWebSocket = async () => {
 const handleScroll = () => {
   if (!messageListRef.value) return;
 
-  const { scrollTop } = messageListRef.value;
+  const {scrollTop} = messageListRef.value;
   if (scrollTop < 100 && hasMore.value) {
     loadMessages();
   }

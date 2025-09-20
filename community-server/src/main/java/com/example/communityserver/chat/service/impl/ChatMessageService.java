@@ -3,6 +3,7 @@ package com.example.communityserver.chat.service.impl;
 import com.example.communityserver.chat.entity.model.ImMessage;
 import com.example.communityserver.chat.entity.request.ChatMessage;
 import com.example.communityserver.chat.mapper.ImMessageMapper;
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -19,13 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
- * TODO
+ * 聊天消息服务实现类
  * <p>
  *
  * @author: DongGuo
  * @create: 2025-08-30
  **/
-
 
 @Service
 @Slf4j
@@ -44,7 +45,7 @@ public class ChatMessageService {
      */
     @PostConstruct
     public void init() {
-        // 启动定时批量插入任务
+        // 启动定时批量插入任务，延迟5秒后每5秒执行一次批量插入
         Executors.newSingleThreadScheduledExecutor()
                 .scheduleAtFixedRate(this::batchInsertMessages, 5, 5, TimeUnit.SECONDS);
     }
@@ -92,9 +93,12 @@ public class ChatMessageService {
      * 缓存到Redis（最近200条消息）
      */
     private void cacheMessageToRedis(ChatMessage message) {
-        String redisKey = "chat:session:" + message.getSessionId() + ":messages";
-        redisTemplate.opsForList().leftPush(redisKey, message);
-        redisTemplate.opsForList().trim(redisKey, 0, 199); // 控制内存占用
+        String redisKey = CacheKeyConstants.CHAT_SESSION_MESSAGES + message.getSessionId();
+        message.setTimestamp(new Date());
+        redisTemplate.opsForList().rightPush(redisKey, message);
+        // 保留最近的200条消息，修正trim范围为0到199（包含）
+        redisTemplate.opsForList().trim(redisKey, -200, -1);
+        redisTemplate.expire(redisKey, 3, TimeUnit.DAYS);
     }
 
     private ImMessage convertToDbMessage(ChatMessage chatMessage) {

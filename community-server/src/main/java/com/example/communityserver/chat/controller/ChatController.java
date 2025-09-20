@@ -4,6 +4,7 @@ import com.example.communityserver.chat.entity.model.ImChatSession;
 import com.example.communityserver.chat.entity.model.ImMessage;
 import com.example.communityserver.chat.entity.response.SessionDetailVo;
 import com.example.communityserver.chat.service.IImChatSessionService;
+import com.example.communityserver.chat.service.IImMessageService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,9 @@ public class ChatController {
     @Autowired
     private IImChatSessionService chatSessionService;
 
+    @Autowired
+    private IImMessageService iImMessageService;
+
     @ApiOperation("获取会话列表")
     @GetMapping("sessions")
 //    @RequiresPermission(api = {"chat:sessions:get"}, role = {"super_admin"}, logical = Logical.OR)
@@ -49,13 +53,6 @@ public class ChatController {
         return Result.success(sessions);
     }
 
-    //    /**
-// * 获取会话详情
-// * @param {number} sessionId 会话ID
-// */
-//export const getSessionDetail = (sessionId) => {
-//    return request.get(`/chat/sessions/${sessionId}`);
-//};
     @ApiOperation("获取会话详情")
     @GetMapping("sessions/{sessionId}")
 //    @RequiresPermission(api = {"chat:sessions:{id}:get"}, role = {"super_admin"}, logical = Logical.OR)
@@ -64,5 +61,12 @@ public class ChatController {
         return Result.success(sessionDetailVo);
     }
 
+    @ApiOperation("获取会话消息历史")
+    @GetMapping("messages")
+//    @RequiresPermission(api = {"chat:messages:get"}, role = {"super_admin"}, logical = Logical.OR)
+    public Result<List<ImMessage>> getMessages(Long sessionId, Long lastMessageId) {
+        List<ImMessage> imMessages = iImMessageService.getMessages(sessionId, lastMessageId);
+        return Result.success(imMessages);
+    }
 
 }
