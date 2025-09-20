@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * TODO
+ * 聊天会话表 服务实现类
  * <p>
  *
  * @author: DongGuo
@@ -42,14 +42,22 @@ public class ImChatSessionServiceImpl extends ServiceImpl<ImChatSessionMapper, I
     @Override
     public List<ImChatSession> getSessions() {
         List<ImSessionMember> imSessionMembers = sessionMemberMapper.selectList(new LambdaQueryWrapper<ImSessionMember>().eq(ImSessionMember::getUserId, SecurityUtils.getLoginUserId()));
-        List<Long> sessionIds = imSessionMembers.stream().map(ImSessionMember::getSessionId).collect(Collectors.toList());
-        List<ImChatSession> imChatSessions = chatSessionMapper.selectList(new LambdaQueryWrapper<ImChatSession>().in(!sessionIds.isEmpty(), ImChatSession::getId, sessionIds));
+        List<Long> sessionIds = imSessionMembers
+                .stream()
+                .map(ImSessionMember::getSessionId)
+                .collect(Collectors.toList());
+        List<ImChatSession> imChatSessions = chatSessionMapper.selectList(
+                new LambdaQueryWrapper<ImChatSession>()
+                        .in(!sessionIds.isEmpty(), ImChatSession::getId, sessionIds)
+        );
         return imChatSessions;
     }
 
     @Override
     public List<ImMessage> getSessionMessages(Long sessionId) {
-        List<ImMessage> imMessages = messageMapper.selectList(new LambdaQueryWrapper<ImMessage>().eq(ImMessage::getSessionId, sessionId));
+        List<ImMessage> imMessages = messageMapper.selectList(
+                new LambdaQueryWrapper<ImMessage>()
+                        .eq(ImMessage::getSessionId, sessionId));
         return imMessages;
     }
 
@@ -58,7 +66,11 @@ public class ImChatSessionServiceImpl extends ServiceImpl<ImChatSessionMapper, I
         SessionDetailVo sessionDetailVo = new SessionDetailVo();
         ImChatSession imChatSession = chatSessionMapper.selectById(sessionId);
         BeanUtils.copyProperties(imChatSession, sessionDetailVo);
-        ImSessionMember imSessionMember = sessionMemberMapper.selectOne(new LambdaQueryWrapper<ImSessionMember>().eq(ImSessionMember::getSessionId, sessionId).ne(ImSessionMember::getUserId, SecurityUtils.getLoginUserId()));
+        ImSessionMember imSessionMember = sessionMemberMapper.selectOne(
+                new LambdaQueryWrapper<ImSessionMember>()
+                        .eq(ImSessionMember::getSessionId, sessionId)
+                        .ne(ImSessionMember::getUserId, SecurityUtils.getLoginUserId())
+        );
         BeanUtils.copyProperties(imSessionMember, sessionDetailVo);
         return sessionDetailVo;
     }
