@@ -57,7 +57,7 @@ public class ImMessageServiceImpl extends ServiceImpl<ImMessageMapper, ImMessage
                 return messageMapper.selectList(
                         new LambdaQueryWrapper<ImMessage>()
                                 .lt(ImMessage::getCreateTime, imMessage.getCreateTime())
-                                .orderByDesc(ImMessage::getId)
+                                .orderByDesc(ImMessage::getCreateTime)
                                 .last("LIMIT 30")
                 );
             }
@@ -66,7 +66,7 @@ public class ImMessageServiceImpl extends ServiceImpl<ImMessageMapper, ImMessage
         // 如果 lastMessageId 为 null 或者找不到对应的消息，则查询最新的200条消息
         return messageMapper.selectList(
                 new LambdaQueryWrapper<ImMessage>()
-                        .orderByDesc(ImMessage::getId)
+                        .orderByDesc(ImMessage::getCreateTime)
                         .last("LIMIT 200")
         );
     }

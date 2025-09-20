@@ -22,6 +22,8 @@ public class WebSocketController {
     @MessageMapping("/privateChat.{sessionId}")
     public void singleChat(@Payload ChatMessage message, @DestinationVariable Long sessionId) {
 
+        log.info("接收到消息: {}", message);
+
         messageService.asyncSaveMessage(message);
         // 发送到公共的聊天室主题（所有订阅该聊天室的用户都会收到）
         messagingTemplate.convertAndSend(

@@ -1,7 +1,7 @@
 <template>
   <div class="message-item" :class="{ 'self-message': isSelf }">
     <div class="message-avatar">
-      <el-avatar :src="message.senderAvatar" :size="36" />
+      <el-avatar :src="store.baseURL + message.senderAvatar" :size="36"/>
     </div>
     <div class="message-content">
       <div class="message-info">
@@ -16,8 +16,9 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import {defineProps} from 'vue';
 import dayjs from 'dayjs';
+import {localStores} from "@/stores/localStores.js";
 
 const props = defineProps({
   message: {
@@ -30,6 +31,7 @@ const props = defineProps({
   }
 });
 
+const store = localStores()
 const formatTime = (time) => {
   return dayjs(time).format('HH:mm');
 };

@@ -28,6 +28,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {  // 实现
         // 设置创建时间字段
         this.setFieldValByName("createTime", new Date(), metaObject);
         this.setFieldValByName("createdAt", new Date(), metaObject);
+        this.setFieldValByName("sendTime", new Date(), metaObject);
         // 设置更新时间字段
         this.setFieldValByName("updatedTime", new Date(), metaObject);
         this.setFieldValByName("createAt", new Date(), metaObject);

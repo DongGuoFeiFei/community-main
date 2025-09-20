@@ -1,6 +1,7 @@
 package com.example.communityserver.chat.entity.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.example.communityserver.chat.entity.enums.MessageType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -40,7 +41,7 @@ public class ImMessage {
     @ApiModelProperty(value = "发送者头像URL")
     private String senderAvatar;
     @ApiModelProperty(value = "消息类型：1-文本，2-图片，3-文件，4-语音，5-视频，6-系统通知", example = "1")
-    private Integer contentType;
+    private MessageType contentType;
     @ApiModelProperty(value = "消息内容", example = "大家好！")
     private String content;
     @ApiModelProperty(value = "文件大小（字节）", example = "102400")
@@ -50,6 +51,7 @@ public class ImMessage {
     private Integer isDeleted;
     @ApiModelProperty(value = "客户端发送时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.INSERT)
     private Date sendTime;
     @ApiModelProperty(value = "创建时间", example = "2023-10-01 12:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -4,8 +4,11 @@ import com.example.communityserver.chat.entity.model.ImMessage;
 import com.example.communityserver.chat.entity.request.ChatMessage;
 import com.example.communityserver.chat.mapper.ImMessageMapper;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.model.User;
+import com.example.communityserver.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,8 @@ public class ChatMessageService {
     private final BlockingQueue<ImMessage> messageQueue = new LinkedBlockingQueue<>(1000);
     @Autowired
     private ImMessageMapper messageMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 初始化方法，使用@PostConstruct注解标注，表示在Bean属性设置完成后执行
@@ -46,8 +51,7 @@ public class ChatMessageService {
     @PostConstruct
     public void init() {
         // 启动定时批量插入任务，延迟5秒后每5秒执行一次批量插入
-        Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this::batchInsertMessages, 5, 5, TimeUnit.SECONDS);
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::batchInsertMessages, 5, 5, TimeUnit.SECONDS);
     }
 
     /**
@@ -71,7 +75,7 @@ public class ChatMessageService {
     private void batchInsertMessages() {
         List<ImMessage> messages = new ArrayList<>();
         messageQueue.drainTo(messages, 100); // 每次最多取100条
-
+        log.info("Batch inserting {} messages", messages);
         if (!messages.isEmpty()) {
             try {
                 messageMapper.batchInsert(messages);
@@ -94,8 +98,9 @@ public class ChatMessageService {
      */
     private void cacheMessageToRedis(ChatMessage message) {
         String redisKey = CacheKeyConstants.CHAT_SESSION_MESSAGES + message.getSessionId();
-        message.setTimestamp(new Date());
-        redisTemplate.opsForList().rightPush(redisKey, message);
+        message.setCreateTime(new Date());
+        ImMessage dbMessage = convertToDbMessage(message);
+        redisTemplate.opsForList().rightPush(redisKey, dbMessage);
         // 保留最近的200条消息，修正trim范围为0到199（包含）
         redisTemplate.opsForList().trim(redisKey, -200, -1);
         redisTemplate.expire(redisKey, 3, TimeUnit.DAYS);
@@ -103,11 +108,10 @@ public class ChatMessageService {
 
     private ImMessage convertToDbMessage(ChatMessage chatMessage) {
         ImMessage message = new ImMessage();
-        message.setSessionId(chatMessage.getSessionId());
-        // TODO: 2025/8/30  根据senderName查用户ID
-        message.setSenderId(null);
-        message.setContent(chatMessage.getContent());
-        message.setSendTime(chatMessage.getTimestamp());
+        BeanUtils.copyProperties(chatMessage, message);
+        User user = userMapper.selectById(chatMessage.getSenderId());
+        message.setSenderName(user.getNickname());
+        message.setSenderAvatar(user.getAvatar());
         return message;
     }
 }

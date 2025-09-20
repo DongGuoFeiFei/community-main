@@ -1,5 +1,6 @@
 package com.example.communityserver.chat.entity.request;
 
+import com.example.communityserver.chat.entity.enums.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,16 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class ChatMessage {
     private Long sessionId;
-    private MessageType type;
+    private MessageType contentType;
     private String content;
-    private String sender;
-    private String roomId;
     private Long senderId;
-    private Date timestamp;
-    private String receiver;
-    private String messageId;
+    private Date createTime;
 
-    public enum MessageType {
-        JOIN, LEAVE, CHAT, TYPING, SYSTEM, READ_RECEIPT, TYPING_START, TYPING_STOP
-    }
 }
