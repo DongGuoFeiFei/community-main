@@ -6,7 +6,7 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradePagePayModel;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.response.AlipayTradePagePayResponse;
-import com.example.communityserver.config.AlipayConfig;
+import com.example.communityserver.security.config.AlipayConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,14 @@ public class AlipayService {
     public String createPayment(String outTradeNo, String totalAmount, String subject, String body) {
         try {
             // 初始化支付宝客户端
-            AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig.getGatewayUrl(), alipayConfig.getAppId(), alipayConfig.getPrivateKey(), alipayConfig.getFormat(), alipayConfig.getCharset(), alipayConfig.getPublicKey(), alipayConfig.getSignType());
+            AlipayClient alipayClient = new DefaultAlipayClient(
+                    alipayConfig.getGatewayUrl(),
+                    alipayConfig.getAppId(),
+                    alipayConfig.getPrivateKey(),
+                    alipayConfig.getFormat(),
+                    alipayConfig.getCharset(),
+                    alipayConfig.getPublicKey(),
+                    alipayConfig.getSignType());
 
             // 创建请求模型
             AlipayTradePagePayModel model = new AlipayTradePagePayModel();

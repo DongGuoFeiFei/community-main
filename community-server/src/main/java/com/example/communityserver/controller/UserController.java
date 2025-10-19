@@ -39,6 +39,7 @@ public class UserController {
 
     @PostMapping("/updateUserProfile")
     @ApiOperation("修改用户信息")
+    @RequiresPermission(api = {"user:updateUserProfile:post"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateUserProfile(@RequestBody UpdateUserInfo info) {
         User user = new User();
         user.setUserId(SecurityUtils.getLoginUserId());
@@ -49,6 +50,7 @@ public class UserController {
 
     @PostMapping("/updateUserCoverId")
     @ApiOperation("更换用户头像")
+    @RequiresPermission(api = {"user:updateUserCoverId:post"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateUserCoverId(@RequestBody Long fileId) {
         Long loginUserId = SecurityUtils.getLoginUserId();
         User user = userService.getById(loginUserId);
@@ -87,7 +89,7 @@ public class UserController {
     @ApiOperation("更新用户角色")
     @PutMapping("roles")
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"user:roles:put"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateUserRoles(@RequestBody IdIdsParam param) {
         Integer is = userService.updateUserRoles(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());

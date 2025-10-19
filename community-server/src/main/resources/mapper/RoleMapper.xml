@@ -20,9 +20,9 @@
                               r.role_sort
               FROM role r
                        JOIN user_role ur ON r.role_id = ur.role_id
-                       JOIN USER u ON ur.user_id = u.user_id
+                       JOIN user u ON ur.user_id = u.user_id
               WHERE u.user_id = #{userId}
-                AND r.STATUS = 1) t
+                AND r.status = 1) t
         ORDER BY role_sort;
     </select>
     <select id="selectUserRoles" resultType="com.example.communityserver.entity.model.Role">

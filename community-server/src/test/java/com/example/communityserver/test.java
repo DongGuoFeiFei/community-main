@@ -8,6 +8,7 @@ class test {
 
     @Test
     void contextLoads() {
+        System.out.println(123);
     }
 
 

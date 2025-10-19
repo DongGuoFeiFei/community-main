@@ -87,6 +87,8 @@ const postGrowthData = ref([]);
 const loadDashboardData = async () => {
   try {
     const res = await getDashboardData();
+
+    console.log(res)
     if (res.code === 200) {
       const data = res.data;
 

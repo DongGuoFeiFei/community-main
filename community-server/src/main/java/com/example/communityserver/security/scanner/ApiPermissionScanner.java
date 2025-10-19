@@ -1,10 +1,16 @@
 package com.example.communityserver.security.scanner;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.ApiPermission;
+import com.example.communityserver.entity.model.Role;
+import com.example.communityserver.entity.model.RoleApi;
 import com.example.communityserver.mapper.ApiPermissionMapper;
+import com.example.communityserver.mapper.RoleApiMapper;
+import com.example.communityserver.mapper.RoleMapper;
 import com.example.communityserver.security.core.Logical;
 import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.utils.redis.RedisUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +23,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -28,7 +35,7 @@ import java.util.Map;
  * @create: 2025-09-20
  **/
 @Slf4j
-//@Component
+@Component
 public class ApiPermissionScanner implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
@@ -37,26 +44,82 @@ public class ApiPermissionScanner implements ApplicationListener<ApplicationRead
     @Autowired
     private ApiPermissionMapper apiPermissionMapper;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
+    @Autowired
+    private RoleApiMapper roleApiMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("开始扫描API权限");
         scanAndSaveApiPermissions();
+        redisSaveAllApiPermissions();
+        redisSaveRoleApiPermissions();
         log.info("API权限扫描完成");
     }
 
+    private void redisSaveRoleApiPermissions() {
+        // 获取全部的数据
+        List<Role> roles = roleMapper.selectList(null);
+        List<RoleApi> roleApis = roleApiMapper.selectList(null);
+        // 预处理roleApis为Map<roleId, List<apiId>>
+        Map<Long, List<Long>> roleIdToApiIds = roleApis.stream()
+                .collect(Collectors.groupingBy(
+                        RoleApi::getRoleId,
+                        Collectors.mapping(RoleApi::getApiId, Collectors.toList())
+                ));
+
+        // 收集所有需要查询的apiId
+        Set<Long> allApiIds = roleApis.stream()
+                .map(RoleApi::getApiId)
+                .collect(Collectors.toSet());
+
+        Map<Long, String> apiIdToPerms = apiPermissionMapper.selectList(
+                        new LambdaQueryWrapper<ApiPermission>().in(ApiPermission::getApiId, allApiIds)
+                ).stream()
+                .collect(Collectors.toMap(ApiPermission::getApiId, ApiPermission::getPerms));
+
+        for(Role role:roles){
+            String key = CacheKeyConstants.PERMISSION_IDENTIFIER_ROLE + role.getRoleKey();
+
+            // 从预处理Map中直接获取apiIds
+            List<String> perms = roleIdToApiIds.getOrDefault(role.getRoleId(), Collections.emptyList())
+                    .stream()
+                    .map(apiIdToPerms::get)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            // 存储
+            if (!perms.isEmpty()){
+                redisUtil.setCacheList(key,perms);
+                redisUtil.removeExpire(key);
+            }
+        }
+    }
+
+    private void redisSaveAllApiPermissions() {
+        String key = CacheKeyConstants.PERMISSION_IDENTIFIER_ALL;
+        // 清空就记录
+        redisUtil.deleteObject(key);
+        // 重新加载记录
+        List<ApiPermission> apiPermissionList = apiPermissionMapper.selectList(null);
+        List<String> collect = apiPermissionList.stream().map(ApiPermission::getPerms).collect(Collectors.toList());
+        redisUtil.setCacheList(key, collect);
+        redisUtil.removeExpire(key);
+    }
 
     private void scanAndSaveApiPermissions() {
         Map<String, Object> controllers = applicationContext.getBeansWithAnnotation(RestController.class);
 
         for (Object controller : controllers.values()) {
-            log.info("扫描控制器: {}", controller.getClass().getName());
-
             // 获取原始类
             Class<?> targetClass = AopUtils.getTargetClass(controller);
             // 获取类上的RequestMapping注解
             RequestMapping classMapping = targetClass.getAnnotation(RequestMapping.class);
             String basePath = classMapping != null && classMapping.value().length > 0 ? classMapping.value()[0] : "";
-            log.info("处理路径: {}", basePath);
             // 获取所有方法
             Method[] methods = targetClass.getMethods();
 

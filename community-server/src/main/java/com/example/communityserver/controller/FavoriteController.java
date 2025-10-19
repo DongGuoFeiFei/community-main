@@ -6,6 +6,7 @@ import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.FolderVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IFavoriteFolderService;
 import com.example.communityserver.service.IUserFavoriteService;
 import com.example.communityserver.utils.web.Result;
@@ -39,6 +40,7 @@ public class FavoriteController {
 
     @ApiOperation("获取收藏夹列表")
     @GetMapping("/folders")
+    @RequiresPermission(api = {"favorite:folders:get"}, role = {"super_admin"})
     public Result<List<FolderVo>> getFavoriteFolder() {
         // 获取文件夹列表
         List<FolderVo> voList = favoriteFolderService.getFavoriteFolder();
@@ -47,6 +49,7 @@ public class FavoriteController {
 
     @ApiOperation("新建收藏夹")
     @PostMapping("/folders")
+    @RequiresPermission(api = {"favorite:folders:post"}, role = {"super_admin"})
     public Result<FolderVo> addFolder(@RequestBody NameParam param) {
         FolderVo folderVo = favoriteFolderService.addFolder(param.getName());
         return folderVo != null ? Result.success(folderVo) : Result.error();
@@ -54,6 +57,7 @@ public class FavoriteController {
 
     @ApiOperation("收藏文章")
     @PostMapping
+    @RequiresPermission(api = {"favorite:post"}, role = {"super_admin"})
     public Result<FavArticleVo> addFavArticle(@RequestBody @Valid AddFavoriteArticle param) {
         FavArticleVo favArticleVo = userFavoriteService.addFavArticle(param);
         return favArticleVo != null ? Result.success(favArticleVo) : Result.error();
@@ -61,15 +65,17 @@ public class FavoriteController {
 
     @ApiOperation("取消文章收藏")
     @DeleteMapping("/{articleId}")
+    @RequiresPermission(api = {"favorite:delete"}, role = {"super_admin"})
     public Result<Void> delFavArticle(@PathVariable Long articleId) {
         boolean remove = userFavoriteService.removeFavorite(articleId);
         return remove ? Result.success() : Result.error();
 
     }
 
-    // TODO: 2025/6/23 目前一个文章一个人只能收藏一个，修改为可以重复收藏在不同的收藏夹中 
+    // TODO: 2025/6/23 目前一个文章一个人只能收藏一个，修改为可以重复收藏在不同的收藏夹中
     @ApiOperation("修改收藏夹名称")
     @PutMapping("/folders/{folderId}")
+    @RequiresPermission(api = {"favorite:folders:put"}, role = {"super_admin"})
     public Result<FolderVo> modifyFolderName(@PathVariable Long folderId, @RequestBody ModifyFolderNameParam param) {
         FolderVo folderVo = favoriteFolderService.modifyFolderName(folderId, param);
         return folderVo != null ? Result.success(200, "收藏夹名称更新成功", folderVo) : Result.error("收藏夹名称更新失败");
@@ -77,6 +83,7 @@ public class FavoriteController {
 
     @ApiOperation("删除收藏夹")
     @DeleteMapping("/folders/{folderId}")
+    @RequiresPermission(api = {"favorite:folders:delete"}, role = {"super_admin"})
     public Result<Void> delFolder(@PathVariable Long folderId) {
         // 删除--收藏夹下的收藏一并删除
         return favoriteFolderService.delFolder(folderId) ? Result.success(200, "收藏夹删除成功", null) : Result.error("收藏夹删除失败");
@@ -84,6 +91,7 @@ public class FavoriteController {
 
     @ApiOperation("获取收藏的文章列表")
     @GetMapping("/articles")
+    @RequiresPermission(api = {"favorite:articles:get"}, role = {"super_admin"})
     public Result<Result.PageData<UserFavoListVo>> getUserFavoListVo(GetUserFavoListParam param) {
         // 使用mybatisPlus自带分页进行分页
         Page<UserFavoListVo> page = userFavoriteService.getUserFavoListVo(param);
@@ -92,13 +100,14 @@ public class FavoriteController {
 
     @ApiOperation("移动收藏文章")
     @PutMapping("/move")
+    @RequiresPermission(api = {"favorite:move:put"}, role = {"super_admin"})
     public Result<MoveFavoriteVo> moveFavoriteVoResult(@RequestBody MoveFavoriteDto dto) {
         MoveFavoriteVo vo = userFavoriteService.moveFavoriteVoResult(dto);
         return vo != null ? Result.success(vo) : Result.error();
     }
 
     // TODO: 2025/6/23 后续添加   复制文章收藏到某收藏夹中
-    // TODO: 2025/6/25 目前不能同时收藏多个文章，前端一次性创建多次收藏夹时，有着连同效果（同时选中，同时取消，连体了） 
+    // TODO: 2025/6/25 目前不能同时收藏多个文章，前端一次性创建多次收藏夹时，有着连同效果（同时选中，同时取消，连体了）
     // TODO: 2025/6/25 后续再文章中取消收藏时，要先打开收藏夹弹窗再取消
 
     // TODO: 2025/6/27 将user_favorite中的article_id改成了target_id

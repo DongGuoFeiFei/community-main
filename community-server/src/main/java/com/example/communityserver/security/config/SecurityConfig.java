@@ -15,10 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -50,13 +52,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 关闭CSRF
-                .csrf(csrf -> csrf.disable())
+                .csrf(
+                        csrf -> csrf
+                                .disable()
+//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 // 不通过Session获取SecurityContext
-                .sessionManagement(session -> session
+                .sessionManagement(
+                        session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 // 授权配置
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(
+                        auth -> auth
                         // 允许匿名访问的接口
                         .antMatchers(
                                 "/auth/login",
@@ -73,7 +81,8 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/v2/**",
                                 "/api/websocket/*",
-                                "/ws/**", "/ws",
+                                "/ws/**",
+                                "/ws",
                                 "/websocket/**",
                                 "/sockjs/**",
                                 "/ws/**",
@@ -117,6 +126,22 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(
+                "http://www.caifurong.top",
+                "http://caifurong.top",
+                "http://api.caifurong.top",
+                "http://www.api.caifurong.top",
+                "http://admin.caifurong.top",
+                "http://www.admin.caifurong.top",
+                "https://www.caifurong.top",
+                "https://caifurong.top",
+                "https://api.caifurong.top",
+                "https://www.api.caifurong.top",
+                "https://admin.caifurong.top",
+                "https://www.admin.caifurong.top",
+                "http://localhost:5173",
+                "http://localhost:5174"
+        ));
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

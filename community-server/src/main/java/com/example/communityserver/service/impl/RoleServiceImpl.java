@@ -7,8 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.enums.ResponseCodeEnum;
+import com.example.communityserver.entity.model.ApiPermission;
 import com.example.communityserver.entity.model.Role;
+import com.example.communityserver.entity.model.RoleApi;
 import com.example.communityserver.entity.request.*;
+import com.example.communityserver.mapper.ApiPermissionMapper;
+import com.example.communityserver.mapper.RoleApiMapper;
 import com.example.communityserver.mapper.RoleMapper;
 import com.example.communityserver.service.IRoleService;
 import com.example.communityserver.utils.redis.RedisUtil;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,6 +38,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private RoleApiMapper roleApiMapper;
+
+    @Autowired
+    private ApiPermissionMapper apiPermissionMapper;
 
     @Override
     public IPage<Role> getRoleList(RoleSearchFormParam param) {
@@ -94,6 +105,32 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             redisUtil.deleteObject(CacheKeyConstants.ROLE_MANAGE_MENUS + param.getId());
         }
         return is;
+    }
+
+    @Override
+    public Integer updateRoleApis(IdIdsParam param) {
+        roleApiMapper.delete(
+                new LambdaQueryWrapper<RoleApi>()
+                        .eq(RoleApi::getRoleId, param.getId())
+        );
+
+        Integer is = roleApiMapper.insertRoleApi(param);
+        if (is > 0) {
+            // 删除原有缓存
+            Role role = roleMapper.selectById(param.getId());
+            String key = CacheKeyConstants.PERMISSION_IDENTIFIER_ROLE + role.getRoleKey();
+            redisUtil.deleteObject(key);
+
+            // 添加缓存
+            List<String> collect = apiPermissionMapper.selectList(
+                    new LambdaQueryWrapper<ApiPermission>()
+                            .in(param.getIds().size() > 0, ApiPermission::getApiId, param.getIds())
+            ).stream().map(ApiPermission::getPerms).collect(Collectors.toList());
+            redisUtil.setCacheList(key, collect);
+            redisUtil.removeExpire(key);
+        }
+        return is;
+
     }
 
 }

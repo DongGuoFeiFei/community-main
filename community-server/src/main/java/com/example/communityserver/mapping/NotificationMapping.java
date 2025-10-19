@@ -2,10 +2,7 @@ package com.example.communityserver.mapping;
 
 import com.example.communityserver.entity.model.Notification;
 import com.example.communityserver.entity.response.NotificationListVo;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -17,7 +14,7 @@ import org.mapstruct.factory.Mappers;
  * @create: 2025-06-26
  **/
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface NotificationMapping {
     NotificationMapping INSTANCE = Mappers.getMapper(NotificationMapping.class);
 

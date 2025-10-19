@@ -1,5 +1,6 @@
 package com.example.communityserver.chat.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -41,9 +42,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 基于rabbitMQ的消息代理
     }
 
-    //    原生 WebSocket API
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
-    }
+//    //    原生 WebSocket API
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public ServerEndpointExporter serverEndpointExporter() {
+//        return new ServerEndpointExporter();
+//    }
 }

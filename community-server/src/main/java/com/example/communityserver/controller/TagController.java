@@ -5,6 +5,8 @@ import com.example.communityserver.entity.model.Tag;
 import com.example.communityserver.entity.request.CreateTagParam;
 import com.example.communityserver.entity.response.TagVo;
 import com.example.communityserver.mapping.TagMapping;
+import com.example.communityserver.security.core.Logical;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -33,6 +35,7 @@ public class TagController {
 
     @ApiOperation("所有标签")
     @GetMapping("/getAllTags")
+    @RequiresPermission(api = {"tag:getAllTags:get"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<List<TagVo>> getAllTags() {
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.ne(Tag::getStatus, 2).orderByDesc(Tag::getCreateCount);
@@ -44,6 +47,7 @@ public class TagController {
 
     @ApiOperation("热门标签")
     @GetMapping("/getPopularTags")
+    @RequiresPermission(api = {"tag:getPopularTags:get"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<List<TagVo>> getPopularTags() {
         // TODO: 2025/7/5 根据用户喜好推荐热门标签
         List<TagVo> tags = tagService.getPopularTags();
@@ -52,6 +56,7 @@ public class TagController {
 
     @ApiOperation("创建新标签")
     @PostMapping("/createTag")
+    @RequiresPermission(api = {"tag:createTag:post"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<TagVo> createTag(@RequestBody CreateTagParam param) {
         // TODO: 2025/7/5 添加敏感词检测 标签
         TagVo tagVo = tagService.createTag(param);

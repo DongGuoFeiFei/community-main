@@ -33,4 +33,8 @@ public class CacheKeyConstants {
     private static final String SESSION_MESSAGES_KEY = "chat:session:messages:";
     private static final String SESSION_INFO_KEY = "chat:session:info:";
     private static final String REDIS_VERIFY_CODE_PREFIX = "verify:email:";
+
+    public static final String PERMISSION_IDENTIFIER_ALL = "permission_identifier_all";
+    public static final String PERMISSION_IDENTIFIER_ROLE = "permission_identifier_role:";
+
 }

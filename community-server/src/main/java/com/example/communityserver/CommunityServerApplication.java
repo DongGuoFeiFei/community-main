@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan({"com.example.communityserver.mapper", "com.example.communityserver.chat.mapper"})
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableTransactionManagement
-@EnableRetry // 启用重试功能
-@EnableAsync // 如果还需要异步支持
+@EnableRetry
+@EnableAsync
 @PropertySource("classpath:secrets.properties")
 public class CommunityServerApplication {
 

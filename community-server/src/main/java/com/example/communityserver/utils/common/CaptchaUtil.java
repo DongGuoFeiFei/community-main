@@ -2,7 +2,6 @@ package com.example.communityserver.utils.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.imageio.ImageIO;
@@ -68,14 +67,14 @@ public class CaptchaUtil {
 
             // 随机倾斜角度（-15到15度）
             double theta = (random.nextDouble() - 0.5) * Math.PI / 8;
-            g.rotate(theta, CHAR_SPACING * i + 15, HEIGHT/2 + 5);
+            g.rotate(theta, CHAR_SPACING * i + 15, HEIGHT / 2 + 5);
 
             // 绘制字符
             g.setColor(getRandomDarkColor());
-            g.drawString(s, CHAR_SPACING * i + 10, HEIGHT/2 + 10);
+            g.drawString(s, CHAR_SPACING * i + 10, HEIGHT / 2 + 10);
 
             // 重置旋转
-            g.rotate(-theta, CHAR_SPACING * i + 15, HEIGHT/2 + 5);
+            g.rotate(-theta, CHAR_SPACING * i + 15, HEIGHT / 2 + 5);
         }
 
         // 添加噪点（减少数量）
@@ -117,6 +116,7 @@ public class CaptchaUtil {
                 random.nextInt(256)
         );
     }
+
     // 返回数据类型
     @Getter
     @Setter

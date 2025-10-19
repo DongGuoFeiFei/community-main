@@ -55,7 +55,7 @@
                 class="control-btn"
                 icon="Refresh"
                 circle
-                @mouseenter="showTooltipText('又要找其他姐姐玩耍了嘛(╯‵□′)╯︵┻━┻')"
+                @mouseenter="showTooltipText('(╯‵□′)╯︵┻━┻')"
                 @mouseleave="hideTooltipText"
                 @click="emit('switch-model')"
             />

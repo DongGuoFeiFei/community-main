@@ -35,7 +35,7 @@ public class MenuController {
 
     @ApiOperation("获取角色管理菜单")
     @GetMapping("getUserMenuTree")
-    @RequiresPermission(role = {"super_admin", "system_admin", "view_admin"}, logical = Logical.OR)
+    @RequiresPermission( api = {"menu:getUserMenuTree:get"} ,role = {"super_admin", "system_admin", "view_admin"}, logical = Logical.OR)
     public Result<List<UserMenuTree>> getUserMenuTree() {
         List<UserMenuTree> listVo = menuService.getUserMenuTree();
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
@@ -43,7 +43,7 @@ public class MenuController {
 
     @ApiOperation("获取角色管理菜单")
     @GetMapping("tree")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:tree:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<UserMenuTree>> getMenuTree() {
         List<UserMenuTree> listVo = menuService.getMenuTree();
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
@@ -51,7 +51,7 @@ public class MenuController {
 
     @ApiOperation("获取角色菜单权限id")
     @GetMapping("{roleId}")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:{roleId}:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<Long>> getRoleMenus(@PathVariable Long roleId) {
         List<Long> listVo = menuService.getRoleMenuIds(roleId);
         return listVo != null ? Result.success(listVo) : Result.error("获取失败。");
@@ -59,7 +59,7 @@ public class MenuController {
 
     @ApiOperation("获取菜单列表")
     @GetMapping("list")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:list:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<Menu>> getMenuList(MenuSearchParam param) {
         IPage<Menu> menuIPage = menuService.getMenuList(param);
         return menuIPage != null ? Result.pageSuccess(menuIPage.getTotal(), menuIPage.getRecords()) : Result.error("获取失败。");
@@ -67,7 +67,7 @@ public class MenuController {
 
     @ApiOperation("删除菜单")
     @DeleteMapping("{menuId}")
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:{menuId}:delete"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> deleteMenu(@PathVariable Long menuId) {
         Boolean is = menuService.deleteMenu(menuId);
         return is ? Result.success() : Result.error();
@@ -75,7 +75,7 @@ public class MenuController {
 
     @ApiOperation("添加菜单")
     @PostMapping()
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:add:post"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> addMenu(@RequestBody @Validated MenuDto dto) {
         Boolean is = menuService.addMenu(dto);
         return is ? Result.success() : Result.error();
@@ -83,7 +83,7 @@ public class MenuController {
 
     @ApiOperation("更新菜单")
     @PutMapping()
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"menu:update:put"} ,role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateMenu(@RequestBody @Validated MenuDto dto) {
         Boolean is = menuService.updateMenu(dto);
         return is ? Result.success() : Result.error();

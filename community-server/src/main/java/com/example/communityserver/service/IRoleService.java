@@ -35,4 +35,6 @@ public interface IRoleService extends IService<Role> {
     Integer updateRole(AddRoleParam param);
 
     Integer updateRoleMenus(IdIdsParam param);
+
+    Integer updateRoleApis(IdIdsParam param);
 }

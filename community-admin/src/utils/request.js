@@ -4,7 +4,6 @@ import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
 import config from "@/env.js";
 
-
 const request = axios.create({
     baseURL: config.apiBaseUrl, // 后端接口的基础URL
     timeout: 5000, // 请求超时

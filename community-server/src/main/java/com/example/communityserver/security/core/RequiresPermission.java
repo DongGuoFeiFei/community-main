@@ -32,5 +32,5 @@ public @interface RequiresPermission {
      */
     String[] menu() default {};
 
-    Logical logical() default Logical.AND;
+    Logical logical() default Logical.OR;
 }

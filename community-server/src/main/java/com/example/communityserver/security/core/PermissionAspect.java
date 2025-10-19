@@ -1,15 +1,20 @@
 package com.example.communityserver.security.core;
 
+import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
+import com.example.communityserver.utils.redis.RedisUtil;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -25,9 +30,8 @@ import java.util.List;
 @Component
 public class PermissionAspect {
 
-    // TODO: 2025/8/11 先验证再基础角色权限上是否有着新增或禁止接口 后进行菜单验证（管理员进行该步骤，用户不需要） 后进行角色身份验证
-    // 整个流程，主要还是角色验证(角色身份存在禁用，用户存在多的身份)
-    // 角色有着最基础的权限，但可以增加接口数量
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 权限验证前置通知方法
@@ -39,23 +43,42 @@ public class PermissionAspect {
     public void before(RequiresPermission requiresPermission) {
 
         // 从注解中获取权限数组和逻辑关系
-        String[] permissions = requiresPermission.role();
+        String[] rolePermissions = requiresPermission.role();
+        String[] apiPermissions = requiresPermission.api();
         Logical logical = requiresPermission.logical();
 
         // 获取当前登录用户信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         // 获取用户拥有的权限列表
+
         List<String> userRoles = loginUser.getRoles();
+
+        // 获取role所有的api，去重
+        Set<String> userRoleApiPerms = new HashSet<>();
+
+        for (String role : userRoles) {
+            String roleApiPermsKey = CacheKeyConstants.PERMISSION_IDENTIFIER_ROLE + role;
+            List<String> roleApiPerms = redisUtil.getCacheList(roleApiPermsKey);
+            if (roleApiPerms != null) {
+                userRoleApiPerms.addAll(roleApiPerms);
+            }
+        }
 
         // 根据逻辑关系(AND/OR)判断用户是否具有所需权限
         boolean hasPermission;
         if (logical == Logical.AND) {
             // AND逻辑：用户必须拥有所有权限
-            hasPermission = Arrays.stream(permissions).allMatch(userRoles::contains);
+            hasPermission = Arrays.stream(apiPermissions).allMatch(userRoleApiPerms::contains);
+            if (!hasPermission) {
+                hasPermission = Arrays.stream(rolePermissions).allMatch(userRoles::contains);
+            }
         } else {
             // OR逻辑：用户只需拥有任一权限
-            hasPermission = Arrays.stream(permissions).anyMatch(userRoles::contains);
+            hasPermission = Arrays.stream(apiPermissions).anyMatch(userRoleApiPerms::contains);
+            if (!hasPermission) {
+                hasPermission = Arrays.stream(rolePermissions).anyMatch(userRoles::contains);
+            }
         }
 
         // 如果没有权限，抛出权限不足异常

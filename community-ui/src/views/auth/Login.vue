@@ -9,7 +9,7 @@
 
       <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名"/>
+          <el-input v-model="form.username" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="form.password" placeholder="请输入密码" type="password" show-password/>
@@ -51,8 +51,8 @@ const formRef = ref(null);
 const captchaImage = ref('');
 
 const form = ref({
-  username: '',
-  password: '',
+  username: 'test',
+  password: '123456',
   captchaCode: '',
   captchaKey: ''
 });
@@ -129,7 +129,7 @@ const goToForgotPassword = () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to right, #74ebd5, #acb6e5);
+  background: linear-gradient(to left, #e75fd5, #0d10bb);
 }
 
 .login-card {

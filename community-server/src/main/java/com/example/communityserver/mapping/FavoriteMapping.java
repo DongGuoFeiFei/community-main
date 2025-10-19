@@ -2,10 +2,7 @@ package com.example.communityserver.mapping;
 
 import com.example.communityserver.entity.model.UserFavorite;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**

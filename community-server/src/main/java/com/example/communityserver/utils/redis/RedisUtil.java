@@ -133,6 +133,15 @@ public class RedisUtil {
     }
 
     /**
+     * 移除key的过期时间
+     *
+     * @param key
+     */
+    public void removeExpire(String key) {
+        redisTemplate.persist(key);
+    }
+
+    /**
      * 缓存List数据
      *
      * @param key      缓存的键值

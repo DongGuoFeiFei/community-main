@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  **/
 @Slf4j
 @Service
-public class PointsGoodsService extends ServiceImpl<PointsGoodsMapper, PointsGoods> implements IPointsGoodsService {
+public class PointsGoodsServiceImpl extends ServiceImpl<PointsGoodsMapper, PointsGoods> implements IPointsGoodsService {
     @Autowired
     private PointsGoodsMapper pointsGoodsMapper;
 }

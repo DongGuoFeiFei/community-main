@@ -44,18 +44,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("用户为空");
         }
 
-        // 2. 查询用户接口权限
-        List<String> apis = userMapper.queryPermissionByUserId(user.getUserId());
+        // 2. 查询用户接口权限 该方法已被禁用，使用角色获取菜单
+//        List<String> apis = userMapper.queryPermissionByUserId(user.getUserId());
 
         // 3. 查询用户角色
         List<String> roles = roleMapper.selectRoleKeysByUserId(user.getUserId());
 
-        // 3. 查询用户菜单权限
-        // TODO: 2025/8/17 该方法已被禁用，使用角色获取菜单 
-        List<String> menus = menuMapper.selectMenuKeysByUserId(user.getUserId());
+        // 3. 查询用户菜单权限 该方法已被禁用，使用角色获取菜单
+//        List<String> menus = menuMapper.selectMenuKeysByUserId(user.getUserId());
 
         // 4. 构建LoginUser对象
-        LoginUser loginUser = new LoginUser(user, apis, roles, menus);
+        LoginUser loginUser = new LoginUser(user, null, roles, null);
 
         return loginUser;
     }

@@ -42,7 +42,7 @@ class CommunityServerApplicationTests {
     void password() {
         // 生成加密的密码
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encode = bCryptPasswordEncoder.encode("123456");
+        String encode = bCryptPasswordEncoder.encode("test");
         System.out.println(encode);
     }
 

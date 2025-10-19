@@ -7,21 +7,18 @@ import java.util.Date;
 
 /**
  * <p>
- * TODO
+ * 接口权限表
  * <p>
  *
  * @author: DongGuo
  * @create: 2025-09-20
  **/
 
-
 @Data
 @TableName("api_permission")
 public class ApiPermission {
     @TableId(value = "api_id", type = IdType.AUTO)
     private Long apiId;
-
-    private Long menuId;
 
     @TableField("api_name")
     private String apiName;

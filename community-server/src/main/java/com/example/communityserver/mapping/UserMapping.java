@@ -8,6 +8,7 @@ import com.example.communityserver.entity.response.ArticleDtlVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -22,7 +23,8 @@ import java.util.List;
  **/
 
 @Mapper(
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface UserMapping {
     UserMapping INSTANCE = Mappers.getMapper(UserMapping.class);

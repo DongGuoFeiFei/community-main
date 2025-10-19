@@ -1,9 +1,8 @@
 <script setup>
 
 import AuthorProfile from "@/views/pages/views/author/components/AuthorProfile.vue";
-import Header from "@/views/pages/components/Header.vue";
 import Footer from "@/views/pages/components/Footer.vue";
-import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import HomeHeader from "@/views/pages/components/Header.vue";
 import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 </script>
 

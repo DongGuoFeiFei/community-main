@@ -7,15 +7,19 @@ server:
 spring:
   # redis配置
   redis:
-    host: 127.0.0.1
+    host: 127.0.0.1  #开发
+#    host: redis #生产
     port: 6379
     database: 1
   # mysql 配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai #生产
+#    url: jdbc:mysql://mysql:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai  #开发
+#    url: jdbc:mysql://123.207.189.85:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: 123456  #开发
+#    password: ${datasource_password_pro} #生产
   # MVC的URL路径匹配策略
   mvc:
     path match:
@@ -57,26 +61,34 @@ mybatis-plus:
   # mybatis-plus 数据库查询日志
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true  # 自动下划线转驼峰
+
+    # 缓存配置
+    local-cache-scope: session  # 缓存作用域
+    cache-enabled: true         # 二级缓存
 # Swagger配置
 swagger:
   # 是否开启swagger
-  enabled: true
+  enabled: true  #开发
+#  enabled: false  #生产
   # 请求前缀
   pathMapping:
 # 文件路径
 file:
   upload:
-    path: ./path/to/upload/directory
+    path: ./path/to/upload/directory  #开发
+#    path: /data/upload #生产
 #日志
 logging:
   level:
     root: info
     org.springframework.web: info
     com.example: debug
-    #    com.baomidou.mybatisplus: debug #开发
-    com.baomidou.mybatisplus: warn #生产
+    com.baomidou.mybatisplus: debug #开发
+#    com.baomidou.mybatisplus: warn #生产
   file:
-    name: ./logs/application.log
+    name: ./logs/application.log #开发
+#    name: /data/logs/application.log #生产
   logback:
     rollingpolicy:
       max-file-size: 10MB
@@ -86,13 +98,12 @@ logging:
 #大模型接口配置
 deepseek:
   api:
-    key: sk-8c14d3bc281c4be4abb49bdf02a82f6b
-    url: https://api.deepseek.com/v1/chat/completions
+    key: ${deepseek_key}
+    url: ${deepseek_url}
 
 # 支付宝配置
-#alipay:
-#  app-id: 你的沙箱应用APPID
-#  private-key: 你的应用私钥
-#  public-key: 支付宝公钥（从沙箱环境获取）
-#  notify-url: http://你的域名/api/payment/alipay/notify
-#  return-url: http://你的域名/api/payment/alipay/return
+alipay:
+  app-id: ${alipay_app-id}
+  private-key: ${alipay_private-key}
+  public-key: ${alipay_public-key}
+  gateway-url: ${alipay_gateway-url}

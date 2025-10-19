@@ -64,7 +64,7 @@ import {getPostTags} from "@/api/article.js";
 import TiptapEditor from "@/views/pages/views/edit/components/TiptapEditor.vue";
 import {getArticleCategories} from "@/api/category.js";
 import CategorySelector from "@/views/pages/views/edit/CategorySelector.vue";
-import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import HomeHeader from "@/views/pages/components/Header.vue";
 import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 
 const lStore = localStores()

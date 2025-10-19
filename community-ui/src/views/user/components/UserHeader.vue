@@ -31,9 +31,6 @@
         <el-menu-item index="follow&fans">
           <span>关注&粉丝</span>
         </el-menu-item>
-<!--        <el-menu-item index="pointAccount">-->
-<!--          <span>积分</span>-->
-<!--        </el-menu-item>-->
       </el-menu>
 
       <div class="user-section">
@@ -49,13 +46,14 @@
                   <User/>
                 </el-icon>
                 <span>首页</span>
+                <!--todo 涵盖用户关系内容-->
               </el-dropdown-item>
-              <!--              <el-dropdown-item command="settings">-->
-              <!--                <el-icon>-->
-              <!--                  <Setting/>-->
-              <!--                </el-icon>-->
-              <!--                <span>账户设置</span>-->
-              <!--              </el-dropdown-item>-->
+              <!--                            <el-dropdown-item command="settings">-->
+              <!--                              <el-icon>-->
+              <!--                                <Setting/>-->
+              <!--                              </el-icon>-->
+              <!--                              <span>账户设置</span>-->
+              <!--                            </el-dropdown-item>-->
               <el-dropdown-item command="logout" divided>
                 <el-icon>
                   <SwitchButton/>

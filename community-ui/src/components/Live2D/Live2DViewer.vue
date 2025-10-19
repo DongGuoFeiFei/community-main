@@ -41,9 +41,9 @@ const modelComponents = {
   // huTao: HuTaoModel,
   nahida: NahidaModel,
   alya: AlyaModel,
-  castorice: CastoriceModel,
+  // castorice: CastoriceModel,
   // takoM: TakoMModel,
-  tutu: TutuModel,
+  // tutu: TutuModel,
 };
 
 // 当前模型组件

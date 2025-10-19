@@ -1,9 +1,9 @@
 <template>
   <div class="header-wrapper">
     <div class="header-content">
-      <div class="logo">
+      <div class="logo" @click="handleMenuClick('home')">
         <el-image src="/芙蓉花.png" style="width: 32px; height: 32px; margin-right: 8px;"/>
-        <router-link to="/index" class="text">采芙蓉</router-link>
+        <div class="text">采芙蓉</div>
       </div>
 
       <el-menu
@@ -12,24 +12,45 @@
           @select="handleMenuClick"
           class="nav-menu"
           background-color="transparent"
-          text-color="#666"
-          active-text-color="#ffd04b"
       >
-        <el-menu-item index="card">发现</el-menu-item>
-        <el-menu-item index="messages">消息</el-menu-item>
-        <el-menu-item index="game">游戏</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
-        <el-menu-item index="anime">杂谈</el-menu-item>
-        <el-menu-item index="anime">galgame</el-menu-item>
-        <el-menu-item index="anime">动漫</el-menu-item>
+        <el-menu-item index="home">首页</el-menu-item>
+        <el-sub-menu
+            v-for="category in categories"
+            :key="category.id"
+            :index="`category-${category.id}`"
+        >
+          <template #title>
+            <span
+                @click.stop="handleCategoryClick(category.id)"
+                :class="{
+                'active-category': category.id.toString() === activeCategoryId
+              }"
+            >
+              {{ category.categoryName }}
+            </span>
+          </template>
+          <el-menu-item
+              v-for="subCategory in category.categoryList"
+              :key="subCategory.id"
+              :index="`subcategory-${subCategory.id}`"
+          >
+            {{ subCategory.categoryName }}
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
+      <!--        <el-menu-item index="question">问答</el-menu-item>-->
+      <!--        <el-menu-item index="treeHole">树洞</el-menu-item>-->
+      <!--        <el-menu-item index="boringJokes">无聊段子</el-menu-item>-->
+      <!--        <el-menu-item index="complainMeeting">吐槽会</el-menu-item>-->
+      <!--&lt;!&ndash;        <el-menu-item index="activities">活动</el-menu-item>&ndash;&gt;-->
+      <!--        <el-menu-item index="hotList">热榜</el-menu-item>-->
 
       <NotificationBadge/>
       <div class="user-section">
         <el-dropdown
             @command="handleDropdownClick"
-            trigger="click">
+            trigger="click"
+        >
           <span class="user-avatar">
             <el-avatar :size="32"
                        :src="avatarUrl"
@@ -39,64 +60,115 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="myself">个人中心</el-dropdown-item>
-              <el-dropdown-item command="settings">设置</el-dropdown-item>
+              <!--              <el-dropdown-item command="settings">设置</el-dropdown-item>-->
               <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup lang="js">
-import {ref} from 'vue'
-import {useRouter} from 'vue-router'
+import {computed, onMounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import {localStores} from "@/stores/localStores.js";
 import {sessionStores} from "@/stores/sessionStores.js";
-import {logout} from "../../../../../community-admin/src/api/auth.js";
+import {logout} from "@/api/auth.js";
+import {getCategoryTrees} from "@/api/category.js";
 import NotificationBadge from "@/components/NotificationBadge.vue";
 
 const router = useRouter()
-const activeMenu = ref('home')
+const route = useRoute()
 const lStore = localStores()
 const sStore = sessionStores()
-const avatarUrl = ref(lStore.baseURL + lStore.userInfo.avatarUrl)
+const avatarUrl = ref(lStore.baseURL + (lStore.userInfo?.avatarUrl || ''))
+const categories = ref([])
+
+const emit = defineEmits(['category-change'])
+
+// 动态计算activeMenu
+const activeMenu = computed(() => {
+  if (route.path === '/' || route.path === '') {
+    return 'home'
+  } else if (/^\/\d+$/.test(route.path)) {
+    const id = route.path.substring(1)
+    const allSubCategories = categories.value.flatMap(c => c.categoryList)
+    const isSubCategory = allSubCategories.some(sub => sub.id.toString() === id)
+
+    return isSubCategory
+        ? `subcategory-${id}`
+        : `category-${id}`
+  }
+  return ''
+})
+
+// 计算当前激活的分类ID
+const activeCategoryId = computed(() => {
+  if (/^\/\d+$/.test(route.path)) {
+    return route.path.substring(1)
+  }
+  return null
+})
+const loadCategories = async () => {
+  try {
+    const res = await getCategoryTrees()
+    categories.value = res.data || []
+  } catch (error) {
+    console.error('加载分类失败:', error)
+    categories.value = []
+  }
+}
+
+// 处理父分类点击
+const handleCategoryClick = (categoryId) => {
+  emit('category-change', categoryId)
+  router.push({path: `/${categoryId}`})
+}
+
+// 处理菜单点击
 const handleMenuClick = (index) => {
-  activeMenu.value = index
-  if (index === 'card') {
-    router.push('/index')
-  }
-  else if (index === 'editor') {
-    router.push('/editor')
-  }
-  else if (index === 'editor') {
-    router.push('/editor')
-  } else if (index === 'messages') {
-    router.push('/messages')
+  try {
+    if (index.startsWith('subcategory-')) {
+      const categoryId = index.replace('subcategory-', '')
+      emit('category-change', categoryId)
+      router.push({path: `/${categoryId}`})
+    } else if (index === 'home') {
+      emit('category-change', null)
+      router.push({path: '/'})
+    }
+  } catch (error) {
+    console.error('处理菜单点击时出错:', error)
   }
 }
 
 const handleDropdownClick = (command) => {
-  switch (command) {
-    case 'myself':
-      router.push('/myself'); // 跳转到个人中心
-      break;
-    case 'settings':
-      router.push('/settings'); // 跳转到设置
-      break;
-    case 'logout':
-      lStore.clearStorage();
-      sStore.clearStorage();
-      logout();
-      router.push("/login"); //
-      break;
-    default:
-      break;
+  try {
+    switch (command) {
+      case 'myself':
+        router.push('/myself')
+        break
+      case 'settings':
+        router.push('/settings')
+        break
+      case 'logout':
+        lStore.clearStorage()
+        sStore.clearStorage()
+        logout()
+        router.push("/login")
+        break
+      default:
+        console.warn('未知的下拉菜单命令:', command)
+    }
+  } catch (error) {
+    console.error('处理下拉菜单点击时出错:', error)
   }
-};
+}
 
+onMounted(() => {
+  loadCategories()
+})
 </script>
 
 <style scoped lang="less">
@@ -105,7 +177,7 @@ const handleDropdownClick = (command) => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 50;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -124,7 +196,7 @@ const handleDropdownClick = (command) => {
 
 .logo {
   display: flex;
-  align-items: center; // 垂直居中
+  align-items: center;
   font-size: 22px;
   font-weight: 600;
   background: #000000;
@@ -139,9 +211,8 @@ const handleDropdownClick = (command) => {
   }
 
   .text {
-    color: inherit; // 继承父元素颜色
+    color: inherit;
 
-    // 如果需要，可以同时覆盖激活状态
     &.router-link-active,
     &.router-link-exact-active {
       color: inherit;
@@ -156,6 +227,70 @@ const handleDropdownClick = (command) => {
   border-bottom: none;
   font-size: 16px;
   color: #000000;
+
+  // 去除所有状态下的阴影
+  :deep(.el-menu--horizontal) {
+    .el-menu-item,
+    .el-sub-menu__title {
+      box-shadow: none !important;
+    }
+  }
+
+  // 去除选中状态的下划线
+  :deep(.el-sub-menu) {
+    &.is-active {
+      .el-sub-menu__title {
+        color: var(--el-color-primary) !important;
+        border-bottom: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .el-sub-menu__title {
+      span {
+        &.active-category {
+          color: var(--el-color-primary);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  // 去除菜单项选中状态的下划线
+  :deep(.el-menu-item) {
+    &.is-active {
+      color: var(--el-color-primary) !important;
+      border-bottom: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  // 去除所有交互状态的阴影和背景变化
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu__title) {
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+  }
+
+  :deep(.el-sub-menu__title),
+  :deep(.el-menu-item) {
+    height: 64px;
+    line-height: 64px;
+  }
+
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu__title) {
+    span {
+      &.active-menu-item {
+        color: var(--el-color-primary);
+        font-weight: bold;
+      }
+    }
+  }
 }
 
 .user-section {
@@ -190,7 +325,6 @@ const handleDropdownClick = (command) => {
   }
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
   .header-content {
     padding: 0 16px;

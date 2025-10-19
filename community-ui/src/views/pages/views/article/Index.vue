@@ -5,7 +5,7 @@ import RecommendSidebar from "@/views/pages/views/article/components/RecommendSi
 import {onMounted, ref, watch} from "vue";
 import CommentSection from "@/views/pages/views/article/components/CommentSection.vue";
 import Tags from "@/views/pages/views/article/components/Tags.vue";
-import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import HomeHeader from "@/views/pages/components/Header.vue";
 import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 import {getUserInfo} from "@/api/user.js";
 import {useRoute} from "vue-router";

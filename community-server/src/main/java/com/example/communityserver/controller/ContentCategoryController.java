@@ -41,6 +41,7 @@ public class ContentCategoryController {
 
     @ApiOperation("获取所有分类")
     @GetMapping("/list")
+    @RequiresPermission(api = {"category:list:get"}, role = {"super_admin"})
     public Result<List<ContentCategory>> getCategories() {
         List<ContentCategory> list = contentCategoryService.list();
         return Result.success(list);
@@ -49,6 +50,7 @@ public class ContentCategoryController {
 
     @ApiOperation("获取文章的分类")
     @GetMapping("/{articleId}/categories")
+    @RequiresPermission(api = {"category:{articleId}:categories:get"}, role = {"super_admin"})
     public Result<List<ArticleCategoryRelation>> getArticleCategories(@PathVariable Long articleId) {
         List<ArticleCategoryRelation> list = articleCategoryRelationService.getArticleCategoriesByArticleId(articleId);
         return Result.success(list);
@@ -56,6 +58,7 @@ public class ContentCategoryController {
 
     @ApiOperation("获取所有分类树")
     @GetMapping("/listTree")
+    @RequiresPermission(api = {"category:listTree:get"}, role = {"super_admin"})
     public Result<List<ContentCategoryTree>> getCategoryTrees() {
         List<ContentCategoryTree> list = contentCategoryService.getCategoryTrees();
         return Result.success(list);
@@ -63,25 +66,16 @@ public class ContentCategoryController {
 
     @ApiOperation("获取分类列表")
     @GetMapping()
-    @RequiresPermission(role = {"super_admin","view_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"category:get"}, role = {"super_admin"})
     public Result<Result.PageData<ContentCategory>> getCategories(SearchNameStatusParam param) {
         IPage<ContentCategory> page = contentCategoryService.getCategories(param);
 
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
 
-//    /**
-// * 删除分类
-// * @param {number} categoryId 分类ID
-// * @returns {Promise}
-// */
-//export const deleteCategory = (categoryId) => {
-//  return request.delete(`/category/${categoryId}`);
-//};
-
     @ApiOperation("获取分类列表")
     @DeleteMapping("{categoryId}")
-    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"category:{categoryId}:delete"}, role = {"super_admin"})
     public Result<Void> deleteCategory(@PathVariable Long categoryId) {
         Boolean is = contentCategoryService.deleteCategory(categoryId);
         return is ? Result.success() : Result.error();
@@ -89,7 +83,7 @@ public class ContentCategoryController {
 
     @ApiOperation("添加分类")
     @PostMapping()
-    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"category:add"}, role = {"super_admin"})
     public Result<Void> addCategory(@RequestBody AddCategoryParam param) {
         Boolean is = contentCategoryService.addCategory(param);
         return is ? Result.success() : Result.error();
@@ -97,7 +91,7 @@ public class ContentCategoryController {
 
     @ApiOperation("更新分类")
     @PutMapping()
-    @RequiresPermission(role = {"super_admin","system_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"category:update"}, role = {"super_admin"})
     public Result<Void> updateCategory(@RequestBody AddCategoryParam param) {
         Boolean is = contentCategoryService.updateCategory(param);
         return is ? Result.success() : Result.error();

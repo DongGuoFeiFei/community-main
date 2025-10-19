@@ -1,3 +1,53 @@
+<template>
+  <Live2DViewer/>
+
+  <div class="main-container">
+    <div class="common-layout">
+      <el-container>
+        <el-header>
+          <HomeHeader @category-change="handleCategoryChange"/>
+        </el-header>
+        <el-container>
+          <el-aside width="200px">
+          </el-aside>
+          <el-main>
+            <Announcement/>
+            <div class="card-container">
+              <!-- 搜索组件 -->
+              <!--todo 将搜索内容收缩-->
+              <PostSearch
+                  v-model:title="searchParam.title"
+                  @search="loadPosts"
+              />
+
+              <!-- 文章列表 -->
+              <PostList
+                  :posts="posts"
+                  :loading="loading"
+                  :page-size="searchParam.pageSize"
+              />
+
+              <!-- 分页组件 -->
+              <PostPagination
+                  v-model:current-page="searchParam.pageNum"
+                  :page-size="searchParam.pageSize"
+                  :total="total"
+                  :loading="loading"
+                  @page-change="loadPosts"
+              />
+            </div>
+          </el-main>
+          <el-aside width="200px">
+          </el-aside>
+        </el-container>
+        <el-footer>
+          <Footer/>
+        </el-footer>
+      </el-container>
+    </div>
+  </div>
+</template>
+
 <script setup lang="js">
 import Footer from "@/views/pages/components/Footer.vue";
 import Announcement from "@/components/Announcement.vue";
@@ -7,7 +57,7 @@ import PostList from "@/views/pages/views/home/components/PostList.vue";
 import PostPagination from "@/views/pages/views/home/components/PostPagination.vue";
 import {fetchPosts} from "@/api/index.js";
 import {localStores} from "@/stores/localStores.js";
-import HomeHeader from "@/views/pages/views/home/components/HomeHeader.vue";
+import HomeHeader from "@/views/pages/components/Header.vue";
 import {useRoute} from "vue-router";
 import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 import env from "@/utils/env.js";
@@ -78,55 +128,6 @@ watch(() => route.params.id, (newId) => {
 })
 
 </script>
-
-<template>
-  <Live2DViewer/>
-
-  <div class="main-container">
-    <div class="common-layout">
-      <el-container>
-        <el-header>
-          <HomeHeader @category-change="handleCategoryChange"/>
-        </el-header>
-        <el-container>
-          <el-aside width="200px">
-          </el-aside>
-          <el-main>
-            <Announcement/>
-            <div class="card-container">
-              <!-- 搜索组件 -->
-              <PostSearch
-                  v-model:title="searchParam.title"
-                  @search="loadPosts"
-              />
-
-              <!-- 文章列表 -->
-              <PostList
-                  :posts="posts"
-                  :loading="loading"
-                  :page-size="searchParam.pageSize"
-              />
-
-              <!-- 分页组件 -->
-              <PostPagination
-                  v-model:current-page="searchParam.pageNum"
-                  :page-size="searchParam.pageSize"
-                  :total="total"
-                  :loading="loading"
-                  @page-change="loadPosts"
-              />
-            </div>
-          </el-main>
-          <el-aside width="200px">
-          </el-aside>
-        </el-container>
-        <el-footer>
-          <Footer/>
-        </el-footer>
-      </el-container>
-    </div>
-  </div>
-</template>
 
 <style scoped lang="less">
 .main-container {

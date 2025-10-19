@@ -20,17 +20,18 @@
       show-checkbox
       default-expand-all
       highlight-current
+      :check-strictly="checkStrictly"
       :filter-node-method="filterNode"
     >
       <template #default="{ node, data }">
         <span class="custom-tree-node">
           <span>{{ node.label }}</span>
           <span class="api-method-tag">
-            <el-tag :type="getMethodTagType(data.method)" size="small">
-              {{ data.method }}
+            <el-tag :type="getMethodTagType(data.httpMethod)" size="small">
+              {{ data.httpMethod }}
             </el-tag>
           </span>
-          <span class="api-path">{{ data.path }}</span>
+          <span class="api-path">{{ data.apiPath }}</span>
         </span>
       </template>
     </el-tree>
@@ -49,15 +50,15 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:role-name']);
-
 const treeRef = ref(null);
 const apiTree = ref([]);
 const filterText = ref('');
+const filterFunc = ref('')
+const checkStrictly = ref(false);
 const submitting = ref(false);
 
 const treeProps = {
-  label: 'name',
+  label: 'apiName',
   children: 'children',
 };
 
@@ -65,9 +66,9 @@ const treeProps = {
 const filterNode = (value, data) => {
   if (!value) return true;
   return (
-    data.name.includes(value) ||
-    data.path.includes(value) ||
-    data.method.includes(value)
+    data.apiName.includes(value) ||
+    data.apiPath.includes(value) ||
+    data.httpMethod.includes(value.toUpperCase())
   );
 };
 
@@ -98,13 +99,11 @@ const fetchApiTree = async () => {
 const fetchRoleApis = async () => {
   try {
     const res = await getRoleApis(props.roleId);
-    const checkedKeys = res.data.apiIds || [];
+    const checkedKeys = res.data || [];
 
-    if (res.data.roleName) {
-      emit('update:role-name', res.data.roleName);
-    }
-
+    checkStrictly.value = true;
     treeRef.value?.setCheckedKeys(checkedKeys);
+    checkStrictly.value = false;
   } catch (error) {
     console.error('获取角色API权限失败:', error);
     ElMessage.error('获取角色API权限失败');
@@ -133,12 +132,12 @@ watch(filterText, (val) => {
 });
 
 onMounted(() => {
-  // fetchApiTree();
+  fetchApiTree();
 });
 
 watch(() => props.roleId, (newVal) => {
   if (newVal) {
-    // fetchRoleApis();
+    fetchRoleApis();
   }
 }, {immediate: true});
 </script>

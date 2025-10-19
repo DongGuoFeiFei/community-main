@@ -36,14 +36,14 @@ public class RoleController {
 
     @ApiOperation("获取角色列表(分页)")
     @GetMapping("list")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api={"role:list:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Result.PageData<Role>> getRoleList(RoleSearchFormParam param) {
         IPage<Role> page = roleService.getRoleList(param);
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error();
     }
     @ApiOperation("获取角色列表（不分页）")
     @GetMapping("getRoleList")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:getRoleList:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<List<Role>> getRoleList() {
         List<Role> page = roleService.getRoleList();
         return page != null ? Result.success(page) : Result.error();
@@ -51,7 +51,7 @@ public class RoleController {
 
     @ApiOperation("删除角色")
     @DeleteMapping()
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:delete:delete"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> deleteRole(@RequestBody @Validated IdsListParam param) {
         ResponseCodeEnum codeEnum = roleService.deleteRole(param);
         return codeEnum == ResponseCodeEnum.SUCCESS ? Result.success() : Result.error(codeEnum.getCode(), codeEnum.getValue());
@@ -59,7 +59,7 @@ public class RoleController {
 
     @ApiOperation("修改角色状态")
     @PutMapping("status")
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api={"role:status:put"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> changeRoleStatus(@RequestBody IdStatusParam param) {
         ResponseCodeEnum codeEnum = roleService.changeRoleStatus(param);
         return codeEnum == ResponseCodeEnum.SUCCESS ? Result.success() : Result.error(codeEnum.getCode(), codeEnum.getValue());
@@ -67,7 +67,7 @@ public class RoleController {
 
     @ApiOperation("获取角色详情")
     @GetMapping("{roleId}")
-    @RequiresPermission(role = {"super_admin","view_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:detail:{id}:get"},role = {"super_admin","view_admin"}, logical = Logical.OR)
     public Result<Role> getRoleDetail(@PathVariable Long roleId) {
         Role role = roleService.getRoleDetail(roleId);
         return role != null ? Result.success(role) : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
@@ -75,7 +75,7 @@ public class RoleController {
 
     @ApiOperation("创建角色")
     @PostMapping()
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:create:post"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> createRole(@RequestBody AddRoleParam param) {
         Integer is = roleService.createRole(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
@@ -83,7 +83,7 @@ public class RoleController {
 
     @ApiOperation("更新角色")
     @PutMapping()
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:update:put"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateRole(@RequestBody AddRoleParam param) {
         Integer is = roleService.updateRole(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
@@ -93,9 +93,19 @@ public class RoleController {
     @ApiOperation("更新角色菜单权限")
     @PutMapping("menu")
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermission(role = {"super_admin"}, logical = Logical.OR)
+    @RequiresPermission(api = {"role:menu:put"},role = {"super_admin"}, logical = Logical.OR)
     public Result<Void> updateRoleMenus(@RequestBody IdIdsParam param) {
         Integer is = roleService.updateRoleMenus(param);
+        return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
+    }
+
+
+    @ApiOperation("更新角色API权限")
+    @PutMapping("apiPermission")
+    @Transactional(rollbackFor = Exception.class)
+    @RequiresPermission(api = {"role:apiPermission:put"},role = {"super_admin"}, logical = Logical.OR)
+    public Result<Void> updateRoleApis(@RequestBody IdIdsParam param) {
+        Integer is = roleService.updateRoleApis(param);
         return is > 0 ? Result.success() : Result.error(ResponseCodeEnum.FAILED.getCode(), ResponseCodeEnum.FAILED.getValue());
     }
 

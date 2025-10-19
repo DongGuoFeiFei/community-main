@@ -43,6 +43,7 @@ public class CommentController {
      * */
     @ApiOperation("获取评论")
     @GetMapping("/getCommentsById")
+    @RequiresPermission(api = {"comments:getCommentsById:get"}, role = {"super_admin"})
     public Result<List<CommentVo>> getCommentsById(Integer postId) {
         boolean is = commentService.isOpenCommentById(postId);
         if (!is) {
@@ -54,6 +55,7 @@ public class CommentController {
 
     @ApiOperation("添加新的评论")
     @PostMapping("/addComment")
+    @RequiresPermission(api = {"comments:addComment:post"}, role = {"super_admin"})
     public Result<ReplyVo> addComment(@RequestBody AddCommentDto addCommentDto) {
         ReplyVo replyVo = commentService.addComment(addCommentDto);
         return replyVo != null ? Result.success(replyVo) : Result.error("评论失败，请稍后重试");
@@ -61,6 +63,7 @@ public class CommentController {
 
     @ApiOperation("获取评论管理列表")
     @GetMapping("/admin")
+    @RequiresPermission(api = {"comments:admin:get"}, role = {"super_admin"})
     public Result<Result.PageData<CommentListVo>> getCommentList(CommentQuery query) {
         IPage<CommentListVo> page = commentService.getCommentList(query);
         return page != null ? Result.pageSuccess(page.getTotal(), page.getRecords()) : Result.error("获取失败");

@@ -1,6 +1,7 @@
 package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.model.FileEntity;
+import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.common.StringUtil;
@@ -28,6 +29,7 @@ public class FileController {
 
     @ApiOperation("单文件上传")
     @PostMapping("/upload")
+    @RequiresPermission(api = {"files:upload:post"}, role = {"super_admin"})
     public Result<FileEntity> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return Result.error("文件是空");
@@ -43,6 +45,7 @@ public class FileController {
 
     @ApiOperation("通过文件id删除文件")
     @PostMapping("/delFileById/{id}")
+    @RequiresPermission(api = {"files:delFileById:post"}, role = {"super_admin"})
     public Result<Void> delFileById(@PathVariable Long id) {
         // 判断发起人是否是文件上传者本人
         // 删除文件
