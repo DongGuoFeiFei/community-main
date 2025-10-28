@@ -14,6 +14,7 @@ public class SystemConstants {
 
     // 用户相关常量
     public static final String DEFAULT_USER_AVATAR = "https://your-domain.com/default-avatar.png"; // 默认用户头像
+    public static final String COMMUNITY_VERSION = "Community-1.0.0"; // 默认用户头像
     public static final String BASIC_URL = "http://127.0.0.1:8081";
     public static final String DEFAULT_USER_ROLE = "user"; // 默认用户角色
     public static final int USER_STATUS_NORMAL = 0; // 用户正常状态

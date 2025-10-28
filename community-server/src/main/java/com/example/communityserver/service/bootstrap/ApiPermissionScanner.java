@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.communityserver.core.security.aop.Logical;
 import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
+import com.example.communityserver.entity.constants.TimingSequenceConstants;
 import com.example.communityserver.entity.model.ApiPermission;
 import com.example.communityserver.entity.model.Role;
 import com.example.communityserver.entity.model.RoleApi;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Component
+@Order(TimingSequenceConstants.apiPermissionScanner)
 public class ApiPermissionScanner implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired

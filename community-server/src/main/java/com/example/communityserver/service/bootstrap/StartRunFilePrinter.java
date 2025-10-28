@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 
 
 @Component
-public class FilePrinterRunner implements CommandLineRunner {
+public class StartRunFilePrinter implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
