@@ -1,4 +1,4 @@
-package com.example.communityserver.security.util;
+package com.example.communityserver.core.security.util;
 
 import com.example.communityserver.entity.model.LoginUser;
 import org.springframework.security.core.Authentication;

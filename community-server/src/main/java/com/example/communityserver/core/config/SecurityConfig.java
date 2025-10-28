@@ -1,6 +1,6 @@
-package com.example.communityserver.security.config;
+package com.example.communityserver.core.config;
 
-import com.example.communityserver.filter.JWTFilter;
+import com.example.communityserver.core.security.filter.JWTFilter;
 import com.example.communityserver.handler.AccessDeniedHandlerImpl;
 import com.example.communityserver.handler.AuthenticationEntryPointImpl;
 import org.springframework.context.annotation.Bean;
@@ -15,12 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration

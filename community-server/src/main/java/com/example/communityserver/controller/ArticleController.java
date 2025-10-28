@@ -10,7 +10,7 @@ import com.example.communityserver.entity.request.GetArticleListDto;
 import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapping.ArticleMapping;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;

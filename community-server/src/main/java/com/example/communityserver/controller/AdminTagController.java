@@ -9,7 +9,7 @@ import com.example.communityserver.entity.request.IdStatusParam;
 import com.example.communityserver.entity.request.IdsListParam;
 import com.example.communityserver.entity.request.SearchNameStatusParam;
 import com.example.communityserver.entity.request.TagFormParam;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.ITagService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;

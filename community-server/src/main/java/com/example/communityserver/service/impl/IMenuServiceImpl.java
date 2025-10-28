@@ -15,7 +15,7 @@ import com.example.communityserver.entity.response.UserMenuTree;
 import com.example.communityserver.handler.BusinessException;
 import com.example.communityserver.mapper.MenuMapper;
 import com.example.communityserver.mapper.RoleMapper;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import com.example.communityserver.service.IMenuService;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.redis.RedisUtil;

@@ -6,7 +6,7 @@ import com.example.communityserver.entity.request.CommentQuery;
 import com.example.communityserver.entity.response.CommentListVo;
 import com.example.communityserver.entity.response.CommentVo;
 import com.example.communityserver.entity.response.ReplyVo;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;

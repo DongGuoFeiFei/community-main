@@ -1,4 +1,4 @@
-package com.example.communityserver.security.scanner;
+package com.example.communityserver.service.bootstrap;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.io.ClassPathResource;

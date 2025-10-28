@@ -1,7 +1,7 @@
 package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.request.DeepseekPromptParam;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.impl.DeepSeekService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;

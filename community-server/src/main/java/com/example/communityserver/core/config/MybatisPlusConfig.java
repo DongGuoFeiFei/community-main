@@ -1,4 +1,4 @@
-package com.example.communityserver.config;
+package com.example.communityserver.core.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

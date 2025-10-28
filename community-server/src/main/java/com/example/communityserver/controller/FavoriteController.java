@@ -6,7 +6,7 @@ import com.example.communityserver.entity.response.FavArticleVo;
 import com.example.communityserver.entity.response.FolderVo;
 import com.example.communityserver.entity.response.MoveFavoriteVo;
 import com.example.communityserver.entity.response.UserFavoListVo;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IFavoriteFolderService;
 import com.example.communityserver.service.IUserFavoriteService;
 import com.example.communityserver.utils.web.Result;

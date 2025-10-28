@@ -1,7 +1,7 @@
 package com.example.communityserver.controller;
 
 import com.example.communityserver.entity.model.FileEntity;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.utils.web.Result;
 import com.example.communityserver.utils.common.StringUtil;

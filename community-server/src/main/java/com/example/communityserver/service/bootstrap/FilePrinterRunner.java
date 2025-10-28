@@ -1,4 +1,4 @@
-package com.example.communityserver.security.scanner;
+package com.example.communityserver.service.bootstrap;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;

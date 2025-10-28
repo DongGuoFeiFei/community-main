@@ -1,4 +1,4 @@
-package com.example.communityserver.security.core;
+package com.example.communityserver.core.security.aop;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.communityserver.entity.model.LoginUser;

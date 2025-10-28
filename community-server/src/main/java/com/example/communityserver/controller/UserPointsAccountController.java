@@ -3,7 +3,7 @@ package com.example.communityserver.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.UserPointsAccount;
 import com.example.communityserver.entity.request.SearchNameStatusParam;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IUserPointsAccountService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;

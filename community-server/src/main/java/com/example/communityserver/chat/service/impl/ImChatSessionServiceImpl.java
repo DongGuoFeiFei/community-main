@@ -10,7 +10,7 @@ import com.example.communityserver.chat.mapper.ImChatSessionMapper;
 import com.example.communityserver.chat.mapper.ImMessageMapper;
 import com.example.communityserver.chat.mapper.ImSessionMemberMapper;
 import com.example.communityserver.chat.service.IImChatSessionService;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

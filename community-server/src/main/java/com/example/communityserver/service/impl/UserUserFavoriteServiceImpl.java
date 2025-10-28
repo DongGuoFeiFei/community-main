@@ -21,7 +21,7 @@ import com.example.communityserver.mapping.FavoriteMapping;
 import com.example.communityserver.service.INotificationService;
 import com.example.communityserver.service.IUserFavoriteService;
 import com.example.communityserver.utils.redis.RedisUtil;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.example.communityserver.chat.config;
+package com.example.communityserver.core.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

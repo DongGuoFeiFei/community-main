@@ -1,4 +1,4 @@
-package com.example.communityserver.security.util;
+package com.example.communityserver.core.security.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;

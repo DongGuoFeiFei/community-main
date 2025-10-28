@@ -1,4 +1,4 @@
-package com.example.communityserver.security.config;
+package com.example.communityserver.core.config;
 
 import com.example.communityserver.entity.constants.SystemConstants;
 import lombok.Data;

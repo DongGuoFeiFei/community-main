@@ -5,7 +5,7 @@ import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.model.ReportRecord;
 import com.example.communityserver.entity.request.AddReportParam;
 import com.example.communityserver.entity.request.ReportQueryParam;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IReportRecordService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
@@ -63,7 +63,7 @@ public class ReportRecordController {
 //        reportRecordService.processReport(processReportDTO);
 //        return R.ok();
 //    }
-// TODO: 2025/8/19 补全举报内容，以及封禁机制 
+// TODO: 2025/8/19 补全举报内容，以及封禁机制
     @PostMapping("/{id}/ignore")
     @ApiOperation("忽略举报")
     @RequiresPermission(api = {"report:ignore:post"})

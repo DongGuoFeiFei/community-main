@@ -22,7 +22,7 @@ import com.example.communityserver.mapper.ArticleMapper;
 import com.example.communityserver.mapper.CommentMapper;
 import com.example.communityserver.mapper.NotificationMapper;
 import com.example.communityserver.mapper.UserMapper;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import com.example.communityserver.service.ICommentService;
 import com.example.communityserver.utils.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -17,7 +17,7 @@ import com.example.communityserver.entity.request.*;
 import com.example.communityserver.entity.response.*;
 import com.example.communityserver.mapper.*;
 import com.example.communityserver.mapping.ArticleMapping;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import com.example.communityserver.service.IArticleCategoryRelationService;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ITagService;

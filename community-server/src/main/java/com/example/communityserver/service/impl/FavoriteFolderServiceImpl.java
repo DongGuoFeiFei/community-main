@@ -10,7 +10,7 @@ import com.example.communityserver.entity.response.FolderVo;
 import com.example.communityserver.mapper.FavoriteFolderMapper;
 import com.example.communityserver.mapper.UserFavoriteMapper;
 import com.example.communityserver.service.IFavoriteFolderService;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

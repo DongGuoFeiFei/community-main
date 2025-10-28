@@ -9,7 +9,7 @@ import com.example.communityserver.entity.model.SysAnnouncement;
 import com.example.communityserver.entity.request.GetAnnouncementsParam;
 import com.example.communityserver.mapper.AnnouncementMapper;
 import com.example.communityserver.service.IAnnouncementService;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

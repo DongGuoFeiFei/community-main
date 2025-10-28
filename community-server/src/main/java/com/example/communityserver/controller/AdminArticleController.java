@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.communityserver.entity.model.Article;
 import com.example.communityserver.entity.request.ArticleSearchParam;
 import com.example.communityserver.entity.response.AdminArticleListVo;
-import com.example.communityserver.security.core.RequiresPermission;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;

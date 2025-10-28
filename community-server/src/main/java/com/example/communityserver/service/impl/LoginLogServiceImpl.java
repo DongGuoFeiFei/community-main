@@ -5,7 +5,7 @@ import com.example.communityserver.entity.model.LoginLog;
 import com.example.communityserver.mapper.LoginLogMapper;
 import com.example.communityserver.service.ILoginLogService;
 import com.example.communityserver.utils.common.IpUtil;
-import com.example.communityserver.security.util.HttpRequestUtils;
+import com.example.communityserver.core.security.util.HttpRequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

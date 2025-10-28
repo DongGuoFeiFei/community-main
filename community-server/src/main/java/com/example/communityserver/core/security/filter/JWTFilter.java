@@ -1,8 +1,8 @@
-package com.example.communityserver.filter;
+package com.example.communityserver.core.security.filter;
 
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.LoginUser;
-import com.example.communityserver.security.util.JWTUtil;
+import com.example.communityserver.core.security.util.JWTUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

@@ -12,7 +12,7 @@ import com.example.communityserver.entity.model.ReportRecord;
 import com.example.communityserver.entity.request.AddReportParam;
 import com.example.communityserver.entity.request.ReportQueryParam;
 import com.example.communityserver.mapper.ReportRecordMapper;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import com.example.communityserver.service.IReportRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

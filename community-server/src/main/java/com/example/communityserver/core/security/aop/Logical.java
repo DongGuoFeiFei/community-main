@@ -1,4 +1,4 @@
-package com.example.communityserver.security.core;
+package com.example.communityserver.core.security.aop;
 
 public enum Logical {
     /**

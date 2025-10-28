@@ -13,7 +13,7 @@ import com.example.communityserver.mapper.NotificationMapper;
 import com.example.communityserver.mapper.UserMapper;
 import com.example.communityserver.service.IArticleService;
 import com.example.communityserver.service.ILikesService;
-import com.example.communityserver.security.util.SecurityUtils;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

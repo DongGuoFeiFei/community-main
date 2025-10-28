@@ -1,6 +1,8 @@
-package com.example.communityserver.security.scanner;
+package com.example.communityserver.service.bootstrap;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.communityserver.core.security.aop.Logical;
+import com.example.communityserver.core.security.aop.RequiresPermission;
 import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.model.ApiPermission;
 import com.example.communityserver.entity.model.Role;
@@ -8,8 +10,6 @@ import com.example.communityserver.entity.model.RoleApi;
 import com.example.communityserver.mapper.ApiPermissionMapper;
 import com.example.communityserver.mapper.RoleApiMapper;
 import com.example.communityserver.mapper.RoleMapper;
-import com.example.communityserver.security.core.Logical;
-import com.example.communityserver.security.core.RequiresPermission;
 import com.example.communityserver.utils.redis.RedisUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
@@ -83,7 +83,7 @@ public class ApiPermissionScanner implements ApplicationListener<ApplicationRead
                 ).stream()
                 .collect(Collectors.toMap(ApiPermission::getApiId, ApiPermission::getPerms));
 
-        for(Role role:roles){
+        for (Role role : roles) {
             String key = CacheKeyConstants.PERMISSION_IDENTIFIER_ROLE + role.getRoleKey();
 
             // 从预处理Map中直接获取apiIds
@@ -93,8 +93,8 @@ public class ApiPermissionScanner implements ApplicationListener<ApplicationRead
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             // 存储
-            if (!perms.isEmpty()){
-                redisUtil.setCacheList(key,perms);
+            if (!perms.isEmpty()) {
+                redisUtil.setCacheList(key, perms);
                 redisUtil.removeExpire(key);
             }
         }
