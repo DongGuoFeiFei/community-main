@@ -15,10 +15,23 @@ pinia.use(piniaPluginPersistedstate);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-// if (import.meta.env) {
-//     setupProtection();
-// }
+if (import.meta.PROD) {
+    setupProtection();
+}
 app.use(ElementPlus)
 app.use(pinia)
 app.use(router)
 app.mount('#app')
+
+console.log(`
+  _____                       _    _            
+ / ____|                     | |  (_)           
+| |     ___  _ __  ___  ___  | | ___ _ __   __ _ 
+| |    / _ \\| '_ \\/ __|/ _ \\ | |/ / | '_ \\ / _\` |
+| |___| (_) | | | \\__ \\  __/ |   <| | | | | (_| |
+ \\_____\\___/|_| |_|___/\\___| |_|\\_\\_|_| |_|\\__, |
+                                            __/ |
+                                           |___/ 
+✨ Vue3 Community Frontend Started!
+⏰ ${new Date().toLocaleString()}
+`);

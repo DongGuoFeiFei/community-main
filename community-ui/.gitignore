@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 /.env
 /dist.zip
+/.env.development
+/.env.production
