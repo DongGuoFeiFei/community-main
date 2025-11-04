@@ -6,6 +6,11 @@
           <span>用户注册</span>
         </div>
       </template>
+      <div class="card-header">
+        <p>知之为知之，不知为不知，是知也。</p>
+        <p>来者即是客，但也请您尽好作为客人的本分。</p>
+        <p>世界上没有什么事情是理所当然的，请珍惜眼前。</p>
+      </div>
 
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
         <el-form-item label="用户名" prop="username">
