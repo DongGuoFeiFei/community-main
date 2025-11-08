@@ -1,136 +1,144 @@
 // api/index.js
 import request from "@/utils/request.js";
 
-
-
 export const fetchPosts = (params) => {
-    return request.get('/posts', {params}).then(res => {
-        if (res.code === 200) {
-            return {
-                rows: res.rows.map(item => ({
-                    id: item.articleId,
-                    title: item.title,
-                    author: item.nickname,
-                    summary: item.content,
-                    date: item.createdAt,
-                    coverUrl: item.coverUrl
-                })),
-                total: res.total
-            }
-        } else {
-            throw new Error(res.msg)
-        }
-    })
-}
+  return request.get("/posts", { params }).then((res) => {
+    if (res.code === 200) {
+      return {
+        rows: res.rows.map((item) => ({
+          id: item.articleId,
+          title: item.title,
+          author: item.nickname,
+          summary: item.content,
+          date: item.createdAt,
+          coverUrl: item.coverUrl,
+        })),
+        total: res.total,
+      };
+    } else {
+      throw new Error(res.msg);
+    }
+  });
+};
 
 export const fetchPostDetail = (id) => {
-    return request.get(`/posts/${id}`).then(res => {
-        if (res.code === 200) {
-            return res
-        } else {
-            throw new Error(res.msg || '获取详情失败')
-        }
-    })
-}
+  return request.get(`/posts/${id}`).then((res) => {
+    if (res.code === 200) {
+      return res;
+    } else {
+      throw new Error(res.msg || "获取详情失败");
+    }
+  });
+};
 
 export const uploadFile = (formData) => {
-    return request({
-        url: '/files/upload',
-        method: 'post',
-        data: formData,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    }).then(res => {
-        if (res.code === 200) {
-            return res; // 返回上传结果数据
-        } else {
-            throw new Error(res.message || '文件上传失败');
-        }
-    });
+  return request({
+    url: "/files/upload",
+    method: "post",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }).then((res) => {
+    if (res.code === 200) {
+      return res; // 返回上传结果数据
+    } else {
+      throw new Error(res.message || "文件上传失败");
+    }
+  });
 };
 
 export const delFileById = (data) => {
-    console.log(data)
-    return request.post(`/files/delFileById/${data}`).then(res => {
-        if (res.code === 200) {
-            return true;
-        } else {
-            throw new Error(res.message)
-        }
-    })
-}
+  console.log(data);
+  return request.post(`/files/delFileById/${data}`).then((res) => {
+    if (res.code === 200) {
+      return true;
+    } else {
+      throw new Error(res.message);
+    }
+  });
+};
 
 export const addArticle = (data) => {
-    return request.post("/posts/addArticle", data).then(res => {
-        if (res.code === 200) {
-            return true
-        } else {
-            throw new Error(res.message)
-        }
-    })
-}
-
+  return request.post("/posts/addArticle", data).then((res) => {
+    if (res.code === 200) {
+      return true;
+    } else {
+      throw new Error(res.message);
+    }
+  });
+};
 
 export const fetchCommentsByPostId = async (postId) => {
-    try {
-        const res = await request.get(`/comments/getCommentsById`, {params: {postId}})
-        if (res.code === 200) {
-            return res
-        } else {
-            throw new Error(res.message || '获取评论失败')
-        }
-    } catch (error) {
-        throw error
+  try {
+    const res = await request.get(`/comments/getCommentsById`, {
+      params: { postId },
+    });
+    if (res.code === 200) {
+      return res;
+    } else {
+      throw new Error(res.message || "获取评论失败");
     }
-}
+  } catch (error) {
+    throw error;
+  }
+};
 
-export const submitCommentToPost = async (postId, {content, parentId, firstId}) => {
-    try {
-        const res = await request.post('/comments/addComment', {
-            articleId: postId,
-            content,
-            parentId,
-            firstId
-        })
-        if (res.code === 200) {
-            return res
-        } else {
-            throw new Error(res.message || '评论失败')
-        }
-    } catch (error) {
-        throw error
+/**
+ * 提交文章评论
+ * @param {*} postId
+ * @param {*} param1
+ * @returns
+ */
+export const submitCommentToPost = async (
+  postId,
+  { content, parentId, firstId }
+) => {
+  try {
+    const res = await request.post("/comments/addComment", {
+      articleId: postId,
+      content,
+      parentId,
+      rootId: firstId,
+    });
+    if (res.code === 200) {
+      return res;
+    } else {
+      throw new Error(res.message || "评论失败");
     }
-}
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const deleteComment = (commentId) => {
-    return request.delete(`/comments/${commentId}`).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
+  return request.delete(`/comments/${commentId}`).then((res) => {
+    if (res.code === 200) {
+      return res.data;
+    } else {
+      throw new Error(res.msg);
+    }
+  });
 };
 
 // 获取文章详情
 export const getArticleById = (id) => {
-    return request.get(`/posts/getArticleDtl/${id}`).then(res => {
-        if (res.code === 200) {
-            return res.data;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
+  return request.get(`/posts/getArticleDtl/${id}`).then((res) => {
+    if (res.code === 200) {
+      return res.data;
+    } else {
+      throw new Error(res.msg);
+    }
+  });
 };
 
 // 更新文章
 export const updateArticle = (id, data) => {
-    return request.put(`/posts/updateArticleDtl/${id}`, data).then(res => {
-        if (res.code === 200) {
-            return res;
-        } else {
-            throw new Error(res.msg);
-        }
-    });
+  return request.put(`/posts/updateArticleDtl/${id}`, data).then((res) => {
+    if (res.code === 200) {
+      return res;
+    } else {
+      throw new Error(res.msg);
+    }
+  });
 };

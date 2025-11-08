@@ -7,13 +7,7 @@ import vueDevTools from "vite-plugin-vue-devtools";
 export default defineConfig({
   plugins: [
     vue(),
-    // vueDevTools(),
-    vueDevTools({
-      launchEditor:
-        "D:\\myapps\\JetBrains\\IntelliJ IDEA 2023.1.3\\bin\\idea64.exe",
-        // "D:\\myapps\\cursor\\Cursor.exe",
-        // "C:\\Users\\HONOR\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
-    }),
+    vueDevTools(),
   ],
   resolve: {
     alias: {

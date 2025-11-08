@@ -91,7 +91,7 @@
                 :is-reply="true"
                 :can-delete="commentState.canDeleteComment(reply)"
                 @delete="commentState.handleDeleteComment"
-                @reply="handleReplyToSubComment(reply, comment.commentId)"
+                @reply="handleReplyToComment"
               />
             </div>
           </transition>
@@ -129,7 +129,7 @@ const commentState = useComments({
 });
 
 /**
- * 处理提交主评论
+ * 处理提交主评论，一级评论
  */
 const handleSubmitMainComment = async (content: string) => {
   const newComment = await commentState.submitComment(content);
@@ -140,7 +140,7 @@ const handleSubmitMainComment = async (content: string) => {
 };
 
 /**
- * 处理回复主评论
+ * 处理回复主评论，二级评论
  */
 const handleReplyToComment = async (
   commentId: string | number,
@@ -158,23 +158,6 @@ const handleReplyToComment = async (
   }
 };
 
-/**
- * 处理回复子评论
- */
-const handleReplyToSubComment = (_replyItem: any, firstId: string | number) => {
-  return async (commentId: string | number, content: string) => {
-    const newReply = await commentState.submitComment(
-      content,
-      commentId,
-      firstId
-    );
-
-    if (newReply) {
-      commentState.addCommentToList(newReply, firstId);
-      ElMessage.success("回复发表成功！");
-    }
-  };
-};
 
 /**
  * 初始化加载评论

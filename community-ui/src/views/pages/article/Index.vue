@@ -1,3 +1,36 @@
+<template>
+  <Live2DViewer />
+  <div class="main-container">
+    <div class="common-layout">
+      <el-container>
+        <el-header>
+          <HomeHeader />
+        </el-header>
+        <el-container direction="horizontal" class="content-container">
+          <el-aside width="350px" class="left-aside">
+            <AuthorInfo v-if="articleId" :author-info="author" />
+            <RecommendSidebar :articleId="Number(articleId)" />
+          </el-aside>
+          <el-main>
+            <post-detail v-model="articleId" />
+            <tags v-if="Number(articleId)" :postId="Number(articleId)" />
+            <CommentSection
+              v-if="Number(articleId)"
+              :postId="Number(articleId)"
+              :author-id="Number(author.id)"
+            />
+            <!--    todo 付费内容    -->
+          </el-main>
+          <el-aside width="100px" class="right-aside"> </el-aside>
+        </el-container>
+        <el-footer>
+          <Footer />
+        </el-footer>
+      </el-container>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import PostDetail from "@/views/pages/article/components/PostDetail.vue";
 import Footer from "@/components/Footer.vue";
@@ -55,38 +88,6 @@ watch(
 );
 </script>
 
-<template>
-  <Live2DViewer />
-  <div class="main-container">
-    <div class="common-layout">
-      <el-container>
-        <el-header>
-          <HomeHeader />
-        </el-header>
-        <el-container direction="horizontal" class="content-container">
-          <el-aside width="350px" class="left-aside">
-            <AuthorInfo v-if="articleId" :author-info="author" />
-            <RecommendSidebar :articleId="Number(articleId)" />
-          </el-aside>
-          <el-main>
-            <post-detail v-model="articleId" />
-            <tags v-if="Number(articleId)" :postId="Number(articleId)" />
-            <CommentSection
-              v-if="Number(articleId)"
-              :postId="Number(articleId)"
-              :author-id="Number(author.id)"
-            />
-            <!--    todo 付费内容    -->
-          </el-main>
-          <el-aside width="100px" class="right-aside"> </el-aside>
-        </el-container>
-        <el-footer>
-          <Footer />
-        </el-footer>
-      </el-container>
-    </div>
-  </div>
-</template>
 
 <style scoped lang="scss">
 .main-container {

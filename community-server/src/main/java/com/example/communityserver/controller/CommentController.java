@@ -37,9 +37,8 @@ public class CommentController {
      * 一、获取评论区多层级树图
      * 二、获取第一层之后在获取第一层之下所有的评论数据
      *
-     * todo 后续实现分页效果、评论删除效果 按照评论的时间顺序进行排序
+     * todo 后续实现分页效果 按照评论的时间顺序进行排序
      *
-     * todo 查询时先找redis，若没有找mysql  减少mysql压力 如果查询直接使用redis，但是该文章有新评论插入时，进行一次mysql查询放入redis中
      * */
     @ApiOperation("获取评论")
     @GetMapping("/getCommentsById")

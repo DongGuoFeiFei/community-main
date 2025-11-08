@@ -17,6 +17,7 @@ interface UseCommentsOptions {
   currentUserId: string | number;
 }
 
+
 export function useComments(options: UseCommentsOptions) {
   const { postId, authorId, currentUserId } = options;
 

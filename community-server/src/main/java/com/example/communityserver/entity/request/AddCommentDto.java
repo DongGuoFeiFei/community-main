@@ -16,5 +16,5 @@ public class AddCommentDto {
     private Long articleId;
     private String content;
     private Long parentId;
-    private Long firstId;
+    private Long rootId;
 }
