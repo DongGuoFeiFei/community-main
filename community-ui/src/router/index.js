@@ -37,7 +37,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'index',
-            component: () => import("@/views/pages/views/home/Index.vue"),
+            component: () => import("@/views/pages/home/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "采芙蓉"
@@ -46,7 +46,7 @@ const router = createRouter({
         {
             path: '/:id',
             name: 'routeCategoryId',
-            component: () => import("@/views/pages/views/home/Index.vue"),
+            component: () => import("@/views/pages/home/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "采芙蓉"
@@ -55,7 +55,7 @@ const router = createRouter({
         {
             path: '/article/:id',
             name: 'article',
-            component: () => import("@/views/pages/views/article/Index.vue"),
+            component: () => import("@/views/pages/article/Index.vue"),
             meta: {
                 title: "",
                 requiresAuth: true
@@ -64,7 +64,7 @@ const router = createRouter({
         {
             path: '/editor',
             name: 'editor',
-            component: () => import("@/views/pages/views/edit/Index.vue"),
+            component: () => import("@/views/pages/edit/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "编辑文章"
@@ -73,7 +73,7 @@ const router = createRouter({
         {
             path: '/test',
             name: 'test',
-            component: () => import("@/views/pages/views/test/Index.vue"),
+            component: () => import("@/views/pages/test/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "页面测试"
@@ -82,7 +82,7 @@ const router = createRouter({
         {
             path: '/chat',
             name: 'chat',
-            component: () => import("@/views/pages/views/wsChat/Index.vue"),
+            component: () => import("@/views/pages/wsChat/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "聊天室"
@@ -91,13 +91,13 @@ const router = createRouter({
         {
             path: '/chat/:sessionId',
             name: 'ChatDetail',
-            component: () => import("@/views/pages/views/wsChat/components/ChatDetailView.vue"),
+            component: () => import("@/views/pages/wsChat/components/ChatDetailView.vue"),
             meta: {requiresAuth: true}
         },
         {
             path: '/editor-edit',
             name: 'editor-edit',
-            component: () => import("@/views/pages/views/edit/Index.vue"),
+            component: () => import("@/views/pages/edit/Index.vue"),
             meta: {
                 requiresAuth: true,
                 title: "修改文章"
@@ -112,7 +112,7 @@ const router = createRouter({
                 {
                     path: "profile",
                     name: "profile",
-                    component: () => import("@/views/user/views/profile/index.vue"),
+                    component: () => import("@/views/user/profile/index.vue"),
                     meta: {
                         requiresAuth: true,
                         title: "个人中心"
@@ -121,7 +121,7 @@ const router = createRouter({
                 {
                     path: "articles",
                     name: "articles",
-                    component: () => import("@/views/user/views/articles/index.vue"),
+                    component: () => import("@/views/user/articles/index.vue"),
                     meta: {
                         requiresAuth: true,
                         title: '我的文章',
@@ -130,7 +130,7 @@ const router = createRouter({
                 {
                     path: 'collections',
                     name: 'collections',
-                    component: () => import("@/views/user/views/collection/index.vue"),
+                    component: () => import("@/views/user/collection/index.vue"),
                     meta: {
                         title: "我的收藏",
                         requiresAuth: true,
@@ -139,7 +139,7 @@ const router = createRouter({
                 {
                     path: 'notifications',
                     name: 'notifications',
-                    component: () => import('@/views/user/views/notification/index.vue'),
+                    component: () => import('@/views/user/notification/index.vue'),
                     meta: {
                         title: '通知',
                         requiresAuth: true,
@@ -148,7 +148,7 @@ const router = createRouter({
                 {
                     path: 'follow&fans',
                     name: 'follow&fans',
-                    component: () => import('@/views/user/views/follow&fans/index.vue'),
+                    component: () => import('@/views/user/follow&fans/index.vue'),
                     meta: {
                         title: '关注&粉丝',
                         requiresAuth: true,
@@ -157,7 +157,7 @@ const router = createRouter({
                 {
                     path: 'pointAccount',
                     name: 'pointAccount',
-                    component: () => import('@/views/user/views/pointAccount/Index.vue'),
+                    component: () => import('@/views/user/pointAccount/Index.vue'),
                     meta: {
                         title: '积分',
                         requiresAuth: true,
@@ -168,7 +168,7 @@ const router = createRouter({
         {
             path: '/author/:id',
             name: 'author',
-            component: () => import("@/views/pages/views/author/Index.vue"),
+            component: () => import("@/views/pages/author/Index.vue"),
             meta: {
                 title: "作者主页",
                 requiresAuth: true

@@ -1,0 +1,25 @@
+<script setup>
+import AuthorProfile from "@/views/pages/author/components/AuthorProfile.vue";
+import Footer from "@/components/Footer.vue";
+import HomeHeader from "@/components/Header.vue";
+import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
+</script>
+
+<template>
+  <Live2DViewer />
+  <el-container>
+    <el-header>
+      <HomeHeader />
+    </el-header>
+    <el-main>
+      <AuthorProfile />
+    </el-main>
+    <el-footer>
+      <Footer />
+    </el-footer>
+  </el-container>
+
+  <!-- todo 隐私设置，是否展示页面数据 -->
+</template>
+
+<style scoped lang="scss"></style>

@@ -137,7 +137,7 @@ watch(
   position: fixed;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 400;
 
   .live2d-text-bubble {
     position: absolute;

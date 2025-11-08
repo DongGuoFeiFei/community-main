@@ -66,6 +66,7 @@
 
     <!-- 始终显示的主控制按钮 -->
     <div>
+
       <el-tooltip
           effect="dark"
           disabled
@@ -146,7 +147,7 @@ const openReportDialog = () => {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 1000;
+  z-index: 500;
   display: flex;
   flex-direction: column;
   gap: 10px;

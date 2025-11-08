@@ -1,6 +1,8 @@
 body {
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  height: auto;
   /*background: radial-gradient(circle at 15% 50%, #409EFF 0%, #B8E1FF 70%, #FFF 100%);*/
   /*background: radial-gradient(circle at 15% 50%, #636E72 0%, #B2BEC3 70%, #FFFFFF 100%);*/
   /*background: radial-gradient(circle at 15% 50%, #E8F5E9 0%, #C8E6C9 70%, #FFFFFF 100%);*/
@@ -12,14 +14,17 @@ body {
   /*background: radial-gradient(circle at 15% 50%, #fff5f5 0%, #fffafa 70%, #ffffff 100%);*/
   font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
   overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
-/* 全局高度设置（确保在App.vue中已设置） */
+/* 全局高度设置 - 使用 min-height 而不是 height，允许内容超出一个视口高度时使用浏览器滚动条 */
 html, body, #app {
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .el-header {

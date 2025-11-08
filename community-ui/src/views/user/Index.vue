@@ -1,7 +1,7 @@
 <script setup>
-import UserHeader from "@/views/user/components/UserHeader.vue";
-import UserFooter from "@/views/user/components/UserFooter.vue";
-import WelcomePage from "@/views/user/components/WelcomePage.vue";
+import UserHeader from "@/components/UserHeader.vue";
+import UserFooter from "@/components/UserFooter.vue";
+import WelcomePage from "@/components/WelcomePage.vue";
 import Live2DViewer from "@/components/Live2D/Live2DViewer.vue";
 </script>
 

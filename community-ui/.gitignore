@@ -32,3 +32,7 @@ coverage
 /dist.zip
 /.env.development
 /.env.production
+/md/
+
+/提示词.txt
+/.vscode/

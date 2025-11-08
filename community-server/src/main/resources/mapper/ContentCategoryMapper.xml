@@ -24,7 +24,8 @@
 
     <!-- 查询所有顶级分类 -->
     <select id="getCategoryTrees" resultMap="CategoryTreeMap">
-        SELECT *
+        SELECT category_id,parent_id,category_name,category_slug,description,
+               cover_url,sort_order,status,created_at,updated_at
         FROM content_category
         WHERE parent_id IS NULL
           AND status = 1
@@ -35,7 +36,8 @@
     <!-- 查询子分类（支持多级递归） -->
     <select id="selectChildrenCategories" resultMap="CategoryTreeMap">
         SELECT
-            *
+            category_id,parent_id,category_name,category_slug,description,
+            cover_url,sort_order,status,created_at,updated_at
         FROM content_category
         WHERE parent_id = #{category_id}
           AND status = 1

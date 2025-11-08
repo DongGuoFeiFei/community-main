@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    // 基础配置
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+
+    // 模块解析
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+
+    // 关键配置：允许 JS 文件
+    "allowJs": true,  // ✅ 允许编译 JavaScript 文件
+    "checkJs": false, // ❌ 不检查 JS 文件的类型错误
+
+    // 类型检查（仅对 TS 文件生效）
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // 其他配置
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // 路径别名
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    // 类型声明
+    "types": ["vite/client", "element-plus/global", "node"]
+  },
+
+  // 包含的文件
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.js",  // ✅ 包含 JS 文件
+    "src/**/*.jsx"
+  ],
+
+  // 排除的文件
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts"
+  ],
+
+  // Vue 特殊配置
+  "vueCompilerOptions": {
+    "target": 3
+  }
+}
+
+

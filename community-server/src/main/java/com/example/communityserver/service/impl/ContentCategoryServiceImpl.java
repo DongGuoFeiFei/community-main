@@ -14,10 +14,12 @@ import com.example.communityserver.mapper.ArticleCategoryRelationMapper;
 import com.example.communityserver.mapper.ContentCategoryMapper;
 import com.example.communityserver.service.IContentCategoryService;
 import com.example.communityserver.utils.common.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +31,7 @@ import java.util.List;
  * @author: DongGuo
  * @create: 2025-07-21
  **/
-
+@Slf4j
 @Service
 public class ContentCategoryServiceImpl extends ServiceImpl<ContentCategoryMapper, ContentCategory> implements IContentCategoryService {
     @Autowired
@@ -40,7 +42,9 @@ public class ContentCategoryServiceImpl extends ServiceImpl<ContentCategoryMappe
 
     @Override
     public List<ContentCategoryTree> getCategoryTrees() {
-        return contentCategoryMapper.getCategoryTrees();
+        // TODO: 2025/11/8  按照文章的热度进行排名，但是不能显示文章的热度
+        List<ContentCategoryTree> categoryTrees = contentCategoryMapper.getCategoryTrees();
+        return null == categoryTrees ? Collections.emptyList() : categoryTrees;
     }
 
     @Override

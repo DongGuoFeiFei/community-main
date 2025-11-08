@@ -41,6 +41,9 @@ public class ContentCategoryController {
     @RequiresPermission(api = {"category:list:get"}, role = {"super_admin"})
     public Result<List<ContentCategory>> getCategories() {
         List<ContentCategory> list = contentCategoryService.list();
+        list.forEach(item -> {
+            item.setArticleCount(null);
+        });
         return Result.success(list);
     }
 

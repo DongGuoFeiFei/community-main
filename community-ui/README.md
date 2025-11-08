@@ -40,6 +40,7 @@
 - **Vite 6.2.4** - 下一代前端构建工具
 - **Vue Router 4.5.0** - 官方路由管理器
 - **Pinia 3.0.1** - Vue 状态管理库
+- **TypeScript 5.7.2** - JavaScript 的超集（支持 JS/TS 混合开发）
 
 ### UI 框架与组件
 
@@ -222,6 +223,15 @@ npm run dev
 
 访问 http://localhost:5173 (默认端口)
 
+### TypeScript 支持
+
+本项目支持 **JavaScript 和 TypeScript 混合开发**：
+
+- ✅ 现有的 JavaScript 代码完全不受影响
+- ✅ 新功能可以使用 TypeScript
+- ✅ 详细指南请查看 [TypeScript 迁移指南](./TS_MIGRATION_GUIDE.md)
+- ✅ 快速上手请查看 [TypeScript 快速开始](./QUICK_START_TS.md)
+
 ### 生产环境构建
 
 ```bash
@@ -292,6 +302,8 @@ export default defineConfig({
 - 遵循 **ESLint** 规范
 - 组件命名使用 **PascalCase**
 - 文件命名使用 **kebab-case** 或 **PascalCase**
+- **新功能推荐使用 TypeScript**（可选，不强制）
+- 已有的 JavaScript 代码保持不变
 
 ### 路由管理
 
