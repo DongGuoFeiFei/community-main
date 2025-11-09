@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
-import type { Article, User, ArticleListParams } from 'src/api/types'
+import type { Article, User, ArticleListParams } from '@/types'
 import { getArticleListTS } from '@/api/example'
 
 // ============= Props 定义（带类型） =============

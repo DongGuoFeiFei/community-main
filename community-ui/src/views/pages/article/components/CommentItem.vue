@@ -93,7 +93,7 @@ import {
   ChatDotRound,
 } from "@element-plus/icons-vue";
 import { localStores } from "@/stores/localStores";
-import type { Comment } from "@/api/types/comment";
+import type { Comment } from "@/types/comment";
 import CommentForm from "./CommentForm.vue";
 
 interface Props {

@@ -9,7 +9,7 @@ import {
   submitCommentToPost,
   deleteComment,
 } from "@/api/index.js";
-import type { Comment } from "@/api/types/comment";
+import type { Comment } from "@/types/comment";
 
 interface UseCommentsOptions {
   postId: string | number;

@@ -10,6 +10,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
+    "noEmit": true,
 
     // 关键配置：允许 JS 文件
     "allowJs": true, // ✅ 允许编译 JavaScript 文件

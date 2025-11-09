@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    // 基础选项
+    "target": "ES2020",                          // 编译目标
+    "useDefineForClassFields": true,             // 类字段语义
+    "module": "ESNext",                          // 模块系统
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],    // 包含的库
+    "skipLibCheck": true,                        // 跳过库类型检查
+    
+    // 模块解析
+    "moduleResolution": "bundler",               // 模块解析策略
+    "allowImportingTsExtensions": true,          // 允许导入 .ts 扩展名
+    "resolveJsonModule": true,                   // 允许导入 JSON
+    "isolatedModules": true,                     // 每个文件作为独立模块
+    "noEmit": true,                              // 不生成输出文件（Vite 负责）
+    
+    // 类型检查（宽松配置，适合渐进式迁移）
+    "strict": false,                             // 关闭严格模式（新手友好）
+    "noUnusedLocals": false,                     // 允许未使用的变量
+    "noUnusedParameters": false,                 // 允许未使用的参数
+    "noFallthroughCasesInSwitch": true,         // switch 必须有 break
+    
+    // 路径映射
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]                         // @ 别名指向 src
+    },
+    
+    // Vue 支持
+    "jsx": "preserve",                           // 保留 JSX
+    "jsxImportSource": "vue",                    // JSX 来源
+    
+    // 允许 JS 和 TS 混用（关键配置！）
+    "allowJs": true,                             // ✅ 允许导入 .js 文件
+    "checkJs": false,                            // ❌ 不检查 JS 文件的类型
+    
+    // 其他
+    "esModuleInterop": true,                     // 兼容 CommonJS
+    "forceConsistentCasingInFileNames": true    // 文件名大小写一致
+  },
+  
+  // 包含的文件
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.js",     // ✅ 包含 JS 文件
+    "src/**/*.jsx"
+  ],
+  
+  // 排除的文件
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  
+  // Vue 类型声明
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+

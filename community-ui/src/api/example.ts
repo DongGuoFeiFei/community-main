@@ -4,7 +4,7 @@
  */
 
 import request from '@/utils/request'
-import type { ApiResponse, Article, ArticleListParams, PageResult } from 'src/api/types'
+import type { ApiResponse, Article, ArticleListParams, PageResult } from '@/types'
 
 // ============= 接口函数（带类型） =============
 

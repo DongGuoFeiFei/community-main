@@ -3,7 +3,7 @@
  * 展示如何编写类型安全的工具函数
  */
 
-import type { User, Article } from 'src/api/types'
+import type { User, Article } from '@/types'
 
 /**
  * 安全地获取嵌套属性
