@@ -29,6 +29,7 @@ public class CacheKeyConstants {
     public static final String CAPTCHA_CODE = "captcha:code:";
     public static final String SITE_STATISTICS = "site:statistics:";
     public static final String CHAT_SESSION_MESSAGES = "chat:session:message:";
+    public static final String RESET_PASSWORD_KEY = "reset_password_key:";
     private static final String ONLINE_USERS_KEY = "chat:online:users";
     private static final String SESSION_MESSAGES_KEY = "chat:session:messages:";
     private static final String SESSION_INFO_KEY = "chat:session:info:";

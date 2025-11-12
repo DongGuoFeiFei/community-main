@@ -2,18 +2,19 @@
 spring:
   # redis配置
   redis:
-    host: redis #生产
+    host: 127.0.0.1  #开发
     port: 6379
     database: 1
   # mysql 配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai #生产
+    #    url: jdbc:mysql://${service.ip}:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai
     username: root
-    password: ${datasource_password_pro} #生产
+    password: 123456  #开发
   # MVC的URL路径匹配策略
   mvc:
-    path match:
+    path-match:
       matching-strategy: ant-path-matcher
   # 文件大小限制
   servlet:
@@ -60,20 +61,21 @@ mybatis-plus:
 # Swagger配置
 swagger:
   # 是否开启swagger
-  enabled: false  #生产
+  enabled: true  #开发
+  #  enabled: false  #生产
   # 请求前缀
   pathMapping:
 # 文件路径
 file:
   upload:
-    path: /data/upload #生产
+    path: ./path/to/upload/directory  #开发
 #日志
 logging:
   level:
     root: info
     org.springframework.web: info
     com.example: debug
-    com.baomidou.mybatisplus: warn #生产
+    com.baomidou.mybatisplus: debug #开发
   file:
     name: ./logs/application.log #开发
   #    name: /data/logs/application.log #生产

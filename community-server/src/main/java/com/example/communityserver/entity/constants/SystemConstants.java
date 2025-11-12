@@ -1,5 +1,8 @@
 package com.example.communityserver.entity.constants;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 /**
  * <p>
  * 系统通用常量
@@ -8,7 +11,6 @@ package com.example.communityserver.entity.constants;
  * @author: DongGuo
  * @create: 2025-06-23
  **/
-
 
 public class SystemConstants {
 

@@ -36,4 +36,3 @@ build/
 /src/main/resources/secrets.properties
 /src/main/resources/task.txt
 /md/
-/src/main/resources/application-prod.yml

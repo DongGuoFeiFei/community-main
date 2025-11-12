@@ -88,7 +88,9 @@ public class SecurityConfig {
                                 "/sockjs/**",
                                 "/app/**",
                                 "/topic/**",
-                                "/user/**"
+                                "/user/**",
+                                "/auth/reset-password/**",
+                                "/auth/forgot-password"
                         ).permitAll()
                         // 显式声明重要接口请求需要认证
                         .antMatchers(
