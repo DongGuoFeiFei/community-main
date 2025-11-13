@@ -16,6 +16,7 @@
 
           <!-- 主内容区 -->
           <el-main>
+            <!-- 公告栏 -->
             <Announcement />
             <div class="card-container">
               <!-- 欢迎横幅 -->

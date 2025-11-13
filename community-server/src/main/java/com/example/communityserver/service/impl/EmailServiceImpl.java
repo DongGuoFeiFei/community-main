@@ -1,13 +1,9 @@
 package com.example.communityserver.service.impl;
 
-import com.example.communityserver.core.security.util.SecurityUtils;
-import com.example.communityserver.entity.constants.CacheKeyConstants;
 import com.example.communityserver.entity.constants.EmailTemplates;
 import com.example.communityserver.service.IEmailService;
-import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.common.VerificationCodeUtils;
 import com.example.communityserver.utils.redis.RedisUtil;
-import org.apache.catalina.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +21,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -82,9 +74,12 @@ public class EmailServiceImpl implements IEmailService {
             String content = EmailTemplates.getRenderVerificationEmail(username, code);
             sendMimeMessage(toEmail, EmailTemplates.SUBJECT_VERIFICATION, content);
 
+            log.info("验证码邮件发送成功: email={}", toEmail);
         } catch (MessagingException e) {
+            log.error("邮件构建失败: email={}, error={}", toEmail, e.getMessage());
             throw new RuntimeException("邮件发送失败，请检查邮箱地址", e);
         } catch (Exception e) {
+            log.error("未知错误: email={}, error={}", toEmail, e.getMessage());
             throw new RuntimeException("系统繁忙，请稍后重试");
         }
     }
@@ -107,29 +102,6 @@ public class EmailServiceImpl implements IEmailService {
         } catch (MessagingException e) {
             log.error("欢迎邮件发送失败: email={}, error={}", toEmail, e.getMessage());
         }
-    }
-
-
-    @Override
-    public boolean sendResetPassword(String email, String username) {
-        // 给用户发送邮箱，重置链接，链接内容是一个服务器的get请求链接，链接包含和重置邮箱绑定的token
-        // 链接会返回一个重置成功的页面
-        String value = StringUtil.generateUUID();
-        String key = CacheKeyConstants.RESET_PASSWORD_KEY + value;
-        Map<String, String> valueMap = new HashMap<>();
-        valueMap.put("email", email);
-        String password = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-        valueMap.put("password", password);
-        redisUtil.setCacheObject(key, valueMap, 30, TimeUnit.MINUTES);
-        try {
-            String content = EmailTemplates.getResetPasswordEmail(value, username, password);
-            sendMimeMessage(email, EmailTemplates.SUBJECT_RESET_PASSWORD, content);
-            log.info("重置密码邮件发送成功: email={}", email);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return true;
     }
 
     /**
@@ -177,12 +149,8 @@ public class EmailServiceImpl implements IEmailService {
     }
 
     /**
-     * @Description: 通用MIME邮件发送方法
-     * @Param: [toEmail(目标邮箱), subject(邮件主题), content(邮箱文本内容)]
-     * @return: void
-     * @Author: DongGuo
+     * 通用MIME邮件发送方法
      */
-
     private void sendMimeMessage(String toEmail, String subject, String content) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");

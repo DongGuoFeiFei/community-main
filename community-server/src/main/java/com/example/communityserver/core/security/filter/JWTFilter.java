@@ -42,9 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
             "/swagger-resources",
             "/swagger-resources/**",
             "/v2/**",
-            "/api/websocket/*",
-            "/auth/reset-password/**",
-            "/auth/forgot-password"
+            "/api/websocket/*"
     );
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();

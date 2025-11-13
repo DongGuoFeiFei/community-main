@@ -7,11 +7,9 @@ import com.example.communityserver.entity.enums.ResponseCodeEnum;
 import com.example.communityserver.entity.enums.ValidateCodeTypeEnum;
 import com.example.communityserver.entity.model.FileEntity;
 import com.example.communityserver.entity.model.LoginUser;
-import com.example.communityserver.entity.model.User;
 import com.example.communityserver.entity.request.GetValidateCodeDto;
 import com.example.communityserver.entity.request.LoginRequest;
 import com.example.communityserver.entity.request.RegisterDto;
-import com.example.communityserver.entity.request.ResetPasswordDto;
 import com.example.communityserver.entity.response.LoginResponse;
 import com.example.communityserver.core.security.util.JWTUtil;
 import com.example.communityserver.core.security.util.PermissionExpressionUtil;
@@ -21,15 +19,12 @@ import com.example.communityserver.service.IFileEntityService;
 import com.example.communityserver.service.ILoginLogService;
 import com.example.communityserver.service.IUserService;
 import com.example.communityserver.utils.common.CaptchaUtil;
-import com.example.communityserver.utils.common.EmailUtils;
-import com.example.communityserver.utils.common.MapUtils;
 import com.example.communityserver.utils.common.StringUtil;
 import com.example.communityserver.utils.redis.RedisUtil;
 import com.example.communityserver.utils.web.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +34,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 @RestController
 @Api(tags = "登录等验证")
 @RequestMapping("/auth")
@@ -234,43 +228,5 @@ public class AuthController {
         return Result.success();
     }
 
-    @ApiOperation("重置密码")
-    @PostMapping("/forgot-password")
-    public Result<Void> forgotPassword(@RequestBody ResetPasswordDto dto) {
-        // 校验email格式
-        if (!EmailUtils.isValidEmail(dto.getEmail())) {
-            return Result.error("请输入有效邮箱");
-        }
-        // 校验身份
-        if (userService.isExistUser(dto.getEmail(), null, null) == ResponseCodeEnum.USER_NOT_EXIST) {
-            return Result.error("请输入正确邮箱");
-        }
-        User user = userService.getUsersByEmail(dto.getEmail());
-        // 发送邮箱
-        boolean is = emailService.sendResetPassword(dto.getEmail(), user.getUsername());
-        if (is) {
-            return Result.success();
-        } else {
-            return Result.error("发送失败，请稍后重试。");
-        }
-    }
-
-    // todo 重置失败和成功的重定向失败
-    @ApiOperation("重置密码")
-    @GetMapping("/reset-password/{key}")
-    public String resetPassword(@PathVariable String key) {
-        // 重置密码
-        Map<String, String> map = redisUtil.getCacheObject(CacheKeyConstants.RESET_PASSWORD_KEY + key);
-        redisUtil.deleteObject(CacheKeyConstants.RESET_PASSWORD_KEY + key);
-        if (MapUtils.isEmpty(map)) {
-            return "redirect:/static/reset-failure.html";
-        }
-        Boolean is = userService.resetPassword(map);
-        if (is) {
-            return "redirect:/static/reset-success.html";
-        }
-        return "redirect:/static/reset-failure.html";
-
-    }
 
 }

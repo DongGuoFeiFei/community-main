@@ -1,7 +1,7 @@
 <template>
   <div class="message-item" :class="{ 'self-message': isSelf }">
     <div class="message-avatar">
-      <el-avatar :src="store.baseURL + message.senderAvatar" :size="40"/>
+      <el-avatar :src="store.baseURL + message.senderAvatar" :size="36"/>
     </div>
     <div class="message-content">
       <div class="message-info">
@@ -9,10 +9,7 @@
         <span class="message-time">{{ formatTime(message.sendTime) }}</span>
       </div>
       <div class="message-body">
-        <div class="message-bubble">
-          <div class="bubble-tail"></div>
-          <div class="message-text">{{ message.content }}</div>
-        </div>
+        <div class="message-text">{{ message.content }}</div>
       </div>
     </div>
   </div>
@@ -43,83 +40,40 @@ const formatTime = (time) => {
 <style lang="scss" scoped>
 .message-item {
   display: flex;
-  margin-bottom: 20px;
-  animation: messageSlideIn 0.3s ease-out;
+  margin-bottom: 16px;
 
   .message-avatar {
     margin-right: 12px;
-    flex-shrink: 0;
-    transition: transform 0.3s;
-
-    &:hover {
-      transform: scale(1.1);
-    }
   }
 
   .message-content {
-    max-width: 65%;
-    display: flex;
-    flex-direction: column;
+    max-width: 70%;
 
     .message-info {
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 4px;
 
       .sender-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: #7e57c2;
+        font-size: 14px;
+        font-weight: 500;
+        margin-right: 8px;
       }
 
       .message-time {
-        font-size: 11px;
-        color: #b39ddb;
-        opacity: 0.8;
+        font-size: 12px;
+        color: #999;
       }
     }
 
     .message-body {
-      position: relative;
-
-      .message-bubble {
-        position: relative;
-        padding: 12px 16px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(243, 229, 245, 0.3) 100%);
-        border-radius: 18px;
-        border: 2px solid rgba(179, 157, 219, 0.2);
-        box-shadow: 0 2px 8px rgba(179, 157, 219, 0.15);
+      .message-text {
+        padding: 8px 12px;
+        background: #f5f5f5;
+        border-radius: 4px;
         word-break: break-word;
-        transition: all 0.3s;
-
-        &:hover {
-          box-shadow: 0 4px 12px rgba(179, 157, 219, 0.25);
-          transform: translateY(-1px);
-        }
-
-        // 气泡尾巴
-        .bubble-tail {
-          position: absolute;
-          left: -8px;
-          top: 12px;
-          width: 0;
-          height: 0;
-          border-top: 8px solid transparent;
-          border-bottom: 8px solid transparent;
-          border-right: 8px solid rgba(179, 157, 219, 0.2);
-        }
-
-        .message-text {
-          font-size: 14px;
-          line-height: 1.6;
-          color: #333;
-        }
       }
     }
   }
 
-  // 自己发送的消息
   &.self-message {
     flex-direction: row-reverse;
 
@@ -129,53 +83,15 @@ const formatTime = (time) => {
     }
 
     .message-content {
-      align-items: flex-end;
-
-      .message-info {
-        flex-direction: row-reverse;
-
-        .sender-name {
-          color: #9fa8da;
-        }
-      }
+      text-align: right;
 
       .message-body {
-        .message-bubble {
-          background: linear-gradient(135deg, #b39ddb 0%, #9fa8da 100%);
-          border-color: rgba(159, 168, 218, 0.3);
-          box-shadow: 0 2px 8px rgba(159, 168, 218, 0.25);
-
-          &:hover {
-            box-shadow: 0 4px 12px rgba(159, 168, 218, 0.35);
-          }
-
-          // 自己消息的尾巴在右边
-          .bubble-tail {
-            left: auto;
-            right: -8px;
-            border-right: none;
-            border-left: 8px solid rgba(159, 168, 218, 0.3);
-          }
-
-          .message-text {
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-          }
+        .message-text {
+          background: #409eff;
+          color: white;
         }
       }
     }
-  }
-}
-
-// 消息滑入动画
-@keyframes messageSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 </style>

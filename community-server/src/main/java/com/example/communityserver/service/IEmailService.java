@@ -20,5 +20,4 @@ public interface IEmailService {
     public String getEmailGravatarUrl(String email);
 
 
-    boolean sendResetPassword(String email,String username);
 }

@@ -1,8 +1,6 @@
 package com.example.communityserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -34,7 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -220,28 +217,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // todo 删除用户redis登录全部缓存
         Integer del = userMapper.delUserRole(param);
         return userMapper.insUserRole(param);
-    }
-
-    @Override
-    public User getUsersByEmail(String email) {
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getEmail, email);
-        return userMapper.selectOne(wrapper);
-    }
-
-    @Override
-    public Boolean resetPassword(Map<String, String> map) {
-        String password = map.get("password");
-        String email = map.get("email");
-
-        User user = getUsersByEmail(email);
-        user.setPassword(SecurityUtils.encryptPassword(password));
-
-        // 将已有登录强制下线
-        redisUtil.deleteObject(CacheKeyConstants.LOGIN_USER_ID+user.getUserId());
-
-        return userMapper.update(user, new LambdaUpdateWrapper<User>().eq(User::getEmail,email)) > 0;
-
     }
 
 

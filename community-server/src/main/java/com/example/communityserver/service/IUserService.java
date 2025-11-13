@@ -11,8 +11,6 @@ import com.example.communityserver.entity.response.AuthorInfoVo;
 import com.example.communityserver.entity.response.UserCountStats;
 import com.example.communityserver.entity.response.UserDelVo;
 
-import java.util.Map;
-
 
 public interface IUserService extends IService<User> {
     String login(String username, String password);
@@ -33,8 +31,4 @@ public interface IUserService extends IService<User> {
     IPage<UserDelVo> getUserList(UserSearchParam param);
 
     Integer updateUserRoles(IdIdsParam param);
-
-    User getUsersByEmail(String email);
-
-    Boolean resetPassword(Map<String, String> map);
 }

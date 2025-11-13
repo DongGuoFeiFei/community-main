@@ -17,9 +17,8 @@ public class EmailTemplates {
     public static final String E_MAIL_ADDRESS = "fcwbebe@foxmail.com";
     public static final String LOGIN_URL = "http://localhost:5173/login";
     public static final String SUPPORT_EMAIL_ADDRESS = "fcwbebe@foxmail.com";
-    public static final String SUBJECT_WELCOME = "欢迎注册【采芙蓉】";
+    public static final String SUBJECT_WELCOME ="欢迎注册【采芙蓉】";
     public static final String SUBJECT_VERIFICATION = "【采芙蓉】邮箱验证码";
-    public static final String SUBJECT_RESET_PASSWORD = "【采芙蓉】邮箱重置密码";
 
     // 验证码邮件模板
     private static final String VERIFICATION_TEMPLATE =
@@ -67,34 +66,6 @@ public class EmailTemplates {
                     "</body>\n" +
                     "</html>";
 
-    private static final String RESET_PASSWORD_TEMPLATE =
-            "<!DOCTYPE html>\n" +
-                    "<html>\n" +
-                    "<head>\n" +
-                    "    <meta charset=\"UTF-8\">\n" +
-                    "    <title>重置密码</title>\n" +
-                    "    <style>\n" +
-                    "        body { font-family: Arial, sans-serif; line-height: 1.6; }\n" +
-                    "        .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n" +
-                    "        .button { display: inline-block; padding: 10px 20px; background: #1890ff; color: white; text-decoration: none; }\n" +
-                    "    </style>\n" +
-                    "</head>\n" +
-                    "<body>\n" +
-                    "    <div class=\"container\">\n" +
-                    "        <h2 style=\"color: #1890ff;\">重置密码</h2>\n" +
-                    "        <p>尊敬的用户${username}：</p>\n" +
-                    "        <p>您正在请求重置账户密码成：${password}，请点击下方按钮进行密码重置：</p>\n" +
-                    "        <a href=\"${resetUrl}\" class=\"button\">重置密码</a>\n" +
-                    "        <p>如果按钮无法点击，请复制以下链接到浏览器地址栏：</p>\n" +
-                    "        <p>${resetUrl}</p>\n" +
-                    "        <p>此链接将在 <b>30分钟</b> 后失效。</p>\n" +
-                    "        <p>如非本人操作，请忽略此邮件。</p>\n" +
-                    "        <hr>\n" +
-                    "        <p style=\"color: #888;\">系统自动发送，请勿直接回复</p>\n" +
-                    "    </div>\n" +
-                    "</body>\n" +
-                    "</html>";
-
     /**
      * 替换模板中的占位符
      */
@@ -128,14 +99,4 @@ public class EmailTemplates {
         return renderTemplate(WELCOME_TEMPLATE, variables);
     }
 
-
-    // 修改 getResetPasswordEmail 方法实现
-    public static String getResetPasswordEmail(String token, String username, String password) {
-        Map<String, String> variables = new HashMap<>();
-        String resetUrl = SystemConstants.BASIC_URL + "/auth/reset-password/" + token;
-        variables.put("resetUrl", resetUrl);
-        variables.put("username", username);
-        variables.put("password", password);
-        return renderTemplate(RESET_PASSWORD_TEMPLATE, variables);
-    }
 }

@@ -36,14 +36,6 @@ public class CaptchaUtil {
     // 字符间距（增大）
     private static final int CHAR_SPACING = 30;
 
-    /**
-    * @Description: 生成验证码图片和验证码
-    * @Param: []
-    * @return: com.example.communityserver.utils.common.CaptchaUtil.Captcha
-    *
-    * @Author: DongGuo
-    */
-
     public static Captcha generate() {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();

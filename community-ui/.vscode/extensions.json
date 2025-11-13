@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "Vue.volar",
-    "vitest.explorer",
-    "ms-ceintl.vscode-language-pack-zh-hans"
+    "vitest.explorer"
   ]
 }
