@@ -55,6 +55,30 @@ public class RedisUtil {
         ValueOperations<String, T> operation = redisTemplate.opsForValue();
         return operation.get(key);
     }
+    /**
+     * 获得缓存的基本对象。
+     *
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
+     */
+    public <T> T getCacheObject(final String key, Class<T> clazz) {
+        try {
+            Object value = redisTemplate.opsForValue().get(key);
+            if (value == null) {
+                return null;
+            }
+
+            // 如果是Map类型，根据目标类进行转换
+            if (Map.class.isAssignableFrom(clazz) && value instanceof Map) {
+                return (T) value;
+            }
+
+            // 其他类型的转换逻辑
+            return clazz.cast(value);
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
 
     /**
      * 获得缓存的数字基本对象。
