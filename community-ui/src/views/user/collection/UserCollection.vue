@@ -2,7 +2,9 @@
   <div class="favorites-container">
     <div class="header">
       <h2>我的收藏</h2>
-      <el-button type="primary" @click="showCreateFolderDialog">新建收藏夹</el-button>
+      <el-button type="primary" @click="showCreateFolderDialog"
+        >新建收藏夹</el-button
+      >
     </div>
 
     <!-- 收藏夹列表 - 横向滑动 -->
@@ -13,30 +15,32 @@
       <div class="folder-scroll-container">
         <div class="folder-list">
           <el-card
-              v-for="folder in folders"
-              :key="folder.id"
-              class="folder-card"
-              :class="{ 'active-folder': activeFolderId === folder.id }"
-              @click="selectFolder(folder.id)"
+            v-for="folder in folders"
+            :key="folder.id"
+            class="folder-card"
+            :class="{ 'active-folder': activeFolderId === folder.id }"
+            @click="selectFolder(folder.id)"
           >
             <div class="folder-info">
               <h4>{{ folder.name }}</h4>
               <span>{{ folder.articleCount }}篇文章</span>
-              <span class="create-time">{{ formatDate(folder.createTime) }}</span>
+              <span class="create-time">{{
+                formatDate(folder.createTime)
+              }}</span>
             </div>
             <div class="folder-actions">
               <el-button
-                  link
-                  size="small"
-                  @click.stop="showEditFolderDialog(folder)"
-                  :icon="Edit"
+                link
+                size="small"
+                @click.stop="showEditFolderDialog(folder)"
+                :icon="Edit"
               />
               <el-button
-                  link
-                  size="small"
-                  @click.stop="confirmDeleteFolder(folder.id)"
-                  :icon="Delete"
-                  class="delete-btn"
+                link
+                size="small"
+                @click.stop="confirmDeleteFolder(folder.id)"
+                :icon="Delete"
+                class="delete-btn"
               />
             </div>
           </el-card>
@@ -48,16 +52,16 @@
     <div class="articles-section">
       <div class="filter-section">
         <el-input
-            v-model="searchQuery"
-            placeholder="搜索收藏的文章"
-            clearable
-            style="width: 300px"
-            @clear="handleSearchClear"
-            @keyup.enter="fetchFavoriteArticlesList"
+          v-model="searchQuery"
+          placeholder="搜索收藏的文章"
+          clearable
+          style="width: 300px"
+          @clear="handleSearchClear"
+          @keyup.enter="fetchFavoriteArticlesList"
         >
           <template #prefix>
             <el-icon>
-              <Search/>
+              <Search />
             </el-icon>
           </template>
         </el-input>
@@ -65,20 +69,20 @@
 
       <div class="article-list">
         <el-table
-            :data="favoriteArticles"
-            style="width: 100%"
-            v-loading="loading"
-            empty-text="暂无收藏文章"
+          :data="favoriteArticles"
+          style="width: 100%"
+          v-loading="loading"
+          empty-text="暂无收藏文章"
         >
           <el-table-column prop="coverUrl" label="封面" width="120">
             <template #default="{ row }">
               <el-image
-                  v-if="row.coverUrl"
-                  :src="baseUrl + row.coverUrl"
-                  fit="cover"
-                  style="width: 80px; height: 60px; border-radius: 4px"
-                  :preview-src-list="[baseUrl + row.coverUrl]"
-                  hide-on-click-modal
+                v-if="row.coverUrl"
+                :src="baseUrl + row.coverUrl"
+                fit="cover"
+                style="width: 80px; height: 60px; border-radius: 4px"
+                :preview-src-list="[baseUrl + row.coverUrl]"
+                hide-on-click-modal
               />
               <div v-else class="no-cover">无封面</div>
             </template>
@@ -94,7 +98,11 @@
 
           <el-table-column prop="author" label="作者" width="120">
             <template #default="{ row }">
-              <router-link :to="`/author/${row.authorId}`" target="_blank" class="author-link">
+              <router-link
+                :to="`/author/${row.authorId}`"
+                target="_blank"
+                class="author-link"
+              >
                 {{ row.author }}
               </router-link>
             </template>
@@ -120,20 +128,22 @@
 
           <el-table-column label="操作" width="180" fixed="right">
             <template #default="{ row }">
-              <el-dropdown @command="handleCommand($event, row.id,activeFolderId)">
+              <el-dropdown
+                @command="handleCommand($event, row.id, activeFolderId)"
+              >
                 <el-button type="primary" size="small" plain>
                   移动到
                   <el-icon class="el-icon--right">
-                    <ArrowDown/>
+                    <ArrowDown />
                   </el-icon>
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item
-                        v-for="folder in folders"
-                        :key="folder.id"
-                        :command="folder.id"
-                        :disabled="folder.id === activeFolderId"
+                      v-for="folder in folders"
+                      :key="folder.id"
+                      :command="folder.id"
+                      :disabled="folder.id === activeFolderId"
                     >
                       {{ folder.name }}
                     </el-dropdown-item>
@@ -141,11 +151,11 @@
                 </template>
               </el-dropdown>
               <el-button
-                  size="small"
-                  type="danger"
-                  @click="cancelCollection(row.id)"
-                  :icon="Delete"
-                  circle
+                size="small"
+                type="danger"
+                @click="cancelCollection(row.id)"
+                :icon="Delete"
+                circle
               />
             </template>
           </el-table-column>
@@ -153,14 +163,14 @@
 
         <div class="pagination">
           <el-pagination
-              background
-              v-model:current-page="pagination.current"
-              v-model:page-size="pagination.size"
-              :page-sizes="[10, 20, 30, 50]"
-              :total="pagination.total"
-              layout="total, sizes, prev, pager, next, jumper"
-              @size-change="handleSizeChange"
-              @current-change="handlePageChange"
+            background
+            v-model:current-page="pagination.current"
+            v-model:page-size="pagination.size"
+            :page-sizes="[10, 20, 30, 50]"
+            :total="pagination.total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handlePageChange"
           />
         </div>
       </div>
@@ -168,17 +178,17 @@
 
     <!-- 创建/编辑收藏夹对话框 -->
     <el-dialog
-        v-model="folderDialogVisible"
-        :title="isEditFolder ? '编辑收藏夹' : '新建收藏夹'"
-        width="500px"
+      v-model="folderDialogVisible"
+      :title="isEditFolder ? '编辑收藏夹' : '新建收藏夹'"
+      width="500px"
     >
       <el-form :model="folderForm" :rules="folderRules" ref="folderFormRef">
         <el-form-item label="收藏夹名称" prop="name">
           <el-input
-              v-model="folderForm.name"
-              placeholder="请输入收藏夹名称(2-20个字符)"
-              maxlength="20"
-              show-word-limit
+            v-model="folderForm.name"
+            placeholder="请输入收藏夹名称(2-20个字符)"
+            maxlength="20"
+            show-word-limit
           />
         </el-form-item>
       </el-form>
@@ -193,10 +203,10 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {ArrowDown, Delete, Edit, Search} from '@element-plus/icons-vue'
-import dayjs from 'dayjs'
+import { onMounted, reactive, ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { ArrowDown, Delete, Edit, Search } from "@element-plus/icons-vue";
+import dayjs from "dayjs";
 import {
   cancelCollect,
   createFolder,
@@ -204,252 +214,257 @@ import {
   fetchFavoriteArticles,
   fetchFolders,
   moveFavorite,
-  updateFolder
-} from '@/api/collectApi.js'
-import {localStores} from '@/stores/localStores.js'
-import {useRouter} from "vue-router";
+  updateFolder,
+} from "@/api/collectApi.js";
+import { localStores } from "@/stores/localStores.js";
+import { useRouter } from "vue-router";
 
-const router = useRouter()
-const lStore = localStores()
+const router = useRouter();
+const lStore = localStores();
 
 // 基础URL，用于拼接图片路径
-const baseUrl = lStore.baseURL
+const baseUrl = lStore.baseURL;
 
 // 收藏夹数据
-const folders = ref([])
-const activeFolderId = ref(null)
-const folderDialogVisible = ref(false)
-const isEditFolder = ref(false)
-const currentFolderId = ref(null) // 当前编辑的收藏夹ID
+const folders = ref([]);
+const activeFolderId = ref(null);
+const folderDialogVisible = ref(false);
+const isEditFolder = ref(false);
+const currentFolderId = ref(null); // 当前编辑的收藏夹ID
 
 // 收藏夹表单
 const folderForm = reactive({
-  name: ''
-})
-const folderFormRef = ref(null)
+  name: "",
+});
+const folderFormRef = ref(null);
 
 // 收藏夹表单验证规则
 const folderRules = {
   name: [
-    {required: true, message: '请输入收藏夹名称', trigger: 'blur'},
-    {min: 2, max: 20, message: '长度在2到20个字符', trigger: 'blur'}
-  ]
-}
+    { required: true, message: "请输入收藏夹名称", trigger: "blur" },
+    { min: 2, max: 20, message: "长度在2到20个字符", trigger: "blur" },
+  ],
+};
 
 // 收藏的文章数据
-const favoriteArticles = ref([])
-const searchQuery = ref('')
+const favoriteArticles = ref([]);
+const searchQuery = ref("");
 
 // 分页
 const pagination = reactive({
   current: 1,
   size: 10,
-  total: 0
-})
+  total: 0,
+});
 
-const loading = ref(false)
+const loading = ref(false);
 
 // 格式化日期
 const formatDate = (date) => {
-  return dayjs(date).format('YYYY-MM-DD')
-}
+  return dayjs(date).format("YYYY-MM-DD");
+};
 
 // 格式化日期时间
 const formatDateTime = (datetime) => {
-  return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')
-}
+  return dayjs(datetime).format("YYYY-MM-DD HH:mm:ss");
+};
 
 // 获取收藏夹列表
 const fetchFoldersList = async () => {
   try {
-    const res = await fetchFolders()
+    const res = await fetchFolders();
     if (res.code === 200) {
-      folders.value = res.data
+      folders.value = res.data;
       // 默认选中第一个收藏夹
       if (folders.value.length > 0 && !activeFolderId.value) {
-        activeFolderId.value = folders.value[0].id
-        await fetchFavoriteArticlesList()
+        activeFolderId.value = folders.value[0].id;
+        await fetchFavoriteArticlesList();
       }
     } else {
-      throw new Error(res.msg || '获取收藏夹列表失败')
+      throw new Error(res.msg || "获取收藏夹列表失败");
     }
   } catch (error) {
-    ElMessage.error('获取收藏夹列表失败: ' + error.message)
+    ElMessage.error("获取收藏夹列表失败: " + error.message);
   }
-}
+};
 
 // 获取收藏的文章列表
 const fetchFavoriteArticlesList = async () => {
-  if (!activeFolderId.value) return
+  if (!activeFolderId.value) return;
 
-  loading.value = true
+  loading.value = true;
   try {
     const params = {
       page: pagination.current,
       size: pagination.size,
       keyword: searchQuery.value,
-      folderId: activeFolderId.value
-    }
-    const res = await fetchFavoriteArticles(params)
+      folderId: activeFolderId.value,
+    };
+    const res = await fetchFavoriteArticles(params);
     if (res.code === 200) {
-      favoriteArticles.value = res.data.rows
-      pagination.total = res.data.total
+      favoriteArticles.value = res.data.rows;
+      pagination.total = res.data.total;
     } else {
-      throw new Error(res.msg || '获取收藏文章失败')
+      throw new Error(res.msg || "获取收藏文章失败");
     }
   } catch (error) {
-    ElMessage.error('获取收藏文章失败: ' + error.message)
+    ElMessage.error("获取收藏文章失败: " + error.message);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 // 选择收藏夹
 const selectFolder = (folderId) => {
-  activeFolderId.value = folderId
-  pagination.current = 1 // 重置到第一页
-  fetchFavoriteArticlesList()
-}
+  activeFolderId.value = folderId;
+  pagination.current = 1; // 重置到第一页
+  fetchFavoriteArticlesList();
+};
 
 // 显示创建收藏夹对话框
 const showCreateFolderDialog = () => {
-  isEditFolder.value = false
-  folderForm.name = ''
-  folderDialogVisible.value = true
-  currentFolderId.value = null
-}
+  isEditFolder.value = false;
+  folderForm.name = "";
+  folderDialogVisible.value = true;
+  currentFolderId.value = null;
+};
 
 // 显示编辑收藏夹对话框
 const showEditFolderDialog = (folder) => {
-  isEditFolder.value = true
-  folderForm.name = folder.name
-  currentFolderId.value = folder.id
-  folderDialogVisible.value = true
-}
+  isEditFolder.value = true;
+  folderForm.name = folder.name;
+  currentFolderId.value = folder.id;
+  folderDialogVisible.value = true;
+};
 
 // 提交收藏夹表单
 const submitFolderForm = async () => {
-  await folderFormRef.value.validate()
+  await folderFormRef.value.validate();
 
   try {
     if (isEditFolder.value) {
       // 编辑收藏夹
-      const res = await updateFolder(currentFolderId.value, {name: folderForm.name})
+      const res = await updateFolder(currentFolderId.value, {
+        name: folderForm.name,
+      });
       if (res.code === 200) {
-        ElMessage.success('收藏夹更新成功')
-        await fetchFoldersList()
+        ElMessage.success("收藏夹更新成功");
+        await fetchFoldersList();
       } else {
-        throw new Error(res.msg || '更新收藏夹失败')
+        throw new Error(res.msg || "更新收藏夹失败");
       }
     } else {
       // 创建收藏夹
-      const res = await createFolder({name: folderForm.name})
+      const res = await createFolder({ name: folderForm.name });
       if (res.code === 200) {
-        ElMessage.success('收藏夹创建成功')
-        await fetchFoldersList()
+        ElMessage.success("收藏夹创建成功");
+        await fetchFoldersList();
       } else {
-        throw new Error(res.msg || '创建收藏夹失败')
+        throw new Error(res.msg || "创建收藏夹失败");
       }
     }
-    folderDialogVisible.value = false
+    folderDialogVisible.value = false;
   } catch (error) {
-    ElMessage.error('操作失败: ' + error.message)
+    ElMessage.error("操作失败: " + error.message);
   }
-}
+};
 
 // 确认删除收藏夹
 const confirmDeleteFolder = (folderId) => {
-  ElMessageBox.confirm('确定要删除这个收藏夹吗？收藏夹内的文章将一并删除。', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-      .then(() => {
-        deleteFolder(folderId)
-            .then((res) => {
-              if (res.code === 200) {
-                ElMessage.success('收藏夹删除成功')
-                // 如果删除的是当前选中的收藏夹，则选中第一个收藏夹
-                if (activeFolderId.value === folderId) {
-                  activeFolderId.value = folders.value.length > 0 ? folders.value[0].id : null
-                }
-                fetchFoldersList()
-              } else {
-                throw new Error(res.msg || '删除收藏夹失败')
-              }
-            })
-            .catch((error) => {
-              ElMessage.error('删除收藏夹失败: ' + error.message)
-            })
-      })
-      .catch(() => {
-      })
-}
+  ElMessageBox.confirm(
+    "确定要删除这个收藏夹吗？收藏夹内的文章将一并删除。",
+    "提示",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(() => {
+      deleteFolder(folderId)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success("收藏夹删除成功");
+            // 如果删除的是当前选中的收藏夹，则选中第一个收藏夹
+            if (activeFolderId.value === folderId) {
+              activeFolderId.value =
+                folders.value.length > 0 ? folders.value[0].id : null;
+            }
+            fetchFoldersList();
+          } else {
+            throw new Error(res.msg || "删除收藏夹失败");
+          }
+        })
+        .catch((error) => {
+          ElMessage.error("删除收藏夹失败: " + error.message);
+        });
+    })
+    .catch(() => {});
+};
 
 // 取消收藏
 const cancelCollection = (articleId) => {
-  ElMessageBox.confirm('确定要取消收藏这篇文章吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确定要取消收藏这篇文章吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   })
-      .then(() => {
-        cancelCollect(articleId)
-            .then((res) => {
-              if (res.code === 200) {
-                ElMessage.success('已取消收藏')
-                fetchFavoriteArticlesList()
-              } else {
-                throw new Error(res.msg || '取消收藏失败')
-              }
-            })
-            .catch((error) => {
-              ElMessage.error('取消收藏失败: ' + error.message)
-            })
-      })
-      .catch(() => {
-      })
-}
+    .then(() => {
+      cancelCollect(articleId)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success("已取消收藏");
+            fetchFavoriteArticlesList();
+          } else {
+            throw new Error(res.msg || "取消收藏失败");
+          }
+        })
+        .catch((error) => {
+          ElMessage.error("取消收藏失败: " + error.message);
+        });
+    })
+    .catch(() => {});
+};
 
 // 处理移动收藏命令
 const handleCommand = (folderId, articleId, activeFolderId) => {
   moveFavorite(articleId, folderId, activeFolderId)
-      .then((res) => {
-        if (res.code === 200) {
-          ElMessage.success('文章移动成功')
-          fetchFavoriteArticlesList()
-          fetchFoldersList()
-        } else {
-          throw new Error(res.msg || '移动收藏失败')
-        }
-      })
-      .catch((error) => {
-        ElMessage.error('移动收藏失败: ' + error.message)
-      })
-}
+    .then((res) => {
+      if (res.code === 200) {
+        ElMessage.success("文章移动成功");
+        fetchFavoriteArticlesList();
+        fetchFoldersList();
+      } else {
+        throw new Error(res.msg || "移动收藏失败");
+      }
+    })
+    .catch((error) => {
+      ElMessage.error("移动收藏失败: " + error.message);
+    });
+};
 
 // 处理分页大小变化
 const handleSizeChange = (size) => {
-  pagination.size = size
-  pagination.current = 1 // 重置到第一页
-  fetchFavoriteArticlesList()
-}
+  pagination.size = size;
+  pagination.current = 1; // 重置到第一页
+  fetchFavoriteArticlesList();
+};
 
 // 处理页码变化
 const handlePageChange = (page) => {
-  pagination.current = page
-  fetchFavoriteArticlesList()
-}
+  pagination.current = page;
+  fetchFavoriteArticlesList();
+};
 
 // 搜索框清空
 const handleSearchClear = () => {
-  searchQuery.value = ''
-  fetchFavoriteArticlesList()
-}
+  searchQuery.value = "";
+  fetchFavoriteArticlesList();
+};
 
 onMounted(() => {
-  fetchFoldersList()
-})
+  fetchFoldersList();
+});
 </script>
 
 <style scoped lang="scss">
@@ -486,17 +501,8 @@ onMounted(() => {
 
 .folder-scroll-container {
   width: 100%;
-  overflow-x: auto;
-  padding-bottom: 10px; // 为滚动条留出空间
-
-  &::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #c1c1c1;
-    border-radius: 3px;
-  }
+  overflow-x: hidden; // 禁止水平滚动，使用浏览器滚动
+  padding-bottom: 10px;
 }
 
 .folder-list {

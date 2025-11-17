@@ -75,7 +75,7 @@ public class ChatMessageService {
     private void batchInsertMessages() {
         List<ImMessage> messages = new ArrayList<>();
         messageQueue.drainTo(messages, 100); // 每次最多取100条
-//        log.info("Batch inserting {} messages", messages);
+        log.info("Batch inserting {} messages", messages);
         if (!messages.isEmpty()) {
             try {
                 messageMapper.batchInsert(messages);

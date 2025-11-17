@@ -19,9 +19,9 @@ import java.util.List;
 
 public interface ImMessageMapper extends BaseMapper<ImMessage> {
     @Insert("<script>" +
-            "INSERT INTO im_message (session_id, sender_id, content, send_time) VALUES " +
+            "INSERT INTO im_message (session_id, sender_id,sender_name ,content, send_time) VALUES " +
             "<foreach collection='list' item='item' separator=','>" +
-            "(#{item.sessionId}, #{item.senderId}, #{item.content}, #{item.sendTime})" +
+            "(#{item.sessionId}, #{item.senderId}, #{item.senderName},#{item.content}, #{item.sendTime})" +
             "</foreach>" +
             "</script>")
     void batchInsert(@Param("list") List<ImMessage> messages);

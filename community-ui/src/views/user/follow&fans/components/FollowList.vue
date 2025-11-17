@@ -1,54 +1,54 @@
 <script setup>
-import {ref} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {delFollowAuthor, getFollowingList} from "@/api/follow.js";
+import { ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { delFollowAuthor, getFollowingList } from "@/api/follow.js";
 
 const props = defineProps({
   userId: {
     type: Number,
-    required: true
+    required: true,
   },
   loading: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emits = defineEmits(['refresh'])
+const emits = defineEmits(["refresh"]);
 
-const follows = ref([])
+const follows = ref([]);
 
 const fetchFollows = async () => {
   try {
-    const res = await getFollowingList(props.userId)
-    follows.value = res.data || []
-    console.log("follows.value", follows.value)
+    const res = await getFollowingList(props.userId);
+    follows.value = res.data || [];
+    console.log("follows.value", follows.value);
   } catch (error) {
-    ElMessage.error(error.message || '获取关注列表失败')
+    ElMessage.error(error.message || "获取关注列表失败");
   }
-}
+};
 
 const handleUnfollow = async (userIdToUnfollow) => {
   try {
-    await ElMessageBox.confirm('确定要取消关注吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
+    await ElMessageBox.confirm("确定要取消关注吗？", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
 
-    await delFollowAuthor(userIdToUnfollow)
-    ElMessage.success('取消关注成功')
-    emits('refresh')
+    await delFollowAuthor(userIdToUnfollow);
+    ElMessage.success("取消关注成功");
+    emits("refresh");
   } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error(error.message || '取消关注失败')
+    if (error !== "cancel") {
+      ElMessage.error(error.message || "取消关注失败");
     }
   }
-}
+};
 
 defineExpose({
-  fetchFollows
-})
+  fetchFollows,
+});
 </script>
 
 <template>
@@ -57,27 +57,33 @@ defineExpose({
     <el-skeleton :loading="loading" animated>
       <template #template>
         <div class="skeleton-item" v-for="i in 5" :key="`follow-skeleton-${i}`">
-          <el-skeleton-item variant="circle" class="avatar"/>
-          <el-skeleton-item variant="text" class="name"/>
-          <el-skeleton-item variant="button" class="action"/>
+          <el-skeleton-item variant="circle" class="avatar" />
+          <el-skeleton-item variant="text" class="name" />
+          <el-skeleton-item variant="button" class="action" />
         </div>
       </template>
       <template #default>
         <div class="empty-tip" v-if="follows.length === 0">暂无关注用户</div>
-        <div class="user-item" v-for="user in follows" :key="`follow-${user.id}`">
+        <div
+          class="user-item"
+          v-for="user in follows"
+          :key="`follow-${user.id}`"
+        >
           <RouterLink :to="`/author/${user.id}`" target="_blank">
             <div class="user-info">
-              <el-avatar :src="user.avatar" class="avatar"/>
+              <el-avatar :src="user.avatar" class="avatar" />
               <div class="user-details">
                 <span class="username">{{ user.nickname }}</span>
-                <span class="user-bio">{{ user.bio !== null ? user.bio : '暂无简介' }}</span>
+                <span class="user-bio">{{
+                  user.bio !== null ? user.bio : "暂无简介"
+                }}</span>
               </div>
             </div>
           </RouterLink>
           <el-button
-              type="danger"
-              size="small"
-              @click="handleUnfollow(user.id)"
+            type="danger"
+            size="small"
+            @click="handleUnfollow(user.id)"
           >
             取消关注
           </el-button>
@@ -94,6 +100,10 @@ defineExpose({
   padding: 16px;
   background-color: var(--el-bg-color-page);
   border-radius: 6px;
+  // 确保高度自适应，不产生内部滚动条
+  height: auto;
+  max-height: none;
+  overflow: visible;
 
   .list-title {
     margin-bottom: 16px;
@@ -174,5 +184,12 @@ defineExpose({
       }
     }
   }
+}
+
+// 确保 el-skeleton 组件不产生滚动条
+:deep(.el-skeleton) {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
 }
 </style>

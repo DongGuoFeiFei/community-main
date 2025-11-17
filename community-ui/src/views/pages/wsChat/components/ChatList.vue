@@ -3,11 +3,11 @@
     <!-- 搜索框 -->
     <div class="search-wrapper">
       <el-input
-          v-model="searchQuery"
-          placeholder="搜索会话..."
-          clearable
-          @clear="handleSearchClear"
-          class="search-input"
+        v-model="searchQuery"
+        placeholder="搜索会话..."
+        clearable
+        @clear="handleSearchClear"
+        class="search-input"
       >
         <template #prefix>
           <el-icon class="search-icon"><search /></el-icon>
@@ -18,11 +18,11 @@
     <!-- 会话列表 -->
     <div class="session-list">
       <div
-          v-for="session in filteredSessions"
-          :key="session.id"
-          class="session-item"
-          :class="{ active: activeSessionId === session.id }"
-          @click="handleSessionClick(session)"
+        v-for="session in filteredSessions"
+        :key="session.id"
+        class="session-item"
+        :class="{ active: activeSessionId === session.id }"
+        @click="handleSessionClick(session)"
       >
         <div class="session-avatar">
           <el-avatar :src="session.avatar" :size="48" />
@@ -33,15 +33,19 @@
             {{ session.name }}
             <span class="name-decoration" v-if="session.isOnline">✨</span>
           </div>
-          <div class="session-preview">{{ session.lastMessageContent || '暂无消息' }}</div>
+          <div class="session-preview">
+            {{ session.lastMessageContent || "暂无消息" }}
+          </div>
         </div>
         <div class="session-meta">
-          <div class="session-time">{{ formatTime(session.lastMessageTime) }}</div>
+          <div class="session-time">
+            {{ formatTime(session.lastMessageTime) }}
+          </div>
           <div class="badge-wrapper" v-if="session.unreadCount > 0">
             <el-badge
-                :value="session.unreadCount"
-                :max="99"
-                class="unread-badge"
+              :value="session.unreadCount"
+              :max="99"
+              class="unread-badge"
             />
           </div>
         </div>
@@ -57,22 +61,22 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
-import { Search } from '@element-plus/icons-vue';
-import dayjs from 'dayjs';
-import { getSessions } from '@/api/session.js';
+import { computed, ref } from "vue";
+import { Search } from "@element-plus/icons-vue";
+import dayjs from "dayjs";
+import { getSessions } from "@/api/session.js";
 
 const props = defineProps({
   activeSessionId: {
     type: Number,
-    default: null
-  }
+    default: null,
+  },
 });
 
-const emit = defineEmits(['session-change']);
+const emit = defineEmits(["session-change"]);
 
 const sessions = ref([]);
-const searchQuery = ref('');
+const searchQuery = ref("");
 
 // 获取会话列表
 const fetchSessions = async () => {
@@ -80,31 +84,31 @@ const fetchSessions = async () => {
     const res = await getSessions();
     sessions.value = res.data;
   } catch (error) {
-    console.error('获取会话列表失败:', error);
+    console.error("获取会话列表失败:", error);
   }
 };
 
 // 过滤会话
 const filteredSessions = computed(() => {
   if (!searchQuery.value) return sessions.value;
-  return sessions.value.filter(session =>
-      session.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return sessions.value.filter((session) =>
+    session.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
 // 格式化时间
 const formatTime = (time) => {
-  return dayjs(time).format('HH:mm');
+  return dayjs(time).format("HH:mm");
 };
 
 // 点击会话
 const handleSessionClick = (session) => {
-  emit('session-change', session.id);
+  emit("session-change", session.id);
 };
 
 // 清空搜索
 const handleSearchClear = () => {
-  searchQuery.value = '';
+  searchQuery.value = "";
 };
 
 // 初始化获取数据
@@ -113,10 +117,13 @@ fetchSessions();
 
 <style lang="scss" scoped>
 .chat-list {
+  width: 100%;
+  box-sizing: border-box;
   height: 100%;
   display: flex;
   flex-direction: column;
   padding: 0 12px;
+  overflow-x: hidden;
 
   // 搜索框区域
   .search-wrapper {
@@ -128,7 +135,11 @@ fetchSessions();
 
       :deep(.el-input__wrapper) {
         border-radius: 20px;
-        background: linear-gradient(135deg, rgba(179, 157, 219, 0.1) 0%, rgba(159, 168, 218, 0.1) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(179, 157, 219, 0.1) 0%,
+          rgba(159, 168, 218, 0.1) 100%
+        );
         border: 2px solid transparent;
         transition: all 0.3s ease;
         box-shadow: 0 2px 8px rgba(179, 157, 219, 0.1);
@@ -153,8 +164,11 @@ fetchSessions();
   // 会话列表
   .session-list {
     flex: 1;
+    width: 100%;
+    box-sizing: border-box;
     overflow-y: auto;
-    padding: 5px 0;
+    overflow-x: hidden;
+    padding: 5px 10px 10px;
 
     // 自定义滚动条
     &::-webkit-scrollbar {
@@ -177,9 +191,11 @@ fetchSessions();
     }
 
     .session-item {
+      width: 100%;
+      margin-bottom: 12px;
+      box-sizing: border-box;
       display: flex;
       padding: 14px 12px;
-      margin-bottom: 8px;
       cursor: pointer;
       border-radius: 16px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -188,14 +204,18 @@ fetchSessions();
       border: 2px solid transparent;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
         border-radius: 16px;
-        background: linear-gradient(135deg, rgba(179, 157, 219, 0.1) 0%, rgba(159, 168, 218, 0.1) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(179, 157, 219, 0.1) 0%,
+          rgba(159, 168, 218, 0.1) 100%
+        );
         opacity: 0;
         transition: opacity 0.3s;
         z-index: -1;
@@ -211,7 +231,11 @@ fetchSessions();
       }
 
       &.active {
-        background: linear-gradient(135deg, rgba(179, 157, 219, 0.15) 0%, rgba(159, 168, 218, 0.15) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(179, 157, 219, 0.15) 0%,
+          rgba(159, 168, 218, 0.15) 100%
+        );
         border-color: rgba(179, 157, 219, 0.3);
         box-shadow: 0 4px 16px rgba(179, 157, 219, 0.2);
         transform: translateX(4px);
@@ -243,6 +267,7 @@ fetchSessions();
       // 会话信息
       .session-info {
         flex: 1;
+        min-width: 0;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -270,6 +295,7 @@ fetchSessions();
         .session-preview {
           font-size: 13px;
           color: #999;
+          min-width: 0;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
@@ -328,7 +354,8 @@ fetchSessions();
 
 // 动画定义
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -339,7 +366,8 @@ fetchSessions();
 }
 
 @keyframes twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -350,7 +378,8 @@ fetchSessions();
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -359,7 +388,8 @@ fetchSessions();
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

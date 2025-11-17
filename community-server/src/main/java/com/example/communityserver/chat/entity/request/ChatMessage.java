@@ -18,5 +18,5 @@ public class ChatMessage {
     private String content;
     private Long senderId;
     private Date createTime;
-
+    private String senderName;
 }

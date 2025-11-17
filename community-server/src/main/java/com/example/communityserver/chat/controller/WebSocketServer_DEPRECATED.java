@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @ServerEndpoint(value = "/api/websocket/{user_id}")
-public class WebSocketServer {
+public class WebSocketServer_DEPRECATED {
 
     // 存储所有连接的会话
     private static final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();

@@ -1,35 +1,35 @@
 <script setup>
-import {onMounted, ref} from 'vue'
-import {localStores} from '@/stores/localStores.js'
+import { onMounted, ref } from "vue";
+import { localStores } from "@/stores/localStores.js";
 import FollowList from "@/views/user/follow&fans/components/FollowList.vue";
 import FanList from "@/views/user/follow&fans/components/FanList.vue";
 
-const store = localStores()
-const userId = ref(store.userInfo.userInfo.userId || '0')
+const store = localStores();
+const userId = ref(store.userInfo.userInfo.userId || "0");
 const loading = ref({
   follows: false,
-  fans: false
-})
+  fans: false,
+});
 
-const followListRef = ref(null)
-const fanListRef = ref(null)
+const followListRef = ref(null);
+const fanListRef = ref(null);
 
 const refreshAll = () => {
-  loading.value.follows = true
-  loading.value.fans = true
+  loading.value.follows = true;
+  loading.value.fans = true;
 
   Promise.all([
     followListRef.value?.fetchFollows(),
-    fanListRef.value?.fetchFans()
+    fanListRef.value?.fetchFans(),
   ]).finally(() => {
-    loading.value.follows = false
-    loading.value.fans = false
-  })
-}
+    loading.value.follows = false;
+    loading.value.fans = false;
+  });
+};
 
 onMounted(() => {
-  refreshAll()
-})
+  refreshAll();
+});
 </script>
 
 <template>
@@ -38,16 +38,16 @@ onMounted(() => {
 
     <div class="lists-container">
       <FollowList
-          ref="followListRef"
-          :userId="Number(userId)"
-          :loading="loading.follows"
-          @refresh="refreshAll"
+        ref="followListRef"
+        :userId="Number(userId)"
+        :loading="loading.follows"
+        @refresh="refreshAll"
       />
       <FanList
-          ref="fanListRef"
-          :userId="userId"
-          :loading="loading.fans"
-          @refresh="refreshAll"
+        ref="fanListRef"
+        :userId="userId"
+        :loading="loading.fans"
+        @refresh="refreshAll"
       />
     </div>
   </div>
@@ -59,6 +59,10 @@ onMounted(() => {
   background-color: var(--el-bg-color);
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  // 确保容器高度自适应，不产生内部滚动条
+  height: auto;
+  max-height: none;
+  overflow: visible;
 
   .title {
     margin-bottom: 24px;
@@ -70,6 +74,10 @@ onMounted(() => {
   .lists-container {
     display: flex;
     gap: 20px;
+    // 确保容器高度自适应，不限制子元素高度
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="message-item" :class="{ 'self-message': isSelf }">
     <div class="message-avatar">
-      <el-avatar :src="store.baseURL + message.senderAvatar" :size="40"/>
+      <el-avatar :src="store.baseURL + message.senderAvatar" :size="40" />
     </div>
     <div class="message-content">
       <div class="message-info">
@@ -11,7 +11,22 @@
       <div class="message-body">
         <div class="message-bubble">
           <div class="bubble-tail"></div>
-          <div class="message-text">{{ message.content }}</div>
+          <!-- 图片消息 -->
+          <div v-if="isImageMessage" class="message-image">
+            <el-image
+              :src="imageUrl"
+              :preview-src-list="[imageUrl]"
+              fit="cover"
+              class="chat-image"
+              :lazy="true"
+            />
+          </div>
+          <!-- 文本消息 -->
+          <div
+            v-else
+            class="message-text"
+            v-html="formatMessageContent(message.content)"
+          ></div>
         </div>
       </div>
     </div>
@@ -19,24 +34,74 @@
 </template>
 
 <script setup>
-import {defineProps} from 'vue';
-import dayjs from 'dayjs';
-import {localStores} from "@/stores/localStores.js";
+import { defineProps, computed } from "vue";
+import dayjs from "dayjs";
+import { localStores } from "@/stores/localStores.js";
 
 const props = defineProps({
   message: {
     type: Object,
-    required: true
+    required: true,
   },
   isSelf: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const store = localStores()
+const store = localStores();
+
+/**
+ * 格式化时间
+ * @param {string|Date} time 时间
+ * @returns {string} 格式化后的时间
+ */
 const formatTime = (time) => {
-  return dayjs(time).format('HH:mm');
+  return dayjs(time).format("HH:mm");
+};
+
+/**
+ * 判断是否为图片消息
+ */
+const isImageMessage = computed(() => {
+  return (
+    props.message.messageType === "image" ||
+    (props.message.content &&
+      (props.message.content.startsWith("http://") ||
+        props.message.content.startsWith("https://") ||
+        props.message.content.startsWith("/")) &&
+      /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(props.message.content))
+  );
+});
+
+/**
+ * 获取图片URL
+ */
+const imageUrl = computed(() => {
+  if (isImageMessage.value) {
+    // 如果是完整URL，直接使用
+    if (
+      props.message.content.startsWith("http://") ||
+      props.message.content.startsWith("https://")
+    ) {
+      return props.message.content;
+    }
+    // 如果是相对路径，拼接baseURL
+    return store.baseURL + props.message.content;
+  }
+  return "";
+});
+
+/**
+ * 格式化消息内容（支持emoji等）
+ * @param {string} content 消息内容
+ * @returns {string} 格式化后的HTML
+ */
+const formatMessageContent = (content) => {
+  if (!content) return "";
+  // 简单的文本转HTML，保持原有格式
+  // 可以在这里添加emoji渲染、链接识别等功能
+  return content.replace(/\n/g, "<br>");
 };
 </script>
 
@@ -86,7 +151,11 @@ const formatTime = (time) => {
       .message-bubble {
         position: relative;
         padding: 12px 16px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(243, 229, 245, 0.3) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(243, 229, 245, 0.3) 100%
+        );
         border-radius: 18px;
         border: 2px solid rgba(179, 157, 219, 0.2);
         box-shadow: 0 2px 8px rgba(179, 157, 219, 0.15);
@@ -114,6 +183,25 @@ const formatTime = (time) => {
           font-size: 14px;
           line-height: 1.6;
           color: #333;
+          word-break: break-word;
+        }
+
+        .message-image {
+          max-width: 300px;
+          border-radius: 12px;
+          overflow: hidden;
+
+          .chat-image {
+            width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s;
+
+            &:hover {
+              transform: scale(1.02);
+            }
+          }
         }
       }
     }
@@ -160,6 +248,12 @@ const formatTime = (time) => {
           .message-text {
             color: white;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          }
+
+          .message-image {
+            .chat-image {
+              border: 2px solid rgba(255, 255, 255, 0.3);
+            }
           }
         }
       }

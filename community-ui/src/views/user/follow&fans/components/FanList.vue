@@ -1,53 +1,53 @@
 <script setup>
-import {ref} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {getFollowerList, removeFan} from "@/api/follow.js";
+import { ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { getFollowerList, removeFan } from "@/api/follow.js";
 
 const props = defineProps({
   userId: {
     type: Number,
-    required: true
+    required: true,
   },
   loading: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emits = defineEmits(['refresh'])
+const emits = defineEmits(["refresh"]);
 
-const fans = ref([])
+const fans = ref([]);
 
 const fetchFans = async () => {
   try {
-    const res = await getFollowerList(props.userId)
-    fans.value = res.data || []
+    const res = await getFollowerList(props.userId);
+    fans.value = res.data || [];
   } catch (error) {
-    ElMessage.error(error.message || '获取粉丝列表失败')
+    ElMessage.error(error.message || "获取粉丝列表失败");
   }
-}
+};
 
 const handleRemoveFan = async (fanId) => {
   try {
-    await ElMessageBox.confirm('确定要移除该粉丝吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
+    await ElMessageBox.confirm("确定要移除该粉丝吗？", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
 
-    await removeFan(fanId)
-    ElMessage.success('移除粉丝成功')
-    emits('refresh')
+    await removeFan(fanId);
+    ElMessage.success("移除粉丝成功");
+    emits("refresh");
   } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error(error.message || '移除粉丝失败')
+    if (error !== "cancel") {
+      ElMessage.error(error.message || "移除粉丝失败");
     }
   }
-}
+};
 
 defineExpose({
-  fetchFans
-})
+  fetchFans,
+});
 </script>
 
 <template>
@@ -56,9 +56,9 @@ defineExpose({
     <el-skeleton :loading="loading" animated>
       <template #template>
         <div class="skeleton-item" v-for="i in 5" :key="`fan-skeleton-${i}`">
-          <el-skeleton-item variant="circle" class="avatar"/>
-          <el-skeleton-item variant="text" class="name"/>
-          <el-skeleton-item variant="button" class="action"/>
+          <el-skeleton-item variant="circle" class="avatar" />
+          <el-skeleton-item variant="text" class="name" />
+          <el-skeleton-item variant="button" class="action" />
         </div>
       </template>
       <template #default>
@@ -66,17 +66,19 @@ defineExpose({
         <div class="user-item" v-for="user in fans" :key="`fan-${user.id}`">
           <RouterLink :to="`/author/${user.id}`" target="_blank">
             <div class="user-info">
-              <el-avatar :src="user.avatar" class="avatar"/>
+              <el-avatar :src="user.avatar" class="avatar" />
               <div class="user-details">
                 <span class="username">{{ user.nickname }}</span>
-                <span class="user-bio">{{ user.bio !== null ? user.bio : '暂无简介' }}</span>
+                <span class="user-bio">{{
+                  user.bio !== null ? user.bio : "暂无简介"
+                }}</span>
               </div>
             </div>
           </RouterLink>
           <el-button
-              type="danger"
-              size="small"
-              @click="handleRemoveFan(user.id)"
+            type="danger"
+            size="small"
+            @click="handleRemoveFan(user.id)"
           >
             移除粉丝
           </el-button>
@@ -93,6 +95,10 @@ defineExpose({
   padding: 16px;
   background-color: var(--el-bg-color-page);
   border-radius: 6px;
+  // 确保高度自适应，不产生内部滚动条
+  height: auto;
+  max-height: none;
+  overflow: visible;
 
   .list-title {
     margin-bottom: 16px;
@@ -173,5 +179,12 @@ defineExpose({
       }
     }
   }
+}
+
+// 确保 el-skeleton 组件不产生滚动条
+:deep(.el-skeleton) {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
 }
 </style>

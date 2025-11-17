@@ -1,16 +1,73 @@
 // 清除标签自带样式
-html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-abbr, address, cite, code,
-del, dfn, em, img, ins, kbd, q, samp,
-small, strong, sub, sup, var,
-b, i,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -28,8 +85,8 @@ li {
 }
 
 html {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-y: auto; // 只使用浏览器垂直滚动条
+  overflow-x: hidden; // 禁止水平滚动
   scroll-behavior: smooth;
   height: auto;
   min-height: 100vh;
@@ -41,21 +98,27 @@ body {
   background-color: #f1f4f6;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: hidden; // 禁止水平滚动（底部滚轮）
+  overflow-y: auto; // 只使用浏览器垂直滚动条（侧边滚轮）
 }
 
 #app {
   min-height: 100vh;
   height: auto;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow-x: hidden; // 禁止水平滚动
+  overflow-y: visible; // 允许内容延伸，使用浏览器滚动
 }
 
 // 全局滚动条样式 - 清新蓝紫色主题
+// 只显示垂直滚动条，不显示水平滚动条
 ::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
+  height: 0; // 隐藏水平滚动条（底部滚轮）
+}
+
+// 隐藏水平滚动条轨道
+::-webkit-scrollbar:horizontal {
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
@@ -81,7 +144,7 @@ body {
     );
     border-color: rgba(255, 255, 255, 0.5);
   }
-  
+
   &:active {
     background: linear-gradient(
       135deg,
@@ -97,4 +160,18 @@ body {
   scrollbar-color: rgba(135, 206, 235, 0.6) rgba(224, 247, 250, 0.3);
 }
 
-
+// 樱花飞舞动画（全局样式）
+@keyframes cherryFloat {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+        calc(var(--random-x, 50px) - 50px),
+        calc(var(--random-y, -100px) - 50px)
+      )
+      rotate(360deg);
+    opacity: 0;
+  }
+}

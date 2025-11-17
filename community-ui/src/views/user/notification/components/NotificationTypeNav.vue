@@ -6,11 +6,11 @@
 
     <div class="nav-list">
       <div
-          v-for="type in notificationTypes"
-          :key="type.value"
-          class="nav-item"
-          :class="{ active: activeType === type.value }"
-          @click="emit('type-change', type.value)"
+        v-for="type in notificationTypes"
+        :key="type.value"
+        class="nav-item"
+        :class="{ active: activeType === type.value }"
+        @click="emit('type-change', type.value)"
       >
         <div class="type-icon" :style="{ backgroundColor: type.color }"></div>
         <span class="type-label">{{ type.label }}</span>
@@ -23,7 +23,7 @@
     <div class="nav-footer">
       <el-button link @click="emit('mark-all-read')">
         <el-icon>
-          <CircleCheck/>
+          <CircleCheck />
         </el-icon>
         <span>全部标记为已读</span>
       </el-button>
@@ -32,12 +32,12 @@
 </template>
 
 <script setup>
-import {CircleCheck} from '@element-plus/icons-vue';
+import { CircleCheck } from "@element-plus/icons-vue";
 
 const props = defineProps({
   activeType: {
     type: String,
-    required: true
+    required: true,
   },
   unreadCounts: {
     type: Object,
@@ -50,22 +50,22 @@ const props = defineProps({
       favorite: 0,
       reply: 0,
       favoriteArticle: 0,
-      privateMessages: 0
-    })
-  }
+      privateMessages: 0,
+    }),
+  },
 });
 
-const emit = defineEmits(['type-change', 'mark-all-read']);
+const emit = defineEmits(["type-change", "mark-all-read"]);
 
 const notificationTypes = [
-  {value: 'like', label: '点赞', color: '#FF4757'},
-  {value: 'comment', label: '评论', color: '#2ED573'},
-  {value: 'reply', label: '回复', color: '#FFD700'},
-  {value: 'follow', label: '关注', color: '#9C51B6'},
+  { value: "like", label: "点赞", color: "#FF4757" },
+  { value: "comment", label: "评论", color: "#2ED573" },
+  { value: "reply", label: "回复", color: "#FFD700" },
+  { value: "follow", label: "关注", color: "#9C51B6" },
   // {value: 'system', label: '系统', color: '#FF7F50'},
   // {value: 'favorite', label: '收藏', color: '#25CCF7'},
   // {value: 'favorite', label: '私信', color: '#25CCF7'},
-  {value: 'favoriteArticle', label: '文章收藏', color: '#58B19F'}
+  { value: "favoriteArticle", label: "文章收藏", color: "#58B19F" },
 ];
 </script>
 
@@ -89,7 +89,7 @@ const notificationTypes = [
 
   .nav-list {
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: visible; // 禁止内部滚动，使用浏览器滚动
     padding: 8px 0;
   }
 
