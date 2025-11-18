@@ -1,4 +1,4 @@
-package com.example.communityserver.core.config;
+package com.example.communityserver.chat.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

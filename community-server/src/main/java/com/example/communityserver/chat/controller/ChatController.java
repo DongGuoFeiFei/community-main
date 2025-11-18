@@ -1,20 +1,18 @@
 package com.example.communityserver.chat.controller;
 
-import com.example.communityserver.chat.entity.model.ImChatSession;
-import com.example.communityserver.chat.entity.model.ImMessage;
-import com.example.communityserver.chat.entity.response.SessionDetailVo;
-import com.example.communityserver.chat.service.IImChatSessionService;
-import com.example.communityserver.chat.service.IImMessageService;
+import com.example.communityserver.chat.entity.model.ChatMessage;
+import com.example.communityserver.chat.entity.request.MessageReadRequest;
+import com.example.communityserver.chat.entity.response.MessagePageResponse;
+import com.example.communityserver.chat.service.ChatMessageAckService;
+import com.example.communityserver.chat.service.ChatMessageService;
+import com.example.communityserver.core.security.util.SecurityUtils;
 import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -31,42 +29,62 @@ import java.util.List;
 @RestController
 @RequestMapping("chat")
 public class ChatController {
-    @Autowired
-    private IImChatSessionService chatSessionService;
 
-    @Autowired
-    private IImMessageService iImMessageService;
+    private final ChatMessageService chatMessageService;
+    private final ChatMessageAckService chatMessageAckService;
 
-    @ApiOperation("获取会话列表")
-    @GetMapping("sessions")
-//    @RequiresPermission(api = {"chat:sessions:get"}, role = {"super_admin"}, logical = Logical.OR)
-    public Result<List<ImChatSession>> getSessions() {
-        List<ImChatSession> sessions = chatSessionService.getSessions();
-        return Result.success(sessions);
+    public ChatController(ChatMessageService chatMessageService,
+                          ChatMessageAckService chatMessageAckService) {
+        this.chatMessageService = chatMessageService;
+        this.chatMessageAckService = chatMessageAckService;
     }
 
-    @ApiOperation("获取会话消息")
+    @ApiOperation("发送消息")
+    @PostMapping("messages")
+    public Result<ChatMessage> sendMessage(@RequestBody ChatMessage message) {
+        chatMessageService.save(message);
+        return Result.success(message);
+    }
+
+    @ApiOperation("根据会话ID获取消息列表")
     @GetMapping("sessions/{sessionId}/messages")
-//    @RequiresPermission(api = {"chat:sessions:{id}:messages:get"}, role = {"super_admin"}, logical = Logical.OR)
-    public Result<List<ImMessage>> getSessionMessages(@PathVariable Long sessionId) {
-        List<ImMessage> sessions = chatSessionService.getSessionMessages(sessionId);
-        return Result.success(sessions);
+    public Result<List<ChatMessage>> listMessages(@PathVariable Long sessionId) {
+        List<ChatMessage> messages = chatMessageService.lambdaQuery()
+                .eq(ChatMessage::getSessionId, sessionId)
+                .orderByAsc(ChatMessage::getMsgSeq)
+                .list();
+        return Result.success(messages);
     }
 
-    @ApiOperation("获取会话详情")
-    @GetMapping("sessions/{sessionId}")
-//    @RequiresPermission(api = {"chat:sessions:{id}:get"}, role = {"super_admin"}, logical = Logical.OR)
-    public Result<SessionDetailVo> getSessionDetail(@PathVariable Long sessionId) {
-        SessionDetailVo sessionDetailVo = chatSessionService.getSessionDetail(sessionId);
-        return Result.success(sessionDetailVo);
+    @ApiOperation("根据消息ID获取单条消息")
+    @GetMapping("messages/{id}")
+    public Result<ChatMessage> getMessage(@PathVariable Long id) {
+        return Result.success(chatMessageService.getById(id));
     }
 
-    @ApiOperation("获取会话消息历史")
+    @ApiOperation("撤回消息")
+    @DeleteMapping("messages/{id}")
+    public Result<Boolean> recallMessage(@PathVariable Long id) {
+        return Result.success(chatMessageService.removeById(id));
+    }
+
+    @ApiOperation("分页获取会话消息")
     @GetMapping("messages")
-//    @RequiresPermission(api = {"chat:messages:get"}, role = {"super_admin"}, logical = Logical.OR)
-    public Result<List<ImMessage>> getMessages(Long sessionId, Long lastMessageId) {
-        List<ImMessage> imMessages = iImMessageService.getMessages(sessionId, lastMessageId);
-        return Result.success(imMessages);
+    public Result<MessagePageResponse> getMessages(@RequestParam Long sessionId,
+                                                   @RequestParam(required = false) Long lastSeq,
+                                                   @RequestParam(required = false) Integer pageSize) {
+        return Result.success(chatMessageService.getMessagePage(sessionId, lastSeq, pageSize));
+    }
+
+    @ApiOperation("标记消息已读")
+    @PostMapping("messages/read")
+    public Result<Boolean> markMessageAsRead(@RequestBody @Valid MessageReadRequest request) {
+        Long userId = SecurityUtils.getLoginUserId();
+        if (userId == null) {
+            return Result.error("请先登录");
+        }
+        boolean success = chatMessageAckService.markMessagesAsRead(request.getSessionId(), userId, request.getReadSeq());
+        return Result.success(success);
     }
 
 }

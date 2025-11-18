@@ -4,12 +4,12 @@
     <div class="chat-header">
       <div class="header-info">
         <div class="avatar-wrapper">
-          <el-avatar :src="currentSession.avatar" :size="44" />
+          <el-avatar :src="currentSession?.avatar" :size="44" />
           <div class="status-dot" :class="{ online: isConnected }"></div>
         </div>
         <div class="header-text">
           <div class="session-name">
-            {{ currentSession.name }}
+            {{ currentSession?.name || "聊天室" }}
             <span class="name-emoji">🌸</span>
           </div>
           <div class="session-status">
@@ -111,274 +111,343 @@
   </div>
 </template>
 
-<script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { ChatRound, Paperclip, Promotion } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { useChatWebSocket } from "@/utils/websocket.js";
 import { localStores } from "@/stores/localStores.js";
-import { getMessages, markMessageAsRead } from "@/api/message.js";
+import { getMessages, markMessageAsRead } from "@/api/message";
 import { uploadFile } from "@/api/files.js";
 import MessageItem from "./MessageItem.vue";
 import EmojiPicker from "./EmojiPicker.vue";
+import type {
+  ChatMessage,
+  ChatSessionDetail,
+  ChatSessionItem,
+  MessagePageResponse,
+} from "@/types/chat";
+import type { ApiResponse } from "@/types/http";
 
-const props = defineProps({
-  sessionId: {
-    type: Number,
-    required: true,
-  },
-  sessionDetail: {
-    type: Object,
-    required: true,
-  },
-});
+const MESSAGE_TYPE = {
+  TEXT: 1,
+  IMAGE: 2,
+} as const;
+
+interface LegacySessionDetail {
+  id: number;
+  name: string;
+  avatar?: string;
+  memberCount?: number;
+  lastMsgSeq?: number;
+}
+
+type SessionDetailProp = ChatSessionDetail | LegacySessionDetail | null;
+
+const props = withDefaults(
+  defineProps<{
+    sessionId: number;
+    sessionDetail: SessionDetailProp;
+  }>(),
+  {
+    sessionDetail: null,
+  }
+);
 
 const store = localStores();
-const currentUserId = computed(() => store.userInfo.userInfo?.userId);
+const currentUserId = computed<number | null>(() => {
+  const id = store.userInfo.userInfo?.userId;
+  if (id === undefined || id === null) {
+    return null;
+  }
+  const numericId = Number(id);
+  return Number.isNaN(numericId) ? null : numericId;
+});
 
-// WebSocket相关
-const { connect, disconnect, subscribe, send, isConnected, error } =
+const { connect, disconnect, subscribe, send, isConnected } =
   useChatWebSocket();
-const subscription = ref(null);
+const subscription = ref<ReturnType<typeof subscribe> | null>(null);
 
-// 消息数据
-const messages = ref([]);
+const messages = ref<ChatMessage[]>([]);
 const inputMessage = ref("");
-const messageListRef = ref(null);
+const messageListRef = ref<HTMLElement | null>(null);
 const loading = ref(false);
 const hasMore = ref(true);
-const showEmoji = ref(false); // 表情选择器显示状态
-const fileInputRef = ref(null); // 文件输入框引用
-const uploading = ref(false); // 上传状态
+const showEmoji = ref(false);
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const uploading = ref(false);
+const messageCursor = ref<number | null>(null);
 
-console.log(props.sessionDetail);
-// 当前会话信息
-const currentSession = computed(() => props.sessionDetail);
+const isStructuredDetail = (
+  detail: SessionDetailProp
+): detail is ChatSessionDetail => {
+  return !!detail && Object.prototype.hasOwnProperty.call(detail, "session");
+};
 
-// 加载历史消息
+const currentSession = computed<ChatSessionItem | LegacySessionDetail | null>(
+  () => {
+    const detail = props.sessionDetail;
+    if (!detail) return null;
+    return isStructuredDetail(detail) ? detail.session : detail;
+  }
+);
+
+const latestMsgSeq = computed(() => {
+  if (!messages.value.length) return null;
+  return messages.value[messages.value.length - 1].msgSeq ?? null;
+});
+
+const parseMessagePayload = (
+  payload: MessagePageResponse | ChatMessage[] | undefined
+): MessagePageResponse => {
+  if (Array.isArray(payload)) {
+    return {
+      records: payload,
+      hasMore: payload.length > 0,
+      nextSeq: payload.length ? payload[0].msgSeq ?? null : null,
+    };
+  }
+  return {
+    records: payload?.records ?? [],
+    hasMore: payload?.hasMore ?? false,
+    nextSeq:
+      payload?.nextSeq ??
+      payload?.cursor ??
+      payload?.prevSeq ??
+      (payload?.records?.length ? payload.records[0].msgSeq ?? null : null),
+  };
+};
+
+const resetState = () => {
+  messages.value = [];
+  messageCursor.value = null;
+  hasMore.value = true;
+};
+
+const scrollToBottom = (smooth = false) => {
+  nextTick(() => {
+    if (messageListRef.value) {
+      messageListRef.value.scrollTo({
+        top: messageListRef.value.scrollHeight,
+        behavior: smooth ? "smooth" : "auto",
+      });
+    }
+  });
+};
+
+const ensureConnected = async () => {
+  try {
+    await connect();
+  } catch (err) {
+    console.error("WebSocket连接失败:", err);
+  }
+};
+
+const subscribeSession = async () => {
+  await ensureConnected();
+  if (subscription.value) {
+    subscription.value.unsubscribe();
+  }
+  subscription.value = subscribe(
+    `/topic/chatRoom.private.${props.sessionId}`,
+    handleMessage
+  );
+};
+
+const updateReadCursor = async (seq: number | null) => {
+  if (!seq) return;
+  try {
+    await markMessageAsRead(props.sessionId, seq);
+  } catch (err) {
+    console.error("更新已读状态失败:", err);
+  }
+};
+
 const loadMessages = async () => {
-  if (loading.value || !hasMore.value) return;
+  if (loading.value) return;
+  if (!hasMore.value && messageCursor.value !== null) return;
 
   try {
     loading.value = true;
-    const lastMessageId = messages.value[0]?.id;
-    const res = await getMessages(props.sessionId, lastMessageId);
+    const wasEmpty = messages.value.length === 0;
+    const container = messageListRef.value;
+    const previousHeight = container ? container.scrollHeight : 0;
 
-    if (res.data.length === 0) {
+    const res = (await getMessages(
+      props.sessionId,
+      messageCursor.value ?? undefined
+    )) as unknown as ApiResponse<MessagePageResponse | ChatMessage[]>;
+
+    const { records, hasMore: more, nextSeq } = parseMessagePayload(res.data);
+
+    if (!records.length) {
       hasMore.value = false;
-    } else {
-      messages.value = [...res.data, ...messages.value];
+      return;
     }
-  } catch (error) {
-    console.error("加载消息失败:", error);
+
+    messages.value = [...records, ...messages.value];
+    messageCursor.value = nextSeq ?? records[0]?.msgSeq ?? null;
+    hasMore.value = more && messageCursor.value !== null;
+
+    if (wasEmpty) {
+      scrollToBottom();
+    } else if (container) {
+      await nextTick();
+      const newHeight = container.scrollHeight;
+      container.scrollTop = newHeight - previousHeight;
+    }
+  } catch (err) {
+    console.error("加载消息失败:", err);
   } finally {
     loading.value = false;
   }
 };
 
-/**
- * 发送消息
- */
-const sendMessage = async () => {
-  if (!inputMessage.value.trim()) return;
+const handleMessage = (message: ChatMessage) => {
+  const index = messages.value.findIndex((item) => item.id === message.id);
+  if (index === -1) {
+    messages.value.push(message);
+  } else {
+    messages.value[index] = message;
+  }
+  messages.value.sort((a, b) => (a.msgSeq ?? 0) - (b.msgSeq ?? 0));
+  scrollToBottom(true);
+  if (message.senderId !== currentUserId.value && message.msgSeq) {
+    updateReadCursor(message.msgSeq);
+  }
+};
 
-  const message = {
-    content: inputMessage.value,
-    senderId: currentUserId.value,
-    sessionId: props.sessionId,
-    senderName: store.userInfo.userInfo.nickname,
-    messageType: "text", // 文本消息类型
-  };
-
+const sendPayload = async (payload: Partial<ChatMessage>) => {
+  if (!props.sessionId) return;
   try {
-    send(`/app/privateChat.${props.sessionId}`, message);
-    inputMessage.value = "";
-    showEmoji.value = false; // 关闭表情选择器
-    scrollToBottom();
+    await ensureConnected();
+    send(`/app/privateChat.${props.sessionId}`, {
+      sessionId: props.sessionId,
+      ...payload,
+    });
   } catch (err) {
     console.error("发送消息失败:", err);
     ElMessage.error("发送消息失败");
   }
 };
 
-/**
- * 发送图片消息
- * @param {string} imageUrl 图片URL
- */
-const sendImageMessage = async (imageUrl) => {
-  const message = {
-    content: imageUrl,
-    senderId: currentUserId.value,
-    sessionId: props.sessionId,
-    messageType: "image", // 图片消息类型
-  };
-
-  try {
-    send(`/app/privateChat.${props.sessionId}`, message);
-    scrollToBottom();
-  } catch (err) {
-    console.error("发送图片消息失败:", err);
-    ElMessage.error("发送图片消息失败");
-  }
+const sendMessage = async () => {
+  if (!inputMessage.value.trim()) return;
+  const content = inputMessage.value.trim();
+  await sendPayload({
+    content,
+    contentType: MESSAGE_TYPE.TEXT,
+    contentJson: null,
+  });
+  inputMessage.value = "";
+  showEmoji.value = false;
+  scrollToBottom(true);
 };
 
-/**
- * 切换表情选择器显示状态
- */
+const sendImageMessage = async (
+  imageUrl: string,
+  meta?: { size?: number; name?: string }
+) => {
+  await sendPayload({
+    content: imageUrl,
+    contentType: MESSAGE_TYPE.IMAGE,
+    contentJson: meta ?? null,
+  });
+};
+
 const toggleEmojiPicker = () => {
   showEmoji.value = !showEmoji.value;
 };
 
-/**
- * 关闭表情选择器
- */
 const closeEmojiPicker = () => {
   showEmoji.value = false;
 };
 
-/**
- * 处理表情选择
- * @param {string} emoji 选中的表情
- */
-const handleEmojiSelect = (emoji) => {
+const handleEmojiSelect = (emoji: string) => {
   inputMessage.value += emoji;
-  // 选择表情后不关闭选择器，方便继续选择
   showEmoji.value = false;
 };
 
-/**
- * 触发文件选择器
- */
 const triggerFilePicker = () => {
-  if (fileInputRef.value) {
-    fileInputRef.value.click();
-  }
+  fileInputRef.value?.click();
 };
 
-/**
- * 处理文件选择
- * @param {Event} event 文件选择事件
- */
-const handleFileSelect = async (event) => {
-  const file = event.target.files[0];
+const handleFileSelect = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
   if (!file) return;
 
-  // 验证文件类型（仅支持图片）
   if (!file.type.startsWith("image/")) {
     ElMessage.warning("仅支持上传图片文件");
-    // 清空文件输入框
-    if (fileInputRef.value) {
-      fileInputRef.value.value = "";
-    }
+    target.value = "";
     return;
   }
 
-  // 验证文件大小（限制为10MB）
-  const maxSize = 10 * 1024 * 1024; // 10MB
+  const maxSize = 10 * 1024 * 1024;
   if (file.size > maxSize) {
     ElMessage.warning("图片大小不能超过10MB");
-    if (fileInputRef.value) {
-      fileInputRef.value.value = "";
-    }
+    target.value = "";
     return;
   }
 
   try {
     uploading.value = true;
     ElMessage.info("正在上传图片...");
-
-    // 上传文件
     const imageUrl = await uploadFile(file);
-
-    // 发送图片消息
-    await sendImageMessage(imageUrl);
-
+    await sendImageMessage(imageUrl, { size: file.size, name: file.name });
     ElMessage.success("图片发送成功");
-  } catch (error) {
-    console.error("上传图片失败:", error);
-    ElMessage.error(error.message || "上传图片失败");
+  } catch (err: any) {
+    console.error("上传图片失败:", err);
+    ElMessage.error(err?.message || "上传图片失败");
   } finally {
     uploading.value = false;
-    // 清空文件输入框
-    if (fileInputRef.value) {
-      fileInputRef.value.value = "";
-    }
+    target.value = "";
   }
 };
 
-/**
- * 显示更多操作（占位函数）
- */
 const showMoreActions = () => {
-  // TODO: 实现更多操作
-  console.log("显示更多操作");
+  console.log("展示更多操作");
 };
 
-// 处理收到的消息
-const handleMessage = (message) => {
-  messages.value.push(message);
-  scrollToBottom();
-
-  // 如果是对方发来的消息，标记为已读
-  if (message.senderId !== currentUserId.value) {
-    markMessageAsRead(props.sessionId, message.id);
-  }
-};
-
-// 滚动到底部
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (messageListRef.value) {
-      messageListRef.value.scrollTop = messageListRef.value.scrollHeight;
-    }
-  });
-};
-
-// 初始化WebSocket连接
-const initWebSocket = async () => {
-  try {
-    await connect();
-
-    // 订阅当前会话的消息
-    subscription.value = subscribe(
-      `/topic/chatRoom.private.${props.sessionId}`,
-      handleMessage
-    );
-
-    // 加载初始消息
-    await loadMessages();
-    scrollToBottom();
-  } catch (err) {
-    console.error("WebSocket连接失败:", err);
-  }
-};
-
-// 滚动事件处理
 const handleScroll = () => {
-  if (!messageListRef.value) return;
-
-  const { scrollTop } = messageListRef.value;
-  if (scrollTop < 100 && hasMore.value) {
-    // loadMessages();
+  if (!messageListRef.value || loading.value || !hasMore.value) return;
+  if (messageListRef.value.scrollTop < 80) {
+    loadMessages();
   }
+};
+
+const bootstrap = async () => {
+  if (!props.sessionId) return;
+  resetState();
+  await subscribeSession();
+  await loadMessages();
+  await updateReadCursor(latestMsgSeq.value);
 };
 
 onMounted(() => {
-  initWebSocket();
-  if (messageListRef.value) {
-    messageListRef.value.addEventListener("scroll", handleScroll);
-  }
+  bootstrap();
 });
 
-onUnmounted(() => {
-  if (subscription.value) {
-    subscription.value.unsubscribe();
+watch(
+  () => messageListRef.value,
+  (el, prev) => {
+    prev?.removeEventListener("scroll", handleScroll);
+    el?.addEventListener("scroll", handleScroll);
   }
-  disconnect();
+);
 
-  if (messageListRef.value) {
-    messageListRef.value.removeEventListener("scroll", handleScroll);
+watch(
+  () => props.sessionId,
+  async (newVal, oldVal) => {
+    if (!newVal || newVal === oldVal) return;
+    await bootstrap();
   }
+);
+
+onUnmounted(() => {
+  subscription.value?.unsubscribe();
+  disconnect();
+  messageListRef.value?.removeEventListener("scroll", handleScroll);
 });
 </script>
 

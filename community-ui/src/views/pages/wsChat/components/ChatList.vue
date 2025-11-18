@@ -34,14 +34,14 @@
             <span class="name-decoration" v-if="session.isOnline">✨</span>
           </div>
           <div class="session-preview">
-            {{ session.lastMessageContent || "暂无消息" }}
+            {{ session.lastMsgDigest || "暂无消息" }}
           </div>
         </div>
         <div class="session-meta">
           <div class="session-time">
-            {{ formatTime(session.lastMessageTime) }}
+            {{ formatTime(session.lastMsgTime) }}
           </div>
-          <div class="badge-wrapper" v-if="session.unreadCount > 0">
+          <div class="badge-wrapper" v-if="(session.unreadCount || 0) > 0">
             <el-badge
               :value="session.unreadCount"
               :max="99"
@@ -60,59 +60,60 @@
   </div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 import { Search } from "@element-plus/icons-vue";
 import dayjs from "dayjs";
-import { getSessions } from "@/api/session.js";
+import { getSessions } from "@/api/session";
+import type { ChatSessionItem } from "@/types/chat";
+import type { ApiResponse } from "@/types/http";
 
-const props = defineProps({
-  activeSessionId: {
-    type: Number,
-    default: null,
-  },
-});
+defineProps<{
+  activeSessionId: number | null;
+}>();
 
-const emit = defineEmits(["session-change"]);
+const emit = defineEmits<{
+  (e: "session-change", sessionId: number): void;
+}>();
 
-const sessions = ref([]);
+const sessions = ref<ChatSessionItem[]>([]);
 const searchQuery = ref("");
 
-// 获取会话列表
 const fetchSessions = async () => {
   try {
-    const res = await getSessions();
-    sessions.value = res.data;
+    const res = (await getSessions()) as unknown as ApiResponse<
+      ChatSessionItem[]
+    >;
+    sessions.value = res.data || [];
   } catch (error) {
     console.error("获取会话列表失败:", error);
   }
 };
 
-// 过滤会话
 const filteredSessions = computed(() => {
-  if (!searchQuery.value) return sessions.value;
+  const keyword = searchQuery.value.trim().toLowerCase();
+  if (!keyword) return sessions.value;
   return sessions.value.filter((session) =>
-    session.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    (session.name || "").toLowerCase().includes(keyword)
   );
 });
 
-// 格式化时间
-const formatTime = (time) => {
+const formatTime = (time?: string) => {
+  if (!time) return "";
   return dayjs(time).format("HH:mm");
 };
 
-// 点击会话
-const handleSessionClick = (session) => {
+const handleSessionClick = (session: ChatSessionItem) => {
   emit("session-change", session.id);
 };
 
-// 清空搜索
 const handleSearchClear = () => {
   searchQuery.value = "";
 };
 
-// 初始化获取数据
-fetchSessions();
+onMounted(() => {
+  fetchSessions();
+});
 </script>
 
 <style lang="scss" scoped>

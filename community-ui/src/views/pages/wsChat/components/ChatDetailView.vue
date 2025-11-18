@@ -25,7 +25,7 @@
 import {onMounted, ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {getUserInfo} from '@/api/user.js';
-import {getSessionDetail} from '@/api/session.js';
+import {getSessionDetail} from '@/api/session';
 import ChatRoom from './ChatRoom.vue';
 
 const route = useRoute();

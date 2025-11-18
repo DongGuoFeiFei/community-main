@@ -8,7 +8,8 @@ class test {
 
     @Test
     void contextLoads() {
-        System.out.println(123);
+        long nowMs = System.currentTimeMillis();
+        System.out.println(nowMs);
     }
 
 

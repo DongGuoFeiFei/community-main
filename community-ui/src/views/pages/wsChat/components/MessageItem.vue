@@ -1,7 +1,7 @@
 <template>
   <div class="message-item" :class="{ 'self-message': isSelf }">
     <div class="message-avatar">
-      <el-avatar :src="store.baseURL + message.senderAvatar" :size="40" />
+      <el-avatar :src="avatarSrc" :size="40" />
     </div>
     <div class="message-content">
       <div class="message-info">
@@ -33,74 +33,72 @@
   </div>
 </template>
 
-<script setup>
-import { defineProps, computed } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import dayjs from "dayjs";
 import { localStores } from "@/stores/localStores.js";
+import type { ChatMessage } from "@/types/chat";
 
-const props = defineProps({
-  message: {
-    type: Object,
-    required: true,
-  },
-  isSelf: {
-    type: Boolean,
-    default: false,
-  },
-});
+const MESSAGE_TYPE = {
+  IMAGE: 2,
+};
+
+const props = withDefaults(
+  defineProps<{
+    message: ChatMessage;
+    isSelf?: boolean;
+  }>(),
+  {
+    isSelf: false,
+  }
+);
 
 const store = localStores();
 
-/**
- * 格式化时间
- * @param {string|Date} time 时间
- * @returns {string} 格式化后的时间
- */
-const formatTime = (time) => {
+const avatarSrc = computed(() => {
+  const avatar = props.message.senderAvatar || "";
+  if (!avatar) {
+    return "";
+  }
+  if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    return avatar;
+  }
+  return store.baseURL + avatar;
+});
+
+const formatTime = (time?: string | Date) => {
+  if (!time) return "";
   return dayjs(time).format("HH:mm");
 };
 
-/**
- * 判断是否为图片消息
- */
 const isImageMessage = computed(() => {
-  return (
-    props.message.messageType === "image" ||
-    (props.message.content &&
-      (props.message.content.startsWith("http://") ||
-        props.message.content.startsWith("https://") ||
-        props.message.content.startsWith("/")) &&
-      /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(props.message.content))
-  );
-});
-
-/**
- * 获取图片URL
- */
-const imageUrl = computed(() => {
-  if (isImageMessage.value) {
-    // 如果是完整URL，直接使用
-    if (
-      props.message.content.startsWith("http://") ||
-      props.message.content.startsWith("https://")
-    ) {
-      return props.message.content;
-    }
-    // 如果是相对路径，拼接baseURL
-    return store.baseURL + props.message.content;
+  if (props.message.contentType === MESSAGE_TYPE.IMAGE) {
+    return true;
   }
-  return "";
+  if (!props.message.content) return false;
+  if (
+    props.message.content.startsWith("http://") ||
+    props.message.content.startsWith("https://") ||
+    props.message.content.startsWith("/")
+  ) {
+    return /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(props.message.content);
+  }
+  return false;
 });
 
-/**
- * 格式化消息内容（支持emoji等）
- * @param {string} content 消息内容
- * @returns {string} 格式化后的HTML
- */
-const formatMessageContent = (content) => {
+const imageUrl = computed(() => {
+  if (!isImageMessage.value || !props.message.content) return "";
+  if (
+    props.message.content.startsWith("http://") ||
+    props.message.content.startsWith("https://")
+  ) {
+    return props.message.content;
+  }
+  return store.baseURL + props.message.content;
+});
+
+const formatMessageContent = (content?: string) => {
   if (!content) return "";
-  // 简单的文本转HTML，保持原有格式
-  // 可以在这里添加emoji渲染、链接识别等功能
   return content.replace(/\n/g, "<br>");
 };
 </script>
