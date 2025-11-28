@@ -47,14 +47,6 @@ spring:
           writetimeout: 5000
         transport:
           protocol: smtp
-  # rabbitmq
-  #  rabbitmq:
-  #    host: ${rabbitmq.host}
-  #    port: ${rabbitmq.port}
-  #    username: ${rabbitmq.username}
-  #    password: ${rabbitmq.password}
-  #    virtual-host: ${rabbitmq.virtual-host}
-  #        debug: true
 # mybatis-plus 配置
 mybatis-plus:
   config-locations: classpath:mapper/*.xml
