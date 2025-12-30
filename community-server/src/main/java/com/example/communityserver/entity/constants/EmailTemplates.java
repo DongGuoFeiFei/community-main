@@ -14,9 +14,8 @@ import java.util.Map;
 
 
 public class EmailTemplates {
-    public static final String E_MAIL_ADDRESS = "fcwbebe@foxmail.com";
     public static final String LOGIN_URL = "http://localhost:5173/login";
-    public static final String SUPPORT_EMAIL_ADDRESS = "fcwbebe@foxmail.com";
+    public static final String SUPPORT_EMAIL_ADDRESS = "admin@foxmail.com";
     public static final String SUBJECT_WELCOME = "欢迎注册【采芙蓉】";
     public static final String SUBJECT_VERIFICATION = "【采芙蓉】邮箱验证码";
     public static final String SUBJECT_RESET_PASSWORD = "【采芙蓉】邮箱重置密码";
