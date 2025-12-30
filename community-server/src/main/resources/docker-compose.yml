@@ -14,7 +14,7 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=admin_123456
+      - MYSQL_ROOT_PASSWORD=${datasource_password_pro}
   redis:
     image: redis:latest
   community:

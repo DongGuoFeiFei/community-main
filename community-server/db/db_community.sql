@@ -11,7 +11,7 @@
  Target Server Version : 80036
  File Encoding         : 65001
 
- Date: 17/11/2025 15:57:49
+ Date: 30/12/2025 10:37:34
 */
 
 SET NAMES utf8mb4;
@@ -112,6 +112,101 @@ CREATE TABLE `article_tag`  (
   UNIQUE INDEX `uk_article_tag`(`article_id` ASC, `tag_id` ASC) USING BTREE,
   INDEX `idx_tag_id`(`tag_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 155 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章-标签关联表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for chat_message
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_message`;
+CREATE TABLE `chat_message`  (
+  `session_id` bigint NOT NULL COMMENT '所属会话ID',
+  `msg_seq` bigint NOT NULL COMMENT '会话内递增消息序列号',
+  `id` bigint UNSIGNED NOT NULL COMMENT '全局唯一消息ID',
+  `sender_id` bigint NOT NULL COMMENT '发送者用户ID',
+  `sender_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者昵称快照',
+  `sender_avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者头像快照',
+  `content_type` tinyint NOT NULL DEFAULT 1 COMMENT '消息类型：1文本 2图片 3文件 4音频 5视频 6系统',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '消息内容（文本或资源URL）',
+  `content_json` json NULL COMMENT '富文本/按钮/表情等扩展内容',
+  `at_user_ids` json NULL COMMENT '@用户ID集合',
+  `quote_msg_id` bigint NULL DEFAULT NULL COMMENT '被引用消息ID',
+  `file_size` bigint NULL DEFAULT NULL COMMENT '附件大小（字节）',
+  `status` tinyint NULL DEFAULT 1 COMMENT '消息状态：1正常 2撤回 3屏蔽',
+  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志',
+  `send_time` datetime NULL DEFAULT NULL COMMENT '客户端发送时间',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`session_id`, `msg_seq`) USING BTREE,
+  UNIQUE INDEX `uk_msg_id`(`id` ASC) USING BTREE,
+  INDEX `idx_session_time`(`session_id` ASC, `created_at` ASC) USING BTREE,
+  INDEX `idx_sender`(`sender_id` ASC, `created_at` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会话消息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for chat_message_ack
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_message_ack`;
+CREATE TABLE `chat_message_ack`  (
+  `session_id` bigint NOT NULL COMMENT '会话ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `read_seq` bigint NULL DEFAULT 0 COMMENT '已读的最大消息序列号',
+  `last_msg_id` bigint NULL DEFAULT NULL COMMENT '最后已读的消息ID（兼容旧逻辑）',
+  `last_read_at` datetime NULL DEFAULT NULL COMMENT '最近已读时间',
+  `device_flag` tinyint NULL DEFAULT 0 COMMENT '设备标识（多端同步使用）',
+  PRIMARY KEY (`session_id`, `user_id`) USING BTREE,
+  INDEX `idx_user`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '消息已读状态表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for chat_session
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_session`;
+CREATE TABLE `chat_session`  (
+  `id` bigint UNSIGNED NOT NULL COMMENT '会话ID，自增或雪花',
+  `type` tinyint NOT NULL DEFAULT 1 COMMENT '会话类型：1-私聊 2-群聊 3-公开/系统',
+  `biz_type` tinyint NOT NULL DEFAULT 0 COMMENT '业务类型扩展：0-默认 1-活动群 2-客服等',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话名称或群聊名称',
+  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话头像地址',
+  `owner_id` bigint NULL DEFAULT NULL COMMENT '群主/会话创建者ID',
+  `last_msg_id` bigint NULL DEFAULT NULL COMMENT '最新一条消息ID',
+  `last_msg_seq` bigint NULL DEFAULT NULL COMMENT '最新一条消息的序列号',
+  `last_msg_digest` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '最新消息摘要（预览文案）',
+  `last_msg_user_id` bigint NULL DEFAULT NULL COMMENT '最新消息发送者ID',
+  `member_count` int NULL DEFAULT 2 COMMENT '当前会话成员数量',
+  `status` tinyint NULL DEFAULT 1 COMMENT '会话状态：1-正常 2-封禁 3-解散',
+  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志：0-正常 1-已删除',
+  `ext` json NULL COMMENT '会话扩展字段（公告、置顶配置等）',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_owner`(`owner_id` ASC) USING BTREE,
+  INDEX `idx_updated`(`updated_at` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '聊天会话表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for chat_session_member
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_session_member`;
+CREATE TABLE `chat_session_member`  (
+  `id` bigint UNSIGNED NOT NULL COMMENT '成员记录主键',
+  `session_id` bigint NOT NULL COMMENT '所属会话ID',
+  `user_id` bigint NOT NULL COMMENT '成员用户ID',
+  `nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员在会话中的昵称',
+  `role` tinyint NULL DEFAULT 1 COMMENT '角色：1-普通 2-管理员 3-群主',
+  `join_status` tinyint NULL DEFAULT 1 COMMENT '加入状态：1-正常 2-被移除 3-待确认',
+  `join_time` datetime NULL DEFAULT NULL COMMENT '加入会话时间',
+  `mute_until` datetime NULL DEFAULT NULL COMMENT '免打扰截止时间（为空表示关闭免打扰）',
+  `unread_seq` bigint NULL DEFAULT 0 COMMENT '系统记录的未读序列起点',
+  `read_seq` bigint NULL DEFAULT 0 COMMENT '成员最后已读的消息序列号',
+  `mention_flag` tinyint NULL DEFAULT 0 COMMENT '是否存在未处理的@提醒',
+  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志',
+  `ext` json NULL COMMENT '成员扩展配置（个性化背景等）',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_session_user`(`session_id` ASC, `user_id` ASC) USING BTREE,
+  INDEX `idx_user`(`user_id` ASC) USING BTREE,
+  INDEX `idx_session_role`(`session_id` ASC, `role` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会话成员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for comments
@@ -251,7 +346,7 @@ CREATE TABLE `file`  (
   `access_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '访问路径',
   `user_id` bigint NULL DEFAULT NULL COMMENT '上传用户id',
   PRIMARY KEY (`file_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 203 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 204 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for follows
@@ -267,84 +362,6 @@ CREATE TABLE `follows`  (
   UNIQUE INDEX `follower_id`(`follower_id` ASC, `following_id` ASC) USING BTREE COMMENT '防止重复关注',
   INDEX `following_id`(`following_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 79 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户关注关系（粉丝系统）' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for im_chat_session
--- ----------------------------
-DROP TABLE IF EXISTS `im_chat_session`;
-CREATE TABLE `im_chat_session`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '会话ID',
-  `type` tinyint NOT NULL DEFAULT 1 COMMENT '会话类型：1-私聊，2-群聊 ，3 - 公开',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '会话名称（群聊名称或私聊的备注名）',
-  `avatar` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '会话头像',
-  `last_message_id` bigint NULL DEFAULT NULL COMMENT '最后一条消息ID（冗余设计，避免关联查询）',
-  `last_message_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '最后一条消息内容（预览）',
-  `last_message_time` datetime NULL DEFAULT NULL COMMENT '最后一条消息时间',
-  `last_message_user_id` bigint NULL DEFAULT NULL COMMENT '最后一条消息发送者ID',
-  `member_count` int NULL DEFAULT 2 COMMENT '成员数量',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_last_message_time`(`last_message_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '聊天会话表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for im_message
--- ----------------------------
-DROP TABLE IF EXISTS `im_message`;
-CREATE TABLE `im_message`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `session_id` bigint NOT NULL COMMENT '会话ID',
-  `sender_id` bigint NOT NULL COMMENT '发送者用户ID',
-  `sender_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '发送者昵称（冗余，避免查用户表）',
-  `sender_avatar` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发送者头像（冗余）',
-  `content_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '1' COMMENT '消息类型：1-文本，2-图片，3-文件，4-语音，5-视频，6-系统通知',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息内容（文本内容或文件URL）',
-  `file_size` bigint NULL DEFAULT NULL COMMENT '文件大小（字节）',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除',
-  `send_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '客户端发送时间',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_session_sendtime`(`session_id` ASC, `send_time` ASC) USING BTREE,
-  INDEX `idx_sender_time`(`sender_id` ASC, `send_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1989378999668133893 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '消息表（基础表）' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for im_message_read
--- ----------------------------
-DROP TABLE IF EXISTS `im_message_read`;
-CREATE TABLE `im_message_read`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `session_id` bigint NOT NULL COMMENT '会话ID',
-  `last_read_message_id` bigint NOT NULL COMMENT '该用户在此会话中已读的最后一条消息ID',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_user_session`(`user_id` ASC, `session_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '消息已读状态表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for im_session_member
--- ----------------------------
-DROP TABLE IF EXISTS `im_session_member`;
-CREATE TABLE `im_session_member`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `session_id` bigint NOT NULL COMMENT '会话ID',
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '用户在群内的昵称',
-  `role` tinyint NULL DEFAULT 1 COMMENT '成员角色：1-普通成员，2-管理员，3-群主',
-  `is_muted` tinyint NULL DEFAULT 0 COMMENT '是否免打扰',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除（退出群聊/删除会话）',
-  `join_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_session_user`(`session_id` ASC, `user_id` ASC) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '会话成员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for likes
@@ -375,7 +392,7 @@ CREATE TABLE `login_log`  (
   `login_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '登录地点',
   `device_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设备信息',
   PRIMARY KEY (`log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 193 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '登录日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 194 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '登录日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for menu
