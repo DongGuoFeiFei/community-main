@@ -5,6 +5,8 @@ server:
     context-path: /
 # 配置数据源
 spring:
+  application:
+    name: community
   # redis配置
   redis:
     host: 127.0.0.1  #开发

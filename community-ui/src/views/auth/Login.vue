@@ -5,7 +5,7 @@
       <span class="cloud-emoji c1">☁️</span>
       <span class="cloud-emoji c2">☁️</span>
     </div>
-    
+
     <!-- 装饰粒子 -->
     <div class="decoration-particles">
       <span class="particle p1">✨</span>
@@ -32,9 +32,20 @@
           <AuthBrand />
         </div>
 
-        <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" class="login-form">
+        <el-form
+          ref="formRef"
+          :model="form"
+          :rules="rules"
+          label-width="80px"
+          class="login-form"
+        >
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="form.username" placeholder="请输入用户名" clearable size="large">
+            <el-input
+              v-model="form.username"
+              placeholder="请输入用户名"
+              clearable
+              size="large"
+            >
               <template #prefix>
                 <el-icon><User /></el-icon>
               </template>
@@ -42,7 +53,13 @@
           </el-form-item>
 
           <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" placeholder="请输入密码" type="password" show-password size="large">
+            <el-input
+              v-model="form.password"
+              placeholder="请输入密码"
+              type="password"
+              show-password
+              size="large"
+            >
               <template #prefix>
                 <el-icon><Lock /></el-icon>
               </template>
@@ -50,12 +67,22 @@
           </el-form-item>
 
           <el-form-item label="验证码" prop="captchaCode">
-            <CaptchaInput :model="form" :captcha-image="captchaImage" @refresh="refreshCaptcha" />
+            <CaptchaInput
+              :model="form"
+              :captcha-image="captchaImage"
+              @refresh="refreshCaptcha"
+            />
           </el-form-item>
 
           <el-form-item class="form-actions">
-            <el-button type="primary" size="large" class="btn-login" :loading="loading" @click="handleLogin">
-              <span v-if="!loading">进入社区 🚀</span>
+            <el-button
+              type="primary"
+              size="large"
+              class="btn-login"
+              :loading="loading"
+              @click="handleLogin"
+            >
+              <span v-if="!loading">进入社区</span>
               <span v-else>登录中...</span>
             </el-button>
           </el-form-item>
@@ -75,86 +102,88 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
-import AuthBrand from './components/AuthBrand.vue'
-import CaptchaInput from './components/CaptchaInput.vue'
-import { getCaptcha, login } from '@/api/auth.js'
-import { localStores } from '@/stores/localStores.js'
+import { onMounted, ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { User, Lock } from "@element-plus/icons-vue";
+import AuthBrand from "./components/AuthBrand.vue";
+import CaptchaInput from "./components/CaptchaInput.vue";
+import { getCaptcha, login } from "@/api/auth.js";
+import { localStores } from "@/stores/localStores.js";
 
 type LoginForm = {
-  username: string
-  password: string
-  captchaCode: string
-  captchaKey: string
-}
+  username: string;
+  password: string;
+  captchaCode: string;
+  captchaKey: string;
+};
 
-const lStore = localStores()
-const router = useRouter()
-const loading = ref(false)
-const formRef = ref()
-const captchaImage = ref('')
+const lStore = localStores();
+const router = useRouter();
+const loading = ref(false);
+const formRef = ref();
+const captchaImage = ref("");
 
 const form = reactive<LoginForm>({
-  username: '',
-  password: '',
-  captchaCode: '',
-  captchaKey: ''
-})
+  username: "test",
+  password: "123456",
+  captchaCode: "",
+  captchaKey: "",
+});
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-  captchaCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
-}
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  captchaCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+};
 
 const refreshCaptcha = async () => {
   try {
-    const res = await getCaptcha()
-    captchaImage.value = res.data.image
-    form.captchaKey = res.data.code
+    const res = await getCaptcha();
+    captchaImage.value = res.data.image;
+    form.captchaKey = res.data.code;
   } catch (error) {
-    console.error('获取验证码失败:', error)
-    ElMessage.error('获取验证码失败')
+    console.error("获取验证码失败:", error);
+    ElMessage.error("获取验证码失败");
   }
-}
+};
 
 onMounted(() => {
-  refreshCaptcha()
-})
+  refreshCaptcha();
+});
 
 const handleLogin = () => {
   formRef.value.validate(async (valid: boolean) => {
-    if (!valid) return
-    loading.value = true
+    if (!valid) return;
+    loading.value = true;
     try {
-      const res: any = await login(form)
+      const res: any = await login(form);
       if (res?.token) {
-        lStore.userInfo = { ...res }
-        lStore.tokenInfo.token = res.token
-        lStore.tokenInfo.refreshTime = res.userInfo.lastLogin
-        lStore.tokenInfo.expiresIn = res.expiresIn
-        localStorage.setItem('token', res.token)
-        ElMessage.success('登录成功')
-        router.push('/')
+        lStore.userInfo = { ...res };
+        lStore.tokenInfo.token = res.token;
+        lStore.tokenInfo.refreshTime = res.userInfo.lastLogin;
+        lStore.tokenInfo.expiresIn = res.expiresIn;
+        localStorage.setItem("token", res.token);
+        ElMessage.success("登录成功");
+        router.push("/");
       } else {
-        ElMessage.error(res?.msg || '登录失败')
-        refreshCaptcha()
+        ElMessage.error(res?.msg || "登录失败");
+        refreshCaptcha();
       }
     } catch (error: any) {
-      console.error('登录出错:', error)
-      ElMessage.error(error?.response?.data?.msg || '登录失败，请检查用户名或密码')
-      refreshCaptcha()
+      console.error("登录出错:", error);
+      ElMessage.error(
+        error?.response?.data?.msg || "登录失败，请检查用户名或密码"
+      );
+      refreshCaptcha();
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  })
-}
+  });
+};
 
-const goToRegister = () => router.push('/register')
-const goToForgotPassword = () => router.push('/forgot-password')
+const goToRegister = () => router.push("/register");
+const goToForgotPassword = () => router.push("/forgot-password");
 </script>
 
 <style scoped lang="scss">
@@ -443,7 +472,8 @@ const goToForgotPassword = () => router.push('/forgot-password')
 
 // 动画定义
 @keyframes floatBubble {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   25% {
@@ -458,7 +488,8 @@ const goToForgotPassword = () => router.push('/forgot-password')
 }
 
 @keyframes cloudFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) translateX(0);
   }
   25% {
@@ -473,7 +504,8 @@ const goToForgotPassword = () => router.push('/forgot-password')
 }
 
 @keyframes sparkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(1) rotate(0deg);
   }
@@ -515,7 +547,8 @@ const goToForgotPassword = () => router.push('/forgot-password')
 }
 
 @keyframes titleGlow {
-  0%, 100% {
+  0%,
+  100% {
     filter: drop-shadow(0 0 10px rgba(135, 206, 235, 0.5));
   }
   50% {

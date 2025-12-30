@@ -31,3 +31,5 @@ coverage
 /.env
 /.env.production
 /md/
+/提示词.txt
+
