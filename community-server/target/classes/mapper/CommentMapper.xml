@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.communityserver.mapper.CommentMapper">
+
+    <!-- 查询所有顶级评论（parent_id为null的评论） -->
+    <select id="getCommentsByArticleId" resultMap="CommentsMap">
+        SELECT c.comment_id,
+               c.article_id,
+               CASE WHEN c.is_del = 1 THEN null ELSE c.user_id END                AS user_id,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
+               c.parent_id,
+               c.root_id                                                          as firstId,
+               c.created_at,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
+               CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
+               pu.nickname                                                        AS replied_nickname
+        FROM comments c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+                 LEFT JOIN file f ON u.file_id = f.file_id
+                 LEFT JOIN comments pc ON c.parent_id = pc.comment_id
+                 LEFT JOIN user pu ON pc.user_id = pu.user_id
+        WHERE c.article_id = #{articleId}
+          AND c.parent_id IS NULL
+          and c.state != 2
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 递归查询子评论 -->
+    <select id="findCommentsByParentId" resultMap="CommentsMap">
+        SELECT c.comment_id,
+               c.article_id,
+               CASE WHEN c.is_del = 1 THEN '0' ELSE c.user_id END                 AS user_id,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
+               c.parent_id,
+               c.root_id                                                          as firstId,
+               c.created_at,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
+               CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
+               pu.nickname                                                        AS replied_nickname
+        FROM comments c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+                 LEFT JOIN file f ON u.file_id = f.file_id
+                 LEFT JOIN comments pc ON c.parent_id = pc.comment_id
+                 LEFT JOIN user pu ON pc.user_id = pu.user_id
+        WHERE c.parent_id = #{parentId}
+          and c.state != 2
+        ORDER BY c.created_at ASC
+    </select>
+    <!--todo 优化树状图数据的获取sql，使用cet法获取数据-->
+
+    <!--    <select id="getCommentsByArticleId" resultMap="CommentsMap">-->
+    <!--        WITH RECURSIVE comment_tree AS (-->
+    <!--            SELECT-->
+    <!--                c.comment_id, c.article_id,-->
+    <!--                CASE WHEN c.is_del = 1 THEN null ELSE c.user_id END AS user_id,-->
+    <!--                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END AS content,-->
+    <!--                c.parent_id, c.first_id, c.created_at,-->
+    <!--                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,-->
+    <!--                CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END AS access_url,-->
+    <!--                pu.nickname AS replied_nickname,-->
+    <!--                1 AS level-->
+    <!--            FROM comments c-->
+    <!--                     LEFT JOIN user u ON c.user_id = u.user_id-->
+    <!--                     LEFT JOIN file f ON u.file_id = f.file_id-->
+    <!--                     LEFT JOIN comments pc ON c.parent_id = pc.comment_id-->
+    <!--                     LEFT JOIN user pu ON pc.user_id = pu.user_id-->
+    <!--            WHERE c.article_id = #{articleId}-->
+    <!--              AND c.parent_id IS NULL-->
+
+    <!--            UNION ALL-->
+
+    <!--            SELECT-->
+    <!--                c.comment_id, c.article_id,-->
+    <!--                CASE WHEN c.is_del = 1 THEN null ELSE c.user_id END AS user_id,-->
+    <!--                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END AS content,-->
+    <!--                c.parent_id, c.first_id, c.created_at,-->
+    <!--                CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,-->
+    <!--                CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END AS access_url,-->
+    <!--                pu.nickname AS replied_nickname,-->
+    <!--                ct.level + 1 AS level-->
+    <!--            FROM comments c-->
+    <!--                     JOIN comment_tree ct ON c.parent_id = ct.comment_id-->
+    <!--                     LEFT JOIN user u ON c.user_id = u.user_id-->
+    <!--                     LEFT JOIN file f ON u.file_id = f.file_id-->
+    <!--                     LEFT JOIN comments pc ON c.parent_id = pc.comment_id-->
+    <!--                     LEFT JOIN user pu ON pc.user_id = pu.user_id-->
+    <!--        )-->
+    <!--        SELECT * FROM comment_tree-->
+    <!--        ORDER BY-->
+    <!--            CASE WHEN level = 1 THEN created_at END DESC,-->
+    <!--            CASE WHEN level > 1 THEN created_at END ASC-->
+    <!--    </select>-->
+
+    <!-- 结果映射 -->
+    <resultMap id="CommentsMap" type="com.example.communityserver.entity.response.CommentVo">
+        <id column="comment_id" property="commentId"/>
+        <result column="article_id" property="articleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="access_url" property="accessUrl"/>
+        <result column="content" property="content"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="replied_nickname" property="repliedNickname"/>
+        <!-- 递归关联查询子评论 -->
+        <collection property="voList"
+                    column="comment_id"
+                    select="findCommentsByParentId"
+                    javaType="java.util.List"/>
+    </resultMap>
+
+    <select id="getReplyById" resultType="com.example.communityserver.entity.response.ReplyVo">
+        SELECT c.comment_id,
+               c.article_id,
+               CASE WHEN c.is_del = 1 THEN '0' ELSE c.user_id END                 AS user_id,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE c.content END  AS content,
+               c.parent_id,
+               c.root_id                                                          as firstId,
+               c.created_at,
+               CASE WHEN c.is_del = 1 THEN '该用户已删除评论' ELSE u.nickname END AS nickname,
+               CASE WHEN c.is_del = 1 THEN NULL ELSE f.access_url END             AS access_url,
+               pu.nickname                                                        AS replied_nickname
+        FROM comments c
+                 LEFT JOIN user u ON c.user_id = u.user_id AND c.is_del = 0
+                 LEFT JOIN file f ON u.file_id = f.file_id AND c.is_del = 0
+                 LEFT JOIN comments pc ON c.parent_id = pc.comment_id AND c.is_del = 0
+                 LEFT JOIN user pu ON pc.user_id = pu.user_id AND c.is_del = 0
+        WHERE c.comment_id = #{commentId}
+          and c.state != 2
+    </select>
+
+    <resultMap id="CommentListVoMap" type="com.example.communityserver.entity.response.CommentListVo">
+        <id column="comment_id" property="commentId"/>
+        <result column="content" property="content"/>
+        <result column="state" property="status"/>
+        <result column="created_at" property="createdAt"/>
+
+        <association property="article" javaType="com.example.communityserver.entity.response.CommentListVo$ArticleInfo">
+            <id column="article_id" property="articleId"/>
+            <result column="article_title" property="title"/>
+        </association>
+
+        <association property="user" javaType="com.example.communityserver.entity.response.CommentListVo$UserInfo">
+            <id column="user_id" property="userId"/>
+            <result column="username" property="username"/>
+            <result column="nickname" property="nickname"/>
+            <result column="avatar" property="avatar"/>
+        </association>
+
+        <association property="parentComment" javaType="com.example.communityserver.entity.response.CommentListVo$ParentCommentInfo">
+            <id column="parent_comment_id" property="commentId"/>
+            <result column="parent_content" property="content"/>
+            <association property="user" javaType="com.example.communityserver.entity.response.CommentListVo$UserInfo">
+                <id column="parent_user_id" property="userId"/>
+                <result column="parent_username" property="username"/>
+                <result column="parent_nickname" property="nickname"/>
+                <result column="parent_avatar" property="avatar"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="getCommentList" resultMap="CommentListVoMap">
+        SELECT
+        c.comment_id,
+        c.content,
+        c.state,
+        c.created_at,
+
+        a.article_id,
+        a.title AS article_title,
+
+        u.user_id,
+        u.username,
+        u.nickname,
+        u.avatar,
+
+        pc.comment_id AS parent_comment_id,
+        pc.content AS parent_content,
+        pu.user_id AS parent_user_id,
+        pu.username AS parent_username,
+        pu.nickname AS parent_nickname,
+        pu.avatar AS parent_avatar
+
+        FROM comments c
+        LEFT JOIN article a ON c.article_id = a.article_id
+        LEFT JOIN user u ON c.user_id = u.user_id
+        LEFT JOIN comments pc ON c.parent_id = pc.comment_id
+        LEFT JOIN user pu ON pc.user_id = pu.user_id
+
+        <where>
+            c.is_del = 0
+            <if test="query.content != null and query.content != ''">
+                AND c.content LIKE CONCAT('%', #{query.content}, '%')
+            </if>
+            <if test="query.articleTitle != null and query.articleTitle != ''">
+                AND a.title LIKE CONCAT('%', #{query.articleTitle}, '%')
+            </if>
+            <if test="query.username != null and query.username != ''">
+                AND u.username = #{query.username}
+            </if>
+            <if test="query.nickname != null and query.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{query.nickname}, '%')
+            </if>
+            <if test="query.status != null">
+                AND c.state = #{query.status}
+            </if>
+            <if test="query.startTime != null">
+                AND c.created_at >= #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                AND c.created_at <![CDATA[<=]]> #{query.endTime}
+            </if>
+        </where>
+
+        ORDER BY c.created_at DESC
+    </select>
+</mapper>
+

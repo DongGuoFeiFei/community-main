@@ -41,8 +41,9 @@ public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> i
         loginLog.setLoginIp(ip);
         loginLog.setUserId(userId);
         String json = ipUtil.getIpLocation(ip);
-        IpUtil.IpLocation ipLocation = ipUtil.parseWithJackson(json);
-        loginLog.setLoginLocation(ipLocation.getIpAdd());
+//        IpUtil.IpLocation ipLocation = ipUtil.parseWithJackson(json);
+//        loginLog.setLoginLocation(ipLocation.getIpAdd());
+        loginLog.setLoginLocation(null);
         loginLog.setDeviceInfo(deviceInfo.toString());
         return loginLogMapper.insert(loginLog) > 0 ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) : "";
     }

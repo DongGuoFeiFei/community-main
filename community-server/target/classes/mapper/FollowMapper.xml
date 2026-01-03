@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.communityserver.mapper.FollowMapper">
+
+    <select id="countFollowers" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM follows f
+        WHERE f.following_id = #{id}
+    </select>
+    <select id="countFollowing" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM follows f
+        WHERE f.follower_id = #{id}
+    </select>
+    <select id="getFollowingList" resultType="com.example.communityserver.entity.response.FollowVo">
+        SELECT
+            u.user_id AS id,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
+            CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
+            CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
+        FROM
+            follows fl
+                JOIN
+            user u ON fl.follower_id = u.user_id
+                LEFT JOIN
+            profiles p ON u.user_id = p.user_id
+                LEFT JOIN
+            follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
+        WHERE
+            fl.following_id = #{userId}
+        ORDER BY
+            fl.created_at DESC
+    </select>
+    <select id="getFollowerList" resultType="com.example.communityserver.entity.response.FollowVo">
+        SELECT u.user_id                                        AS id,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.avatar ELSE 'default_avatar_url' END AS avatar,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN p.bio ELSE '该用户已注销' END AS bio,
+               CASE WHEN u.is_del = 0 or u.is_active = 0 THEN u.nickname ELSE '已注销用户' END AS nickname,
+               CASE WHEN f.id IS NOT NULL THEN '1' ELSE '0' END AS isFollowing
+        FROM follows fl
+                 JOIN
+             user u ON fl.following_id = u.user_id
+                 LEFT JOIN
+             profiles p ON u.user_id = p.user_id
+                 LEFT JOIN
+             follows f ON f.follower_id = #{loginUserId} AND f.following_id = u.user_id
+        WHERE fl.follower_id = #{userId}
+        ORDER BY fl.created_at DESC
+    </select>
+</mapper>

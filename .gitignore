@@ -36,8 +36,4 @@ coverage
 
 /提示词.txt
 /.vscode/
-/path/
-/src/main/resources/secrets.properties
-/src/main/resources/task.txt
-
-/target/
+/community-server/target/

@@ -1,10 +1,10 @@
 # 社区管理系统 - Java后端技术架构文档
 
-## 项目概述
+##  项目概述
 
 **社区管理系统**是一个基于Spring Boot 2.7.18的企业级社交平台，采用前后端分离架构，实现了完整的社交功能体系。项目重点展示Java后端的技术深度和架构设计能力，适合用于技术面试和开源学习。
 
-### 项目结构
+###  项目结构
 
 ```
 community-main/
@@ -62,10 +62,9 @@ community-main/
     └── db_community.sql  # 完整数据库建表脚本
 ```
 
-### 核心功能模块
+###  核心功能模块
 
 #### 后端核心功能 (Java)
-
 - **用户认证授权**：JWT Token + Spring Security + RBAC权限模型
 - **内容管理系统**：文章发布、评论、点赞、收藏、标签分类
 - **实时聊天系统**：WebSocket + STOMP协议实现即时通信
@@ -77,11 +76,10 @@ community-main/
 - **举报审核**：内容举报、审核流程
 
 #### 前端功能 (Vue3)
-
 - **community-ui**：用户端前台，文章浏览、发布、互动、个人中心
 - **community-admin**：管理端后台，数据可视化、内容审核、用户管理
 
-### 技术架构特色
+###  技术架构特色
 
 - **企业级安全体系**：JWT + Spring Security + RBAC权限模型
 - **实时通信能力**：WebSocket + STOMP协议实现即时聊天
@@ -94,7 +92,7 @@ community-main/
 - **邮件服务**：Spring Mail + 重试机制
 - **Markdown支持**：CommonMark解析Markdown内容
 
-## 快速开始
+##  快速开始
 
 ### 环境要求
 
@@ -107,14 +105,12 @@ community-main/
 ### 后端启动步骤
 
 1. **克隆项目**
-
 ```bash
-git clone https://gitee.com/DongGuoFeiFei/blog-community-platform.git
+git clone https://github.com/your-repo/community-main.git
 cd community-main/community-server
 ```
 
 2. **创建数据库**
-
 ```bash
 # 登录MySQL
 mysql -u root -p
@@ -128,7 +124,6 @@ SOURCE db/db_community.sql;
 ```
 
 3. **配置application.yml**
-
 ```yaml
 spring:
   datasource:
@@ -141,7 +136,6 @@ spring:
 ```
 
 4. **配置secrets.properties**
-
 ```properties
 # 邮箱配置
 mail.username=your_email@qq.com
@@ -159,13 +153,11 @@ alipay_gateway-url=https://openapi.alipay.com/gateway.do
 ```
 
 5. **启动Redis**
-
 ```bash
 redis-server
 ```
 
 6. **启动后端服务**
-
 ```bash
 # 使用Maven启动
 mvn spring-boot:run
@@ -176,7 +168,6 @@ java -jar target/community-server-0.0.1-SNAPSHOT.jar
 ```
 
 7. **访问API文档**
-
 ```
 http://localhost:8081/doc.html
 ```
@@ -184,7 +175,6 @@ http://localhost:8081/doc.html
 ### 前端启动步骤
 
 #### 用户前端 (community-ui)
-
 ```bash
 cd community-ui
 npm install
@@ -193,7 +183,6 @@ npm run dev
 ```
 
 #### 管理后台 (community-admin)
-
 ```bash
 cd community-admin
 npm install
@@ -217,7 +206,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## API文档
+##  API文档
 
 ### Knife4j接口文档
 
@@ -226,17 +215,15 @@ docker-compose down
 **访问地址**: `http://localhost:8081/doc.html`
 
 **主要功能**:
-
-- 完整的API接口文档
-- 在线接口测试
-- 请求/响应示例
-- JWT Token认证支持
-- 接口分组管理
+-  完整的API接口文档
+-  在线接口测试
+-  请求/响应示例
+-  JWT Token认证支持
+-  接口分组管理
 
 ### 核心API模块
 
 #### 1. 认证授权 (/auth)
-
 - `POST /auth/login` - 用户登录
 - `POST /auth/register` - 用户注册
 - `POST /auth/logout` - 用户登出
@@ -244,14 +231,12 @@ docker-compose down
 - `POST /auth/send-code` - 发送验证码
 
 #### 2. 用户管理 (/user)
-
 - `GET /user/profile` - 获取用户信息
 - `PUT /user/profile` - 更新用户信息
 - `POST /user/avatar` - 上传头像
 - `GET /user/{userId}` - 查看用户主页
 
 #### 3. 文章管理 (/posts)
-
 - `GET /posts` - 文章列表
 - `GET /posts/{id}` - 文章详情
 - `POST /posts` - 发布文章
@@ -259,31 +244,27 @@ docker-compose down
 - `DELETE /posts/{id}` - 删除文章
 
 #### 4. 评论管理 (/comments)
-
 - `GET /comments` - 评论列表
 - `POST /comments` - 发表评论
 - `DELETE /comments/{id}` - 删除评论
 
 #### 5. 聊天系统 (/chat)
-
 - `GET /chat/sessions` - 会话列表
 - `GET /chat/messages` - 消息列表
 - `POST /chat/send` - 发送消息
 - `WebSocket /ws` - WebSocket连接
 
 #### 6. 积分系统 (/points)
-
 - `GET /pointsAccount` - 积分账户
 - `GET /pointsLevel` - 积分等级
 - `POST /pointsConsumption` - 积分兑换
 
 #### 7. 管理后台 (/admin)
-
 - `GET /admin/users` - 用户管理
 - `GET /admin/article` - 内容管理
 - `GET /dashboard` - 数据统计
 
-## 系统架构设计
+##  系统架构设计
 
 ### 整体架构图
 
@@ -356,46 +337,44 @@ docker-compose down
 - **统一异常处理**：@ControllerAdvice全局异常拦截
 - **统一响应格式**：Result<T>封装API响应数据
 
-## 技术栈详解
+##  技术栈详解
 
 ### 后端技术栈 (Spring Boot 2.7.18)
 
 #### 核心框架与版本
 
-| 技术组件                | 版本   | 选型理由           | 技术优势                     |
-| ----------------------- | ------ | ------------------ | ---------------------------- |
-| **Java**                | 17     | LTS长期支持版本    | 性能提升、新语法特性         |
-| **Spring Boot**         | 2.7.18 | 成熟稳定，社区活跃 | 自动配置，快速开发           |
-| **Spring Security**     | 5.7.x  | 企业级安全框架     | 完整的认证授权体系           |
-| **MyBatis Plus**        | 3.5.5  | 简化CRUD操作       | 强大的查询构造器、代码生成器 |
-| **MySQL**               | 8.0.29 | 事务支持完善       | 性能稳定，社区支持良好       |
-| **Redis**               | 7.0    | 高性能缓存         | 支持多种数据结构             |
-| **JWT**                 | 4.4.0  | 无状态认证         | 跨域支持、自包含Token        |
-| **Knife4j**             | 2.0.9  | API文档生成        | Swagger增强版，UI更友好      |
-| **MapStruct**           | 1.4.2  | 对象映射           | 编译期生成代码，性能高       |
-| **Lombok**              | -      | 简化代码           | 自动生成getter/setter        |
-| **Fastjson**            | 2.0.42 | JSON处理           | 高性能JSON解析               |
-| **Hibernate Validator** | 6.2.3  | 参数校验           | JSR-303标准实现              |
-| **Spring Mail**         | -      | 邮件发送           | 支持异步发送                 |
-| **Spring Retry**        | 1.3.4  | 重试机制           | 提高系统容错性               |
-| **Spring AOP**          | -      | 面向切面编程       | 日志、权限、事务管理         |
-| **CommonMark**          | 0.21.0 | Markdown解析       | 支持GFM表格扩展              |
-| **Alipay SDK**          | 4.9.28 | 支付宝支付         | 官方SDK                      |
-| **WebSocket**           | -      | 实时通信           | 全双工通信                   |
-| **STOMP**               | -      | 消息协议           | WebSocket子协议              |
-| **RabbitMQ**            | -      | 消息队列           | 异步消息处理                 |
+| 技术组件 | 版本 | 选型理由 | 技术优势 |
+|---------|------|----------|----------|
+| **Java** | 17 | LTS长期支持版本 | 性能提升、新语法特性 |
+| **Spring Boot** | 2.7.18 | 成熟稳定，社区活跃 | 自动配置，快速开发 |
+| **Spring Security** | 5.7.x | 企业级安全框架 | 完整的认证授权体系 |
+| **MyBatis Plus** | 3.5.5 | 简化CRUD操作 | 强大的查询构造器、代码生成器 |
+| **MySQL** | 8.0.29 | 事务支持完善 | 性能稳定，社区支持良好 |
+| **Redis** | 7.0 | 高性能缓存 | 支持多种数据结构 |
+| **JWT** | 4.4.0 | 无状态认证 | 跨域支持、自包含Token |
+| **Knife4j** | 2.0.9 | API文档生成 | Swagger增强版，UI更友好 |
+| **MapStruct** | 1.4.2 | 对象映射 | 编译期生成代码，性能高 |
+| **Lombok** | - | 简化代码 | 自动生成getter/setter |
+| **Fastjson** | 2.0.42 | JSON处理 | 高性能JSON解析 |
+| **Hibernate Validator** | 6.2.3 | 参数校验 | JSR-303标准实现 |
+| **Spring Mail** | - | 邮件发送 | 支持异步发送 |
+| **Spring Retry** | 1.3.4 | 重试机制 | 提高系统容错性 |
+| **Spring AOP** | - | 面向切面编程 | 日志、权限、事务管理 |
+| **CommonMark** | 0.21.0 | Markdown解析 | 支持GFM表格扩展 |
+| **Alipay SDK** | 4.9.28 | 支付宝支付 | 官方SDK |
+| **WebSocket** | - | 实时通信 | 全双工通信 |
+| **STOMP** | - | 消息协议 | WebSocket子协议 |
+| **RabbitMQ** | - | 消息队列 | 异步消息处理 |
 
 #### 安全认证技术选型
 
 **JWT (Java-JWT 4.4.0)**
-
 - **无状态认证**：适合分布式系统架构，无需服务端存储Session
 - **自包含性**：Token包含所有必要信息，减少数据库查询
 - **跨域支持**：天然支持跨域认证场景
 - **过期机制**：支持Token过期和刷新机制
 
 **RBAC权限模型设计**
-
 ```java
 // 权限控制核心类结构
 public class Permission {
@@ -420,14 +399,12 @@ public void deleteUser(Long userId) {
 #### 实时通信技术选型
 
 **WebSocket + STOMP协议组合**
-
 - **全双工通信**：支持服务端主动推送消息
 - **协议标准化**：STOMP提供消息路由机制
 - **Spring生态集成**：与Spring Messaging完美集成
 - **消息路由**：支持点对点(/queue)、广播(/topic)、用户专属(/user)
 
 **聊天系统架构**
-
 ```java
 // WebSocket配置
 @Configuration
@@ -452,7 +429,6 @@ public ChatMessage sendMessage(ChatMessage message) {
 ### 前端技术栈 (Vue 3 + TypeScript)
 
 #### 用户前端 (community-ui)
-
 - **Vue 3**：Composition API，更好的TypeScript支持
 - **TypeScript**：类型安全，提升代码质量
 - **Axios**：HTTP请求库
@@ -460,18 +436,16 @@ public ChatMessage sendMessage(ChatMessage message) {
 - **Pinia**：轻量级状态管理
 
 #### 管理后台 (community-admin)
-
 - **Vue 3**：现代化前端框架
 - **Element Plus**：丰富的UI组件库
 - **ECharts**：数据可视化图表
 - **TypeScript**：类型安全开发
 
-##  数据库架构设计
+## 🗄️ 数据库架构设计
 
 ### 核心表结构 (30+ 业务表)
 
 #### 用户相关表
-
 - **user** - 用户基础信息表
 - **user_role** - 用户角色关联表
 - **role** - 角色表
@@ -480,7 +454,6 @@ public ChatMessage sendMessage(ChatMessage message) {
 - **login_log** - 登录日志表
 
 #### 内容相关表
-
 - **article** - 文章/帖子表
 - **article_category_relation** - 文章分类关联表
 - **content_category** - 内容分类表
@@ -491,21 +464,18 @@ public ChatMessage sendMessage(ChatMessage message) {
 - **article_interaction** - 文章交互统计表
 
 #### 社交相关表
-
 - **follow** - 关注关系表
 - **favorite_folders** - 收藏夹表
 - **user_favorite** - 用户收藏文章表
 - **notification** - 通知表
 
 #### 聊天相关表
-
 - **chat_session** - 聊天会话表
 - **chat_session_member** - 会话成员表
 - **chat_message** - 聊天消息表
 - **chat_message_ack** - 消息已读确认表
 
 #### 积分相关表
-
 - **points_log** - 积分变动日志表
 - **points_rule** - 积分规则表
 - **points_level** - 积分等级表
@@ -513,7 +483,6 @@ public ChatMessage sendMessage(ChatMessage message) {
 - **points_consumption** - 积分消费记录表
 
 #### 系统相关表
-
 - **api_permission** - API权限表
 - **role_api** - 角色API权限关联表
 - **menu** - 菜单表
@@ -544,7 +513,6 @@ public ChatMessage sendMessage(ChatMessage message) {
 ### 索引优化策略
 
 #### 主键索引设计
-
 ```sql
 -- 用户表主键索引
 CREATE TABLE `user` (
@@ -569,14 +537,12 @@ CREATE TABLE `article` (
 ```
 
 #### 复合索引设计原则
-
 - **最左前缀原则**：索引字段顺序影响查询性能
 - **覆盖索引**：避免回表操作，提升查询效率
 - **索引选择性**：高选择性字段优先建立索引
 - **避免过度索引**：索引会影响写入性能，需权衡
 
 #### 查询优化示例
-
 ```java
 // 使用索引优化的查询
 @Select("SELECT * FROM article WHERE status = 1 AND user_id = #{userId} ORDER BY create_time DESC LIMIT 10")
@@ -594,21 +560,18 @@ List<Article> articles = articleService.lambdaQuery()
 ### 数据库扩展策略
 
 #### 当前架构优势
-
 - **数据一致性**：单数据库保证事务一致性，ACID特性完整
 - **查询性能**：关联查询无需跨库join，性能优秀
 - **开发简单**：无需处理分布式事务复杂性
 - **运维成本低**：单数据库部署和维护简单
 
 #### 未来扩展方案
-
 - **读写分离**：主从复制提升读性能，主库写操作，从库读操作
 - **垂直拆分**：按业务模块拆分数据库（用户库、内容库、聊天库）
 - **水平分表**：大表按规则分片（如按用户ID、时间分表）
 - **缓存优化**：Redis缓存减轻数据库压力，热点数据缓存
 
 #### MyBatis Plus特性应用
-
 ```java
 // 1. 自动填充 - 创建时间、更新时间自动填充
 @TableField(fill = FieldFill.INSERT)
@@ -630,21 +593,19 @@ private Integer version;
 private List<String> tags;
 ```
 
-## 性能优化架构
+##  性能优化架构
 
 ### Redis缓存应用
 
 项目集成了Redis，可用于以下场景：
 
 **缓存使用场景**
-
 - **热点数据**：用户信息、文章详情、标签列表
 - **计数器**：文章浏览量、点赞数、评论数
 - **Session存储**：分布式Session共享
 - **临时数据**：验证码、Token黑名单
 
 **Redis配置**
-
 ```java
 @Configuration
 public class RedisConfig {
@@ -661,7 +622,6 @@ public class RedisConfig {
 ```
 
 **使用示例**
-
 ```java
 @Service
 public class UserService {
@@ -694,7 +654,6 @@ public class UserService {
 Spring Boot 2.x 默认使用 HikariCP 作为数据库连接池，无需额外配置即可获得高性能的连接池管理。
 
 **HikariCP优势**
-
 - **快速响应**：HikariCP是目前最快的JDBC连接池
 - **资源复用**：避免频繁创建和销毁连接
 - **连接管理**：自动检测和清理无效连接
@@ -705,14 +664,12 @@ Spring Boot 2.x 默认使用 HikariCP 作为数据库连接池，无需额外配
 项目已启用 `@EnableAsync` 注解，支持异步方法调用，可用于：
 
 **异步应用场景**
-
 - **邮件发送**：注册验证、密码重置、通知邮件
 - **消息推送**：站内通知、系统公告
 - **日志记录**：操作日志、登录日志
 - **数据统计**：文章浏览量、用户活跃度统计
 
 **使用方式**
-
 ```java
 @Service
 public class NotificationService {
@@ -725,7 +682,6 @@ public class NotificationService {
     }
 }
 ```
-
 - **消息推送**：站内通知、系统公告
 - **日志记录**：操作日志、登录日志
 - **数据统计**：文章浏览量、用户活跃度统计
@@ -766,7 +722,7 @@ public class ArticleService {
 }
 ```
 
-## 安全架构设计
+##  安全架构设计
 
 ### JWT认证流程设计
 
@@ -776,7 +732,6 @@ public class ArticleService {
 后续请求携带Token → 服务端验证Token → 授权访问 → 业务处理
     ↓
 Token过期 → 刷新Token → 重新认证
-
 ```
 
 ### Spring Security配置
@@ -805,7 +760,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ### 数据权限控制
 
 #### 行级数据权限实现
-
 ```java
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -828,7 +782,7 @@ public class DataPermissionAspect {
 }
 ```
 
-## 安全架构设计
+##  安全架构设计
 
 ### JWT认证流程设计
 
@@ -1069,12 +1023,11 @@ public class GlobalExceptionHandler {
 }
 ```
 
-## 实时通信架构
+##  实时通信架构
 
 ### WebSocket连接管理
 
 #### 连接生命周期管理
-
 ```java
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -1098,7 +1051,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 ### 消息路由机制
 
 #### STOMP消息路由配置
-
 ```java
 @Configuration
 @EnableWebSocketMessageBroker
@@ -1117,7 +1069,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 }
 ```
 
-## 系统监控与日志
+##  系统监控与日志
 
 ### 日志配置
 
@@ -1140,18 +1092,16 @@ logging:
 ```
 
 **日志特性**
-
 - **分级日志**：支持不同包的日志级别配置
 - **文件滚动**：自动按大小和时间滚动日志文件
 - **SQL日志**：MyBatis Plus SQL日志输出
 - **日志归档**：自动清理过期日志
 
-## 部署与扩展方案
+##  部署与扩展方案
 
 ### Docker容器化部署
 
 #### Dockerfile配置
-
 ```dockerfile
 FROM openjdk:17-jdk-slim
 VOLUME /tmp
@@ -1160,7 +1110,6 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
 #### Docker Compose编排
-
 ```yaml
 version: '3.8'
 services:
@@ -1189,23 +1138,20 @@ services:
 ### 水平扩展策略
 
 #### 无状态应用扩展
-
 - **应用层**：支持多实例部署，通过负载均衡分发请求
 - **会话管理**：使用Redis存储会话，支持分布式部署
 - **文件存储**：使用对象存储服务，支持分布式文件访问
 
 #### 数据库扩展
-
 - **读写分离**：主库写操作，从库读操作
 - **垂直拆分**：按业务模块拆分数据库（可选）
 - **数据同步**：基于binlog的数据同步机制
 
-## 技术深度解析
+##  技术深度解析
 
 ### Spring Boot自动配置原理
 
 #### 自动配置机制
-
 ```java
 @SpringBootApplication
 public class CommunityServerApplication {
@@ -1220,7 +1166,6 @@ public class CommunityServerApplication {
 ### MyBatis Plus性能优化
 
 #### 查询性能优化
-
 ```java
 // 使用Lambda查询，避免SQL注入
 List<User> users = userService.lambdaQuery()
@@ -1235,86 +1180,77 @@ IPage<User> userPage = userService.page(page,
     Wrappers.<User>query().eq("status", 1));
 ```
 
-## 性能基准测试
+##  性能基准测试
 
 ### 压力测试指标
 
-| 测试场景 | QPS   | 平均响应时间 | 错误率  |
-| -------- | ----- | ------------ | ------- |
-| 用户登录 | 1200+ | < 50ms       | < 0.1%  |
-| 文章浏览 | 2000+ | < 30ms       | < 0.05% |
-| 实时聊天 | 800+  | < 100ms      | < 0.2%  |
+| 测试场景 | QPS | 平均响应时间 | 错误率 |
+|---------|-----|-------------|--------|
+| 用户登录 | 1200+ | < 50ms | < 0.1% |
+| 文章浏览 | 2000+ | < 30ms | < 0.05% |
+| 实时聊天 | 800+ | < 100ms | < 0.2% |
 
 ### 系统容量规划
 
 #### 数据量支持能力
-
 - **用户数据**：支持千万级用户注册和活跃
 - **文章数据**：支持亿级文章存储和检索
 - **聊天数据**：支持TB级消息存储和实时推送
 
 #### 并发处理能力
-
 - **单机并发**：支持1000+ 并发用户在线
 - **集群扩展**：支持无限制水平扩展
 - **消息吞吐**：支持10万+ 消息/秒处理能力
 
-------
+---
 
-## 亮点总结
+##  亮点总结
 
 ### 1. 架构设计亮点
-
--  **前后端分离**：清晰的职责划分，独立开发部署
--  **分层架构**：Controller → Service → Mapper → Entity 四层架构
--  **模块化设计**：聊天、积分、支付等功能模块独立
--  **RESTful API**：符合REST规范的API设计
--  **统一响应格式**：Result<T>统一封装返回数据
+- ✅ **前后端分离**：清晰的职责划分，独立开发部署
+- ✅ **分层架构**：Controller → Service → Mapper → Entity 四层架构
+- ✅ **模块化设计**：聊天、积分、支付等功能模块独立
+- ✅ **RESTful API**：符合REST规范的API设计
+- ✅ **统一响应格式**：Result<T>统一封装返回数据
 
 ### 2. 安全体系亮点
-
--  **JWT无状态认证**：支持分布式部署
--  **RBAC权限模型**：灵活的角色权限管理
--  **方法级权限控制**：@PreAuthorize注解权限控制
--  **密码加密**：BCrypt加密存储
--  **全局异常处理**：统一的异常处理机制
+- ✅ **JWT无状态认证**：支持分布式部署
+- ✅ **RBAC权限模型**：灵活的角色权限管理
+- ✅ **方法级权限控制**：@PreAuthorize注解权限控制
+- ✅ **密码加密**：BCrypt加密存储
+- ✅ **全局异常处理**：统一的异常处理机制
 
 ### 3. 实时通信亮点
-
--  **WebSocket + STOMP**：标准化的实时通信协议
--  **消息路由**：支持点对点、广播、用户专属消息
--  **连接管理**：完整的连接生命周期管理
--  **消息确认**：已读未读状态管理
--  **会话管理**：支持单聊和群聊
+- ✅ **WebSocket + STOMP**：标准化的实时通信协议
+- ✅ **消息路由**：支持点对点、广播、用户专属消息
+- ✅ **连接管理**：完整的连接生命周期管理
+- ✅ **消息确认**：已读未读状态管理
+- ✅ **会话管理**：支持单聊和群聊
 
 ### 4. 性能优化亮点
-
--  **Redis缓存**：热点数据缓存，减轻数据库压力
--  **异步处理支持**：@EnableAsync支持异步方法调用
--  **连接池**：HikariCP高性能连接池（Spring Boot默认）
--  **分页查询**：MyBatis Plus自动分页
--  **索引优化**：合理的数据库索引设计
+- ✅ **Redis缓存**：热点数据缓存，减轻数据库压力
+- ✅ **异步处理支持**：@EnableAsync支持异步方法调用
+- ✅ **连接池**：HikariCP高性能连接池（Spring Boot默认）
+- ✅ **分页查询**：MyBatis Plus自动分页
+- ✅ **索引优化**：合理的数据库索引设计
 
 ### 5. 开发效率亮点
-
--  **MyBatis Plus**：简化CRUD操作，提升开发效率
--  **Lombok**：减少样板代码
--  **MapStruct**：高性能对象映射
--  **Knife4j**：自动生成API文档
--  **Spring Boot**：自动配置，开箱即用
+- ✅ **MyBatis Plus**：简化CRUD操作，提升开发效率
+- ✅ **Lombok**：减少样板代码
+- ✅ **MapStruct**：高性能对象映射
+- ✅ **Knife4j**：自动生成API文档
+- ✅ **Spring Boot**：自动配置，开箱即用
 
 ### 6. 业务功能亮点
+- ✅ **完整的社交功能**：文章、评论、点赞、关注、收藏
+- ✅ **积分体系**：积分获取、等级、商品兑换
+- ✅ **支付集成**：支付宝支付接口
+- ✅ **AI集成**：DeepSeek大模型对话
+- ✅ **管理后台**：完整的后台管理功能
 
--  **完整的社交功能**：文章、评论、点赞、关注、收藏
--  **积分体系**：积分获取、等级、商品兑换
--  **支付集成**：支付宝支付接口
--  **AI集成**：DeepSeek大模型对话
--  **管理后台**：完整的后台管理功能
-
-## 项目数据统计
+##  项目数据统计
 
 ### 代码规模
-
 - **Java代码**: 30,000+ 行
 - **Controller**: 30+ 个
 - **Service**: 30+ 个
@@ -1323,7 +1259,6 @@ IPage<User> userPage = userService.page(page,
 - **数据库表**: 30+ 张
 
 ### 功能模块
-
 - **用户系统**: 注册、登录、个人中心、权限管理
 - **内容系统**: 文章发布、评论、点赞、收藏、标签
 - **社交系统**: 关注、粉丝、动态
@@ -1333,65 +1268,57 @@ IPage<User> userPage = userService.page(page,
 - **管理系统**: 用户管理、内容审核、数据统计
 - **通知系统**: 站内通知、邮件通知
 
-## 适用场景
+##  适用场景
 
 ### 技术展示
-
--  完整的Spring Boot项目
--  体现系统架构设计能力
--  展示性能优化实践
--  体现安全意识和实现能力
--  展示实时通信技术应用
+- ✅ 完整的Spring Boot项目
+- ✅ 体现系统架构设计能力
+- ✅ 展示性能优化实践
+- ✅ 体现安全意识和实现能力
+- ✅ 展示实时通信技术应用
 
 ### 学习参考
-
--  Spring Boot企业级项目实战
--  Spring Security安全框架应用
--  MyBatis Plus最佳实践
--  WebSocket实时通信实现
--  Redis缓存应用
--  前后端分离架构
+- ✅ Spring Boot企业级项目实战
+- ✅ Spring Security安全框架应用
+- ✅ MyBatis Plus最佳实践
+- ✅ WebSocket实时通信实现
+- ✅ Redis缓存应用
+- ✅ 前后端分离架构
 
 ### 二次开发
+- ✅ 完整的业务功能模块
+- ✅ 清晰的代码结构
+- ✅ 详细的API文档
+- ✅ 可扩展的架构设计
 
--  完整的业务功能模块
--  清晰的代码结构
--  详细的API文档
--  可扩展的架构设计
-
-## 开发规范
+##  开发规范
 
 ### 代码规范
-
 - 遵循阿里巴巴Java开发手册
 - 使用统一的代码格式化配置
 - 类、方法、变量命名规范
 - 完善的注释文档
 
 ### 数据库规范
-
 - 表名、字段名使用下划线命名
 - 必须有主键、创建时间、更新时间
 - 合理使用索引
 - 字段添加注释
 
 ### API规范
-
 - RESTful API设计
 - 统一的响应格式
 - 完整的错误码定义
 - Swagger/Knife4j文档
 
 ### Git规范
-
 - 清晰的commit message
 - 功能分支开发
 - 代码review流程
 
-## 未来规划
+##  未来规划
 
 ### 功能扩展
-
 - [ ] 文章草稿箱功能
 - [ ] 文章定时发布
 - [ ] 图片/视频上传优化
@@ -1399,7 +1326,6 @@ IPage<User> userPage = userService.page(page,
 - [ ] 消息队列集成 (RabbitMQ/Kafka)
 
 ### 性能优化
-
 - [ ] Spring Cache注解缓存
 - [ ] 读写分离
 - [ ] 数据库分表
@@ -1407,28 +1333,26 @@ IPage<User> userPage = userService.page(page,
 - [ ] 接口限流
 
 ### 监控运维
-
 - [ ] Spring Boot Actuator监控
 - [ ] 日志切面统计
 - [ ] 健康检查和告警
 
-## 许可证
+##  许可证
 
 本项目仅用于学习和技术交流，请勿用于商业用途。
 
-## 贡献
+##  贡献
 
 欢迎提交Issue和Pull Request！
 
-## 联系方式
+##  联系方式
 
 如有问题，欢迎通过以下方式联系：
-
 - Issues
 - Email: fcwbebe@foxmail.com
 - QQ: 3151299156
 
-------
+---
 
 **如果这个项目对你有帮助，请给个Star支持一下！**
 
