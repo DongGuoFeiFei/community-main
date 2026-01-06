@@ -63,6 +63,7 @@ community-main/
 ```
 
 ### 核心功能模块
+![功能图示](community-ui\src\assets\images\community-main_2026-01-05T02_16_14.067Z.png)
 
 #### 后端核心功能 (Java)
 
