@@ -11,7 +11,7 @@
       <el-table-column prop="categoryName" label="分类名称" width="180"/>
       <el-table-column prop="categorySlug" label="URL标识" width="180"/>
       <el-table-column prop="articleCount" label="文章数量" width="100"/>
-      <el-table-column prop="sortOrder" label="排序" width="145">
+      <!-- <el-table-column prop="sortOrder" label="排序" width="145">
         <template #default="{ row }">
           <el-input-number
             v-model="row.sortOrder"
@@ -20,8 +20,8 @@
             @change="$emit('sort-change', row)"
           />
         </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" width="100">
+      </el-table-column> -->
+      <!-- <el-table-column prop="status" label="状态" width="100">
         <template #default="{ row }">
           <el-switch
             v-model="row.status"
@@ -30,7 +30,7 @@
             @change="$emit('status-change', row)"
           />
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column prop="createdAt" label="创建时间" width="180"/>
       <el-table-column label="操作" width="180" fixed="right" >
         <template #default="{ row }">

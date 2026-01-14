@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
  * @create: 2025-07-08
  **/
 
-@Component
+//@Component
 public class IpUtil {
     private static final String API_URL = "https://v.api.aa1.cn/api/ipcha-baidu/?ip=";
     private final ObjectMapper objectMapper = new ObjectMapper();

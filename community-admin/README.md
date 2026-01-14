@@ -1,6 +1,13 @@
 # community-admin
 
-This template should help get you started developing with Vue 3 in Vite.
+管理端后台应用程序。
+
+## 开发服务器端口
+
+- **开发端口**: http://localhost:5174
+- **用户前端端口**: http://localhost:5173 (community-ui)
+
+两个应用可以同时运行，使用不同的端口避免冲突。
 
 ## Recommended IDE Setup
 

@@ -37,22 +37,6 @@ public class LoginUser implements UserDetails {
         this.menus = menus != null ? menus : Collections.emptyList();
     }
 
-    public List<String> getApis() {
-        return apis;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public List<String> getMenus() {
-        return menus;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     /**
      * 用来获取权限集合
      *
@@ -68,7 +52,10 @@ public class LoginUser implements UserDetails {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
         // 添加权限
-        apis.stream().filter(api -> api != null && !api.trim().isEmpty()).forEach(api -> authorities.add(new SimpleGrantedAuthority(api)));
+        apis
+                .stream()
+                .filter(api -> api != null && !api.trim().isEmpty())
+                .forEach(api -> authorities.add(new SimpleGrantedAuthority(api)));
 
         roles.stream().filter(role -> role != null && !role.trim().isEmpty()).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 

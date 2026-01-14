@@ -15,8 +15,9 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: 5173,  // 用户前端使用 5173 端口（管理端后台使用 5174）
     host: true,
+    strictPort: true,  // 端口被占用时报错，不自动切换端口
     // 代理配置（根据实际后端地址修改）
     // todo 修改为后端地址,配置不理解，和我之前有过的后端接口配置冲突，不理解
     proxy: {

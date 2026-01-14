@@ -202,6 +202,13 @@ community-ui/
 - **Node.js**: >= 16.0.0
 - **npm**: >= 8.0.0 或 **pnpm** / **yarn**
 
+### 开发服务器端口
+
+- **用户前端端口**: http://localhost:5173 (community-ui)
+- **管理端后台端口**: http://localhost:5174 (community-admin)
+
+两个应用可以同时运行，使用不同的端口避免冲突。
+
 ### 安装依赖
 
 ```bash

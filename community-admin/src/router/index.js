@@ -183,8 +183,9 @@ router.beforeEach((to, from, next) => {
     }
     // 检查 token 是否存在且未过期
     if (!token || isTokenExpired(userInfo)) {
+      // 没有有效 token，重定向到登录页
       next({
-        path: '/admin',
+        path: '/login',  // 修复：重定向到登录页而不是 /admin
         query: {redirect: to.fullPath} // 保存目标路径以便登录后跳转
       })
     } else {
