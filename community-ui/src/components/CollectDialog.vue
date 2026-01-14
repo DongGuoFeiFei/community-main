@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import {
   collectArticle,

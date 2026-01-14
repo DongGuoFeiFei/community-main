@@ -120,7 +120,7 @@
 </template>
 
 <script setup>
-import {computed, defineEmits, defineProps, ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 import IconSelect from "@/views/admin/components/IconSelect.vue";
 
 const props = defineProps({

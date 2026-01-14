@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue'
+import { ref } from 'vue'
 import {Edit, Plus} from "@element-plus/icons-vue";
 
 const props = defineProps({

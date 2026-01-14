@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
+import { ref, watch } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { createActivity, updateActivity } from '@/api/activity';
 import { ElMessage } from 'element-plus';
