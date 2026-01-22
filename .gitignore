@@ -39,3 +39,11 @@ coverage
 /community-server/target/
 /.idea/
 
+/.kiro/
+/doc/
+
+
+community-ui/.env.development
+community-ui/.env.development
+community-ui/.env.development
+community-ui/.env.production

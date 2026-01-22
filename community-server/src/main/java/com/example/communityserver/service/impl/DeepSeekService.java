@@ -33,6 +33,8 @@ public class DeepSeekService implements IDeepSeekService {
     private String apiKey;
     @Value("${deepseek.api.url}")
     private String apiUrl;
+    @Value("${deepseek.api.model}")
+    private String apiModel;
 
     // 构造函数，初始化RestTemplate对象
     public DeepSeekService() {
@@ -46,7 +48,7 @@ public class DeepSeekService implements IDeepSeekService {
             headers.set("Authorization", "Bearer " + apiKey);
 
             DeepSeekRequest request = new DeepSeekRequest();
-            request.setModel("deepseek-chat");
+            request.setModel(apiModel);
             request.setMessages(List.of(new DeepSeekRequest.Message("user", SystemConstants.DEEPSEEK_PROMPT + prompt)));
             request.setMax_tokens(1024);
             request.setTemperature(0.7);

@@ -44,7 +44,8 @@
     "universal-cookie": "^7.2.2",
     "vditor": "^3.11.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+     "@matechat/core": "^1.11.1"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",

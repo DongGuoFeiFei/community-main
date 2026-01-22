@@ -31,6 +31,8 @@ export const localStores = defineStore('localStores', () => {
     })
     const baseURL = ref(config.apiBaseUrl)
 
+
+    const aiChatMessage = ref(null)
     // token是否过期
     const isTokenExpired = computed(() => {
         if (!tokenInfo.value.token) return true // 无token视为过期
@@ -82,7 +84,8 @@ export const localStores = defineStore('localStores', () => {
         clearStorage,
         hasReadLatestAnnouncement,
         setHasReadLatestAnnouncement,
-        isVisibleLive2D
+        isVisibleLive2D,
+        aiChatMessage
     }
 }, {
     persist: {
