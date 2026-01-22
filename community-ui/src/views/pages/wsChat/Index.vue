@@ -8,9 +8,9 @@
       <div class="floating-hearts">
         <span
           class="heart"
-          v-for="i in 6"
+          v-for="i in 3"
           :key="i"
-          :style="{ animationDelay: `${i * 0.5}s` }"
+          :style="{ animationDelay: `${i * 1}s` }"
           >♡</span
         >
       </div>
@@ -63,17 +63,13 @@ import { getSessionDetail } from "@/api/session";
 
 const activeSessionId = ref(null);
 const currentSessionDetail = ref();
-const loadingSession = ref(false);
+
 // 处理会话切换
 const handleSessionChange = async (sessionId) => {
   activeSessionId.value = sessionId;
-  loadingSession.value = true;
-  // console.log(sessionId)
   try {
     const res = await getSessionDetail(sessionId);
     currentSessionDetail.value = res.data;
-    console.log(res.data);
-    console.log(currentSessionDetail.value);
   } catch (error) {
     console.error("获取会话详情失败:", error);
   }
@@ -81,6 +77,8 @@ const handleSessionChange = async (sessionId) => {
 </script>
 
 <style lang="scss" scoped>
+@use "@/styles/animations.scss";
+
 .chat-view {
   height: 100vh;
   display: flex;
@@ -116,7 +114,6 @@ const handleSessionChange = async (sessionId) => {
         height: 40px;
         top: 10%;
         left: 10%;
-        animation-delay: 0s;
 
         &::before {
           width: 50px;
@@ -195,24 +192,12 @@ const handleSessionChange = async (sessionId) => {
           top: 20%;
         }
         &:nth-child(2) {
-          left: 75%;
+          right: 20%;
           top: 15%;
         }
         &:nth-child(3) {
           left: 45%;
-          top: 70%;
-        }
-        &:nth-child(4) {
-          left: 85%;
-          top: 50%;
-        }
-        &:nth-child(5) {
-          left: 25%;
-          top: 80%;
-        }
-        &:nth-child(6) {
-          left: 65%;
-          top: 85%;
+          bottom: 25%;
         }
       }
     }
@@ -316,76 +301,6 @@ const handleSessionChange = async (sessionId) => {
         }
       }
     }
-  }
-}
-
-// 动画定义
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(-20px) translateX(10px);
-  }
-}
-
-@keyframes floatHeart {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-15px) scale(1.1);
-    opacity: 0.6;
-  }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes sparkle {
-  0%,
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
-  25% {
-    transform: scale(1.1) rotate(-5deg);
-  }
-  75% {
-    transform: scale(1.1) rotate(5deg);
-  }
-}
-
-@keyframes wave {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-10deg);
-  }
-  75% {
-    transform: rotate(10deg);
   }
 }
 </style>
