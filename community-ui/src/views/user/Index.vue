@@ -329,18 +329,18 @@ $pink-accent: #ffb6c1; // 粉色点缀
     position: relative;
     z-index: 1;
     width: 100%;
-    // 禁止内部滚动，只使用浏览器滚动
-    overflow-x: hidden;
-    overflow-y: visible;
+    // 完全禁止内部滚动，只使用浏览器滚动
+    overflow: visible !important;
+    height: auto !important;
 
     .layout-container {
       display: flex;
       flex-direction: column;
       width: 100%;
       min-height: 100%;
-      // 禁止内部滚动
-      overflow-x: hidden;
-      overflow-y: visible;
+      // 完全禁止内部滚动
+      overflow: visible !important;
+      height: auto !important;
 
       .header {
         padding: 0;
@@ -348,16 +348,15 @@ $pink-accent: #ffb6c1; // 粉色点缀
         position: relative; // UserHeader组件本身已经是fixed定位，这里只需要相对定位
         z-index: 200; // 根据开发规范，sticky元素使用200
         // 禁止内部滚动
-        overflow: visible;
+        overflow: visible !important;
       }
 
       .content-container {
         flex: 1;
         display: flex;
         flex-direction: column;
-        // 禁止内部滚动
-        overflow-x: hidden;
-        overflow-y: visible;
+        // 完全禁止内部滚动
+        overflow: visible !important;
 
         .main-content {
           flex: 1;
@@ -367,9 +366,10 @@ $pink-accent: #ffb6c1; // 粉色点缀
           margin: 0 auto;
           position: relative;
           z-index: 1;
-          // 禁止内部滚动，只使用浏览器滚动
-          overflow-x: hidden;
-          overflow-y: visible;
+          // 完全禁止内部滚动，只使用浏览器滚动
+          overflow: visible !important;
+          height: auto !important;
+          min-height: auto !important;
 
           // 内容区毛玻璃效果增强
           &::before {
@@ -398,31 +398,31 @@ $pink-accent: #ffb6c1; // 粉色点缀
     }
   }
 
-  // 深度选择器：确保所有 Element Plus 组件都不产生内部滚动条
+  // 深度选择器：强制确保所有 Element Plus 组件都不产生内部滚动条
   :deep(.el-container) {
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
+    overflow: visible !important;
     height: auto !important;
     max-height: none !important;
+    min-height: auto !important;
   }
 
   :deep(.el-main) {
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
+    overflow: visible !important;
     height: auto !important;
     max-height: none !important;
+    min-height: auto !important;
   }
 
   :deep(.el-footer) {
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
+    overflow: visible !important;
     height: auto !important;
+    min-height: auto !important;
   }
 
   :deep(.el-header) {
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
+    overflow: visible !important;
     height: auto !important;
+    min-height: auto !important;
   }
 }
 

@@ -1,17 +1,39 @@
 <template>
   <div class="user-welcome-page">
+    <!-- 顶部装饰 -->
+    <div class="page-decoration">
+      <span class="deco-star star-1">⭐</span>
+      <span class="deco-star star-2">✨</span>
+      <span class="deco-star star-3">💫</span>
+      <span class="deco-star star-4">⭐</span>
+    </div>
+
     <!-- 用户欢迎卡片 - 带彩虹渐变标题栏 -->
-    <el-card class="welcome-card">
+    <div class="welcome-card">
       <!-- 彩虹渐变标题栏 -->
-      <div class="rainbow-header"></div>
+      <div class="rainbow-header">
+        <div class="rainbow-shine"></div>
+      </div>
 
       <div class="welcome-header">
-        <el-avatar
-          @click="openViewer"
-          class="avatar-clickable"
-          :size="80"
-          :src="store.baseURL + userInfo.userInfo.avatar || defaultAvatar"
-        />
+        <div class="avatar-container">
+          <el-avatar
+            @click="openViewer"
+            class="avatar-clickable"
+            :size="100"
+            :src="store.baseURL + userInfo.userInfo.avatar || defaultAvatar"
+          />
+          <div class="avatar-decoration">
+            <span class="deco-circle circle-1"></span>
+            <span class="deco-circle circle-2"></span>
+            <span class="deco-circle circle-3"></span>
+          </div>
+          <div class="avatar-stars">
+            <span class="star-icon">⭐</span>
+            <span class="star-icon">✨</span>
+            <span class="star-icon">⭐</span>
+          </div>
+        </div>
         <!-- 图片查看器 -->
         <el-image-viewer
           v-if="showViewer"
@@ -23,91 +45,107 @@
         />
         <div class="welcome-text">
           <h2 class="welcome-title">
+            <span class="title-emoji">🌸</span>
             欢迎回来, {{ userInfo.userInfo.nickname }}!
+            <span class="title-emoji">✨</span>
           </h2>
           <p class="welcome-subtitle">
-            今天是 {{ currentDate }}，祝您度过愉快的一天
+            <span class="subtitle-icon">📅</span>
+            {{ currentDate }}
+          </p>
+          <p class="welcome-greeting">
+            <span class="greeting-icon">💖</span>
+            祝您度过愉快的一天
           </p>
         </div>
       </div>
 
       <!-- 用户数据概览 - 萌系动物耳朵造型卡片 -->
       <div class="user-stats">
-        <div class="stat-item stat-card-ear">
+        <div class="stat-item stat-card-ear stat-posts">
+          <div class="stat-icon">📝</div>
           <div class="stat-value">{{ userStats.postCount || 0 }}</div>
           <div class="stat-label">发布的帖子</div>
         </div>
-        <div class="stat-item stat-card-ear">
+        <div class="stat-item stat-card-ear stat-followers">
+          <div class="stat-icon">👥</div>
           <div class="stat-value">{{ userStats.followers || 0 }}</div>
           <div class="stat-label">粉丝</div>
         </div>
-        <div class="stat-item stat-card-ear">
+        <div class="stat-item stat-card-ear stat-following">
+          <div class="stat-icon">💫</div>
           <div class="stat-value">{{ userStats.following || 0 }}</div>
           <div class="stat-label">关注</div>
         </div>
       </div>
-    </el-card>
+    </div>
 
     <!-- 快速操作区域 -->
     <div class="quick-actions">
       <h3 class="section-title">
+        <span class="title-line"></span>
         <span class="title-icon">✨</span>
-        快速开始
+        <span class="title-text">快速开始</span>
         <span class="title-icon">✨</span>
+        <span class="title-line"></span>
       </h3>
       <div class="actions-grid">
-        <el-card
-          shadow="hover"
-          class="action-card action-card-anime"
+        <div
+          class="action-card action-card-anime action-edit"
           @click="navigateTo('/editor')"
-          @mouseenter="handleCardHover"
+         
         >
+          <div class="card-bg-decoration"></div>
           <div class="card-icon-wrapper">
-            <el-icon :size="36">
+            <el-icon :size="40">
               <Edit />
             </el-icon>
           </div>
-          <span>发布新内容</span>
-        </el-card>
-        <el-card
-          shadow="hover"
-          class="action-card action-card-anime"
+          <span class="card-title">发布新内容</span>
+          <span class="card-subtitle">创作你的精彩</span>
+        </div>
+        <div
+          class="action-card action-card-anime action-message"
           @click="navigateTo('/myself/notifications')"
-          @mouseenter="handleCardHover"
+        
         >
+          <div class="card-bg-decoration"></div>
           <div class="card-icon-wrapper">
-            <el-icon :size="36">
+            <el-icon :size="40">
               <Message />
             </el-icon>
           </div>
-          <span>查看消息</span>
-        </el-card>
-        <el-card
-          shadow="hover"
-          class="action-card action-card-anime"
+          <span class="card-title">查看消息</span>
+          <span class="card-subtitle">不错过任何动态</span>
+        </div>
+        <div
+          class="action-card action-card-anime action-setting"
           @click="navigateTo('/myself/profile')"
-          @mouseenter="handleCardHover"
+        
         >
+          <div class="card-bg-decoration"></div>
           <div class="card-icon-wrapper">
-            <el-icon :size="36">
+            <el-icon :size="40">
               <Setting />
             </el-icon>
           </div>
-          <span>账户设置</span>
-        </el-card>
-        <el-card
-          shadow="hover"
-          class="action-card action-card-anime"
+          <span class="card-title">账户设置</span>
+          <span class="card-subtitle">管理个人信息</span>
+        </div>
+        <div
+          class="action-card action-card-anime action-star"
           @click="navigateTo('/myself/collections')"
-          @mouseenter="handleCardHover"
+         
         >
+          <div class="card-bg-decoration"></div>
           <div class="card-icon-wrapper">
-            <el-icon :size="36">
+            <el-icon :size="40">
               <Star />
             </el-icon>
           </div>
-          <span>收藏内容</span>
-        </el-card>
+          <span class="card-title">收藏内容</span>
+          <span class="card-subtitle">查看我的收藏</span>
+        </div>
       </div>
     </div>
   </div>
@@ -171,44 +209,6 @@ const closeViewer = () => {
   showViewer.value = false;
 };
 
-// 处理卡片悬停事件 - 触发樱花飞舞特效
-const handleCardHover = (event) => {
-  // 创建临时樱花效果
-  const card = event.currentTarget;
-  const rect = card.getBoundingClientRect();
-  const cherryCount = 5;
-
-  for (let i = 0; i < cherryCount; i++) {
-    setTimeout(() => {
-      const cherry = document.createElement("div");
-      cherry.textContent = "🌸";
-      cherry.style.position = "fixed";
-      cherry.style.left = rect.left + rect.width / 2 + "px";
-      cherry.style.top = rect.top + rect.height / 2 + "px";
-      cherry.style.fontSize = "20px";
-      cherry.style.pointerEvents = "none";
-      cherry.style.zIndex = "3000";
-
-      // 随机方向和距离
-      const randomX = (Math.random() - 0.5) * 100;
-      const randomY = -50 - Math.random() * 50;
-      const randomRotate = Math.random() * 360;
-
-      cherry.style.setProperty("--random-x", randomX + "px");
-      cherry.style.setProperty("--random-y", randomY + "px");
-      cherry.style.animation = `cherryFloat 2s ease-out forwards`;
-      cherry.style.animationDelay = `${i * 0.1}s`;
-
-      document.body.appendChild(cherry);
-
-      setTimeout(() => {
-        if (cherry.parentNode) {
-          cherry.remove();
-        }
-      }, 2000);
-    }, i * 50);
-  }
-};
 
 // 加载用户数据
 onMounted(async () => {
@@ -234,36 +234,72 @@ $mint-green: #98fb98;
 $soft-green: #90ee90;
 $pink-accent: #ffb6c1;
 $cotton-white: #fff8f0;
-
-.avatar-clickable {
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  border: 3px solid rgba(255, 182, 193, 0.3);
-  box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3);
-
-  &:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 20px rgba(135, 206, 235, 0.5);
-    border-color: rgba(255, 182, 193, 0.6);
-  }
-}
+$gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+$gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+$gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
 
 .user-welcome-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
+  position: relative;
+  overflow: visible;
+
+  // 页面装饰
+  .page-decoration {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    pointer-events: none;
+    z-index: 0;
+
+    .deco-star {
+      position: absolute;
+      font-size: 24px;
+      animation: starFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.5));
+
+      &.star-1 {
+        top: 10px;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      &.star-2 {
+        top: 30px;
+        left: 30%;
+        animation-delay: 0.5s;
+      }
+
+      &.star-3 {
+        top: 20px;
+        right: 30%;
+        animation-delay: 1s;
+      }
+
+      &.star-4 {
+        top: 40px;
+        right: 10%;
+        animation-delay: 1.5s;
+      }
+    }
+  }
 
   .welcome-card {
-    margin-bottom: 24px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(135, 206, 235, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-    border: 2px solid rgba(135, 206, 235, 0.3);
+    margin-bottom: 40px;
+    border-radius: 30px;
+    overflow: visible;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 15px 50px rgba(135, 206, 235, 0.25),
+      0 0 0 3px rgba(255, 255, 255, 0.6) inset;
+    border: 3px solid rgba(135, 206, 235, 0.3);
     position: relative;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: cardSlideIn 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     // 卡片光泽效果
     &::after {
@@ -276,17 +312,18 @@ $cotton-white: #fff8f0;
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.5),
         transparent
       );
-      transition: left 0.6s;
+      transition: left 0.8s;
+      pointer-events: none;
     }
 
     &:hover {
-      transform: translateY(-8px) scale(1.01);
-      box-shadow: 0 16px 48px rgba(135, 206, 235, 0.4),
-        0 0 0 2px rgba(221, 160, 221, 0.3) inset;
-      border-color: rgba(221, 160, 221, 0.5);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(135, 206, 235, 0.4),
+        0 0 0 4px rgba(221, 160, 221, 0.4) inset;
+      border-color: rgba(221, 160, 221, 0.6);
 
       &::after {
         left: 100%;
@@ -295,7 +332,7 @@ $cotton-white: #fff8f0;
 
     // 彩虹渐变标题栏
     .rainbow-header {
-      height: 6px;
+      height: 8px;
       background: linear-gradient(
         90deg,
         #ff6b9d 0%,
@@ -306,58 +343,183 @@ $cotton-white: #fff8f0;
         #dda0dd 83.33%,
         #ffb6c1 100%
       );
+      background-size: 200% 100%;
+      animation: rainbowMove 5s linear infinite;
       position: relative;
       overflow: hidden;
+      border-radius: 27px 27px 0 0;
 
-      // 漫画风格速度线装饰
-      &::before {
-        content: "";
+      // 光泽效果
+      .rainbow-shine {
         position: absolute;
         top: 0;
         left: -100%;
-        width: 100%;
+        width: 50%;
         height: 100%;
-        background: repeating-linear-gradient(
+        background: linear-gradient(
           90deg,
           transparent,
-          transparent 10px,
-          rgba(255, 255, 255, 0.3) 10px,
-          rgba(255, 255, 255, 0.3) 12px
+          rgba(255, 255, 255, 0.6),
+          transparent
         );
-        animation: speedLine 3s linear infinite;
+        animation: shineMove 3s ease-in-out infinite;
       }
     }
 
     .welcome-header {
       display: flex;
       align-items: center;
-      padding: 30px 20px;
-      gap: 24px;
+      padding: 40px 35px;
+      gap: 35px;
       background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(224, 247, 250, 0.5) 100%
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(224, 247, 250, 0.6) 100%
       );
+      position: relative;
+
+      .avatar-container {
+        position: relative;
+        flex-shrink: 0;
+
+        .avatar-clickable {
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          border: 4px solid rgba(255, 255, 255, 0.9);
+          box-shadow: 0 8px 25px rgba(135, 206, 235, 0.4),
+            inset 0 2px 10px rgba(255, 255, 255, 0.5);
+
+          &:hover {
+            transform: scale(1.15) rotate(8deg);
+            box-shadow: 0 12px 35px rgba(135, 206, 235, 0.6);
+            border-color: rgba(255, 182, 193, 0.8);
+          }
+        }
+
+        .avatar-decoration {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+
+          .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(135, 206, 235, 0.3);
+
+            &.circle-1 {
+              width: 120px;
+              height: 120px;
+              top: -60px;
+              left: -60px;
+              animation: circleRotate 8s linear infinite;
+            }
+
+            &.circle-2 {
+              width: 140px;
+              height: 140px;
+              top: -70px;
+              left: -70px;
+              animation: circleRotate 10s linear infinite reverse;
+              border-color: rgba(221, 160, 221, 0.3);
+            }
+
+            &.circle-3 {
+              width: 160px;
+              height: 160px;
+              top: -80px;
+              left: -80px;
+              animation: circleRotate 12s linear infinite;
+              border-color: rgba(152, 251, 152, 0.3);
+            }
+          }
+        }
+
+        .avatar-stars {
+          position: absolute;
+          top: -15px;
+          right: -15px;
+          display: flex;
+          gap: 5px;
+
+          .star-icon {
+            font-size: 18px;
+            animation: starTwinkle 2s ease-in-out infinite;
+            filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.5));
+
+            &:nth-child(1) {
+              animation-delay: 0s;
+            }
+
+            &:nth-child(2) {
+              animation-delay: 0.5s;
+            }
+
+            &:nth-child(3) {
+              animation-delay: 1s;
+            }
+          }
+        }
+      }
 
       .welcome-text {
         flex: 1;
 
         .welcome-title {
-          margin: 0;
-          font-size: 28px;
-          background: linear-gradient(135deg, #87ceeb 0%, #dda0dd 100%);
+          margin: 0 0 12px 0;
+          font-size: 32px;
+          background: linear-gradient(135deg, #5b9bd5 0%, #9370db 50%, #84c7d0 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-weight: 600;
+          font-weight: 700;
           animation: titleGlow 3s ease-in-out infinite;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .title-emoji {
+            font-size: 28px;
+            animation: emojiFloat 2s ease-in-out infinite;
+
+            &:nth-child(1) {
+              animation-delay: 0s;
+            }
+
+            &:nth-child(3) {
+              animation-delay: 1s;
+            }
+          }
         }
 
         .welcome-subtitle {
-          margin: 8px 0 0;
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          color: #5b9bd5;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .subtitle-icon {
+            font-size: 18px;
+          }
+        }
+
+        .welcome-greeting {
+          margin: 0;
           font-size: 15px;
-          color: #666;
-          font-weight: 400;
+          color: #9370db;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .greeting-icon {
+            font-size: 16px;
+            animation: heartBeat 1.5s ease-in-out infinite;
+          }
         }
       }
     }
@@ -460,79 +622,58 @@ $cotton-white: #fff8f0;
   }
 
   .quick-actions {
-    margin-bottom: 24px;
+    margin-bottom: 40px;
     position: relative;
 
-    // 背景装饰
-    &::before {
-      content: "";
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(135, 206, 235, 0.5),
-        rgba(221, 160, 221, 0.5),
-        rgba(135, 206, 235, 0.5),
-        transparent
-      );
-      border-radius: 2px;
-    }
-
     .section-title {
-      font-size: 24px;
-      margin: 30px 0 28px;
+      font-size: 28px;
+      margin: 0 0 35px;
       text-align: center;
       background: linear-gradient(
         135deg,
-        #87ceeb 0%,
-        #dda0dd 50%,
-        #98fb98 100%
+        #5b9bd5 0%,
+        #9370db 50%,
+        #84c7d0 100%
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-weight: 700;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 20px;
       position: relative;
-      text-shadow: 0 2px 10px rgba(135, 206, 235, 0.3);
+      animation: titleGlow 3s ease-in-out infinite;
 
-      // 标题下方的装饰线
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 2px;
+      .title-line {
+        flex: 1;
+        height: 3px;
         background: linear-gradient(
           90deg,
           transparent,
-          #87ceeb,
-          #dda0dd,
+          rgba(135, 206, 235, 0.5),
+          rgba(221, 160, 221, 0.5),
           transparent
         );
         border-radius: 2px;
+        max-width: 150px;
+      }
+
+      .title-text {
+        white-space: nowrap;
       }
 
       .title-icon {
-        font-size: 22px;
+        font-size: 26px;
         animation: sparkle 2s ease-in-out infinite;
-        filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.5));
+        filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.6));
 
-        &:nth-child(1) {
+        &:nth-child(2) {
           animation-delay: 0s;
         }
 
-        &:nth-child(3) {
+        &:nth-child(4) {
           animation-delay: 1s;
         }
       }
@@ -540,107 +681,242 @@ $cotton-white: #fff8f0;
 
     .actions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
 
       .action-card {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 140px;
+        min-height: 180px;
+        padding: 30px 20px;
         cursor: pointer;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(135, 206, 235, 0.3);
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 3px solid;
         position: relative;
         overflow: hidden;
 
-        // 弹性动画效果
-        &.action-card-anime {
-          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-          position: relative;
-          overflow: visible;
+        .card-bg-decoration {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+        }
 
-          // 悬停时的光晕效果
-          &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: radial-gradient(
-              circle,
-              rgba(135, 206, 235, 0.3) 0%,
-              transparent 70%
-            );
-            transform: translate(-50%, -50%);
-            transition: all 0.5s ease;
-            pointer-events: none;
-            z-index: -1;
+        &.action-edit {
+          border-color: rgba(135, 206, 235, 0.4);
+          box-shadow: 0 8px 25px rgba(135, 206, 235, 0.2);
+
+          .card-bg-decoration {
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.1), rgba(176, 224, 230, 0.1));
+          }
+
+          .el-icon {
+            color: #87ceeb;
           }
 
           &:hover {
-            transform: translateY(-12px) scale(1.06);
-            box-shadow: 0 16px 40px rgba(135, 206, 235, 0.5),
-              0 0 20px rgba(221, 160, 221, 0.3);
             border-color: rgba(135, 206, 235, 0.7);
+            box-shadow: 0 15px 45px rgba(135, 206, 235, 0.4);
+          }
+        }
 
-            &::before {
-              width: 200px;
-              height: 200px;
+        &.action-message {
+          border-color: rgba(221, 160, 221, 0.4);
+          box-shadow: 0 8px 25px rgba(221, 160, 221, 0.2);
+
+          .card-bg-decoration {
+            background: linear-gradient(135deg, rgba(221, 160, 221, 0.1), rgba(230, 230, 250, 0.1));
+          }
+
+          .el-icon {
+            color: #dda0dd;
+          }
+
+          &:hover {
+            border-color: rgba(221, 160, 221, 0.7);
+            box-shadow: 0 15px 45px rgba(221, 160, 221, 0.4);
+          }
+        }
+
+        &.action-setting {
+          border-color: rgba(152, 251, 152, 0.4);
+          box-shadow: 0 8px 25px rgba(152, 251, 152, 0.2);
+
+          .card-bg-decoration {
+            background: linear-gradient(135deg, rgba(152, 251, 152, 0.1), rgba(144, 238, 144, 0.1));
+          }
+
+          .el-icon {
+            color: #98fb98;
+          }
+
+          &:hover {
+            border-color: rgba(152, 251, 152, 0.7);
+            box-shadow: 0 15px 45px rgba(152, 251, 152, 0.4);
+          }
+        }
+
+        &.action-star {
+          border-color: rgba(255, 182, 193, 0.4);
+          box-shadow: 0 8px 25px rgba(255, 182, 193, 0.2);
+
+          .card-bg-decoration {
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(255, 192, 203, 0.1));
+          }
+
+          .el-icon {
+            color: #ffb6c1;
+          }
+
+          &:hover {
+            border-color: rgba(255, 182, 193, 0.7);
+            box-shadow: 0 15px 45px rgba(255, 182, 193, 0.4);
+          }
+        }
+
+        // 弹性动画效果
+        &.action-card-anime {
+          transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+          &:hover {
+            transform: translateY(-15px) scale(1.05);
+
+            .card-bg-decoration {
+              opacity: 1;
+            }
+
+            .card-icon-wrapper {
+              transform: scale(1.2) rotate(10deg);
+            }
+
+            .card-title {
+              color: #5b9bd5;
             }
           }
 
           &:active {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-10px) scale(1.02);
             transition: all 0.1s ease;
           }
         }
 
         .card-icon-wrapper {
-          margin-bottom: 12px;
-          transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        &:hover .card-icon-wrapper {
-          transform: rotate(10deg) scale(1.2);
+          margin-bottom: 15px;
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .el-icon {
-          color: #87ceeb;
           transition: all 0.3s ease;
         }
 
-        &:hover .el-icon {
-          color: #dda0dd;
-        }
-
-        span {
-          font-size: 16px;
-          font-weight: 500;
-          color: #666;
+        .card-title {
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 8px;
           transition: all 0.3s ease;
         }
 
-        &:hover span {
-          color: #87ceeb;
+        .card-subtitle {
+          font-size: 13px;
+          color: #999;
+          font-weight: 400;
         }
       }
     }
   }
 }
 
-// 速度线动画
-@keyframes speedLine {
+// 动画定义
+@keyframes rainbowMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes shineMove {
   0% {
     left: -100%;
   }
   100% {
-    left: 100%;
+    left: 200%;
+  }
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes circleRotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes starTwinkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3) rotate(180deg);
+  }
+}
+
+@keyframes emojiFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes starFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-15px) rotate(180deg);
+    opacity: 1;
   }
 }
 
@@ -648,10 +924,10 @@ $cotton-white: #fff8f0;
 @keyframes titleGlow {
   0%,
   100% {
-    filter: drop-shadow(0 0 5px rgba(135, 206, 235, 0.5));
+    filter: drop-shadow(0 0 8px rgba(135, 206, 235, 0.5));
   }
   50% {
-    filter: drop-shadow(0 0 15px rgba(221, 160, 221, 0.8));
+    filter: drop-shadow(0 0 20px rgba(221, 160, 221, 0.8));
   }
 }
 
@@ -660,11 +936,87 @@ $cotton-white: #fff8f0;
   0%,
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
   }
   50% {
-    opacity: 0.5;
-    transform: scale(1.2);
+    opacity: 0.6;
+    transform: scale(1.3) rotate(180deg);
+  }
+}
+
+// 响应式设计
+@media (max-width: 992px) {
+  .user-welcome-page {
+    .welcome-card {
+      .welcome-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 25px;
+
+        .avatar-container {
+          margin-bottom: 20px;
+        }
+      }
+
+      .user-stats {
+        flex-direction: column;
+        gap: 30px;
+      }
+    }
+
+    .quick-actions {
+      .actions-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .user-welcome-page {
+    padding: 0 10px;
+
+    .welcome-card {
+      .welcome-header {
+        padding: 25px 20px;
+
+        .welcome-text {
+          .welcome-title {
+            font-size: 24px;
+          }
+
+          .welcome-subtitle,
+          .welcome-greeting {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .user-stats {
+        padding: 30px 20px;
+      }
+    }
+
+    .quick-actions {
+      .section-title {
+        font-size: 22px;
+        flex-wrap: wrap;
+
+        .title-line {
+          display: none;
+        }
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+
+        .action-card {
+          min-height: 150px;
+        }
+      }
+    }
   }
 }
 </style>
