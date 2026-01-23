@@ -55,6 +55,47 @@ onMounted(() => {
 <style lang="scss" scoped>
 .user-follow {
   .el-tabs {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 6px 24px rgba(99, 102, 241, 0.12);
+    border: 2px solid rgba(147, 197, 253, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.18);
+    }
+
+    :deep(.el-tabs__header) {
+      margin-bottom: 16px;
+    }
+
+    :deep(.el-tabs__nav-wrap::after) {
+      background: linear-gradient(90deg, transparent, #e0e7ff, transparent);
+    }
+
+    :deep(.el-tabs__item) {
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+      transition: all 0.3s ease;
+      padding: 0 24px;
+
+      &:hover {
+        color: #6366f1;
+      }
+
+      &.is-active {
+        color: #6366f1;
+      }
+    }
+
+    :deep(.el-tabs__active-bar) {
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 2px;
+    }
+
     :deep(.el-tabs__content) {
       padding: 0;
     }

@@ -40,6 +40,7 @@ import { localStores } from "@/stores/localStores.js";
 import type { ChatMessage } from "@/types/chat";
 
 const MESSAGE_TYPE = {
+  TEXT: 1,
   IMAGE: 2,
 };
 
@@ -72,18 +73,7 @@ const formatTime = (time?: string | Date) => {
 };
 
 const isImageMessage = computed(() => {
-  if (props.message.contentType === MESSAGE_TYPE.IMAGE) {
-    return true;
-  }
-  if (!props.message.content) return false;
-  if (
-    props.message.content.startsWith("http://") ||
-    props.message.content.startsWith("https://") ||
-    props.message.content.startsWith("/")
-  ) {
-    return /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(props.message.content);
-  }
-  return false;
+  return props.message.msgType === MESSAGE_TYPE.IMAGE;
 });
 
 const imageUrl = computed(() => {

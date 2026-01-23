@@ -57,9 +57,11 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  animation: fade-in-up 0.8s ease-out;
 
   .user-profile-header {
     margin-bottom: 30px;
+    animation: slide-in-down 0.6s ease-out;
   }
 
   .user-profile-content {
@@ -69,10 +71,72 @@ onMounted(() => {
     .user-profile-left {
       flex: 1;
       max-width: 300px;
+      animation: slide-in-left 0.7s ease-out;
     }
 
     .user-profile-right {
       flex: 3;
+      animation: slide-in-right 0.7s ease-out;
+    }
+  }
+}
+
+// 动画定义
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .user-profile-container {
+    padding: 10px;
+
+    .user-profile-content {
+      flex-direction: column;
+
+      .user-profile-left {
+        max-width: 100%;
+      }
     }
   }
 }

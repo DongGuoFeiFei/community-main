@@ -34,14 +34,14 @@
             <span class="name-decoration" v-if="session.isOnline">✨</span>
           </div>
           <div class="session-preview">
-            {{ session.lastMsgDigest || "暂无消息" }}
+            {{ session.lastMsgContent || "暂无消息" }}
           </div>
         </div>
         <div class="session-meta">
           <div class="session-time">
             {{ formatTime(session.lastMsgTime) }}
           </div>
-          <div class="badge-wrapper" v-if="(session.unreadCount || 0) > 0">
+          <div class="badge-wrapper" v-if="session.unreadCount > 0">
             <el-badge
               :value="session.unreadCount"
               :max="99"
@@ -66,7 +66,6 @@ import { Search } from "@element-plus/icons-vue";
 import dayjs from "dayjs";
 import { getSessions } from "@/api/session";
 import type { ChatSessionItem } from "@/types/chat";
-import type { ApiResponse } from "@/types/http";
 
 defineProps<{
   activeSessionId: number | null;
@@ -78,15 +77,18 @@ const emit = defineEmits<{
 
 const sessions = ref<ChatSessionItem[]>([]);
 const searchQuery = ref("");
+const loading = ref(false);
 
 const fetchSessions = async () => {
   try {
-    const res = (await getSessions()) as unknown as ApiResponse<
-      ChatSessionItem[]
-    >;
+    loading.value = true;
+    const res = await getSessions();
     sessions.value = res.data || [];
   } catch (error) {
     console.error("获取会话列表失败:", error);
+    sessions.value = [];
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -100,7 +102,26 @@ const filteredSessions = computed(() => {
 
 const formatTime = (time?: string) => {
   if (!time) return "";
-  return dayjs(time).format("HH:mm");
+  const msgTime = dayjs(time);
+  const now = dayjs();
+  
+  // 如果是今天，显示时间
+  if (msgTime.isSame(now, 'day')) {
+    return msgTime.format("HH:mm");
+  }
+  
+  // 如果是昨天
+  if (msgTime.isSame(now.subtract(1, 'day'), 'day')) {
+    return "昨天";
+  }
+  
+  // 如果是今年，显示月日
+  if (msgTime.isSame(now, 'year')) {
+    return msgTime.format("MM-DD");
+  }
+  
+  // 否则显示年月日
+  return msgTime.format("YYYY-MM-DD");
 };
 
 const handleSessionClick = (session: ChatSessionItem) => {
@@ -113,6 +134,11 @@ const handleSearchClear = () => {
 
 onMounted(() => {
   fetchSessions();
+});
+
+// 暴露刷新方法供父组件调用
+defineExpose({
+  refresh: fetchSessions
 });
 </script>
 

@@ -22,18 +22,30 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import {getUserInfo} from '@/api/user.js';
-import {getSessionDetail} from '@/api/session';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getUserInfo } from '@/api/user.js';
+import { getSessionDetail } from '@/api/session';
+import { localStores } from '@/stores/localStores.js';
 import ChatRoom from './ChatRoom.vue';
 
 const route = useRoute();
 const router = useRouter();
+const store = localStores();
 
 const sessionId = ref(parseInt(route.params.sessionId));
 const targetUser = ref({});
 const sessionDetail = ref({});
+
+// 获取当前用户ID
+const currentUserId = computed(() => {
+  const id = store.userInfo.userInfo?.userId;
+  if (id === undefined || id === null) {
+    return null;
+  }
+  const numericId = Number(id);
+  return Number.isNaN(numericId) ? null : numericId;
+});
 
 // 获取会话详情
 const fetchSessionDetail = async () => {
@@ -42,7 +54,7 @@ const fetchSessionDetail = async () => {
     sessionDetail.value = res.data;
 
     // 获取对方用户信息
-    const userId = sessionDetail.value.members.find(
+    const userId = sessionDetail.value.members?.find(
         m => m.userId !== currentUserId.value
     )?.userId;
 

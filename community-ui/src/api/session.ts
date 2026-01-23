@@ -1,6 +1,17 @@
+/**
+ * 会话相关 API
+ * 
+ * @author DongGuo
+ * @since 2025-01-23
+ */
+
 import request from '@/utils/request';
 import type { ApiResponse } from '@/types/http';
-import type { ChatSessionDetail, ChatSessionItem } from '@/types/chat';
+import type {
+  ChatSessionItem,
+  ChatSessionDetail,
+  CreatePrivateSessionRequest,
+} from '@/types/chat';
 
 /**
  * 获取会话列表
@@ -12,8 +23,8 @@ export const getSessions = () => {
 /**
  * 创建私聊会话
  */
-export const createPrivateSession = (userId: number) => {
-  return request.post<ApiResponse<ChatSessionDetail>>('/chat/sessions/private', { userId });
+export const createPrivateSession = (data: CreatePrivateSessionRequest) => {
+  return request.post<ApiResponse<number>>('/chat/sessions/private', data);
 };
 
 /**
@@ -29,4 +40,3 @@ export const getSessionDetail = (sessionId: number) => {
 export const deleteSession = (sessionId: number) => {
   return request.delete<ApiResponse<boolean>>(`/chat/sessions/${sessionId}`);
 };
-

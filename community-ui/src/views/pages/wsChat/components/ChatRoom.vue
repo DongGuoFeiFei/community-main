@@ -124,30 +124,19 @@ import EmojiPicker from "./EmojiPicker.vue";
 import type {
   ChatMessage,
   ChatSessionDetail,
-  ChatSessionItem,
   MessagePageResponse,
+  SendMessageRequest,
 } from "@/types/chat";
-import type { ApiResponse } from "@/types/http";
 
 const MESSAGE_TYPE = {
   TEXT: 1,
   IMAGE: 2,
 } as const;
 
-interface LegacySessionDetail {
-  id: number;
-  name: string;
-  avatar?: string;
-  memberCount?: number;
-  lastMsgSeq?: number;
-}
-
-type SessionDetailProp = ChatSessionDetail | LegacySessionDetail | null;
-
 const props = withDefaults(
   defineProps<{
     sessionId: number;
-    sessionDetail: SessionDetailProp;
+    sessionDetail: ChatSessionDetail | null;
   }>(),
   {
     sessionDetail: null,
@@ -178,45 +167,12 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const uploading = ref(false);
 const messageCursor = ref<number | null>(null);
 
-const isStructuredDetail = (
-  detail: SessionDetailProp
-): detail is ChatSessionDetail => {
-  return !!detail && Object.prototype.hasOwnProperty.call(detail, "session");
-};
+const currentSession = computed(() => props.sessionDetail);
 
-const currentSession = computed<ChatSessionItem | LegacySessionDetail | null>(
-  () => {
-    const detail = props.sessionDetail;
-    if (!detail) return null;
-    return isStructuredDetail(detail) ? detail.session : detail;
-  }
-);
-
-const latestMsgSeq = computed(() => {
+const latestMsgId = computed(() => {
   if (!messages.value.length) return null;
-  return messages.value[messages.value.length - 1].msgSeq ?? null;
+  return messages.value[messages.value.length - 1].id;
 });
-
-const parseMessagePayload = (
-  payload: MessagePageResponse | ChatMessage[] | undefined
-): MessagePageResponse => {
-  if (Array.isArray(payload)) {
-    return {
-      records: payload,
-      hasMore: payload.length > 0,
-      nextSeq: payload.length ? payload[0].msgSeq ?? null : null,
-    };
-  }
-  return {
-    records: payload?.records ?? [],
-    hasMore: payload?.hasMore ?? false,
-    nextSeq:
-      payload?.nextSeq ??
-      payload?.cursor ??
-      payload?.prevSeq ??
-      (payload?.records?.length ? payload.records[0].msgSeq ?? null : null),
-  };
-};
 
 const resetState = () => {
   messages.value = [];
@@ -254,10 +210,10 @@ const subscribeSession = async () => {
   );
 };
 
-const updateReadCursor = async (seq: number | null) => {
-  if (!seq) return;
+const updateReadStatus = async (messageId: number | null) => {
+  if (!messageId) return;
   try {
-    await markMessageAsRead(props.sessionId, seq);
+    await markMessageAsRead(props.sessionId, { messageId });
   } catch (err) {
     console.error("更新已读状态失败:", err);
   }
@@ -273,21 +229,23 @@ const loadMessages = async () => {
     const container = messageListRef.value;
     const previousHeight = container ? container.scrollHeight : 0;
 
-    const res = (await getMessages(
+    const res = await getMessages(
       props.sessionId,
-      messageCursor.value ?? undefined
-    )) as unknown as ApiResponse<MessagePageResponse | ChatMessage[]>;
+      messageCursor.value,
+      20
+    );
 
-    const { records, hasMore: more, nextSeq } = parseMessagePayload(res.data);
+    const data: MessagePageResponse = res.data;
 
-    if (!records.length) {
+    if (!data.messages || data.messages.length === 0) {
       hasMore.value = false;
       return;
     }
 
-    messages.value = [...records, ...messages.value];
-    messageCursor.value = nextSeq ?? records[0]?.msgSeq ?? null;
-    hasMore.value = more && messageCursor.value !== null;
+    // 将新消息添加到列表开头（因为是历史消息）
+    messages.value = [...data.messages.reverse(), ...messages.value];
+    messageCursor.value = data.nextCursor || null;
+    hasMore.value = data.hasMore;
 
     if (wasEmpty) {
       scrollToBottom();
@@ -310,21 +268,19 @@ const handleMessage = (message: ChatMessage) => {
   } else {
     messages.value[index] = message;
   }
-  messages.value.sort((a, b) => (a.msgSeq ?? 0) - (b.msgSeq ?? 0));
   scrollToBottom(true);
-  if (message.senderId !== currentUserId.value && message.msgSeq) {
-    updateReadCursor(message.msgSeq);
+  
+  // 如果不是自己发的消息，标记已读
+  if (message.senderId !== currentUserId.value && message.id) {
+    updateReadStatus(message.id);
   }
 };
 
-const sendPayload = async (payload: Partial<ChatMessage>) => {
+const sendPayload = async (payload: SendMessageRequest) => {
   if (!props.sessionId) return;
   try {
     await ensureConnected();
-    send(`/app/privateChat.${props.sessionId}`, {
-      sessionId: props.sessionId,
-      ...payload,
-    });
+    send(`/app/privateChat.${props.sessionId}`, payload);
   } catch (err) {
     console.error("发送消息失败:", err);
     ElMessage.error("发送消息失败");
@@ -334,24 +290,21 @@ const sendPayload = async (payload: Partial<ChatMessage>) => {
 const sendMessage = async () => {
   if (!inputMessage.value.trim()) return;
   const content = inputMessage.value.trim();
+  
   await sendPayload({
+    msgType: MESSAGE_TYPE.TEXT,
     content,
-    contentType: MESSAGE_TYPE.TEXT,
-    contentJson: null,
   });
+  
   inputMessage.value = "";
   showEmoji.value = false;
   scrollToBottom(true);
 };
 
-const sendImageMessage = async (
-  imageUrl: string,
-  meta?: { size?: number; name?: string }
-) => {
+const sendImageMessage = async (imageUrl: string) => {
   await sendPayload({
+    msgType: MESSAGE_TYPE.IMAGE,
     content: imageUrl,
-    contentType: MESSAGE_TYPE.IMAGE,
-    contentJson: meta ?? null,
   });
 };
 
@@ -394,7 +347,7 @@ const handleFileSelect = async (event: Event) => {
     uploading.value = true;
     ElMessage.info("正在上传图片...");
     const imageUrl = await uploadFile(file);
-    await sendImageMessage(imageUrl, { size: file.size, name: file.name });
+    await sendImageMessage(imageUrl);
     ElMessage.success("图片发送成功");
   } catch (err: any) {
     console.error("上传图片失败:", err);
@@ -421,7 +374,11 @@ const bootstrap = async () => {
   resetState();
   await subscribeSession();
   await loadMessages();
-  await updateReadCursor(latestMsgSeq.value);
+  
+  // 标记已读
+  if (latestMsgId.value) {
+    await updateReadStatus(latestMsgId.value);
+  }
 };
 
 onMounted(() => {

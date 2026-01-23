@@ -2,25 +2,43 @@
   <div class="live2d-control-panel">
     <!-- 仅在显示状态时展示的其他控制按钮 -->
     <div v-if="isVisible">
-
       <!--  聊天按钮    -->
       <div>
         <el-popover placement="left" :width="600" trigger="click">
           <template #reference>
-            <el-button class="control-btn" icon="ChatRound" circle @mouseenter="showTooltipText('要说些什么呢？')"
-              @mouseleave="hideTooltipText" />
+            <el-button
+              class="control-btn"
+              icon="ChatRound"
+              circle
+              @mouseenter="showTooltipText('要说些什么呢？')"
+              @mouseleave="hideTooltipText"
+            />
           </template>
-          <AiChat ref="aiChatRef" height="500px" welcome-message="你好！我是 Live2D 助手，有什么可以帮您？" placeholder="要说些什么呢？"
-            user-avatar="👤" assistant-avatar="🤖" user-name="用户" assistant-name="Live2D 助手"
-            @message="handleAiMessage" />
+          <AiChat
+            ref="aiChatRef"
+            height="500px"
+            welcome-message="你好！我是 会话 助手，有什么可以帮您？"
+            placeholder="要说些什么呢？"
+            user-avatar="👤"
+            assistant-avatar="🤖"
+            user-name="用户"
+            assistant-name="会话 助手"
+            @message="handleAiMessage"
+          />
         </el-popover>
       </div>
 
       <!-- 举报按钮 -->
       <div v-if="showReportButton">
         <el-tooltip effect="dark" disabled placement="left">
-          <el-button class="control-btn" icon="Warning" circle @mouseenter="showTooltipText('发现违规内容，找我快速出警!')"
-            @mouseleave="hideTooltipText" @click="openReportDialog" />
+          <el-button
+            class="control-btn"
+            icon="Warning"
+            circle
+            @mouseenter="showTooltipText('发现违规内容，找我快速出警!')"
+            @mouseleave="hideTooltipText"
+            @click="openReportDialog"
+          />
         </el-tooltip>
       </div>
       <Live2DReportDialog ref="reportDialog" />
@@ -29,8 +47,14 @@
       <div>
         <el-popover placement="left" :width="200" disabled trigger="click">
           <template #reference>
-            <el-button class="control-btn" icon="Refresh" circle @mouseenter="showTooltipText('(╯‵□′)╯︵┻━┻')"
-              @mouseleave="hideTooltipText" @click="emit('switch-model')" />
+            <el-button
+              class="control-btn"
+              icon="Refresh"
+              circle
+              @mouseenter="showTooltipText('(╯‵□′)╯︵┻━┻')"
+              @mouseleave="hideTooltipText"
+              @click="emit('switch-model')"
+            />
           </template>
         </el-popover>
       </div>
@@ -38,29 +62,40 @@
 
     <!-- 始终显示的主控制按钮 -->
     <div>
-
       <el-tooltip effect="dark" disabled placement="left">
-        <el-button class="control-btn main-control" :icon="isVisible ? 'Hide' : 'View'" circle
-          @mouseenter="showTooltipText(null)" @mouseleave="hideTooltipText" @click="toggleVisibility" />
+        <el-button
+          class="control-btn main-control"
+          :icon="isVisible ? 'Hide' : 'View'"
+          circle
+          @mouseenter="showTooltipText(null)"
+          @mouseleave="hideTooltipText"
+          @click="toggleVisibility"
+        />
       </el-tooltip>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from "vue";
 import Live2DReportDialog from "@/components/Live2D/components/Live2DReportDialog.vue";
 import AiChat from "@/components/common/AiChat.vue";
-import { localStores } from '@/stores/localStores';
+import { localStores } from "@/stores/localStores";
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
 
-const emit = defineEmits(['update:modelValue', 'update:text', 'show-tooltip', 'hide-tooltip', 'switch-model']);
+const emit = defineEmits([
+  "update:modelValue",
+  "update:text",
+  "show-tooltip",
+  "hide-tooltip",
+  "switch-model",
+]);
 
 const isVisible = ref(props.modelValue);
 
@@ -68,19 +103,18 @@ const store = localStores();
 
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
-  emit('update:modelValue', isVisible.value);
+  emit("update:modelValue", isVisible.value);
 };
 
 const showTooltipText = (text) => {
   if (isVisible) {
-    emit('show-tooltip', text);
+    emit("show-tooltip", text);
   }
 };
 
 const hideTooltipText = () => {
-  emit('hide-tooltip');
+  emit("hide-tooltip");
 };
-
 
 /**
  * 显示举报按钮
@@ -89,11 +123,15 @@ const reportDialog = ref(null);
 const showReportButton = ref(false); // 新增状态
 
 // 监听 reportDialog 的变化
-watch(reportDialog, (newVal) => {
-  if (newVal) {
-    showReportButton.value = newVal.isShowButton;
-  }
-}, { immediate: true });
+watch(
+  reportDialog,
+  (newVal) => {
+    if (newVal) {
+      showReportButton.value = newVal.isShowButton;
+    }
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   if (reportDialog.value) {
@@ -113,7 +151,7 @@ const aiChatRef = ref(null);
 // 处理 AI 聊天消息
 const handleAiMessage = (message) => {
   // 将 AI 的回复传递给 Live2D 显示
-  emit('update:text', message);
+  emit("update:text", message);
 };
 
 // 获取 AI 对话的全部内容
@@ -124,25 +162,26 @@ const getAiChatMessages = () => {
 // 获取对话历史的纯文本格式
 const getAiChatHistory = () => {
   const messages = getAiChatMessages();
-  return messages.map(msg => {
-    const role = msg.role === 'user' ? '用户' : 'AI助手';
-    return `${role}: ${msg.content}`;
-  }).join('\n\n');
+  return messages
+    .map((msg) => {
+      const role = msg.role === "user" ? "用户" : "AI助手";
+      return `${role}: ${msg.content}`;
+    })
+    .join("\n\n");
 };
 watch(
   () => aiChatRef.value?.messages,
   (newValue) => {
     // todo 增加限制条件，存储数组数量不能太多，存在上限
-    store.aiChatMessage = newValue
-  }
-)
+    store.aiChatMessage = newValue;
+  },
+);
 
 // 暴露方法供外部调用
 defineExpose({
   getAiChatMessages,
-  getAiChatHistory
+  getAiChatHistory,
 });
-
 </script>
 
 <style scoped lang="scss">

@@ -69,7 +69,7 @@ const formatDate = (dateString: string): string => {
 <style scoped lang="scss">
 @use "sass:math";
 
-//@import '@/styles/skeleton.scss';
+@use '@/styles/skeleton.scss';
 
 .post-list-container {
   .post-list {

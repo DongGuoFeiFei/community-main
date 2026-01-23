@@ -26,6 +26,7 @@
           </h2>
         </div>
         <ChatList
+          ref="chatListRef"
           :active-session-id="Number(activeSessionId)"
           @session-change="handleSessionChange"
         />
@@ -62,7 +63,8 @@ import ChatRoom from "./components/ChatRoom.vue";
 import { getSessionDetail } from "@/api/session";
 
 const activeSessionId = ref(null);
-const currentSessionDetail = ref();
+const currentSessionDetail = ref(null);
+const chatListRef = ref(null);
 
 // 处理会话切换
 const handleSessionChange = async (sessionId) => {
@@ -72,6 +74,14 @@ const handleSessionChange = async (sessionId) => {
     currentSessionDetail.value = res.data;
   } catch (error) {
     console.error("获取会话详情失败:", error);
+    currentSessionDetail.value = null;
+  }
+};
+
+// 刷新会话列表（当发送新消息后）
+const refreshSessions = () => {
+  if (chatListRef.value) {
+    chatListRef.value.refresh();
   }
 };
 </script>
