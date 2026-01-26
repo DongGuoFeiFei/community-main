@@ -1,6 +1,6 @@
 /**
  * 消息相关 API
- * 
+ *
  * @author DongGuo
  * @since 2025-01-23
  */
@@ -23,7 +23,7 @@ import type {
 export const getMessages = (
   sessionId: number,
   lastMsgId?: number | null,
-  pageSize?: number
+  pageSize?: number,
 ) => {
   return request.get<ApiResponse<MessagePageResponse>>(
     `/chat/sessions/${sessionId}/messages`,
@@ -32,7 +32,7 @@ export const getMessages = (
         lastMsgId,
         pageSize: pageSize || 20,
       },
-    }
+    },
   );
 };
 
@@ -44,7 +44,7 @@ export const getMessages = (
 export const sendMessage = (sessionId: number, data: SendMessageRequest) => {
   return request.post<ApiResponse<ChatMessage>>(
     `/chat/sessions/${sessionId}/messages`,
-    data
+    data,
   );
 };
 
@@ -55,7 +55,7 @@ export const sendMessage = (sessionId: number, data: SendMessageRequest) => {
  */
 export const recallMessage = (sessionId: number, messageId: number) => {
   return request.delete<ApiResponse<boolean>>(
-    `/chat/sessions/${sessionId}/messages/${messageId}`
+    `/chat/sessions/${sessionId}/messages/${messageId}`,
   );
 };
 
@@ -67,6 +67,6 @@ export const recallMessage = (sessionId: number, messageId: number) => {
 export const markMessageAsRead = (sessionId: number, data: MarkReadRequest) => {
   return request.post<ApiResponse<boolean>>(
     `/chat/sessions/${sessionId}/messages/read`,
-    data
+    data,
   );
 };

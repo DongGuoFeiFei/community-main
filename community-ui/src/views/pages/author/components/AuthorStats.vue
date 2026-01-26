@@ -18,14 +18,25 @@
         </div>
       </div>
 
-      <div class="follow-button">
+      <div class="action-buttons">
         <el-button
-            :type="isFollowing  ? 'default' : 'primary'"
-            :disabled="Number(props.userId) === store.userInfo.userInfo.userId"
-            size="small"
-            @click="toggleFollow"
+          :type="isFollowing ? 'default' : 'primary'"
+          :disabled="Number(props.userId) === store.userInfo.userInfo.userId"
+          size="small"
+          @click="toggleFollow"
         >
-          {{ isFollowing ? '已关注' : '关注' }}
+          {{ isFollowing ? "已关注" : "关注" }}
+        </el-button>
+
+        <el-button
+          type="success"
+          :disabled="Number(props.userId) === store.userInfo.userInfo.userId"
+          size="small"
+          @click="handlePrivateChat"
+          :loading="chatLoading"
+        >
+          <el-icon style="margin-right: 4px"><ChatDotRound /></el-icon>
+          私信
         </el-button>
       </div>
     </el-card>
@@ -33,50 +44,89 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
-import {addFollowAuthor, delFollowAuthor, isFollowingAuthor} from '@/api/follow.js'
-import {localStores} from "@/stores/localStores.js";
+import { onMounted, ref } from "vue";
+import {
+  addFollowAuthor,
+  delFollowAuthor,
+  isFollowingAuthor,
+} from "@/api/follow.js";
+import { localStores } from "@/stores/localStores.js";
+import { createPrivateSession } from "@/api/session";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { ChatDotRound } from "@element-plus/icons-vue";
 
 const props = defineProps({
   stats: {
     type: Object,
-    required: true
+    required: true,
   },
   userId: {
     type: [String, Number],
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-const store = localStores()
+const store = localStores();
+const router = useRouter();
 
-const isFollowing = ref(false)
+const isFollowing = ref(false);
+const chatLoading = ref(false);
 
 const getIsFollowing = async () => {
-  const res = await isFollowingAuthor(props.userId)
-  isFollowing.value = res.data
-  console.log(res)
-}
+  const res = await isFollowingAuthor(props.userId);
+  isFollowing.value = res.data;
+  console.log(res);
+};
 
 onMounted(() => {
-  getIsFollowing()
-})
+  getIsFollowing();
+});
 
 // 关注/取消关注
 const toggleFollow = async () => {
   try {
     if (isFollowing.value) {
-      await delFollowAuthor(props.userId)
-      props.stats.following = Math.max(0, props.stats.following - 1)
+      await delFollowAuthor(props.userId);
+      props.stats.following = Math.max(0, props.stats.following - 1);
     } else {
-      await addFollowAuthor(props.userId)
-      props.stats.following += 1
+      await addFollowAuthor(props.userId);
+      props.stats.following += 1;
     }
-    isFollowing.value = !isFollowing.value
+    isFollowing.value = !isFollowing.value;
   } catch (error) {
-    console.error('操作失败:', error)
+    console.error("操作失败:", error);
   }
-}
+};
+
+// 发起私信
+const handlePrivateChat = async () => {
+  try {
+    chatLoading.value = true;
+
+    // 创建或获取私聊会话
+    const res = await createPrivateSession({
+      userId: Number(props.userId),
+    });
+
+    if (res.code === 200 && res.data) {
+      // 跳转到聊天页面，并传递会话ID
+      await router.push({
+        name: "chat",
+        query: {
+          sessionId: res.data,
+        },
+      });
+    } else {
+      ElMessage.error(res.msg || "创建会话失败");
+    }
+  } catch (error) {
+    console.error("发起私信失败:", error);
+    ElMessage.error("发起私信失败，请稍后重试");
+  } finally {
+    chatLoading.value = false;
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -88,7 +138,11 @@ const toggleFollow = async () => {
     position: relative;
     border-radius: 16px;
     border: 2px solid rgba(147, 197, 253, 0.3);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 244, 255, 0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(240, 244, 255, 0.8) 100%
+    );
     box-shadow: 0 6px 24px rgba(99, 102, 241, 0.12);
     overflow: hidden;
     transition: all 0.3s ease;
@@ -100,7 +154,7 @@ const toggleFollow = async () => {
 
     // 顶部装饰条
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -113,7 +167,7 @@ const toggleFollow = async () => {
 
     // 装饰图案
     &::after {
-      content: '♪';
+      content: "♪";
       position: absolute;
       bottom: 10px;
       right: 15px;
@@ -154,13 +208,17 @@ const toggleFollow = async () => {
 
     // 悬停背景效果
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 10%;
       right: 10%;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(147, 197, 253, 0.2), rgba(167, 139, 250, 0.2));
+      background: linear-gradient(
+        135deg,
+        rgba(147, 197, 253, 0.2),
+        rgba(167, 139, 250, 0.2)
+      );
       border-radius: 12px;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -169,7 +227,7 @@ const toggleFollow = async () => {
 
     // 分隔线
     &:not(:last-child)::after {
-      content: '';
+      content: "";
       position: absolute;
       right: 0;
       top: 20%;
@@ -196,14 +254,17 @@ const toggleFollow = async () => {
     }
   }
 
-  .follow-button {
+  .action-buttons {
     margin-top: 20px;
     text-align: center;
     position: relative;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
 
     .el-button {
-      width: 120px;
+      min-width: 110px;
       height: 40px;
       border-radius: 20px;
       font-weight: 600;
@@ -226,6 +287,15 @@ const toggleFollow = async () => {
 
         &:hover {
           background: linear-gradient(135deg, #4f46e5, #9333ea);
+        }
+      }
+
+      &.el-button--success {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        border: none;
+
+        &:hover {
+          background: linear-gradient(135deg, #059669, #10b981);
         }
       }
 
@@ -254,7 +324,8 @@ const toggleFollow = async () => {
 }
 
 @keyframes bounce-gentle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(-10deg);
   }
   50% {

@@ -73,6 +73,7 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: "session-change", sessionId: number): void;
+  (e: "sessions-loaded"): void;
 }>();
 
 const sessions = ref<ChatSessionItem[]>([]);
@@ -83,7 +84,11 @@ const fetchSessions = async () => {
   try {
     loading.value = true;
     const res = await getSessions();
+    console.log(res.data);
     sessions.value = res.data || [];
+    console.log(sessions.value);
+    // 触发会话列表加载完成事件
+    emit("sessions-loaded");
   } catch (error) {
     console.error("获取会话列表失败:", error);
     sessions.value = [];
@@ -125,6 +130,8 @@ const formatTime = (time?: string) => {
 };
 
 const handleSessionClick = (session: ChatSessionItem) => {
+  console.log(session.value);
+  console.log(session.id);
   emit("session-change", session.id);
 };
 

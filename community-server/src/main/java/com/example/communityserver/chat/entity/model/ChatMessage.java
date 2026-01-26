@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @ApiModel("聊天消息实体")
 public class ChatMessage {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("消息ID")
     private Long id;
 

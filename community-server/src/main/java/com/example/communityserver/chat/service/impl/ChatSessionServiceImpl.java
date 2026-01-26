@@ -233,7 +233,7 @@ public class ChatSessionServiceImpl extends ServiceImpl<ChatSessionMapper, ChatS
             }
         }
 
-        return response;
+        return response; 
     }
 
     @Override

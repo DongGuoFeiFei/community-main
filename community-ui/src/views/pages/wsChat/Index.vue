@@ -29,6 +29,7 @@
           ref="chatListRef"
           :active-session-id="Number(activeSessionId)"
           @session-change="handleSessionChange"
+          @sessions-loaded="handleSessionsLoaded"
         />
       </div>
 
@@ -57,14 +58,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import ChatList from "./components/ChatList.vue";
 import ChatRoom from "./components/ChatRoom.vue";
 import { getSessionDetail } from "@/api/session";
 
+const route = useRoute();
 const activeSessionId = ref(null);
 const currentSessionDetail = ref(null);
 const chatListRef = ref(null);
+const pendingSessionId = ref(null);
 
 // 处理会话切换
 const handleSessionChange = async (sessionId) => {
@@ -84,6 +88,37 @@ const refreshSessions = () => {
     chatListRef.value.refresh();
   }
 };
+
+// 处理会话列表加载完成
+const handleSessionsLoaded = () => {
+  // 如果有待处理的会话ID，自动选中
+  if (pendingSessionId.value) {
+    handleSessionChange(pendingSessionId.value);
+    pendingSessionId.value = null;
+  }
+};
+
+// 组件挂载时检查是否有 sessionId 参数
+onMounted(() => {
+  const sessionId = route.query.sessionId;
+  if (sessionId) {
+    pendingSessionId.value = Number(sessionId);
+    // 如果列表已经加载，直接选中
+    if (chatListRef.value) {
+      handleSessionChange(Number(sessionId));
+    }
+  }
+});
+
+// 监听路由变化
+watch(
+  () => route.query.sessionId,
+  (newSessionId) => {
+    if (newSessionId) {
+      handleSessionChange(Number(newSessionId));
+    }
+  },
+);
 </script>
 
 <style lang="scss" scoped>
@@ -225,7 +260,8 @@ const refreshSessions = () => {
     border-radius: 24px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 12px 48px rgba(179, 157, 219, 0.25),
+    box-shadow:
+      0 12px 48px rgba(179, 157, 219, 0.25),
       0 0 0 1px rgba(179, 157, 219, 0.1);
     backdrop-filter: blur(10px);
 
