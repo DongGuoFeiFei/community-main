@@ -3,6 +3,7 @@ package com.example.communityserver.chat.listener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -38,9 +39,18 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         
-        // 从会话属性中获取用户信息
-        Long userId = (Long) accessor.getSessionAttributes().get("userId");
-        String username = (String) accessor.getSessionAttributes().get("username");
+        // 从 simpConnectMessage 中获取会话属性（原始 CONNECT 消息）
+        Object connectMessage = accessor.getHeader("simpConnectMessage");
+        Long userId = null;
+        String username = null;
+        
+        if (connectMessage instanceof Message) {
+            StompHeaderAccessor connectAccessor = StompHeaderAccessor.wrap((Message<?>) connectMessage);
+            if (connectAccessor.getSessionAttributes() != null) {
+                userId = (Long) connectAccessor.getSessionAttributes().get("userId");
+                username = (String) connectAccessor.getSessionAttributes().get("username");
+            }
+        }
         
         int currentUserCount = userNumber.incrementAndGet();
         
@@ -59,9 +69,14 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         
-        // 从会话属性中获取用户信息
-        Long userId = (Long) accessor.getSessionAttributes().get("userId");
-        String username = (String) accessor.getSessionAttributes().get("username");
+        // 从会话属性中获取用户信息（断开事件可以直接获取）
+        Long userId = null;
+        String username = null;
+        
+        if (accessor.getSessionAttributes() != null) {
+            userId = (Long) accessor.getSessionAttributes().get("userId");
+            username = (String) accessor.getSessionAttributes().get("username");
+        }
         
         int currentUserCount = userNumber.decrementAndGet();
         
