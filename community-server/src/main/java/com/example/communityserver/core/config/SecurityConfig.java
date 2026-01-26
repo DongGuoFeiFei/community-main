@@ -78,23 +78,19 @@ public class SecurityConfig {
                                 "/swagger-resources",
                                 "/swagger-resources/**",
                                 "/v2/**",
-                                "/api/websocket/*",
-                                "/ws/**",
-                                "/ws",
-                                "/websocket/**",
-                                "/sockjs/**",
-                                "/ws/**",
-                                "/websocket/**",
-                                "/sockjs/**",
-                                "/app/**",
-                                "/topic/**",
-                                "/user/**",
                                 "/auth/reset-password/**",
                                 "/auth/forgot-password"
                         ).permitAll()
+                        // WebSocket 握手端点允许访问（但连接时会在 WebSocketSecurityConfig 中验证 token）
+                        .antMatchers(
+                                "/ws/**",
+                                "/websocket/**",
+                                "/sockjs/**"
+                        ).permitAll()
                         // 显式声明重要接口请求需要认证
                         .antMatchers(
-                                "/posts/**"
+                                "/posts/**",
+                                "/chat/**"
                         ).authenticated()
                         // 其他所有请求需要认证
                         .anyRequest().authenticated()

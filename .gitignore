@@ -49,3 +49,5 @@ community-ui/.env.development
 community-ui/.env.production
 !/community-server/target/
 /community-ui/doc/
+/.idea/
+/path/

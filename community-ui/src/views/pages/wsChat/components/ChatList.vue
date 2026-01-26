@@ -96,7 +96,7 @@ const filteredSessions = computed(() => {
   const keyword = searchQuery.value.trim().toLowerCase();
   if (!keyword) return sessions.value;
   return sessions.value.filter((session) =>
-    (session.name || "").toLowerCase().includes(keyword)
+    (session.name || "").toLowerCase().includes(keyword),
   );
 });
 
@@ -104,22 +104,22 @@ const formatTime = (time?: string) => {
   if (!time) return "";
   const msgTime = dayjs(time);
   const now = dayjs();
-  
+
   // 如果是今天，显示时间
-  if (msgTime.isSame(now, 'day')) {
+  if (msgTime.isSame(now, "day")) {
     return msgTime.format("HH:mm");
   }
-  
+
   // 如果是昨天
-  if (msgTime.isSame(now.subtract(1, 'day'), 'day')) {
+  if (msgTime.isSame(now.subtract(1, "day"), "day")) {
     return "昨天";
   }
-  
+
   // 如果是今年，显示月日
-  if (msgTime.isSame(now, 'year')) {
+  if (msgTime.isSame(now, "year")) {
     return msgTime.format("MM-DD");
   }
-  
+
   // 否则显示年月日
   return msgTime.format("YYYY-MM-DD");
 };
@@ -138,7 +138,7 @@ onMounted(() => {
 
 // 暴露刷新方法供父组件调用
 defineExpose({
-  refresh: fetchSessions
+  refresh: fetchSessions,
 });
 </script>
 

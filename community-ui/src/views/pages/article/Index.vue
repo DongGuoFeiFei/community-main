@@ -84,10 +84,9 @@ watch(
     if (newId) {
       fetchAuthorInfo();
     }
-  }
+  },
 );
 </script>
-
 
 <style scoped lang="scss">
 .main-container {

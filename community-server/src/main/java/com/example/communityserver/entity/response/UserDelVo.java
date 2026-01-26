@@ -31,6 +31,7 @@ public class UserDelVo {
     private String avatar;
     private String fullName;
     private String bio;
+    private String signature;
     private Integer gender;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String birthDate;

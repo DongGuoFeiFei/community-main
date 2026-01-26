@@ -7,24 +7,22 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 消息分页响应
+ *
+ * @author DongGuo
+ * @since 2026-01-23
+ */
 @Data
 @ApiModel("消息分页响应")
 public class MessagePageResponse {
 
     @ApiModelProperty("消息列表")
-    private List<ChatMessage> records;
+    private List<ChatMessage> messages;
 
-    @ApiModelProperty("是否还有更多消息")
-    private boolean hasMore;
+    @ApiModelProperty("是否还有更多")
+    private Boolean hasMore;
 
-    @ApiModelProperty("下一次查询的序列号")
-    private Long nextSeq;
-
-    @ApiModelProperty("游标（可与 nextSeq 共用）")
-    private Long cursor;
-
-    @ApiModelProperty("上一页的序列号")
-    private Long prevSeq;
+    @ApiModelProperty("下一页的游标（最后一条消息的ID）")
+    private Long nextCursor;
 }
-
-

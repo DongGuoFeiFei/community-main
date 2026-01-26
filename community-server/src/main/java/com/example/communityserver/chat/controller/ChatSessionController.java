@@ -1,55 +1,80 @@
 package com.example.communityserver.chat.controller;
 
-import com.example.communityserver.chat.entity.model.ChatSession;
+import com.example.communityserver.chat.entity.request.CreatePrivateSessionRequest;
+import com.example.communityserver.chat.entity.response.SessionDetailResponse;
+import com.example.communityserver.chat.entity.response.SessionListItemResponse;
 import com.example.communityserver.chat.service.ChatSessionService;
+import com.example.communityserver.core.security.util.SecurityUtils;
+import com.example.communityserver.utils.web.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "会话管理")
+/**
+ * 聊天会话控制器
+ *
+ * @author DongGuo
+ * @since 2026-01-23
+ */
+@Slf4j
+@Api(tags = "聊天会话")
 @RestController
-@RequestMapping("chat/sessions")
+@RequestMapping("/chat/sessions")
+@RequiredArgsConstructor
 public class ChatSessionController {
 
-    private final ChatSessionService chatSessionService;
+    private final ChatSessionService sessionService;
 
-    public ChatSessionController(ChatSessionService chatSessionService) {
-        this.chatSessionService = chatSessionService;
-    }
-
-    @ApiOperation("创建会话")
-    @PostMapping
-    public ChatSession create(@RequestBody ChatSession session) {
-        chatSessionService.save(session);
-        return session;
-    }
-
-    @ApiOperation("会话详情")
-    @GetMapping("{id}")
-    public ChatSession detail(@PathVariable Long id) {
-        return chatSessionService.getById(id);
-    }
-
-    @ApiOperation("会话列表（简单示例：查全部）")
+    @ApiOperation("获取会话列表")
     @GetMapping
-    public List<ChatSession> list() {
-        return chatSessionService.list();
+    public Result<List<SessionListItemResponse>> getSessions() {
+        Long userId = SecurityUtils.getLoginUserId();
+        if (userId == null) {
+            return Result.error("请先登录");
+        }
+
+        List<SessionListItemResponse> sessions = sessionService.getUserSessions(userId);
+        return Result.success(sessions);
     }
 
-    @ApiOperation("更新会话")
-    @PutMapping("{id}")
-    public Boolean update(@PathVariable Long id, @RequestBody ChatSession session) {
-        session.setId(id);
-        return chatSessionService.updateById(session);
+    @ApiOperation("创建私聊会话")
+    @PostMapping("/private")
+    public Result<Long> createPrivateSession(@RequestBody @Valid CreatePrivateSessionRequest request) {
+        Long currentUserId = SecurityUtils.getLoginUserId();
+        if (currentUserId == null) {
+            return Result.error("请先登录");
+        }
+
+        Long sessionId = sessionService.createOrGetPrivateSession(currentUserId, request.getUserId());
+        return Result.success(sessionId);
+    }
+
+    @ApiOperation("获取会话详情")
+    @GetMapping("/{sessionId}")
+    public Result<SessionDetailResponse> getSessionDetail(@PathVariable Long sessionId) {
+        Long currentUserId = SecurityUtils.getLoginUserId();
+        if (currentUserId == null) {
+            return Result.error("请先登录");
+        }
+
+        SessionDetailResponse detail = sessionService.getSessionDetail(sessionId, currentUserId);
+        return Result.success(detail);
     }
 
     @ApiOperation("删除会话")
-    @DeleteMapping("{id}")
-    public Boolean delete(@PathVariable Long id) {
-        return chatSessionService.removeById(id);
+    @DeleteMapping("/{sessionId}")
+    public Result<Boolean> deleteSession(@PathVariable Long sessionId) {
+        Long currentUserId = SecurityUtils.getLoginUserId();
+        if (currentUserId == null) {
+            return Result.error("请先登录");
+        }
+
+        boolean success = sessionService.deleteSession(sessionId, currentUserId);
+        return Result.success(success);
     }
 }
-
-

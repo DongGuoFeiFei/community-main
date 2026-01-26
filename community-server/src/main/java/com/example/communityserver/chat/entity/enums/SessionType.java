@@ -4,26 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 消息类型枚举
+ * 会话类型枚举
  *
  * @author DongGuo
  * @since 2026-01-23
  */
 @Getter
 @AllArgsConstructor
-public enum MessageType {
+public enum SessionType {
     
-    /** 文本消息 */
-    TEXT(1, "文本消息"),
+    /** 私聊 */
+    PRIVATE(1, "私聊"),
     
-    /** 图片消息 */
-    IMAGE(2, "图片消息"),
-    
-    /** 文件消息 */
-    FILE(3, "文件消息"),
-    
-    /** 系统消息 */
-    SYSTEM(4, "系统消息");
+    /** 群聊 */
+    GROUP(2, "群聊");
 
     private final Integer code;
     private final String desc;
@@ -31,11 +25,11 @@ public enum MessageType {
     /**
      * 根据code获取枚举
      */
-    public static MessageType getByCode(Integer code) {
+    public static SessionType getByCode(Integer code) {
         if (code == null) {
             return null;
         }
-        for (MessageType type : values()) {
+        for (SessionType type : values()) {
             if (type.getCode().equals(code)) {
                 return type;
             }
