@@ -9,7 +9,7 @@
         </div>
         <div class="header-text">
           <div class="session-name">
-            {{ currentSession?.name || "聊天室" }}
+            {{ displayName }}
             <span class="name-emoji">🌸</span>
           </div>
           <div class="session-status">
@@ -140,7 +140,7 @@ const props = withDefaults(
   }>(),
   {
     sessionDetail: null,
-  }
+  },
 );
 
 const store = localStores();
@@ -168,6 +168,19 @@ const uploading = ref(false);
 const messageCursor = ref<number | null>(null);
 
 const currentSession = computed(() => props.sessionDetail);
+
+// 计算显示的名称：私聊显示对方昵称，群聊显示会话名称
+const displayName = computed(() => {
+  if (!currentSession.value) return "聊天室";
+
+  // 如果是私聊（type === 1），显示对方的昵称
+  if (currentSession.value.type === 1 && currentSession.value.peer) {
+    return currentSession.value.peer.nickname || "用户";
+  }
+
+  // 群聊或其他类型，显示会话名称
+  return currentSession.value.name || "聊天室";
+});
 
 const latestMsgId = computed(() => {
   if (!messages.value.length) return null;
@@ -206,7 +219,7 @@ const subscribeSession = async () => {
   }
   subscription.value = subscribe(
     `/topic/chatRoom.private.${props.sessionId}`,
-    handleMessage
+    handleMessage,
   );
 };
 
@@ -229,12 +242,9 @@ const loadMessages = async () => {
     const container = messageListRef.value;
     const previousHeight = container ? container.scrollHeight : 0;
 
-    const res = await getMessages(
-      props.sessionId,
-      messageCursor.value,
-      20
-    );
+    const res = await getMessages(props.sessionId, messageCursor.value, 20);
 
+    console.log(res.data);
     const data: MessagePageResponse = res.data;
 
     if (!data.messages || data.messages.length === 0) {
@@ -269,7 +279,7 @@ const handleMessage = (message: ChatMessage) => {
     messages.value[index] = message;
   }
   scrollToBottom(true);
-  
+
   // 如果不是自己发的消息，标记已读
   if (message.senderId !== currentUserId.value && message.id) {
     updateReadStatus(message.id);
@@ -290,12 +300,12 @@ const sendPayload = async (payload: SendMessageRequest) => {
 const sendMessage = async () => {
   if (!inputMessage.value.trim()) return;
   const content = inputMessage.value.trim();
-  
+
   await sendPayload({
     msgType: MESSAGE_TYPE.TEXT,
     content,
   });
-  
+
   inputMessage.value = "";
   showEmoji.value = false;
   scrollToBottom(true);
@@ -374,7 +384,7 @@ const bootstrap = async () => {
   resetState();
   await subscribeSession();
   await loadMessages();
-  
+
   // 标记已读
   if (latestMsgId.value) {
     await updateReadStatus(latestMsgId.value);
@@ -390,7 +400,7 @@ watch(
   (el, prev) => {
     prev?.removeEventListener("scroll", handleScroll);
     el?.addEventListener("scroll", handleScroll);
-  }
+  },
 );
 
 watch(
@@ -398,7 +408,7 @@ watch(
   async (newVal, oldVal) => {
     if (!newVal || newVal === oldVal) return;
     await bootstrap();
-  }
+  },
 );
 
 onUnmounted(() => {

@@ -76,12 +76,18 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
                     if (authentication != null) {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         
-                        Long userId = (Long) accessor.getSessionAttributes().get("userId");
-                        log.debug("beforeHandle: 恢复认证信息到 SecurityContext - 用户ID: {}, 线程: {}", 
-                                userId, Thread.currentThread().getName());
+                        // 只在 SEND 命令时记录详细日志（实际发送消息）
+                        if (StompCommand.SEND.equals(accessor.getCommand())) {
+                            Long userId = (Long) accessor.getSessionAttributes().get("userId");
+                            log.debug("处理消息 - 用户ID: {}, 目的地: {}, 线程: {}", 
+                                    userId, accessor.getDestination(), Thread.currentThread().getName());
+                        }
                     } else {
-                        log.warn("beforeHandle: 无法恢复认证信息 - 会话ID: {}, 线程: {}", 
-                                accessor.getSessionId(), Thread.currentThread().getName());
+                        // 认证失败时才记录警告
+                        if (StompCommand.SEND.equals(accessor.getCommand())) {
+                            log.warn("无法恢复认证信息 - 会话ID: {}, 命令: {}", 
+                                    accessor.getSessionId(), accessor.getCommand());
+                        }
                     }
                 }
                 
@@ -95,8 +101,8 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
             @Override
             public void afterMessageHandled(Message<?> message, MessageChannel channel, 
                                            MessageHandler handler, Exception ex) {
+                // 清除 SecurityContext（不记录日志，避免日志过多）
                 SecurityContextHolder.clearContext();
-                log.debug("afterMessageHandled: 清除 SecurityContext - 线程: {}", Thread.currentThread().getName());
             }
             
             /**
