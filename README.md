@@ -121,39 +121,49 @@ community-main/
 
 ### 用户前端界面
 
+####  登录注册展示
+![登录](images/image.png)
+![注册](images/image%20copy.png)
+
 #### 首页展示
 
-![首页](doc/screenshots/home.png)
+![首页](images/image%20copy%202.png)
 
 #### 文章详情
 
-![文章详情](doc/screenshots/article-detail.png)
+![alt text](images/image%20copy%203.png)
 
 #### 个人中心
 
-![个人中心](doc/screenshots/user-center.png)
+![alt text](images/image%20copy%204.png)
 
 #### 实时聊天
 
-![实时聊天](doc/screenshots/chat.png)
+![实时聊天](images/image%20copy%205.png)
+
+
+#### 文章发布
+
+![文章发布](images/image%20copy%206.png)
+
 
 ### 管理后台界面
 
 #### 数据看板
 
-![数据看板](doc/screenshots/admin-dashboard.png)
+![数据看板](images/image%20copy%207.png)
 
 #### 用户管理
 
-![用户管理](doc/screenshots/admin-users.png)
+![用户管理](images/image%20copy%208.png)
 
 #### 内容管理
 
-![内容管理](doc/screenshots/admin-articles.png)
+![内容管理](images/image%20copy%209.png)
 
 #### 系统设置
 
-![系统设置](doc/screenshots/admin-settings.png)
+![系统设置](images/image%20copy%2010.png)
 
 
 ## 快速开始
