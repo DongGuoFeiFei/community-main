@@ -2,6 +2,7 @@
 import { Client } from '@stomp/stompjs';
 import { ref } from 'vue';
 import { localStores } from '@/stores/localStores';
+import config from "@/utils/env.js";
 
 let client = null;
 const isConnected = ref(false);
@@ -19,7 +20,7 @@ export function useChatWebSocket() {
 
         return new Promise((resolve, reject) => {
             client = new Client({
-                brokerURL: `ws://localhost:8081/ws`,
+                brokerURL: `${config.websocketUrl}`,
                 connectHeaders: {
                     Authorization: `Bearer ${store.tokenInfo.token}`,
                 },
