@@ -44,10 +44,11 @@ coverage
 
 
 community-ui/.env.development
-community-ui/.env.development
-community-ui/.env.development
 community-ui/.env.production
 !/community-server/target/
 /community-ui/doc/
 /.idea/
 /path/
+/community-ui/dist-ui.zip
+/community-admin/dist-admin.zip
+/community-ui/nodejs/

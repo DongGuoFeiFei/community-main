@@ -11,7 +11,7 @@
  Target Server Version : 80036
  File Encoding         : 65001
 
- Date: 30/12/2025 10:37:34
+ Date: 27/01/2026 23:23:48
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `api_permission`  (
   PRIMARY KEY (`api_id`) USING BTREE,
   UNIQUE INDEX `idx_perms`(`perms` ASC) USING BTREE,
   INDEX `idx_api_path`(`api_path` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 79 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'API权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 80 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'API权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for article
@@ -64,7 +64,7 @@ CREATE TABLE `article`  (
   `is_open_comment` tinyint NULL DEFAULT 1 COMMENT '0-管理 1-打开',
   PRIMARY KEY (`article_id`) USING BTREE,
   INDEX `user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户发布的帖子/动态' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 66 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户发布的帖子/动态' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for article_category_relation
@@ -97,7 +97,7 @@ CREATE TABLE `article_interaction`  (
   INDEX `idx_article_id`(`article_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `article_id`(`article_id` ASC, `user_id` ASC, `action_type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 143 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章浏览记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 144 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章浏览记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for article_tag
@@ -111,75 +111,49 @@ CREATE TABLE `article_tag`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_article_tag`(`article_id` ASC, `tag_id` ASC) USING BTREE,
   INDEX `idx_tag_id`(`tag_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 155 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章-标签关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 156 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章-标签关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for chat_message
 -- ----------------------------
 DROP TABLE IF EXISTS `chat_message`;
 CREATE TABLE `chat_message`  (
-  `session_id` bigint NOT NULL COMMENT '所属会话ID',
-  `msg_seq` bigint NOT NULL COMMENT '会话内递增消息序列号',
-  `id` bigint UNSIGNED NOT NULL COMMENT '全局唯一消息ID',
-  `sender_id` bigint NOT NULL COMMENT '发送者用户ID',
-  `sender_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者昵称快照',
-  `sender_avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者头像快照',
-  `content_type` tinyint NOT NULL DEFAULT 1 COMMENT '消息类型：1文本 2图片 3文件 4音频 5视频 6系统',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '消息内容（文本或资源URL）',
-  `content_json` json NULL COMMENT '富文本/按钮/表情等扩展内容',
-  `at_user_ids` json NULL COMMENT '@用户ID集合',
-  `quote_msg_id` bigint NULL DEFAULT NULL COMMENT '被引用消息ID',
-  `file_size` bigint NULL DEFAULT NULL COMMENT '附件大小（字节）',
-  `status` tinyint NULL DEFAULT 1 COMMENT '消息状态：1正常 2撤回 3屏蔽',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志',
-  `send_time` datetime NULL DEFAULT NULL COMMENT '客户端发送时间',
-  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间',
-  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`session_id`, `msg_seq`) USING BTREE,
-  UNIQUE INDEX `uk_msg_id`(`id` ASC) USING BTREE,
-  INDEX `idx_session_time`(`session_id` ASC, `created_at` ASC) USING BTREE,
-  INDEX `idx_sender`(`sender_id` ASC, `created_at` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会话消息表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for chat_message_ack
--- ----------------------------
-DROP TABLE IF EXISTS `chat_message_ack`;
-CREATE TABLE `chat_message_ack`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '消息ID',
   `session_id` bigint NOT NULL COMMENT '会话ID',
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `read_seq` bigint NULL DEFAULT 0 COMMENT '已读的最大消息序列号',
-  `last_msg_id` bigint NULL DEFAULT NULL COMMENT '最后已读的消息ID（兼容旧逻辑）',
-  `last_read_at` datetime NULL DEFAULT NULL COMMENT '最近已读时间',
-  `device_flag` tinyint NULL DEFAULT 0 COMMENT '设备标识（多端同步使用）',
-  PRIMARY KEY (`session_id`, `user_id`) USING BTREE,
-  INDEX `idx_user`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '消息已读状态表' ROW_FORMAT = Dynamic;
+  `sender_id` bigint NOT NULL COMMENT '发送者ID',
+  `sender_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者昵称',
+  `sender_avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送者头像',
+  `msg_type` tinyint NOT NULL DEFAULT 1 COMMENT '消息类型：1-文本 2-图片 3-文件 4-系统',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '消息内容',
+  `extra_data` json NULL COMMENT '扩展数据（图片尺寸、文件信息等）',
+  `quote_msg_id` bigint NULL DEFAULT NULL COMMENT '引用的消息ID',
+  `status` tinyint NULL DEFAULT 1 COMMENT '状态：1-正常 2-已撤回 3-已删除',
+  `send_time` datetime NOT NULL COMMENT '发送时间',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_session_time`(`session_id` ASC, `send_time` DESC) USING BTREE,
+  INDEX `idx_sender`(`sender_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2015723785144496131 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '聊天消息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for chat_session
 -- ----------------------------
 DROP TABLE IF EXISTS `chat_session`;
 CREATE TABLE `chat_session`  (
-  `id` bigint UNSIGNED NOT NULL COMMENT '会话ID，自增或雪花',
-  `type` tinyint NOT NULL DEFAULT 1 COMMENT '会话类型：1-私聊 2-群聊 3-公开/系统',
-  `biz_type` tinyint NOT NULL DEFAULT 0 COMMENT '业务类型扩展：0-默认 1-活动群 2-客服等',
-  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话名称或群聊名称',
-  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话头像地址',
-  `owner_id` bigint NULL DEFAULT NULL COMMENT '群主/会话创建者ID',
-  `last_msg_id` bigint NULL DEFAULT NULL COMMENT '最新一条消息ID',
-  `last_msg_seq` bigint NULL DEFAULT NULL COMMENT '最新一条消息的序列号',
-  `last_msg_digest` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '最新消息摘要（预览文案）',
-  `last_msg_user_id` bigint NULL DEFAULT NULL COMMENT '最新消息发送者ID',
-  `member_count` int NULL DEFAULT 2 COMMENT '当前会话成员数量',
-  `status` tinyint NULL DEFAULT 1 COMMENT '会话状态：1-正常 2-封禁 3-解散',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志：0-正常 1-已删除',
-  `ext` json NULL COMMENT '会话扩展字段（公告、置顶配置等）',
-  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '会话ID',
+  `type` tinyint NOT NULL DEFAULT 1 COMMENT '会话类型：1-私聊 2-群聊',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话名称（群聊用）',
+  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '会话头像（群聊用）',
+  `last_msg_id` bigint NULL DEFAULT NULL COMMENT '最新消息ID',
+  `last_msg_content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '最新消息内容摘要',
+  `last_msg_time` datetime NULL DEFAULT NULL COMMENT '最新消息时间',
+  `last_msg_sender_id` bigint NULL DEFAULT NULL COMMENT '最新消息发送者ID',
+  `status` tinyint NULL DEFAULT 1 COMMENT '状态：1-正常 2-已删除',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_owner`(`owner_id` ASC) USING BTREE,
-  INDEX `idx_updated`(`updated_at` ASC) USING BTREE
+  INDEX `idx_updated_at`(`updated_at` DESC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '聊天会话表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -187,26 +161,23 @@ CREATE TABLE `chat_session`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `chat_session_member`;
 CREATE TABLE `chat_session_member`  (
-  `id` bigint UNSIGNED NOT NULL COMMENT '成员记录主键',
-  `session_id` bigint NOT NULL COMMENT '所属会话ID',
-  `user_id` bigint NOT NULL COMMENT '成员用户ID',
-  `nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员在会话中的昵称',
-  `role` tinyint NULL DEFAULT 1 COMMENT '角色：1-普通 2-管理员 3-群主',
-  `join_status` tinyint NULL DEFAULT 1 COMMENT '加入状态：1-正常 2-被移除 3-待确认',
-  `join_time` datetime NULL DEFAULT NULL COMMENT '加入会话时间',
-  `mute_until` datetime NULL DEFAULT NULL COMMENT '免打扰截止时间（为空表示关闭免打扰）',
-  `unread_seq` bigint NULL DEFAULT 0 COMMENT '系统记录的未读序列起点',
-  `read_seq` bigint NULL DEFAULT 0 COMMENT '成员最后已读的消息序列号',
-  `mention_flag` tinyint NULL DEFAULT 0 COMMENT '是否存在未处理的@提醒',
-  `is_deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除标志',
-  `ext` json NULL COMMENT '成员扩展配置（个性化背景等）',
-  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `session_id` bigint NOT NULL COMMENT '会话ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `role` tinyint NULL DEFAULT 1 COMMENT '角色：1-普通成员 2-管理员 3-群主',
+  `nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '群昵称',
+  `last_read_msg_id` bigint NULL DEFAULT NULL COMMENT '最后已读消息ID',
+  `last_read_time` datetime NULL DEFAULT NULL COMMENT '最后已读时间',
+  `is_muted` tinyint NULL DEFAULT 0 COMMENT '是否免打扰：0-否 1-是',
+  `is_pinned` tinyint NULL DEFAULT 0 COMMENT '是否置顶：0-否 1-是',
+  `status` tinyint NULL DEFAULT 1 COMMENT '状态：1-正常 2-已退出',
+  `joined_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_session_user`(`session_id` ASC, `user_id` ASC) USING BTREE,
-  INDEX `idx_user`(`user_id` ASC) USING BTREE,
-  INDEX `idx_session_role`(`session_id` ASC, `role` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会话成员表' ROW_FORMAT = Dynamic;
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2015817075273478147 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会话-成员表（user-session）-可在该表格中拓展会话设置' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for comments
@@ -227,7 +198,7 @@ CREATE TABLE `comments`  (
   INDEX `post_id`(`article_id` ASC) USING BTREE,
   INDEX `user_id`(`user_id` ASC) USING BTREE,
   INDEX `parent_id`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 211 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子下的评论（支持多级回复）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 213 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子下的评论（支持多级回复）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for content_category
@@ -251,7 +222,7 @@ CREATE TABLE `content_category`  (
   INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
   INDEX `idx_sort_order`(`sort_order` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '内容分类表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '内容分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for content_filter_setting
@@ -331,7 +302,7 @@ CREATE TABLE `favorite_folders`  (
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`folder_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏夹表名称' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏夹表名称' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for file
@@ -346,7 +317,7 @@ CREATE TABLE `file`  (
   `access_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '访问路径',
   `user_id` bigint NULL DEFAULT NULL COMMENT '上传用户id',
   PRIMARY KEY (`file_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 204 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 208 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for follows
@@ -361,7 +332,7 @@ CREATE TABLE `follows`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `follower_id`(`follower_id` ASC, `following_id` ASC) USING BTREE COMMENT '防止重复关注',
   INDEX `following_id`(`following_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 79 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户关注关系（粉丝系统）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 85 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户关注关系（粉丝系统）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for likes
@@ -392,7 +363,7 @@ CREATE TABLE `login_log`  (
   `login_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '登录地点',
   `device_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设备信息',
   PRIMARY KEY (`log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 194 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '登录日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 208 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '登录日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for menu
@@ -460,7 +431,7 @@ CREATE TABLE `notifications`  (
   INDEX `idx_user_read`(`user_id` ASC, `is_read` ASC) USING BTREE,
   INDEX `idx_content`(`content_id` ASC, `type` ASC) USING BTREE,
   INDEX `idx_type_content`(`type` ASC, `content_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 428 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统通知（点赞、评论、关注等）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 436 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统通知（点赞、评论、关注等）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for operation_log
@@ -571,7 +542,7 @@ CREATE TABLE `points_order`  (
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE,
   CONSTRAINT `fk_order_account` FOREIGN KEY (`account_id`) REFERENCES `user_points_account` (`account_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '积分订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '积分订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for points_order_item
@@ -591,7 +562,7 @@ CREATE TABLE `points_order_item`  (
   INDEX `idx_goods_id`(`goods_id` ASC) USING BTREE,
   CONSTRAINT `fk_order_item_goods` FOREIGN KEY (`goods_id`) REFERENCES `points_goods` (`goods_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_order_item_order` FOREIGN KEY (`order_id`) REFERENCES `points_order` (`order_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '积分订单明细表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '积分订单明细表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for points_rule
@@ -625,9 +596,10 @@ CREATE TABLE `profiles`  (
   `gender` int NULL DEFAULT NULL COMMENT '性别',
   `birth_date` date NULL DEFAULT NULL COMMENT '出生日期（可选）',
   `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '地址',
+  `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '个性签名',
   PRIMARY KEY (`profile_id`) USING BTREE,
   INDEX `user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户详细资料表（一对一扩展）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户详细资料表（一对一扩展）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for report_records
@@ -670,7 +642,7 @@ CREATE TABLE `role`  (
   `is_del` int NULL DEFAULT 0 COMMENT '删除标志（0-存在，1-删除）',
   PRIMARY KEY (`role_id`) USING BTREE,
   UNIQUE INDEX `idx_role_key`(`role_key` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for role_api
@@ -720,7 +692,7 @@ CREATE TABLE `sys_announcement`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_publish_time`(`publish_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统公告表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统公告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_config
@@ -758,7 +730,7 @@ CREATE TABLE `tag`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_name`(`name` ASC) USING BTREE,
   UNIQUE INDEX `uk_slug`(`slug` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '标签表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '标签表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user
@@ -780,7 +752,7 @@ CREATE TABLE `user`  (
   `dept_id` int NULL DEFAULT NULL COMMENT '所属部门ID',
   PRIMARY KEY (`user_id`, `username`, `email`) USING BTREE,
   INDEX `idx_user_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user_favorites
@@ -799,7 +771,7 @@ CREATE TABLE `user_favorites`  (
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_article_id`(`target_id` ASC) USING BTREE,
   INDEX `folder_id`(`folder_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 96 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏文章' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 99 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏文章' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user_points_account
@@ -819,7 +791,7 @@ CREATE TABLE `user_points_account`  (
   UNIQUE INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_level_id`(`level_id` ASC) USING BTREE,
   CONSTRAINT `fk_points_account_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户积分账户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户积分账户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user_points_log

@@ -7,13 +7,11 @@ spring:
     name: community
   redis:
     host: 127.0.0.1  #开发
-#    host: redis #生产
     port: 6379
     database: 1
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai #开发
-#    url: jdbc:mysql://mysql:3306/db_community?userSSL=false;serverTimezone=Asia/Shanghai  #生产
     username: root
     password: 123456  #开发
 #    password: ${datasource_password_pro} #生产

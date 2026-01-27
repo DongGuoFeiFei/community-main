@@ -293,7 +293,7 @@ const isEditor = async () => {
       coverImageData.accessUrl = sStore.baseURL + articleRes.coverUrl;
       tags.value = tagsRes.data;
       articleData.categoryIds = categoriesRes.data.map(
-        (category) => category.categoryId
+        (category) => category.categoryId,
       );
       console.log("articleData.categoryIds", articleData.categoryIds);
       console.log(articleData);

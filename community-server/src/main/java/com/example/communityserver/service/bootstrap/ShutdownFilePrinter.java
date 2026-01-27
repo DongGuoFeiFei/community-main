@@ -30,16 +30,17 @@ public class ShutdownFilePrinter implements ApplicationListener<ContextClosedEve
     public void onApplicationEvent(ContextClosedEvent event) {
         try {
             Resource resource = new ClassPathResource("bannerEnd.txt");
-            String content = Files.readString(Paths.get(resource.getURI()));
-            System.out.println(content);
-
+            if (resource.exists()) {
+                String content = Files.readString(Paths.get(resource.getURI()));
+                System.out.println(content);
+            }
         } catch (Exception e) {
-            System.err.println("无法读取bannerEnd.txt文件: " + e.getMessage());
+            // 静默处理，避免关闭失败
         }
         try {
             printSystemMetrics();
         } catch (Exception e) {
-            System.out.println("无法打印系统信息: " + e.getMessage());
+            // 静默处理
         }
     }
 

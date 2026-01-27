@@ -30,10 +30,13 @@ public class StartRunFilePrinter implements CommandLineRunner {
     private void bannerStartPrint() {
         try {
             Resource resource = new ClassPathResource("bannerStart.txt");
+            if (!resource.exists()) {
+                return;
+            }
             String content = Files.readString(Paths.get(resource.getURI()));
             System.out.println(content);
-        } catch (IOException e) {
-            System.err.println("无法读取bannerStart.txt文件: " + e.getMessage());
+        } catch (Exception e) {
+            // 静默处理，避免启动失败
         }
     }
 

@@ -8,7 +8,7 @@
 
 ```
 community-main/
-├── community-server/     # Java后端服务 
+├── community-server/     # Java后端服务
 │   ├── src/main/java/com/example/communityserver/
 │   │   ├── controller/   # 控制层 - 30+ REST API控制器
 │   │   │   ├── AdminArticleController.java      # 管理员文章管理
@@ -63,6 +63,7 @@ community-main/
 ```
 
 ### 核心功能模块
+
 ![功能图示](https://gitee.com/DongGuoFeiFei/blog-community-platform/raw/main/community-ui/src/assets/images/community-main_2026-01-05T02_16_14.067Z.png)
 
 #### 后端核心功能 (Java)
@@ -94,6 +95,66 @@ community-main/
 - **对象映射**：MapStruct 高性能Bean映射
 - **邮件服务**：Spring Mail + 重试机制
 - **Markdown支持**：CommonMark解析Markdown内容
+
+## 在线演示
+
+### 访问地址
+
+- **用户前端**: http://www.caifurong.top/
+- **管理后台**: http://www.admin.caifurong.top/
+
+### 测试账号
+
+**管理员账号**
+
+- 用户名: `admin`
+- 密码: `123456`
+
+**普通用户账号**
+
+- 用户名: `test`
+- 密码: `123456`
+
+> 提示：在线演示环境仅供测试使用，请勿上传敏感信息。
+
+## 系统截图
+
+### 用户前端界面
+
+#### 首页展示
+
+![首页](doc/screenshots/home.png)
+
+#### 文章详情
+
+![文章详情](doc/screenshots/article-detail.png)
+
+#### 个人中心
+
+![个人中心](doc/screenshots/user-center.png)
+
+#### 实时聊天
+
+![实时聊天](doc/screenshots/chat.png)
+
+### 管理后台界面
+
+#### 数据看板
+
+![数据看板](doc/screenshots/admin-dashboard.png)
+
+#### 用户管理
+
+![用户管理](doc/screenshots/admin-users.png)
+
+#### 内容管理
+
+![内容管理](doc/screenshots/admin-articles.png)
+
+#### 系统设置
+
+![系统设置](doc/screenshots/admin-settings.png)
+
 
 ## 快速开始
 
@@ -467,7 +528,7 @@ public ChatMessage sendMessage(ChatMessage message) {
 - **ECharts**：数据可视化图表
 - **TypeScript**：类型安全开发
 
-##  数据库架构设计
+## 数据库架构设计
 
 ### 核心表结构 (30+ 业务表)
 
@@ -666,10 +727,10 @@ public class RedisConfig {
 ```java
 @Service
 public class UserService {
-    
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-    
+
     public User getUserById(Long userId) {
         String key = "user:" + userId;
         // 先查缓存
@@ -717,7 +778,7 @@ Spring Boot 2.x 默认使用 HikariCP 作为数据库连接池，无需额外配
 ```java
 @Service
 public class NotificationService {
-    
+
     // 在方法上添加@Async注解即可实现异步调用
     @Async
     public void sendNotification(Notification notification) {
@@ -738,7 +799,7 @@ public class NotificationService {
 // MyBatis Plus分页插件配置
 @Configuration
 public class MybatisPlusConfig {
-    
+
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
@@ -754,11 +815,11 @@ public class MybatisPlusConfig {
 // 分页查询使用
 @Service
 public class ArticleService {
-    
+
     public IPage<Article> getArticleList(int pageNum, int pageSize) {
         Page<Article> page = new Page<>(pageNum, pageSize);
         // 自动分页查询
-        return articleMapper.selectPage(page, 
+        return articleMapper.selectPage(page,
             Wrappers.<Article>lambdaQuery()
                 .eq(Article::getStatus, 1)
                 .orderByDesc(Article::getCreateTime)
@@ -787,7 +848,7 @@ Token过期 → 刷新Token → 重新认证
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -818,7 +879,7 @@ public @interface DataPermission {
 @Aspect
 @Component
 public class DataPermissionAspect {
-    
+
     @Around("@annotation(dataPermission)")
     public Object around(ProceedingJoinPoint point, DataPermission dataPermission) throws Throwable {
         // 数据权限拦截逻辑
@@ -871,16 +932,16 @@ public class DataPermissionAspect {
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-    
+
     @Autowired
     private AuthenticationEntryPointImpl authenticationEntryPoint;
-    
+
     @Autowired
     private AccessDeniedHandlerImpl accessDeniedHandler;
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -908,7 +969,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // 添加JWT过滤器
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         // 使用BCrypt加密
@@ -919,26 +980,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 // JWT工具类
 @Component
 public class JwtUtil {
-    
+
     @Value("${jwt.secret}")
     private String secret;
-    
+
     @Value("${jwt.expiration}")
     private Long expiration;
-    
+
     // 生成Token
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
         claims.put("authorities", userDetails.getAuthorities());
-        
+
         return JWT.create()
             .withSubject(userDetails.getUsername())
             .withClaim("claims", claims)
             .withExpiresAt(new Date(System.currentTimeMillis() + expiration * 1000))
             .sign(Algorithm.HMAC256(secret));
     }
-    
+
     // 验证Token
     public boolean validateToken(String token) {
         try {
@@ -949,7 +1010,7 @@ public class JwtUtil {
             return false;
         }
     }
-    
+
     // 从Token获取用户名
     public String getUsernameFromToken(String token) {
         DecodedJWT jwt = JWT.decode(token);
@@ -966,19 +1027,19 @@ public class JwtUtil {
 // 使用@PreAuthorize注解进行权限控制
 @Service
 public class ArticleService {
-    
+
     // 只有管理员可以删除文章
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteArticle(Long articleId) {
         articleMapper.deleteById(articleId);
     }
-    
+
     // 只有文章作者或管理员可以编辑
     @PreAuthorize("hasRole('ADMIN') or @articleService.isAuthor(#articleId, principal.userId)")
     public void updateArticle(Long articleId, Article article) {
         articleMapper.updateById(article);
     }
-    
+
     public boolean isAuthor(Long articleId, Long userId) {
         Article article = articleMapper.selectById(articleId);
         return article != null && article.getUserId().equals(userId);
@@ -991,17 +1052,17 @@ public class ArticleService {
 ```java
 @Service
 public class UserService {
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     // 注册时加密密码
     public void register(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userMapper.insert(user);
     }
-    
+
     // 登录时验证密码
     public boolean login(String username, String password) {
         User user = userMapper.selectByUsername(username);
@@ -1010,7 +1071,7 @@ public class UserService {
         }
         return passwordEncoder.matches(password, user.getPassword());
     }
-    
+
     // 修改密码
     public void changePassword(Long userId, String oldPassword, String newPassword) {
         User user = userMapper.selectById(userId);
@@ -1031,14 +1092,14 @@ public class UserService {
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     // 业务异常处理
     @ExceptionHandler(BusinessException.class)
     public Result<Void> handleBusinessException(BusinessException e) {
         log.error("业务异常: {}", e.getMessage());
         return Result.error(e.getCode(), e.getMessage());
     }
-    
+
     // 参数校验异常
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result<Void> handleValidException(MethodArgumentNotValidException e) {
@@ -1048,19 +1109,19 @@ public class GlobalExceptionHandler {
             .collect(Collectors.joining(", "));
         return Result.error(400, message);
     }
-    
+
     // 认证异常
     @ExceptionHandler(AuthenticationException.class)
     public Result<Void> handleAuthException(AuthenticationException e) {
         return Result.error(401, "认证失败: " + e.getMessage());
     }
-    
+
     // 权限异常
     @ExceptionHandler(AccessDeniedException.class)
     public Result<Void> handleAccessDeniedException(AccessDeniedException e) {
         return Result.error(403, "权限不足");
     }
-    
+
     // 系统异常
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {
@@ -1079,14 +1140,14 @@ public class GlobalExceptionHandler {
 ```java
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
-    
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         // 连接建立处理
         String userId = extractUserId(session);
         sessionManager.addSession(userId, session);
     }
-    
+
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         // 连接关闭处理
@@ -1104,13 +1165,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/app");
     }
-    
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
@@ -1130,7 +1191,7 @@ logging:
     root: info
     org.springframework.web: info
     com.example: debug
-    com.baomidou.mybatisplus: debug  # 开发环境
+    com.baomidou.mybatisplus: debug # 开发环境
   file:
     name: ./logs/application.log
   logback:
@@ -1163,7 +1224,7 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 #### Docker Compose编排
 
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   mysql:
     image: mysql:8.0
@@ -1172,12 +1233,12 @@ services:
       MYSQL_DATABASE: db_community
     ports:
       - "3306:3306"
-    
+
   redis:
     image: redis:7.0-alpine
     ports:
       - "6379:6379"
-    
+
   app:
     build: .
     ports:
@@ -1232,7 +1293,7 @@ List<User> users = userService.lambdaQuery()
 
 // 分页查询优化
 Page<User> page = new Page<>(1, 10);
-IPage<User> userPage = userService.page(page, 
+IPage<User> userPage = userService.page(page,
     Wrappers.<User>query().eq("status", 1));
 ```
 
@@ -1260,57 +1321,57 @@ IPage<User> userPage = userService.page(page,
 - **集群扩展**：支持无限制水平扩展
 - **消息吞吐**：支持10万+ 消息/秒处理能力
 
-------
+---
 
 ## 亮点总结
 
 ### 1. 架构设计亮点
 
--  **前后端分离**：清晰的职责划分，独立开发部署
--  **分层架构**：Controller → Service → Mapper → Entity 四层架构
--  **模块化设计**：聊天、积分、支付等功能模块独立
--  **RESTful API**：符合REST规范的API设计
--  **统一响应格式**：Result<T>统一封装返回数据
+- **前后端分离**：清晰的职责划分，独立开发部署
+- **分层架构**：Controller → Service → Mapper → Entity 四层架构
+- **模块化设计**：聊天、积分、支付等功能模块独立
+- **RESTful API**：符合REST规范的API设计
+- **统一响应格式**：Result<T>统一封装返回数据
 
 ### 2. 安全体系亮点
 
--  **JWT无状态认证**：支持分布式部署
--  **RBAC权限模型**：灵活的角色权限管理
--  **方法级权限控制**：@PreAuthorize注解权限控制
--  **密码加密**：BCrypt加密存储
--  **全局异常处理**：统一的异常处理机制
+- **JWT无状态认证**：支持分布式部署
+- **RBAC权限模型**：灵活的角色权限管理
+- **方法级权限控制**：@PreAuthorize注解权限控制
+- **密码加密**：BCrypt加密存储
+- **全局异常处理**：统一的异常处理机制
 
 ### 3. 实时通信亮点
 
--  **WebSocket + STOMP**：标准化的实时通信协议
--  **消息路由**：支持点对点、广播、用户专属消息
--  **连接管理**：完整的连接生命周期管理
--  **消息确认**：已读未读状态管理
--  **会话管理**：支持单聊和群聊
+- **WebSocket + STOMP**：标准化的实时通信协议
+- **消息路由**：支持点对点、广播、用户专属消息
+- **连接管理**：完整的连接生命周期管理
+- **消息确认**：已读未读状态管理
+- **会话管理**：支持单聊和群聊
 
 ### 4. 性能优化亮点
 
--  **Redis缓存**：热点数据缓存，减轻数据库压力
--  **异步处理支持**：@EnableAsync支持异步方法调用
--  **连接池**：HikariCP高性能连接池（Spring Boot默认）
--  **分页查询**：MyBatis Plus自动分页
--  **索引优化**：合理的数据库索引设计
+- **Redis缓存**：热点数据缓存，减轻数据库压力
+- **异步处理支持**：@EnableAsync支持异步方法调用
+- **连接池**：HikariCP高性能连接池（Spring Boot默认）
+- **分页查询**：MyBatis Plus自动分页
+- **索引优化**：合理的数据库索引设计
 
 ### 5. 开发效率亮点
 
--  **MyBatis Plus**：简化CRUD操作，提升开发效率
--  **Lombok**：减少样板代码
--  **MapStruct**：高性能对象映射
--  **Knife4j**：自动生成API文档
--  **Spring Boot**：自动配置，开箱即用
+- **MyBatis Plus**：简化CRUD操作，提升开发效率
+- **Lombok**：减少样板代码
+- **MapStruct**：高性能对象映射
+- **Knife4j**：自动生成API文档
+- **Spring Boot**：自动配置，开箱即用
 
 ### 6. 业务功能亮点
 
--  **完整的社交功能**：文章、评论、点赞、关注、收藏
--  **积分体系**：积分获取、等级、商品兑换
--  **支付集成**：支付宝支付接口
--  **AI集成**：DeepSeek大模型对话
--  **管理后台**：完整的后台管理功能
+- **完整的社交功能**：文章、评论、点赞、关注、收藏
+- **积分体系**：积分获取、等级、商品兑换
+- **支付集成**：支付宝支付接口
+- **AI集成**：DeepSeek大模型对话
+- **管理后台**：完整的后台管理功能
 
 ## 项目数据统计
 
@@ -1338,27 +1399,27 @@ IPage<User> userPage = userService.page(page,
 
 ### 技术展示
 
--  完整的Spring Boot项目
--  体现系统架构设计能力
--  展示性能优化实践
--  体现安全意识和实现能力
--  展示实时通信技术应用
+- 完整的Spring Boot项目
+- 体现系统架构设计能力
+- 展示性能优化实践
+- 体现安全意识和实现能力
+- 展示实时通信技术应用
 
 ### 学习参考
 
--  Spring Boot企业级项目实战
--  Spring Security安全框架应用
--  MyBatis Plus最佳实践
--  WebSocket实时通信实现
--  Redis缓存应用
--  前后端分离架构
+- Spring Boot企业级项目实战
+- Spring Security安全框架应用
+- MyBatis Plus最佳实践
+- WebSocket实时通信实现
+- Redis缓存应用
+- 前后端分离架构
 
 ### 二次开发
 
--  完整的业务功能模块
--  清晰的代码结构
--  详细的API文档
--  可扩展的架构设计
+- 完整的业务功能模块
+- 清晰的代码结构
+- 详细的API文档
+- 可扩展的架构设计
 
 ## 开发规范
 
@@ -1429,7 +1490,6 @@ IPage<User> userPage = userService.page(page,
 - Email: fcwbebe@foxmail.com
 - QQ: 3151299156
 
-------
+---
 
 **如果这个项目对你有帮助，请给个Star支持一下！**
-
